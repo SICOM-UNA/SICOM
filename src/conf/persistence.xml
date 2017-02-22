@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="SICOM_v1PU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>com.sicom.entities.Codigo</class>
+    <class>com.sicom.entities.Autorizacion</class>
+    <class>com.sicom.entities.Personal</class>
+    <class>com.sicom.entities.Cita</class>
+    <class>com.sicom.entities.Departamento</class>
+    <class>com.sicom.entities.Responsable</class>
+    <class>com.sicom.entities.Login</class>
+    <class>com.sicom.entities.Valor</class>
+    <class>com.sicom.entities.Paciente</class>
+    <class>com.sicom.entities.Consulta</class>
+    <class>com.sicom.entities.AntecedentesGinecologia</class>
+    <class>com.sicom.entities.AntecedentesOdontologia</class>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/SICOM?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.password" value="root"/>
+    </properties>
+  </persistence-unit>
+</persistence>

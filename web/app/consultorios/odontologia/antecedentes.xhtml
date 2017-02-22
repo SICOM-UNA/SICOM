@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/templates/default.xhtml" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="content">
+        <div id="wrapper">
+            <section>
+                <h:form>
+                    <p:messages id="msg" for="msg" autoUpdate="true" closable="true" />
+                    <h:panelGrid columns="1">
+                        <h:panelGroup>
+                            <p:outputLabel class="descripcion" value="Antecedentes Hereditarios:"/>
+                            <h:panelGrid columns="3" cellspacing="20">
+                                <h:panelGrid columns="3" cellspacing="3">
+                                    <p:outputLabel value="DM: "/>
+                                    <p:selectBooleanCheckbox value="" />
+                                    <p:inputText value="" maxlength="10" />
+                                </h:panelGrid>    
+                                <h:panelGrid columns="3" cellspacing="3">
+                                    <p:outputLabel  value="HTA: "/>
+                                    <p:selectBooleanCheckbox value="" />
+                                    <p:inputText value="" maxlength="10" />
+                                </h:panelGrid>
+                                <h:panelGrid columns="3" cellspacing="3">
+                                    <p:outputLabel value="CA: "/>
+                                    <p:selectBooleanCheckbox value="" />
+                                    <p:inputText value="" maxlength="10" />
+                                </h:panelGrid>
+                            </h:panelGrid>
+                            <h:panelGrid columns="2" cellspacing="20">
+                                <p:outputLabel value="Otros:" />
+                                <p:inputTextarea value="" maxlength="100" rows="4" cols = "108" autoResize="false"/>
+                            </h:panelGrid>
+                        </h:panelGroup>
+
+                        <h:panelGroup>
+                            <p:outputLabel class="descripcion" value="Antecedentes No Patológicos"/>
+                            <h:panelGrid columns="3" cellspacing="20">
+                                <h:panelGrid columns="3" cellspacing="3">
+                                    <p:outputLabel value="Tabaquismo: "/>
+                                    <p:selectBooleanCheckbox value="" />
+                                    <p:inputText value="" maxlength="10" />
+                                </h:panelGrid>    
+                                <h:panelGrid columns="3" cellspacing="3">
+                                    <p:outputLabel value="Etilismo: "/>
+                                    <p:selectBooleanCheckbox value="" />
+                                    <p:inputText value="" maxlength="10" />
+                                </h:panelGrid>
+                                <h:panelGrid columns="3" cellspacing="3">
+                                    <p:outputLabel value="Vacunas: "/>
+                                    <p:selectBooleanCheckbox value="" />
+                                    <p:inputText value="" maxlength="10" />
+                                </h:panelGrid>
+                            </h:panelGrid>
+                            <h:panelGrid columns="2" cellspacing="20">
+                                <h:panelGrid columns="3" cellspacing="3">
+                                    <p:outputLabel value="Drogas: "/>
+                                    <p:selectBooleanCheckbox value="" />
+                                    <p:inputText value="" maxlength="10" />
+                                </h:panelGrid>
+                                <h:panelGrid columns="2" cellspacing="20">
+                                    <p:outputLabel value="Otros:" />
+                                    <p:inputTextarea value="" maxlength="50" rows="4" cols = "68" autoResize="false"/>
+                                </h:panelGrid>
+                            </h:panelGrid>                                
+                        </h:panelGroup>
+                        <h:panelGroup>
+                            <p:outputLabel class="descripcion" value="Alergias: "/>
+                            <p:inputTextarea value="#{antecedentesOdontologiaBean.nuevoAntecedente.alergias}" cols="118" rows="4" maxlength="150"/>
+                        </h:panelGroup>
+
+                        <h:panelGroup>
+                            <p:outputLabel class="descripcion" value="Hábitos: "/>
+                            <p:inputTextarea value="#{antecedentesOdontologiaBean.nuevoAntecedente.habitos}" cols="118" rows="4" maxlength="100"/>
+                        </h:panelGroup>
+
+                        <h:panelGroup>
+                            <p:outputLabel class="descripcion" value="Motivo de consulta: "/>
+                            <p:inputTextarea value="#{antecedentesOdontologiaBean.nuevoAntecedente.moitvoConsulta}" cols="118" rows="4" maxlength="150"/>
+                        </h:panelGroup>
+
+                        <h:panelGroup>
+                            <p:commandButton value="Guardar datos" action="#{antecedentesOdontologiaBean.save()}" title="Click para guardar información"/>
+                        </h:panelGroup>
+                    </h:panelGrid>
+                </h:form>
+            </section>
+        </div>
+    </ui:define>
+</ui:composition>

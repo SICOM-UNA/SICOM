@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/templates/default.xhtml" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+        <div id="wrapper">
+
+            <section>
+                <h:form id="formInformacion" >
+
+                    <p:messages id="msg" autoUpdate="true" closable="true" />
+
+                    <p:tabView orientation="left">
+                        <p:tab title="Información Personal">
+                            <h:panelGrid columns="4" >
+                                <p:outputLabel class="infoLabel" value="Nombre:"/>
+                                <p:inputText value="{pacienteBean.selectedPaciente.nombre}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Fecha Nacimiento:"/>
+                                <h:outputText value="">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                                </h:outputText>
+
+                                <p:outputLabel class="infoLabel" value="Apellidos:"/>
+                                <p:inputText value="{pacienteBean.selectedPaciente.primerApellido} {pacienteBean.selectedPaciente.segundoApellido}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Género:"/>
+                                <p:inputText value="{pacienteBean.selectedPaciente.genero}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Identificación:"/>
+                                <p:inputText  value="{pacienteBean.selectedPaciente.id}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Estado Civil:"/>
+                                <p:inputText value="{pacienteBean.selectedPaciente.estadoCivil}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Teléfono 1:"/>
+                                <p:inputText value="{pacienteBean.selectedPaciente.telefono}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Correo electrónico:"/>
+                                <p:inputText value="{pacienteBean.selectedPaciente.correo}" readonly="true" />
+
+                                <p:outputLabel class="infoLabel" value="Teléfono 2:"/>
+                                <p:inputText value="{pacienteBean.selectedPaciente.celular}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value = "Ocupación:"/>
+                                <p:inputText value = "{pacienteBean.selectedPaciente.ocupacion}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Domicilio:"/>
+                                <p:inputTextarea value="{pacienteBean.selectedPaciente.domicilio}" readonly="true"/>
+
+                                <p:outputLabel/>
+                                <p:commandButton value="Modificar Información" title="Click para modificar información del paciente." update="formInformacion"/>
+                            </h:panelGrid>
+                        </p:tab>
+
+                        <p:tab title="Responsables">
+                            <h:panelGrid columns="2">
+                                <p:panel header="Responsable 1">
+                                    <h:panelGrid columns="2">
+                                        <p:outputLabel class="infoLabel" value="Nombre:"/>
+                                        <p:inputText value="{pacienteBean.selectedPaciente.responsableId.nombre}" readonly="true"/>
+
+                                        <p:outputLabel class="infoLabel" value="Identificación:"/>
+                                        <p:inputText value="{pacienteBean.selectedPaciente.responsableId.id}" readonly="true"/>
+
+                                        <p:outputLabel class="infoLabel" value = "Ocupación:"/>
+                                        <p:inputText value = "{pacienteBean.selectedPaciente.ocupacion}" readonly="true"/>
+
+                                        <p:outputLabel class="infoLabel" value="Telefono:"/>
+                                        <p:inputText value="{pacienteBean.selectedPaciente.responsableId.telefono}" readonly="true"/>
+
+                                        <p:outputLabel class="infoLabel" value="Tipo de Relacion:"/>
+                                        <p:inputText value="tipo de relacion" readonly="true"/>
+                                    </h:panelGrid>
+                                </p:panel>
+                                <p:panel header="Responsable 2">
+                                    <h:panelGrid columns="2">
+                                        <p:outputLabel class="infoLabel" value="Nombre:"/>
+                                        <p:inputText value="{pacienteBean.selectedPaciente.responsableId.nombre}" readonly="true"/>
+
+                                        <p:outputLabel class="infoLabel" value="Identificación:"/>
+                                        <p:inputText value="{pacienteBean.selectedPaciente.responsableId.id}" readonly="true"/>
+
+                                        <p:outputLabel class="infoLabel" value = "Ocupación:"/>
+                                        <p:inputText value = "{pacienteBean.selectedPaciente.ocupacion}" readonly="true"/>
+
+                                        <p:outputLabel class="infoLabel" value="Telefono:"/>
+                                        <p:inputText value="{pacienteBean.selectedPaciente.responsableId.telefono}" readonly="true"/>
+
+                                        <p:outputLabel class="infoLabel" value="Tipo de Relacion:"/>
+                                        <p:inputText value="tipo de relacion" readonly="true"/>
+                                    </h:panelGrid>
+                                </p:panel>
+                            </h:panelGrid>
+                        </p:tab>
+
+                        <p:tab title="Expediente">
+                            <div class="ui-grid ui-grid-responsive">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:panel header="Histroria Cl&iacute;nica">
+                                            <h:panelGrid columns="2" cellspacing="10">
+                                                <p:commandButton value="Agregar Nueva Versi&oacute;n" icon="ui-icon-plus"/>
+                                                <p:commandButton value="Buscar Histria Cl&iacute;nica" icon="ui-icon-search"/>
+                                            </h:panelGrid>
+                                        </p:panel>
+                                    </div>
+                                </div>
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:panel header="Diagn&oacute;sticos Cl&iacute;nicos" >
+                                            <h:panelGrid columns="3" cellspacing="10">
+                                                <p:commandButton value="Agregar Nuevo Diagn&oacute;stico" icon="ui-icon-plus"/>
+                                                <p:commandButton value="Buscar Diagn&oacute;sticos" icon="ui-icon-search"/>
+                                                <p:commandButton value="Importar" icon="ui-icon-circle-arrow-n"/>
+                                            </h:panelGrid>
+                                        </p:panel>
+                                    </div>
+                                </div>
+                            </div>
+                        </p:tab>
+                    </p:tabView>
+                </h:form>
+            </section>
+        </div>
+    </ui:define>
+</ui:composition>

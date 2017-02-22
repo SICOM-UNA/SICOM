@@ -1,0 +1,41 @@
+Valores Por Código (int)
+
+0: Sexo
+    - Masculino
+    - Femenino
+
+1: Estado Civil
+    - Soltero
+    - Divorciado
+    - Casada
+    - Viudo
+
+2: Tipo de Relacion
+    - Padre
+    - Madre
+    - Familiar
+    - Esposo/a
+    - Amigo/a
+    - Otro
+
+3: Referido
+    Custom inputs
+
+4: Ciclo Menstrual en Antecedentes Ginecologicos.
+    - Regular
+    - Iregular
+    - No Presente
+
+5: Planificacion en Antecedente Ginecologia
+    - GO
+    - GI
+    - Condon
+    - Ritmo
+    - Coito Interrumpido
+    - DIU
+    - SPB
+    - Vacectomia
+    - Otro
+
+6: Tipo de Parto
+                

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/templates/default.xhtml" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:o="http://omnifaces.org/ui">
+
+    <ui:define name="content">
+        <div id="wrapper">
+            <section>
+                <h:form>
+                    <p:messages id="msg" autoUpdate="true" closable="true" />
+
+                    <p:wizard flowListener="#{personalBean.onFlowProcess}" nextLabel="Siguiente" backLabel="Anterior" >
+                        
+                        
+                        <p:tab id="personal" title="Personal">
+                            <div class="ui-grid ui-grid-responsive">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:panel header="Información Personal" id="panel1">
+
+                                            <o:validateAll components="id  nom pa sa ec t1 g mask" message="Debe llenar los espacios marcados."/>
+                                            
+                                            <h:panelGrid columns="4" cellspacing="2">
+
+                                                <p:outputLabel class="descripcion" value="Identificación:" for="id"/>
+                                                <p:inputText  value="#{personalBean.nuevoPersonal.id}"  onchange="#{personalBean.buscaIdBase()}" id="id"  maxlength="45" class = "alphanumericToUpperCase" onkeyup="validar()">
+                                                    <p:ajax update="msg panel1"/>
+                                                </p:inputText>
+
+                                                <p:outputLabel class="rad" value="Pagina del Registro: "/>
+                                                <p:lightBox iframe="true" id="lighbox3" height="30em" width="68em" >
+                                                    <h:outputLink value="http://www.consulta.tse.go.cr/consulta_persona/consulta_nombres.aspx" title="Página del Tribunal Supremo de Elecciones.">
+                                                        <h:graphicImage class="myicon" />
+                                                    </h:outputLink>
+                                                </p:lightBox>
+
+                                                <p:outputLabel class="descripcion" value="Nombre:" for="nom"/>
+                                                <p:inputText value="#{personalBean.nuevoPersonal.nombre}" id="nom"  maxlength="45" class = "charWithSpaceToUpperCase" onkeyup="validar()"/>
+                                                <p:outputLabel class="descripcion" for="mask" value="Fecha Nacimiento:"/>
+                                                <p:calendar id="mask" value="#{personalBean.nuevoPersonal.nacimiento}" pattern="dd-MM-yyyy" mask="true" navigator="true"/>
+                                                <p:outputLabel class="descripcion" value="Primer apellido:" for="pa"/>
+                                                <p:inputText value="#{personalBean.nuevoPersonal.primerApellido}" id="pa"  maxlength="45" class = "charToUpperCase" onkeyup="validar()"/>
+
+                                                <p:outputLabel class="descripcion" value="Genero:" for="g"/>
+                                                <p:selectOneMenu value="#{personalBean.nuevoPersonal.genero}"  id="g" >
+                                                    <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
+                                                    <f:selectItems value="#{personalBean.consultarValoresPorCodigo(0)}"/>
+                                                </p:selectOneMenu>
+
+                                                <p:outputLabel class="descripcion" value="Segundo apellido:" for="sa"/>
+                                                <p:inputText value="#{personalBean.nuevoPersonal.segundoApellido}" id="sa"  maxlength="45" class = "charToUpperCase" onkeyup="validar()"/>
+
+                                                <p:outputLabel class="descripcion" value="Estado Civil:" for="ec"/>
+                                                <p:selectOneMenu value="#{personalBean.nuevoPersonal.estadoCivil}"  id="ec">
+                                                    <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
+                                                    <f:selectItems value="#{personalBean.consultarValoresPorCodigo(1)}"/>
+                                                </p:selectOneMenu>
+                                                
+                                                <p:outputLabel class="descripcion" value="Telefono 1:" for="t1"/>
+                                                <p:inputText value="#{personalBean.nuevoPersonal.telefono}" class="numeric" onkeyup="validar();"  maxlength="8" id="t1"/>
+
+                                                <p:outputLabel class="descripcion" value="Correo electrónico:" for="ce"/>
+                                                <p:inputText value="#{personalBean.nuevoPersonal.correo}"  class="correo" onkeyup="validar();"  maxlength="45" id="ce">
+                                                    <f:validateRegex pattern="((([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+))|(^\s*$))"/>
+                                                </p:inputText>
+
+                                                <p:outputLabel class="descripcion" value="Telefono 2:" for="t2"/>
+                                                <p:inputText value="#{personalBean.nuevoPersonal.celular}" class="numeric" onkeyup="validar();"  maxlength="8" id="t2"/>
+
+                                                <p:outputLabel class="descripcion" value = "Departamento:" for="oc"/>
+                                                <p:inputText value = "#{personalBean.nuevoPersonal.departamentoId}" maxlength="45" id="oc"/>
+
+                                                <p:outputLabel class="descripcion" value="Domicilio:" for="do"/>
+                                                <p:inputTextarea value="#{personalBean.nuevoPersonal.domicilio}" maxlength="150" rows="4" cols = "28" autoResize="true" id="do"/>
+                                            </h:panelGrid>
+
+                                        </p:panel>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </p:tab>
+                        
+                        <p:tab title="Laboral">
+                            <div class="ui-grid ui-grid-responsive">
+                                <div class="ui-grid-row">
+                                    <p:panel header=" Información Laboral">
+                                        <h:panelGrid columns="4" >
+                                            
+                                                <p:outputLabel class="descripcion" value="Login" for="login"/>
+                                                <p:inputText value=" " id="login"  maxlength="45" onkeyup="validar()"/>
+                                               
+                                           
+                                                <p:outputLabel class="descripcion" value="Contrasena" for="contra"/>
+                                                <p:inputText value="" id="contra"  maxlength="45" onkeyup="validar()"/>
+                                            
+                                                <p:outputLabel class="descripcion" value="Departamento" for="departamento"/>
+                                                <p:inputText value="#{personalBean.nuevoPersonal.departamentoId}" id="departamento"  maxlength="45" onkeyup="validar()"/>
+                                                
+                                                <p:outputLabel class="descripcion" value="Autorizacion:" for="autorizacion"/>
+                                                <p:selectOneMenu value="#{personalBean.nuevoPersonal.autorizacionNivel}"  id="autorizacion" >
+                                                    <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
+                                                    <f:selectItems value="#{personalBean.consultarValoresPorCodigo(6)}"/>
+                                                </p:selectOneMenu>
+                                                
+                                                
+                                                <p:outputLabel class="descripcion" value="Cargo" for="cargo"/>
+                                                <p:inputText value=" " id="cargo"  maxlength="45" onkeyup="validar()"/>
+                                                
+                                                
+                                                
+                                            
+                                        </h:panelGrid>
+                                    </p:panel>
+                                </div>
+                            </div>
+                           </p:tab>
+                        
+                        
+                        
+
+                        <p:tab title="Confirmación">
+                            <div class="ui-grid ui-grid-responsive">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-8">
+                                        <p:panel header=" Información Personal">
+                                            <h:panelGrid columns="4" >
+                                                <p:outputLabel  value="Cédula:" class="rad"/>
+                                                <p:inputText  value="#{personalBean.nuevoPersonal.id}" readonly="true"/>
+
+                                                <p:outputLabel value="Género:" class="rad"/>
+                                                <p:inputText value="#{personalBean.nuevoPersonal.genero}" readonly="true"/>
+
+                                                <p:outputLabel value="Nombre:" class="rad" />
+                                                <p:inputText value="#{personalBean.nuevoPersonal.nombre}"  readonly="true"/>
+
+                                                <h:outputLabel value="Apellidos:" class="rad" />
+                                                <p:inputText value="#{personalBean.nuevoPersonal.primerApellido} #{personalBean.nuevoPersonal.segundoApellido}" readonly="true" />
+
+                                                <p:outputLabel value="Fecha de Naciemiento:" class="rad"/>
+                                                <p:inputText value="#{personalBean.nuevoPersonal.nacimiento}" readonly="true">
+                                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                                </p:inputText>
+
+                                                <p:outputLabel value="Edad:" class="rad" />
+                                                <p:inputText value="#{personalBean.PersonalNuevoEdad()}" readonly="true"/>
+                                                
+                                                <p:outputLabel value="Telefono 1:" class="rad"/>
+                                                <p:inputText value="#{personalBean.nuevoPersonal.telefono}" readonly="true"/>
+
+                                                <p:outputLabel value="Telefono 2:" class="rad"/>
+                                                <p:inputText value="#{personalBean.nuevoPersonal.celular}" readonly="true"/>
+
+                                                <p:outputLabel value="Estado Civil:" class="rad"/>
+                                                <p:inputText value="#{personalBean.nuevoPersonal.estadoCivil}" readonly="true"/>
+                                                
+                                                <p:outputLabel value="Departamento:" class="rad"/>
+                                                <p:inputText value="#{personalBean.nuevoPersonal.departamentoId}" readonly="true"/>
+
+                                                <p:outputLabel value="Domicilio:" class="rad"/>
+                                                <p:inputTextarea value="#{personalBean.nuevoPersonal.domicilio}" readonly="true" rows="4" cols="28"/>
+                                            </h:panelGrid>
+                                        </p:panel>
+                                    </div>
+                                </div>
+                                
+                                
+                                
+                                <div class="ui-grid-row">
+
+                                    <div class="ui-grid-col-12">
+                                        <p:commandButton value="Guardar Personal" title="Click para guardar los datos." action="#{personalBean.save()}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </p:tab>
+                           
+                           
+                           
+                    </p:wizard>
+                </h:form>
+
+
+            </section>
+        </div>
+    </ui:define>
+</ui:composition>
+
+
+
+
+                    
