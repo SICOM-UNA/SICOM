@@ -10,23 +10,19 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import org.primefaces.event.FlowEvent;
  
 @ManagedBean
 @ViewScoped
 public class AntecedentesOdontologiaBean{
-    private AntecedentesOdontologia nuevoAntecedente;
-    private AntecedentesOdontologia selectedAntecedente;
+    private AntecedentesOdontologia obj;
     private List <AntecedentesOdontologia> listaAntecedentes;
-    
     private final AntecedentesOdontologiaJpaController aojc;
     private final ValorJpaController vjc;
-    private boolean skip;
-    
+   
     public AntecedentesOdontologiaBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
-        nuevoAntecedente = new AntecedentesOdontologia();
-        selectedAntecedente = new AntecedentesOdontologia();
+        obj = new AntecedentesOdontologia();
+        obj = new AntecedentesOdontologia();
         aojc = new AntecedentesOdontologiaJpaController(emf);
         vjc = new ValorJpaController(emf);
     }
@@ -36,12 +32,12 @@ public class AntecedentesOdontologiaBean{
     }
     
     public void agregar() throws Exception{
-        aojc.create(nuevoAntecedente);
-        nuevoAntecedente = new AntecedentesOdontologia();
+        aojc.create(obj);
+        obj = new AntecedentesOdontologia();
     }
     
     public void modificar() throws Exception{
-        aojc.edit(selectedAntecedente);
+        aojc.edit(obj);
     }
     
     public AntecedentesOdontologia consultarHistorial(Integer pacienteId){
@@ -60,43 +56,14 @@ public class AntecedentesOdontologiaBean{
         this.listaAntecedentes=listaAntecedentes;
     }
     
-    public AntecedentesOdontologia getNuevoAntecedente(){
-        return nuevoAntecedente;
+    public AntecedentesOdontologia getObjAntecedente(){
+        return obj;
     }
     
-    public void setNuevoAntecedente(AntecedentesOdontologia nuevoAntecedente){
-        this.nuevoAntecedente=nuevoAntecedente;
-    }
-    
-    public AntecedentesOdontologia getSelectedAntecedente(){
-        return selectedAntecedente;
-    }
-    
-    public void setSelectedAntecedente(AntecedentesOdontologia selectedAntecedente){
-        this.selectedAntecedente=selectedAntecedente;
-    }
-    
-      
-    /* Wizard Methods*/
-     
-    public boolean isSkip() {
-        return skip;
-    }
- 
-    public void setSkip(boolean skip) {
-        this.skip = skip;
+    public void setObjAntecedente(AntecedentesOdontologia nuevoAntecedente){
+        this.obj=nuevoAntecedente;
     }
      
-    public String onFlowProcess(FlowEvent event){
-        if(skip) {
-            skip = false;   
-            return "confirm";
-        }
-        else {
-            return event.getNewStep();
-        }
-    }
-    
     public void save() {        
            try{
             agregar();
@@ -107,5 +74,4 @@ public class AntecedentesOdontologiaBean{
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
-    /* Wizard Ends*/
 }

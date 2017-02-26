@@ -140,6 +140,7 @@ public class AntecedentesGinecologia implements Serializable {
     private Paciente pacienteid;
 
     public AntecedentesGinecologia() {
+        
     }
 
     public AntecedentesGinecologia(Integer id) {

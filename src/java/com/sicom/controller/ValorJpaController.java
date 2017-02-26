@@ -222,7 +222,15 @@ public class ValorJpaController implements Serializable {
                  listaValores.add("3 Medico");
                  listaValores.add("4 Asistente");
                  listaValores.add("5 Secretaria");
+             
+                 break;
                  
+             case 7:// epoca menopausica
+                 listaValores.add("Ausente");
+                 listaValores.add("Premenopausia");
+                 listaValores.add("Menopausia");
+                 
+                 break;
         }
 
         return listaValores;

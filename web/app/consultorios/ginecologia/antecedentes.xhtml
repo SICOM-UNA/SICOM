@@ -11,116 +11,70 @@
         <div id="wrapper">
             <section>
                 <h:form id="formAntecedentesGinecologia">
-                    <p:messages id="msg" for="msg" autoUpdate="true" closable="true" />
+                    <p:messages id="msg" autoUpdate="true" closable="true" />
+
                     <!-- Antecedentes Ginécologos -->
                     <p:panel header="Historia Clínica" >
                         <h:panelGrid columns="1">
                             <h:panelGroup>
                                 <p:outputLabel class="descripcion" value="Antecedentes Hereditarios:"/>
-                                <h:panelGrid columns="3" cellspacing="20">
-                                    <h:panelGrid columns="3" cellspacing="3">
-                                        <p:outputLabel value="DM: "/>
-                                        <p:selectBooleanCheckbox value="" />
-                                        <p:inputText value="" maxlength="10" />
-                                    </h:panelGrid>    
-                                    <h:panelGrid columns="3" cellspacing="3">
-                                        <p:outputLabel  value="HTA: "/>
-                                        <p:selectBooleanCheckbox value="" />
-                                        <p:inputText value="" maxlength="10" />
-                                    </h:panelGrid>
-                                    <h:panelGrid columns="3" cellspacing="3">
-                                        <p:outputLabel value="CA: "/>
-                                        <p:selectBooleanCheckbox value="" />
-                                        <p:inputText value="" maxlength="10" />
-                                    </h:panelGrid>
-                                </h:panelGrid>
-                                <h:panelGrid columns="2" cellspacing="20">
-                                    <p:outputLabel value="Otros:" />
-                                    <p:inputTextarea value="" maxlength="100" rows="4" cols = "108" autoResize="false"/>
-                                </h:panelGrid>
+                                <p:inputTextarea value="#{antecedentesGinecologiaBean.objAntecedente.herediatarios}" maxlength="225" rows="5" cols = "118" autoResize="false"/> 
                             </h:panelGroup>
 
                             <h:panelGroup>
                                 <p:outputLabel class="descripcion" value="Antecedentes No Patológicos"/>
-                                <h:panelGrid columns="3" cellspacing="20">
-                                    <h:panelGrid columns="3" cellspacing="3">
-                                        <p:outputLabel value="Tabaquismo: "/>
-                                        <p:selectBooleanCheckbox value="" />
-                                        <p:inputText value="" maxlength="10" />
-                                    </h:panelGrid>    
-                                    <h:panelGrid columns="3" cellspacing="3">
-                                        <p:outputLabel value="Etilismo: "/>
-                                        <p:selectBooleanCheckbox value="" />
-                                        <p:inputText value="" maxlength="10" />
-                                    </h:panelGrid>
-                                    <h:panelGrid columns="3" cellspacing="3">
-                                        <p:outputLabel value="Vacunas: "/>
-                                        <p:selectBooleanCheckbox value="" />
-                                        <p:inputText value="" maxlength="10" />
-                                    </h:panelGrid>
-                                </h:panelGrid>
-                                <h:panelGrid columns="2" cellspacing="20">
-                                    <h:panelGrid columns="3" cellspacing="3">
-                                        <p:outputLabel value="Drogas: "/>
-                                        <p:selectBooleanCheckbox value="" />
-                                        <p:inputText value="" maxlength="10" />
-                                    </h:panelGrid>
-                                    <h:panelGrid columns="2" cellspacing="20">
-                                        <p:outputLabel value="Otros:" />
-                                        <p:inputTextarea value="" maxlength="50" rows="4" cols = "68" autoResize="false"/>
-                                    </h:panelGrid>
-                                </h:panelGrid>                                
+                                <p:inputTextarea value="#{antecedentesGinecologiaBean.objAntecedente.noPatologicos}" maxlength="225" rows="5" cols = "118" autoResize="false"/> 
                             </h:panelGroup>
 
                             <h:panelGroup>
-                                <p:outputLabel class="descripcion" value="Antecedentes Patológicos: " for="patologicos"/>
-                                <p:inputTextarea value="#{antecedentesGinecologiaBean.nuevoAntecedente.patologicos}" maxlength="118" rows="5" cols = "118" autoResize="false" id="patologicos"/> 
+                                <p:outputLabel class="descripcion" value="Antecedentes Patológicos: "/>
+                                <p:inputTextarea value="#{antecedentesGinecologiaBean.objAntecedente.patologicos}" maxlength="225" rows="5" cols = "118" autoResize="false"/> 
                             </h:panelGroup>
 
                             <h:panelGroup>
-                                <p:outputLabel class="descripcion" value="Antecedentes Quirúrgicos:" for="quirurgicos"/>
-                                <p:inputTextarea value="#{antecedentesGinecologiaBean.nuevoAntecedente.quirurgicos}" maxlength="118" rows="5" cols = "118" autoResize="false" id="quirurgicos"/>
+                                <p:outputLabel class="descripcion" value="Antecedentes Quirúrgicos:"/>
+                                <p:inputTextarea value="#{antecedentesGinecologiaBean.objAntecedente.quirurgicos}" maxlength="225" rows="5" cols = "118" autoResize="false"/>
                             </h:panelGroup>
 
                             <p:outputLabel class="descripcion" value="Antecedentes Gineco-ostréticos:"/>
 
-                            <h:panelGrid columns="6" cellspacing="25">
-                                <p:outputLabel value="Menarca:" for="menarca"/>
-                                <p:inputText value="" maxlength="4" size="6" class="numeric" onkeyup="validar()" id="menarca"/>    
-                                <p:outputLabel value="FUR:" for="mask"/>
-                                <p:calendar id="mask" pattern="dd-MM-yyyy" mask="true" size="10" />
-                                <p:outputLabel value="Ciclo Menstrual:" for="menarca"/>
+                            <h:panelGrid columns="6" cellspacing="18">
+                                <p:outputLabel value="Menarca:"/>
+                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.menarca}" maxlength="4" size="6" class="numeric" onkeyup="validar()"/>    
+                                <p:outputLabel value="FUR:"/>
+                                <p:calendar value="#{antecedentesGinecologiaBean.objAntecedente.fur}" pattern="dd-MM-yyyy" mask="true" size="10" />
+                                <p:outputLabel value="Ciclo Menstrual:"/>
                                 <h:panelGrid  columns="2">
-                                    <p:selectOneMenu value=""  id="cicloMenstrual" autoWidth="false" >
+                                    <p:selectOneMenu value="#{antecedentesGinecologiaBean.objAntecedente.cicloMestrual}"  id="cicloMenstrual" autoWidth="false" >
                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true"  />
                                         <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(4)}"/>
                                     </p:selectOneMenu>
-                                    <p:inputText value='' />
+                                    <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioCicloMestrual}"/>
                                 </h:panelGrid>
-                                <p:outputLabel value="FRS:" for="freqRelSexuales"/>
-                                <p:inputText value="" id="freqRelSexuales" size="6" />
-                                <p:outputLabel value="Comp. Sexuales:" for="compSexuales"/>
-                                <p:inputText value="" id="compSexuales" maxlength="2" size="10" class="numeric" onkeyup="validar()" />
+                                <p:outputLabel value="FRS:"/>
+                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.prs}" size="6" />
+                                <p:outputLabel value="Comp. Sexuales:"/>
+                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.companerosSexuales}" maxlength="2" size="10" class="numeric" onkeyup="validar()" />
                                 <p:outputLabel value="Planificación:" for="planificacion"/>
                                 <h:panelGrid columns="2">
-                                    <p:selectOneMenu value=""  id="planificacion" autoWidth="false" >
+                                    <p:selectOneMenu value="#{antecedentesGinecologiaBean.objAntecedente.planificacion}"  id="planificacion" autoWidth="false" >
                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
                                         <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(5)}"/>
                                     </p:selectOneMenu>
-                                    <p:inputText value=""  />
+                                    <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioGPA}"/>
                                 </h:panelGrid>
                             </h:panelGrid>
                             <h:panelGrid columns="2" cellpadding="10">
                                 <h:panelGrid columns="1" cellpadding="5">
                                     <h:panelGrid columns="10" cellpadding="3">
                                         <p:outputLabel value="G" for="G"/>
-                                        <p:inputText value="#{antecedentesGinecologiaBean.nuevoAntecedente.gesta}" maxlength="2" size="2" class="numeric" onkeyup="validar()" id="G"/>
+                                        <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.gesta}" maxlength="2" size="2" class="numeric" onkeyup="validar()" id="G"/>
                                         <p:outputLabel value="P" for="P"/>
-                                        <p:inputText value="#{antecedentesGinecologiaBean.nuevoAntecedente.partos}" maxlength="2" size="2" class="numeric" onkeyup="validar()" id="P"/>
+                                        <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.partos}" maxlength="2" size="2" class="numeric" onkeyup="validar()" id="P"/>
                                         <p:outputLabel value="A" for="A"/>
-                                        <p:inputText value="#{antecedentesGinecologiaBean.nuevoAntecedente.abortos}" maxlength="2" size="2" class="numeric" onkeyup="validar()" id="A"/>
+                                        <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.abortos}" maxlength="2" size="2" class="numeric" onkeyup="validar()" id="A"/>
                                         <p:outputLabel value="EE" for="EE"/>
-                                        <p:inputText value="" maxlength="2" size="2" class="numeric" onkeyup="validar()" id="EE"/>
+                                        <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.ectopico}" maxlength="2" size="2" class="numeric" onkeyup="validar()" id="EE"/>
                                         <p:outputLabel value="FUP:" for="fup"/>
                                         <p:inputText value="" maxlength="10" size="10"  id="fup"/>
                                     </h:panelGrid>
@@ -139,8 +93,8 @@
                                         </h:panelGrid>
                                     </h:panelGrid>
                                     <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="3">
-                                        <p:outputLabel  value="Presenta Sintomas:" />
-                                        <p:selectOneRadio id="sintoma" value=""  layout="grid"  columns="3" >
+                                        <p:outputLabel  value="Periodo Menopausico:" />
+                                        <p:selectOneRadio id="sintoma" layout="grid"  columns="3" value="">
                                             <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(7)}" var="c" itemLabel="#{sintoma}" itemValue="#{sintoma}"/>
                                         </p:selectOneRadio>
                                     </h:panelGrid>
