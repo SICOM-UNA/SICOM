@@ -19,21 +19,27 @@ and open the template in the editor.
         <link type="text/css" rel="stylesheet" href="#{request.contextPath}/css/menu.css"/>
         <script type="text/javascript" src="#{request.contextPath}/js/default.js"></script>
     </h:head>
+    
     <h:body>
+       
          <ui:insert name="header">
-            <h:form>
+             <h:form>
                 <header>
                     <hgroup>
                         <a id="logo" title="SICOM 2016">
                             <img src="#{request.contextPath}/imagenes/logo.png"/>
                         </a>
                         <a id="nombre">
-                            <img src="#{request.contextPath}/imagenes/nombre.png"/>
+                            
+                            <H1 style="font-family:Papyrus,fantasy;color: #3366ff;">
+                                Centro Médico Navas</H1>
                         </a>
                     </hgroup>
                 </header>
             </h:form>
         </ui:insert>
+        
+        
         
         <ui:insert name="menu">
             <h:form id="formMenu">
@@ -68,6 +74,9 @@ and open the template in the editor.
                 </div>
             </h:form>
         </ui:insert>
+       
+            
+            
 
         <ui:insert name="content">
             <div id="content">

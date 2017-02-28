@@ -212,7 +212,7 @@ public class ValorJpaController implements Serializable {
                 listaValores.add("Coito Interrumpido");
                 listaValores.add("DIU");
                 listaValores.add("SPB");
-                listaValores.add("Vacectomia");
+                listaValores.add("Vasectomia");
                 listaValores.add("Otro");
                 
                 break;
@@ -224,13 +224,7 @@ public class ValorJpaController implements Serializable {
                  listaValores.add("5 Secretaria");
              
                  break;
-                 
-             case 7:// epoca menopausica
-                 listaValores.add("Ausente");
-                 listaValores.add("Premenopausia");
-                 listaValores.add("Menopausia");
-                 
-                 break;
+           
         }
 
         return listaValores;
