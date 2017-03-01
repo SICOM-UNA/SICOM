@@ -11,7 +11,59 @@
             <section>
                 <h:form>
                     <p:messages id="msg" for="msg" globalOnly="true" closable="true" />
+                    
+                    <h:panelGrid columns="4" >
+                                <p:outputLabel class="descripcion" value="Nombre:"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.nombre}" maxlength="45" class = "charWithSpaceToUpperCase" onkeyup="validar()"/>
 
+                                <p:outputLabel class="descripcion" for="mask" value="Fecha Nacimiento:" style="padding-left: 50px;"/>
+                                <p:calendar id="mask" value="#{pacienteBean.selectedPaciente.nacimiento}" pattern="dd-MM-yyyy" mask="true" navigator="true"/>
+
+                                <p:outputLabel class="descripcion" value="Primer Apellido:"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.primerApellido}" maxlength="45" class = "charToUpperCase" onkeyup="validar()"/>
+                                
+                                <p:outputLabel class="descripcion" value="Genero:" style="padding-left: 50px;"/>
+                                                <p:selectOneMenu value="#{pacienteBean.selectedPaciente.genero}">
+                                                    <f:selectItem itemLabel="#{pacienteBean.selectedPaciente.genero}" />
+                                                    <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(0)}"/>
+                                                </p:selectOneMenu>
+                                
+                                <p:outputLabel class="descripcion" value="Segundo Apellido:"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.segundoApellido}" maxlength="45" class = "charToUpperCase" onkeyup="validar()"/>
+                                
+                                
+
+                                <p:outputLabel class="infoLabel" value="Identificación:" style="padding-left: 50px;"/>
+                                <p:outputLabel  value="{pacienteBean.selectedPaciente.id}"/>
+
+                                <p:outputLabel class="descripcion" value="Estado Civil:"/>
+                                <p:selectOneMenu value="#{pacienteBean.selectedPaciente.estadoCivil}">
+                                                    <f:selectItem itemLabel="#{pacienteBean.selectedPaciente.estadoCivil}"/>
+                                                    <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(1)}"/>
+                                                </p:selectOneMenu>
+
+                                <p:outputLabel class="infoLabel" value="Teléfono 1:" style="padding-left: 50px;"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.telefono}" class="numeric" onkeyup="validar();"  maxlength="8"/>
+
+                                <p:outputLabel class="infoLabel" value="Correo electrónico:"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.correo}"  class="correo" onkeyup="validar();"  maxlength="45">
+                                                    <f:validateRegex pattern="((([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+))|(^\s*$))"/>
+                                </p:inputText>
+
+                                <p:outputLabel class="infoLabel" value="Teléfono 2:" style="padding-left: 50px;"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.celular}" class="numeric" onkeyup="validar();"  maxlength="8"/>
+
+                                <p:outputLabel class="infoLabel" value = "Ocupación:"/>
+                                <p:inputText value = "#{pacienteBean.selectedPaciente.ocupacion}" maxlength="45"/>
+
+                                <p:outputLabel class="infoLabel" value="Domicilio:" style="padding-left: 50px;"/>
+                                <p:inputTextarea value="#{pacienteBean.selectedPaciente.domicilio}" maxlength="150" rows="4" cols = "28" autoResize="true"/>
+
+                                
+                            </h:panelGrid>
+                    <p:outputLabel/>
+                                <p:commandButton value="Guardar Paciente" title="Click para guardar los datos." style="margin-left:55%; margin-top: 50px;"  action="#{pacienteBean.modificar()}"/>
+                    
                 </h:form>
             </section>
         </div>
