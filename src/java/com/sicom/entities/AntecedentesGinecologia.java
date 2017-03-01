@@ -5,6 +5,7 @@
  */
 package com.sicom.entities;
 
+
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -23,7 +24,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-
 /**
  *
  * @author Pablo
@@ -40,28 +40,25 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "AntecedentesGinecologia.findByNoPatologicos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.noPatologicos = :noPatologicos")
     , @NamedQuery(name = "AntecedentesGinecologia.findByQuirurgicos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.quirurgicos = :quirurgicos")
     , @NamedQuery(name = "AntecedentesGinecologia.findByMenarca", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.menarca = :menarca")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByFur", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.fur = :fur")
     , @NamedQuery(name = "AntecedentesGinecologia.findByCicloMestrual", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.cicloMestrual = :cicloMestrual")
     , @NamedQuery(name = "AntecedentesGinecologia.findByComentarioCicloMestrual", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioCicloMestrual = :comentarioCicloMestrual")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByUltimoPeriodo", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.ultimoPeriodo = :ultimoPeriodo")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByMenopausia", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.menopausia = :menopausia")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByPremenopausia", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.premenopausia = :premenopausia")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByPrs", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.prs = :prs")
     , @NamedQuery(name = "AntecedentesGinecologia.findByCompanerosSexuales", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.companerosSexuales = :companerosSexuales")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByPlanificacion", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.planificacion = :planificacion")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByComentarioPlanificacion", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioPlanificacion = :comentarioPlanificacion")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByActividadSexual", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.actividadSexual = :actividadSexual")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByUltimoParto", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.ultimoParto = :ultimoParto")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByUltimoPap", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.ultimoPap = :ultimoPap")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByLactanciaMaterna", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.lactanciaMaterna = :lactanciaMaterna")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByComentarioLactancia", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioLactancia = :comentarioLactancia")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByTipoParto", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.tipoParto = :tipoParto")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByMenopausia", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.menopausia = :menopausia")
     , @NamedQuery(name = "AntecedentesGinecologia.findByGesta", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.gesta = :gesta")
     , @NamedQuery(name = "AntecedentesGinecologia.findByPartos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.partos = :partos")
     , @NamedQuery(name = "AntecedentesGinecologia.findByAbortos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.abortos = :abortos")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByComentarioGPA", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioGPA = :comentarioGPA")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByActividadSexual", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.actividadSexual = :actividadSexual")
     , @NamedQuery(name = "AntecedentesGinecologia.findByEctopico", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.ectopico = :ectopico")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByUltimoParto", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.ultimoParto = :ultimoParto")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByTipoParto", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.tipoParto = :tipoParto")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByLactanciaMaterna", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.lactanciaMaterna = :lactanciaMaterna")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByComentarioLactancia", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioLactancia = :comentarioLactancia")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByUltimoPap", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.ultimoPap = :ultimoPap")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByPlanificacion", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.planificacion = :planificacion")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByComentarioPlanificacion", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioPlanificacion = :comentarioPlanificacion")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByFur", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.fur = :fur")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByPrs", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.prs = :prs")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByPadecimientoActual", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.padecimientoActual = :padecimientoActual")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByComentarioGPA", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioGPA = :comentarioGPA")
     , @NamedQuery(name = "AntecedentesGinecologia.findByInformacionAdicional", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.informacionAdicional = :informacionAdicional")})
 public class AntecedentesGinecologia implements Serializable {
 
@@ -85,54 +82,46 @@ public class AntecedentesGinecologia implements Serializable {
     private String quirurgicos;
     @Column(name = "menarca")
     private Integer menarca;
+    @Column(name = "FUR")
+    @Temporal(TemporalType.DATE)
+    private Date fur;
     @Column(name = "cicloMestrual")
     private String cicloMestrual;
     @Column(name = "comentarioCicloMestrual")
     private String comentarioCicloMestrual;
-    @Column(name = "ultimoPeriodo")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date ultimoPeriodo;
-    @Column(name = "menopausia")
-    private Boolean menopausia;
-    @Column(name = "premenopausia")
-    private Boolean premenopausia;
+    @Column(name = "PRS")
+    private Integer prs;
     @Column(name = "companerosSexuales")
     private Integer companerosSexuales;
+    @Column(name = "planificacion")
+    private String planificacion;
+    @Column(name = "comentarioPlanificacion")
+    private String comentarioPlanificacion;
+    @Column(name = "actividadSexual")
+    private String actividadSexual;
+    @Column(name = "ultimoParto")
+    @Temporal(TemporalType.DATE)
+    private Date ultimoParto;
+    @Column(name = "ultimoPap")
+    private String ultimoPap;
+    @Column(name = "lactanciaMaterna")
+    private Boolean lactanciaMaterna;
+    @Column(name = "comentarioLactancia")
+    private String comentarioLactancia;
+    @Column(name = "tipoParto")
+    private String tipoParto;
+    @Column(name = "menopausia")
+    private Integer menopausia;
     @Column(name = "gesta")
     private Integer gesta;
     @Column(name = "partos")
     private Integer partos;
     @Column(name = "abortos")
     private Integer abortos;
-    @Column(name = "comentarioGPA")
-    private String comentarioGPA;
-    @Column(name = "actividadSexual")
-    private String actividadSexual;
     @Column(name = "ectopico")
     private Integer ectopico;
-    @Column(name = "ultimoParto")
-    @Temporal(TemporalType.DATE)
-    private Date ultimoParto;
-    @Column(name = "tipoParto")
-    private String tipoParto;
-    @Column(name = "lactanciaMaterna")
-    private Boolean lactanciaMaterna;
-    @Column(name = "comentarioLactancia")
-    private String comentarioLactancia;
-    @Column(name = "ultimoPap")
-    @Temporal(TemporalType.DATE)
-    private Date ultimoPap;
-    @Column(name = "planificacion")
-    private String planificacion;
-    @Column(name = "comentarioPlanificacion")
-    private String comentarioPlanificacion;
-    @Column(name = "FUR")
-    @Temporal(TemporalType.DATE)
-    private Date fur;
-    @Column(name = "PRS")
-    private Integer prs;
-    @Column(name = "padecimientoActual")
-    private String padecimientoActual;
+    @Column(name = "comentarioGPA")
+    private String comentarioGPA;
     @Column(name = "informacionAdicional")
     private String informacionAdicional;
     @JoinColumn(name = "Paciente_id", referencedColumnName = "id")
@@ -140,7 +129,6 @@ public class AntecedentesGinecologia implements Serializable {
     private Paciente pacienteid;
 
     public AntecedentesGinecologia() {
-        
     }
 
     public AntecedentesGinecologia(Integer id) {
@@ -208,6 +196,14 @@ public class AntecedentesGinecologia implements Serializable {
         this.menarca = menarca;
     }
 
+    public Date getFur() {
+        return fur;
+    }
+
+    public void setFur(Date fur) {
+        this.fur = fur;
+    }
+
     public String getCicloMestrual() {
         return cicloMestrual;
     }
@@ -224,28 +220,12 @@ public class AntecedentesGinecologia implements Serializable {
         this.comentarioCicloMestrual = comentarioCicloMestrual;
     }
 
-    public Date getUltimoPeriodo() {
-        return ultimoPeriodo;
+    public Integer getPrs() {
+        return prs;
     }
 
-    public void setUltimoPeriodo(Date ultimoPeriodo) {
-        this.ultimoPeriodo = ultimoPeriodo;
-    }
-
-    public Boolean getMenopausia() {
-        return menopausia;
-    }
-
-    public void setMenopausia(Boolean menopausia) {
-        this.menopausia = menopausia;
-    }
-
-    public Boolean getPremenopausia() {
-        return premenopausia;
-    }
-
-    public void setPremenopausia(Boolean premenopausia) {
-        this.premenopausia = premenopausia;
+    public void setPrs(Integer prs) {
+        this.prs = prs;
     }
 
     public Integer getCompanerosSexuales() {
@@ -254,6 +234,78 @@ public class AntecedentesGinecologia implements Serializable {
 
     public void setCompanerosSexuales(Integer companerosSexuales) {
         this.companerosSexuales = companerosSexuales;
+    }
+
+    public String getPlanificacion() {
+        return planificacion;
+    }
+
+    public void setPlanificacion(String planificacion) {
+        this.planificacion = planificacion;
+    }
+
+    public String getComentarioPlanificacion() {
+        return comentarioPlanificacion;
+    }
+
+    public void setComentarioPlanificacion(String comentarioPlanificacion) {
+        this.comentarioPlanificacion = comentarioPlanificacion;
+    }
+
+    public String getActividadSexual() {
+        return actividadSexual;
+    }
+
+    public void setActividadSexual(String actividadSexual) {
+        this.actividadSexual = actividadSexual;
+    }
+
+    public Date getUltimoParto() {
+        return ultimoParto;
+    }
+
+    public void setUltimoParto(Date ultimoParto) {
+        this.ultimoParto = ultimoParto;
+    }
+
+    public String getUltimoPap() {
+        return ultimoPap;
+    }
+
+    public void setUltimoPap(String ultimoPap) {
+        this.ultimoPap = ultimoPap;
+    }
+
+    public Boolean getLactanciaMaterna() {
+        return lactanciaMaterna;
+    }
+
+    public void setLactanciaMaterna(Boolean lactanciaMaterna) {
+        this.lactanciaMaterna = lactanciaMaterna;
+    }
+
+    public String getComentarioLactancia() {
+        return comentarioLactancia;
+    }
+
+    public void setComentarioLactancia(String comentarioLactancia) {
+        this.comentarioLactancia = comentarioLactancia;
+    }
+
+    public String getTipoParto() {
+        return tipoParto;
+    }
+
+    public void setTipoParto(String tipoParto) {
+        this.tipoParto = tipoParto;
+    }
+
+    public Integer getMenopausia() {
+        return menopausia;
+    }
+
+    public void setMenopausia(Integer menopausia) {
+        this.menopausia = menopausia;
     }
 
     public Integer getGesta() {
@@ -280,22 +332,6 @@ public class AntecedentesGinecologia implements Serializable {
         this.abortos = abortos;
     }
 
-    public String getComentarioGPA() {
-        return comentarioGPA;
-    }
-
-    public void setComentarioGPA(String comentarioGPA) {
-        this.comentarioGPA = comentarioGPA;
-    }
-
-    public String getActividadSexual() {
-        return actividadSexual;
-    }
-
-    public void setActividadSexual(String actividadSexual) {
-        this.actividadSexual = actividadSexual;
-    }
-
     public Integer getEctopico() {
         return ectopico;
     }
@@ -304,84 +340,12 @@ public class AntecedentesGinecologia implements Serializable {
         this.ectopico = ectopico;
     }
 
-    public Date getUltimoParto() {
-        return ultimoParto;
+    public String getComentarioGPA() {
+        return comentarioGPA;
     }
 
-    public void setUltimoParto(Date ultimoParto) {
-        this.ultimoParto = ultimoParto;
-    }
-
-    public String getTipoParto() {
-        return tipoParto;
-    }
-
-    public void setTipoParto(String tipoParto) {
-        this.tipoParto = tipoParto;
-    }
-
-    public Boolean getLactanciaMaterna() {
-        return lactanciaMaterna;
-    }
-
-    public void setLactanciaMaterna(Boolean lactanciaMaterna) {
-        this.lactanciaMaterna = lactanciaMaterna;
-    }
-
-    public String getComentarioLactancia() {
-        return comentarioLactancia;
-    }
-
-    public void setComentarioLactancia(String comentarioLactancia) {
-        this.comentarioLactancia = comentarioLactancia;
-    }
-
-    public Date getUltimoPap() {
-        return ultimoPap;
-    }
-
-    public void setUltimoPap(Date ultimoPap) {
-        this.ultimoPap = ultimoPap;
-    }
-
-    public String getPlanificacion() {
-        return planificacion;
-    }
-
-    public void setPlanificacion(String planificacion) {
-        this.planificacion = planificacion;
-    }
-
-    public String getComentarioPlanificacion() {
-        return comentarioPlanificacion;
-    }
-
-    public void setComentarioPlanificacion(String comentarioPlanificacion) {
-        this.comentarioPlanificacion = comentarioPlanificacion;
-    }
-
-    public Date getFur() {
-        return fur;
-    }
-
-    public void setFur(Date fur) {
-        this.fur = fur;
-    }
-
-    public Integer getPrs() {
-        return prs;
-    }
-
-    public void setPrs(Integer prs) {
-        this.prs = prs;
-    }
-
-    public String getPadecimientoActual() {
-        return padecimientoActual;
-    }
-
-    public void setPadecimientoActual(String padecimientoActual) {
-        this.padecimientoActual = padecimientoActual;
+    public void setComentarioGPA(String comentarioGPA) {
+        this.comentarioGPA = comentarioGPA;
     }
 
     public String getInformacionAdicional() {
