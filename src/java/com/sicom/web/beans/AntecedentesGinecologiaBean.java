@@ -3,10 +3,13 @@ package com.sicom.web.beans;
 import com.sicom.controller.AntecedentesGinecologiaJpaController;
 import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.AntecedentesGinecologia;
+import com.sicom.entities.Paciente;
+import java.io.IOException;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -20,16 +23,37 @@ public class AntecedentesGinecologiaBean {
     private final AntecedentesGinecologiaJpaController agjc;
     private final ValorJpaController vjc;
 
+    private String ClientName, ClientID;
+
     public AntecedentesGinecologiaBean() {
+
+        Paciente p = PacienteBean.getSavedPaciente();
+
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
-        obj = new AntecedentesGinecologia();
         agjc = new AntecedentesGinecologiaJpaController(emf);
         vjc = new ValorJpaController(emf);
-        
-        obj.setGesta(0);
-        obj.setPartos(0);
-        obj.setAbortos(0);
-        obj.setEctopico(0);
+
+        if (p != null) {
+
+            obj = new AntecedentesGinecologia();
+
+            obj.setGesta(0);
+            obj.setPartos(0);
+            obj.setAbortos(0);
+            obj.setEctopico(0);
+
+            ClientName = p.getNombre() + " " + p.getPrimerApellido() + " " + p.getSegundoApellido();
+            ClientID = p.getId();
+
+        } else {
+            FacesContext fc = FacesContext.getCurrentInstance();
+            ExternalContext ec = fc.getExternalContext();
+            String URL = ec.getRequestContextPath() + "/app/paciente/consultar";
+            try {
+                ec.redirect(URL);
+            } catch (IOException ex) {
+            }
+        }
     }
 
     public void init() {
@@ -83,4 +107,21 @@ public class AntecedentesGinecologiaBean {
     public void setObjAntecedente(AntecedentesGinecologia nuevoAntecedente) {
         this.obj = nuevoAntecedente;
     }
+
+    public String getClientName() {
+        return ClientName;
+    }
+
+    public void setClientName(String ClientName) {
+        this.ClientName = ClientName;
+    }
+
+    public String getClientID() {
+        return ClientID;
+    }
+
+    public void setClientID(String ClientID) {
+        this.ClientID = ClientID;
+    }
+
 }

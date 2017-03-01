@@ -15,46 +15,46 @@
 
                     <p:messages id="msg" autoUpdate="true" closable="true" />
 
-                    <p:tabView orientation="left">
+                    <p:tabView orientation="top">
                         <p:tab title="Información Personal">
-                            <h:panelGrid columns="4" >
+                            <h:panelGrid columns="4" cellpadding="5" >
                                 <p:outputLabel class="infoLabel" value="Nombre:"/>
-                                <p:inputText value="{pacienteBean.selectedPaciente.nombre}" readonly="true"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.nombre}" readonly="true"/>
 
                                 <p:outputLabel class="infoLabel" value="Fecha Nacimiento:"/>
-                                <h:outputText value="">
-                                <f:convertDateTime pattern="MM/dd/yyyy" />
-                                </h:outputText>
+                                <h:inputText value="#{pacienteBean.selectedPaciente.nacimiento}" readonly="true">   
+                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                </h:inputText>
 
                                 <p:outputLabel class="infoLabel" value="Apellidos:"/>
-                                <p:inputText value="{pacienteBean.selectedPaciente.primerApellido} {pacienteBean.selectedPaciente.segundoApellido}" readonly="true"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.primerApellido} #{pacienteBean.selectedPaciente.segundoApellido}" readonly="true"/>
 
                                 <p:outputLabel class="infoLabel" value="Género:"/>
-                                <p:inputText value="{pacienteBean.selectedPaciente.genero}" readonly="true"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.genero}" readonly="true"/>
 
                                 <p:outputLabel class="infoLabel" value="Identificación:"/>
-                                <p:inputText  value="{pacienteBean.selectedPaciente.id}" readonly="true"/>
+                                <p:inputText  value="#{pacienteBean.selectedPaciente.id}" readonly="true"/>
 
                                 <p:outputLabel class="infoLabel" value="Estado Civil:"/>
-                                <p:inputText value="{pacienteBean.selectedPaciente.estadoCivil}" readonly="true"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.estadoCivil}" readonly="true"/>
 
                                 <p:outputLabel class="infoLabel" value="Teléfono 1:"/>
-                                <p:inputText value="{pacienteBean.selectedPaciente.telefono}" readonly="true"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.telefono}" readonly="true"/>
 
                                 <p:outputLabel class="infoLabel" value="Correo electrónico:"/>
-                                <p:inputText value="{pacienteBean.selectedPaciente.correo}" readonly="true" />
+                                <p:inputText value="#{pacienteBean.selectedPaciente.correo}" readonly="true" />
 
                                 <p:outputLabel class="infoLabel" value="Teléfono 2:"/>
-                                <p:inputText value="{pacienteBean.selectedPaciente.celular}" readonly="true"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.celular}" readonly="true"/>
 
                                 <p:outputLabel class="infoLabel" value = "Ocupación:"/>
-                                <p:inputText value = "{pacienteBean.selectedPaciente.ocupacion}" readonly="true"/>
+                                <p:inputText value = "#{pacienteBean.selectedPaciente.ocupacion}" readonly="true"/>
 
                                 <p:outputLabel class="infoLabel" value="Domicilio:"/>
-                                <p:inputTextarea value="{pacienteBean.selectedPaciente.domicilio}" readonly="true"/>
+                                <p:inputTextarea value="#{pacienteBean.selectedPaciente.domicilio}" readonly="true"/>
 
                                 <p:outputLabel/>
-                                <p:commandButton value="Modificar Información" title="Click para modificar información del paciente." update="formInformacion"/>
+                                <p:commandButton value="Modificar Información" title="Click para modificar información del paciente." update="formInformacion" action="#{pacienteBean.modificarAction()}"/>
                             </h:panelGrid>
                         </p:tab>
 
@@ -63,37 +63,37 @@
                                 <p:panel header="Responsable 1">
                                     <h:panelGrid columns="2">
                                         <p:outputLabel class="infoLabel" value="Nombre:"/>
-                                        <p:inputText value="{pacienteBean.selectedPaciente.responsableId.nombre}" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.selectedPaciente.getResponsable(0).nombre}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value="Identificación:"/>
-                                        <p:inputText value="{pacienteBean.selectedPaciente.responsableId.id}" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.selectedPaciente.getResponsable(0).id}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value = "Ocupación:"/>
-                                        <p:inputText value = "{pacienteBean.selectedPaciente.ocupacion}" readonly="true"/>
+                                        <p:inputText value = "#{pacienteBean.selectedPaciente.getResponsable(0).ocupacion}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value="Telefono:"/>
-                                        <p:inputText value="{pacienteBean.selectedPaciente.responsableId.telefono}" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.selectedPaciente.getResponsable(0).telefono}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value="Tipo de Relacion:"/>
-                                        <p:inputText value="tipo de relacion" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.selectedPaciente.getResponsable(0).vinculo}" readonly="true"/>
                                     </h:panelGrid>
                                 </p:panel>
                                 <p:panel header="Responsable 2">
                                     <h:panelGrid columns="2">
                                         <p:outputLabel class="infoLabel" value="Nombre:"/>
-                                        <p:inputText value="{pacienteBean.selectedPaciente.responsableId.nombre}" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.selectedPaciente.getResponsable(1).nombre}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value="Identificación:"/>
-                                        <p:inputText value="{pacienteBean.selectedPaciente.responsableId.id}" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.selectedPaciente.getResponsable(1).id}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value = "Ocupación:"/>
-                                        <p:inputText value = "{pacienteBean.selectedPaciente.ocupacion}" readonly="true"/>
+                                        <p:inputText value = "#{pacienteBean.selectedPaciente.getResponsable(1).ocupacion}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value="Telefono:"/>
-                                        <p:inputText value="{pacienteBean.selectedPaciente.responsableId.telefono}" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.selectedPaciente.getResponsable(1).telefono}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value="Tipo de Relacion:"/>
-                                        <p:inputText value="tipo de relacion" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.selectedPaciente.getResponsable(1).vinculo}" readonly="true"/>
                                     </h:panelGrid>
                                 </p:panel>
                             </h:panelGrid>
@@ -103,21 +103,25 @@
                             <div class="ui-grid ui-grid-responsive">
                                 <div class="ui-grid-row">
                                     <div class="ui-grid-col-12">
-                                        <p:panel header="Histroria Cl&iacute;nica">
-                                            <h:panelGrid columns="2" cellspacing="10">
-                                                <p:commandButton value="Agregar Nueva Versi&oacute;n" icon="ui-icon-plus"/>
-                                                <p:commandButton value="Buscar Histria Cl&iacute;nica" icon="ui-icon-search"/>
+                                        <p:panel header="Histroria Clínica">
+                                            <h:panelGrid columns="4" cellspacing="10">
+                                                <p:commandButton value="Editar Ginecologia" icon="ui-icon-pencil" action="#{pacienteBean.HistoriaClinica(true,0)}"/>
+                                                <p:commandButton value="Observar Ginecologia" icon="ui-icon-search" action="#{pacienteBean.HistoriaClinica(false,0)}"/>
+                                                <p:commandButton value="Editar Odontologia" icon="ui-icon-pencil" action="#{pacienteBean.HistoriaClinica(true,1)}"/>
+                                                <p:commandButton value="Observar Odontologia" icon="ui-icon-search" action="#{pacienteBean.HistoriaClinica(false,1)}"/>
                                             </h:panelGrid>
                                         </p:panel>
                                     </div>
                                 </div>
                                 <div class="ui-grid-row">
                                     <div class="ui-grid-col-12">
-                                        <p:panel header="Diagn&oacute;sticos Cl&iacute;nicos" >
-                                            <h:panelGrid columns="3" cellspacing="10">
-                                                <p:commandButton value="Agregar Nuevo Diagn&oacute;stico" icon="ui-icon-plus"/>
-                                                <p:commandButton value="Buscar Diagn&oacute;sticos" icon="ui-icon-search"/>
-                                                <p:commandButton value="Importar" icon="ui-icon-circle-arrow-n"/>
+                                        <p:panel header="Exámenes" >
+                                            <h:panelGrid columns="5" cellspacing="10">
+                                                <p:commandButton value="Exámen Físico" icon="ui-icon-plus"/>
+                                                <p:commandButton value="Monitoreo Fetal" icon="ui-icon-plus"/>
+                                                <p:commandButton value="Colposcopia" icon="ui-icon-plus"/>
+                                                <p:commandButton value="Buscar Exámenes" icon="ui-icon-search"/>
+                                                <p:commandButton value="Importar " icon="ui-icon-circle-arrow-n"/>
                                             </h:panelGrid>
                                         </p:panel>
                                     </div>

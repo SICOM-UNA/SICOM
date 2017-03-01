@@ -37,5 +37,10 @@ Valores Por Código (int)
     - Vacectomia
     - Otro
 
-6: Tipo de Parto
+6: Tipo de Autorizacion
+
+7: Tipo de Sintomas Menopausia
+    - No Presenta
+    - Premenopausia
+    - Menopausia
                 

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/templates/default.xhtml" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                id="formExamenFisico" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:o="http://omnifaces.org/ui">
+
+    <ui:define name="content">
+        <div id="wrapper">
+            <section>
+                <h:form id="formExamenFisico">
+                    <p:panel header="Consulta">
+                        <h:panelGrid columns="2" cellpadding="20">
+                            <h:panelGroup>
+                                <p:outputLabel for="fecha" value="Fecha Actual:" class="descripcion" />
+                                <p:calendar id="fecha" value="#{examenFisicoGinecBean.hoy}" showOn="button" navigator="true"/>
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:outputLabel for="motivo" value="Motivo de Consulta:" class="descripcion" />
+                                <p:inputTextarea id="motivo" value="" maxlength="118" rows="5" cols = "70" autoResize="false"/> 
+                            </h:panelGroup>    
+                        </h:panelGrid>
+                    </p:panel>
+                    <p:panel header="Exámen Físico">
+                        <div class="ui-grid ui-grid-responsive">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:panel>
+                                        <h:panelGrid columns="1">
+                                            <h:panelGrid columns="3">
+                                                <h:panelGrid columns="3" cellspacing="3">
+                                                    <p:outputLabel for="talla" value="Talla:"/>
+                                                    <p:inputText id="talla" value="" maxlength="4" size="5" class="numeric" onkeyup="validar()"/>
+                                                    <p:outputLabel value="cm"/>
+                                                </h:panelGrid>
+                                                <p:spacer width="30" />
+                                                <h:panelGrid columns="3" cellspacing="3">
+                                                    <p:outputLabel for="peso" value="Peso:"/>
+                                                    <p:inputText id="peso" value="" maxlength="4" size="5" class="numeric" onkeyup="validar()"/>
+                                                    <p:outputLabel value="kg"/>
+                                                </h:panelGrid>
+                                            </h:panelGrid>
+                                            <h:panelGrid columns="3" cellpadding="3">
+                                                <p:outputLabel for="cardio" value="Cardiopulmunar:"/>
+                                                <p:selectOneMenu id="cardio" value="" autoWidth="false" >
+                                                    <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
+                                                    <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(8)}"/>
+                                                </p:selectOneMenu>
+                                                <p:inputText value="" size="12"/>
+                                            </h:panelGrid>
+                                            <h:panelGrid columns="1">
+                                                <p:outputLabel for="mamas" value="Mamas:"/>
+                                                <p:inputTextarea id="mamas" value="" maxlength="100" rows="3" cols = "46" autoResize="false"/>
+                                                <p:outputLabel for="abdomen" value="Abdomen:"/>
+                                                <p:inputTextarea id="abdomen" value="" maxlength="100" rows="3" cols = "46" autoResize="false"/> 
+                                            </h:panelGrid>
+                                        </h:panelGrid>
+                                    </p:panel>
+                                </div>
+                                <div class="ui-grid-col-12">
+                                    <p:panel header="Imágen">
+
+                                    </p:panel>
+                                </div>
+                            </div>
+                        </div>
+                    </p:panel>
+                    <p:panel header="Exámen Ginecológico">
+                        <div class="ui-grid ui-grid-responsive">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
+                                    <p:panel>
+                                        <h:panelGrid columns="2" cellpadding="3">
+                                            <p:outputLabel for="vulva" value="Vulva:"/>     
+                                            <p:inputText id="vulva" value="" maxlength="25"/>
+                                            <p:outputLabel for="bus" value="Bus:"/>
+                                            <p:selectOneRadio id="bus" layout="grid"  columns="2" value="">
+                                                <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(9)}"/>
+                                            </p:selectOneRadio>
+                                            <p:outputLabel for="vagina" value="Vagina:"/>
+                                            <p:inputText id="vagina" value="" maxlength="25"/>
+                                            <p:outputLabel for="cuello" value="Cuello:"/>
+                                            <p:inputText id="cuello" value="" maxlength="25"/>
+                                            <p:outputLabel for="utero" value="Útero:"/>
+                                            <p:inputText id="utero" value="" maxlength="25"/>
+                                            <p:outputLabel for="anexos" value="Anexos:"/>
+                                            <p:inputText id="anexos" value="" maxlength="25"/>
+                                        </h:panelGrid>
+                                        <h:panelGrid columns="1">
+                                            <p:outputLabel for="otros" value="Otros:"/>     
+                                            <p:inputTextarea id="otros" value="" maxlength="100" rows="3" cols = "46" autoResize="false"/> 
+                                        </h:panelGrid>
+                                </p:panel>
+                            </div>
+                            <div class="ui-grid-col-12">
+                                <p:panel header="Imágen">
+
+                                </p:panel>
+                            </div>
+                        </div>
+                    </div>
+                </p:panel>
+            </h:form>
+        </section>
+    </div>
+</ui:define>
+</ui:composition>

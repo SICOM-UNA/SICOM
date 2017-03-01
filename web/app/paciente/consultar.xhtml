@@ -12,51 +12,22 @@
         <div id="wrapper">
             <section>
                 <h:form id="formBuscarPaciente">
-                    
+
                     <p:messages id="msg" autoUpdate="true" closable="true" />
-                    
+
                     <div class="ui-grid ui-grid-responsive">
                         <div class="ui-grid-row">
-                            
                             <div class="ui-grid-col-9">
                                 <p:panel header="Informacion del Paciente" id="INFO">
-                                    <o:validateOneOrMore message="Debe incluir al menos un criterio de búsqueda" id="oneOrMore" components="id pa t ce" />
+                                    <o:validateOneOrMore message="Debe digitar la cédula" id="oneOrMore" components="id" />
 
                                     <h:panelGrid columns="2">
                                         <h:panelGroup>
-                                            <p:outputLabel class="descripcion" value="Digite Identificación:" for="identificacion"/>
-                                            <p:inputText  value="#{pacienteBean.selectedPaciente.id}" id="identificacion"  maxlength="45" class = "alphanumericToUpperCase" onkeyup="validar()"/>
+                                            <p:outputLabel class="descripcion" value="Digite Identificación:" for="id"/>
+                                            <p:inputText  value="#{pacienteBean.selectedPaciente.id}" id="id"  maxlength="45" class = "alphanumericToUpperCase" onkeyup="validar()"/>
                                         </h:panelGroup>
-
-                                        <h:panelGroup>
-                                            <p:outputLabel class="descripcion" value="Digite el Primer Apellido:" for="primerApellido"/>
-                                            <p:inputText  value="#{pacienteBean.selectedPaciente.primerApellido}" id="primerApellido" maxlength="45" class = "charToUpperCase" onkeyup="validar()"/>
-                                        </h:panelGroup>
-
-                                        <h:panelGroup>
-                                            <p:outputLabel class="descripcion" value="Digite el Teléfono:" for="telefono"/>
-                                            <p:inputText  value="#{pacienteBean.selectedPaciente.telefono}" id="telefono"  maxlength="8" class = "alphanumericToUpperCase" onkeyup="validar()"/>
-                                       </h:panelGroup>
-                                        
-                                        <h:panelGroup>
-                                            <p:outputLabel class="descripcion" value="Correo electrónico:" for="correo"/>
-                                            <p:inputText value="#{pacienteBean.selectedPaciente.correo}" class="correo" onkeyup="validar();"  maxlength="45" id="correo">
-                                                <f:validateRegex pattern="((([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+))|(^\s*$))"/>
-                                            </p:inputText>
-                                       </h:panelGroup>
-                                        <p:commandButton value="Mostrar Resultados" action="#{pacienteBean.buscaIdBase()}" update="INFO msg"/>
+                                        <p:commandButton value="Mostrar Resultados" action="#{pacienteBean.buscaIdBase()}" update="formBuscarPaciente"/>
                                     </h:panelGrid>
-                                </p:panel>
-                            </div>
-                            
-                            <div class="ui-grid-col-5">
-                                <p:panel header="Buscar Por Responsable" id="buscarResponsable">
-                                    <h:panelGroup>
-                                        <p:outputLabel class="descripcion" value="Digite Identificación:" for="identificacionResponsable"/>
-                                        <p:inputText  value="#{pacienteBean}" id="identificacionResponsable" required="true" maxlength="45" class = "alphanumericToUpperCase" onkeyup="validar()"/>
-                                        <p:spacer height="2em"/>
-                                        <p:commandButton value="Buscar" action="#{pacienteBean}" update="msg"/>
-                                    </h:panelGroup>
                                 </p:panel>
                             </div>
                         </div>

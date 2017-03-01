@@ -1,104 +1,109 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/templates/default.xhtml" 
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                xmlns:o="http://omnifaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+                id="consultarAntecedentesGinecologia" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:o="http://omnifaces.org/ui">
 
     <ui:define name="content">
         <div id="wrapper">
-            
             <section>
                 <h:form id="consultarHistorialGinecologia">
-
                     <p:messages id="msg" autoUpdate="true" closable="true" />
 
-                    <div class="ui-grid ui-grid-responsive">
-                        <div class="ui-grid-row">
-                            <div class="ui-grid-col-9">
-                                <a id="anchorSecondPanel"></a>
-                                <p:panel header="Historia Clinica" id="INFO">
+                    <!-- Antecedentes Ginécologos -->
+                    <p:panel header="Historia Clínica" >
+                        <h:panelGrid columns="1">
+                            <h:panelGroup>
+                                <p:outputLabel class="descripcion" value="Antecedentes Hereditarios:"/>
+                                <p:inputTextarea value="#{antecedentesGinecologiaBean.objAntecedente.herediatarios}" rows="5" cols = "118" autoResize="false" readonly="true"/> 
+                            </h:panelGroup>
 
-                                    <p:tabView orientation="left">
-                                        <p:tab title="Antecedentes">
-                                            <h:panelGrid columns="2" cellpadding="10">
-                                                <h:panelGroup>
-                                                    <h3>Antecedentes Hereditarios:</h3>
-                                                    <p:scrollPanel mode="native" style="max-width:100%;max-height: 100px"> 
-                                                        <p>#{antecedentesGinecologiaBean.selectedAntecedente.herediatarios}</p>
-                                                        <p>ndit maso  semper scelerisque. Maecenas eleifequis pulvinar consequat, urna risus mollis dolor, consequat dignissim eros turpis eu felis.</p>
-                                                    </p:scrollPanel>
-                                                </h:panelGroup>      
+                            <h:panelGroup>
+                                <p:outputLabel class="descripcion" value="Antecedentes No Patológicos"/>
+                                <p:inputTextarea value="#{antecedentesGinecologiaBean.objAntecedente.noPatologicos}" rows="5" cols = "118" autoResize="false" readonly="true"/> 
+                            </h:panelGroup>
 
-                                                <br></br>
-                                                <h:panelGroup>
-                                                    <h3>Antecedentes no patológicos:</h3>
-                                                    <p:scrollPanel mode="native" style="max-width:100%;max-height: 100px"> 
-                                                        <p>#{antecedentesGinecologiaBean.selectedAntecedente.noPatologicos}</p>
-                                                    </p:scrollPanel>
-                                                </h:panelGroup>
+                            <h:panelGroup>
+                                <p:outputLabel class="descripcion" value="Antecedentes Patológicos: "/>
+                                <p:inputTextarea value="#{antecedentesGinecologiaBean.objAntecedente.patologicos}" rows="5" cols = "118" autoResize="false" readonly="true"/> 
+                            </h:panelGroup>
 
-                                                <br></br>
-                                                <h:panelGroup>
-                                                    <h3>Antecedentes patológicos</h3>
-                                                    <p:scrollPanel mode="native" style="max-width:100%;max-height: 100px"> 
-                                                        <p>#{antecedentesGinecologiaBean.selectedAntecedente.patologicos}</p>
-                                                        <p>Ut feugiat scelerisque nibh eget porta. Sed at purus vestibulum ipsum viverra volutpat. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Phasellus at posuere lectus. Sed eleifend eros nisl, id tempus nisl condimentum a. Curabitur a suscipit augue. Praesent finibus, sem ac ultrices pulvinar, augue urna eleifend lectus, quis vestibulum risus nisi id risus. Sed malesuada nulla id ante congue ultricies. Cras vel enim et quam egestas ullamcorper. Nunc sed diam ut felis dapibus laoreet maximus nec nisi. Morbi pellentesque, urna a sodales pellentesque, ipsum est faucibus lorem, id bibendum libero ipsum eget leo. Nullam ullamcorper iaculis justo, sed pellentesque augue blandit id. Nulla ut pellentesque felis. Quisque dignissim urna augue, vel congue est elementum nec. Praesent condimentum nec nisl ut porta. Duis consectetur varius turpis, a semper risus consectetur id. 
-                                                            In libero leo, consequat et dictum et, tempor at lectus. Phasellus ut facilisis velit, volutpat ullamcorper urna. Etiam non augue molestie, lobortis est et, rutrum libero. Pellentesque ultricies nibh nec nisi viverra, quis molestie ex pulvinar. Nunc ac ante ac lorem volutpat accumsan quis non ligula. Donec urna risus, tristique et orci sed, iaculis commodo sem. Integer consequat vehicula orci vel tempus. Suspendisse eu tincidunt enim. Aenean eu risus eget dui rhoncus euismod sit amet eget nibh. Fusce a erat nisi. Integer ornare blandit odio, et dignissim lorem. Donec interdum ornare lectus, ac mollis quam fringilla dignissim. Nam orci ligula, malesuada non nunc sit amet, consectetur imperdiet turpis. Suspendisse potenti. Aliquam magna eros, molestie eget euismod nec, semper ut turpis.</p>
-                                                    </p:scrollPanel>
-                                                </h:panelGroup> 
+                            <h:panelGroup>
+                                <p:outputLabel class="descripcion" value="Antecedentes Quirúrgicos:"/>
+                                <p:inputTextarea value="#{antecedentesGinecologiaBean.objAntecedente.quirurgicos}" rows="5" cols = "118" autoResize="false" readonly="true"/>
+                            </h:panelGroup>
 
-                                                <br></br>
-                                                <h:panelGroup>
-                                                    <h3>Antecedentes quirurgicos:</h3>
-                                                    <p:scrollPanel mode="native" style="max-width:100%;max-height: 100px"> 
-                                                        <p>#{antecedentesGinecologiaBean.selectedAntecedente.quirurgicos}</p>
-                                                        <p>Ut feugiat scelerisque nibh eget porta. Sed at purus vestibulum ipsum viverra volutpat. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Phasellus at posuere lectus. Sed eleifend eros nisl, id tempus nisl condimentum a. Curabitur a suscipit augue. Praesent finibus, sem ac ultrices pulvinar, augue urna eleifend lectus, quis vestibulum risus nisi id risus. Sed malesuada nulla id ante congue ultricies. Cras vel enim et quam egestas ullamcorper. Nunc sed diam ut felis dapibus laoreet maximus nec nisi. Morbi pellentesque, urna a sodales pellentesque, ipsum est faucibus lorem, id bibendum libero ipsum eget leo. Nullam ullamcorper iaculis justo, sed pellentesque augue blandit id. Nulla ut pellentesque felis. Quisque dignissim urna augue, vel congue est elementum nec. Praesent condimentum nec nisl ut porta. Duis consectetur varius turpis, a semper risus consectetur id. 
-                                                            In libero leo, consequat et dictum et, tempor at lectus. Phasellus ut facilisis velit, volutpat ullamcorper urna. Etiam non augue molestie, lobortis est et, rutrum libero. Pellentesque ultricies nibh nec nisi viverra, quis molestie ex pulvinar. Nunc ac ante ac lorem volutpat accumsan quis non ligula. Donec urna risus, tristique et orci sed, iaculis commodo sem. Integer consequat vehicula orci vel tempus. Suspendisse eu tincidunt enim. Aenean eu risus eget dui rhoncus euismod sit amet eget nibh. Fusce a erat nisi. Integer ornare blandit odio, et dignissim lorem. Donec interdum ornare lectus, ac mollis quam fringilla dignissim. Nam orci ligula, malesuada non nunc sit amet, consectetur imperdiet turpis. Suspendisse potenti. Aliquam magna eros, molestie eget euismod nec, semper ut turpis.</p>
-                                                    </p:scrollPanel>                                        
-                                                </h:panelGroup>  
-                                            </h:panelGrid>
-                                        </p:tab>
-                                        <p:tab title="Periodos y sexualidad">
-                                            <h:panelGrid columns="2" cellpadding="10">
-                                                <h:panelGroup>
-                                                    <p:outputLabel class="descripcion" value="Menopausia: #{antecedentesGinecologiaBean.selectedAntecedente.menopausia}" />
-                                                    <p:outputLabel class="descripcion" value="Premenopausia: #{antecedentesGinecologiaBean.selectedAntecedente.premenopausia}" />
-                                                    <p:outputLabel class="descripcion" value="Ciclos Menstruales: #{antecedentesGinecologiaBean.selectedAntecedente.cicloMestrual}" />
-                                                    <p:outputLabel class="descripcion" value="Menarca: #{antecedentesGinecologiaBean.selectedAntecedente.menarca}" />
-                                                    <p:outputLabel class="descripcion" value="Fecha Ultima Menstruacion: #{antecedentesGinecologiaBean.selectedAntecedente.ultimoPeriodo}" />
-                                                    <p:outputLabel class="descripcion" value="Primera Relacion: {antecedentesGinecologiaBean.selectedAntecedente.primeraRelacion}" />
-                                                    <p:outputLabel class="descripcion" value="Compañeros Sexuales: #{antecedentesGinecologiaBean.selectedAntecedente.companerosSexuales}" />
-                                                    <p:outputLabel class="descripcion" value="Actividad Sexual: #{antecedentesGinecologiaBean.selectedAntecedente.actividadSexual}" />
-                                                </h:panelGroup>  
-                                            </h:panelGrid>
-                                        </p:tab>
-                                        
-                                         <p:tab title="Embarazos">
-                                            <h:panelGrid columns="2" cellpadding="10">
-                                                <h:panelGroup>
-                                                    <p:outputLabel class="descripcion" value="Gesta: #{antecedentesGinecologiaBean.selectedAntecedente.gesta}" />
-                                                    <p:outputLabel class="descripcion" value="Partos: #{antecedentesGinecologiaBean.selectedAntecedente.partos}" />
-                                                    <p:outputLabel class="descripcion" value="Abortos: #{antecedentesGinecologiaBean.selectedAntecedente.abortos}" />
-                                                    <p:outputLabel class="descripcion" value="Embarazo Ectopico: #{antecedentesGinecologiaBean.selectedAntecedente.ectopico}" />
-                                                    <p:outputLabel class="descripcion" value="Ultimo Parto: #{antecedentesGinecologiaBean.selectedAntecedente.ultimoParto}" />
-                                                    <p:outputLabel class="descripcion" value="Tipo de Parto: #{antecedentesGinecologiaBean.selectedAntecedente.tipoParto}" />
-                                                    <p:outputLabel class="descripcion" value="Lactancia Materna: #{antecedentesGinecologiaBean.selectedAntecedente.lactanciaMaterna}" />
-                                                    <p:outputLabel class="descripcion" value="Planificacion: #{antecedentesGinecologiaBean.selectedAntecedente.planificacion}" />
-                                                    <p:outputLabel class="descripcion" value="Ultimo PAP: #{antecedentesGinecologiaBean.selectedAntecedente.ultimoPap}" />
-                                                    </h:panelGroup>  
-                                            </h:panelGrid>
-                                        </p:tab>
+                            <p:outputLabel class="descripcion" value="Antecedentes Gineco-obstétricos:"/>
 
-                                    </p:tabView>
-                                </p:panel>
-                            </div>
+                            <h:panelGrid columns="6" cellspacing="18">
+                                <p:outputLabel value="Menarca:"/>
+                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.menarca}" size="6" readonly="true"/>    
+                                <p:outputLabel value="FUR:"/>
+                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.fur}" size="10" readonly="true"/>
+                                <p:outputLabel value="Ciclo Menstrual:"/>
+                                <h:panelGrid  columns="2">
+                                    <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.cicloMestrual}" readonly="true"/>
+                                    <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioCicloMestrual}" readonly="true"/>
+                                </h:panelGrid>
+                                <p:outputLabel value="FRS:"/>
+                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.prs}" size="6" readonly="true"/>
+                                <p:outputLabel value="Comp. Sexuales:"/>
+                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.companerosSexuales}" size="10" class="numeric" readonly="true"/>
+                                <p:outputLabel value="Planificación:"/>
+                                <h:panelGrid columns="2">
+                                    <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.planificacion}" readonly="true"/>
+                                    <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioGPA}" readonly="true"/>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                            <h:panelGrid columns="2" cellpadding="10">
+                                <h:panelGrid columns="1" cellpadding="5">
+                                    <h:panelGrid columns="10" cellpadding="3">
+                                        <p:outputLabel value="G"/>
+                                        <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.gesta}" size="2" readonly="true"/>
+                                        <p:outputLabel value="P"/>
+                                        <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.partos}" size="2" readonly="true"/>
+                                        <p:outputLabel value="A"/>
+                                        <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.abortos}" size="2" readonly="true"/>
+                                        <p:outputLabel value="EE"/>
+                                        <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.ectopico}" size="2" readonly="true"/>
+                                        <p:outputLabel value="FUP:"/>
+                                        <p:inputText value="" size="10" readonly="true"/>
+                                    </h:panelGrid>
+                                    <p:inputTextarea value="" cols="47" rows="1" autoResize="false" readonly="true"/> 
+                                </h:panelGrid>
+                                <h:panelGrid columns="1">
+                                    <h:panelGrid columns="2">
+                                        <h:panelGrid columns="2" cellpadding="3">
+                                            <p:outputLabel value="U.PAP:" />
+                                            <p:inputText value="" size="17"  readonly="true"/>
+                                        </h:panelGrid>
+                                        <h:panelGrid columns="3" cellpadding="5">
+                                            <p:outputLabel value="LM:"/>
+                                            <p:selectBooleanCheckbox value="" /> <!-- Falta mostrarlo una vez que este guardado en la base -->
+                                            <p:inputText value="" readonly="true"/>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="3">
+                                        <p:outputLabel  value="Periodo Menopausico:" />
+                                        <p:selectOneRadio id="sintoma" layout="grid"  columns="3" value="">
+                                            <f:selectItems value="#{antecedentesGinecologiaBean.objAntecedente.premenopausia}" />
+                                        </p:selectOneRadio>
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </h:panelGrid>
 
-                        </div>
-                    </div>
+                            <h:panelGrid columns="2" cellpadding="10">
+                                <h:panelGroup>
+                                    <p:outputLabel class="descripcion" value="Más Información:"/>
+                                    <p:inputTextarea value="#{antecedentesGinecologiaBean.objAntecedente.informacionAdicional}" rows="5" cols = "118" autoResize="false" readonly="true"/>
+                                </h:panelGroup>
+                            </h:panelGrid>
+                            <p:commandButton value="Volver"  title="Volver"/>
+                        </h:panelGrid>
+                    </p:panel>    
                 </h:form>
             </section>
         </div>

@@ -8,10 +8,13 @@ import com.sicom.entities.Paciente;
 import com.sicom.entities.Responsable;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -23,52 +26,57 @@ import org.primefaces.event.FlowEvent;
 @ManagedBean
 @ViewScoped
 public class PacienteBean {
-    private Paciente nuevoPaciente;
-    private Paciente selectedPaciente;
+
+    private Paciente nuevoPaciente, selectedPaciente;
+    private static Paciente savedPaciente;
     private Responsable nuevoResponsable1;
     private Responsable nuevoResponsable2;
     private List<Paciente> listaPacientes;
     private final PacienteJpaController pjc;
     private final ResponsableJpaController rjc;
     private final ValorJpaController cjv;
-    
+
     /* Wizard */
     private boolean skip;
-        
+
     public PacienteBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
         nuevoPaciente = new Paciente();
-        selectedPaciente = new Paciente();
+        if (savedPaciente == null) {
+            selectedPaciente = new Paciente();
+        } else {
+            selectedPaciente = savedPaciente;
+            savedPaciente = null;
+        }
         nuevoResponsable1 = new Responsable();
         nuevoResponsable2 = new Responsable();
         pjc = new PacienteJpaController(emf);
         cjv = new ValorJpaController(emf);
-        rjc=new ResponsableJpaController(emf);
+        rjc = new ResponsableJpaController(emf);
     }
-    
+
     @PostConstruct
     public void init() {
         listaPacientes = pjc.findPacienteEntities();
     }
-    
+
     public void agregar() throws Exception {
         pjc.create(nuevoPaciente);
-        if(nuevoResponsable1.getId()!=null){
+        if (nuevoResponsable1.getId() != null) {
             nuevoResponsable1.setPacienteid(nuevoPaciente);
             rjc.create(nuevoResponsable1);
         }
-        if(nuevoResponsable2.getId()!=null){
+        if (nuevoResponsable2.getId() != null) {
             nuevoResponsable2.setPacienteid(nuevoPaciente);
             rjc.create(nuevoResponsable2);
         }
-        
-        
+
     }
-    
+
     public void modificar() throws Exception {
         pjc.edit(selectedPaciente);
     }
-    
+
     public Paciente consultarPaciente(String id) {
         return pjc.findPaciente(id);
     }
@@ -77,71 +85,137 @@ public class PacienteBean {
         return this.cjv.findByCodeId(codigo);
     }
 
-    public void buscaIdBase() throws IOException{
-     
+    public void verificaID() {
+        if (nuevoPaciente.getId() != null) {
+            selectedPaciente.setId(nuevoPaciente.getId());
+            this.buscaIdBase();
+        }
+    }
+
+    public void modificarAction() {
+
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+
+        String URL = ec.getRequestContextPath() + "/app/paciente/editar";
+
+        savedPaciente = selectedPaciente;
+        
+        try {
+            ec.redirect(URL);
+        } catch (IOException ex) {
+        }
+    }
+
+    public void buscaIdBase() {
+
         if (selectedPaciente.getId() != null) {
+
+            String id = selectedPaciente.getId();
 
             Paciente p = this.pjc.findPaciente(selectedPaciente.getId());
 
             if (p != null) {
-                this.selectedPaciente = p;
+
+                FacesContext fc = FacesContext.getCurrentInstance();
+                ExternalContext ec = fc.getExternalContext();
+
+                String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
+
+                savedPaciente = p;
+
+                try {
+                    ec.redirect(URL);
+                } catch (IOException ex) {
+
+                }
             } else {
-                FacesContext.getCurrentInstance().addMessage("No existe paciente asignado a la identificación: ", new FacesMessage(p.getId()));
-            } 
+                FacesContext.getCurrentInstance().addMessage("No existe paciente asignado a la identificación: " + id, new FacesMessage(id));
+            }
+
         }
     }
-    
+
     /* Wizard Methods*/
-     
     public boolean isSkip() {
         return skip;
     }
- 
+
     public void setSkip(boolean skip) {
         this.skip = skip;
     }
-     
+
     public String onFlowProcess(FlowEvent event) {
-        if(skip) {
-            skip = false;   
+        if (skip) {
+            skip = false;
             return "confirm";
-        }
-        else {
+        } else {
             return event.getNewStep();
         }
     }
-    
-    public void save() {        
+
+    public void save() {
         try {
             agregar();
-            
-            FacesMessage msg = new FacesMessage("Paciente Agregado Exitosamente: ", this.nuevoPaciente.getNombre()+ nuevoPaciente.getPrimerApellido());
+
+            FacesMessage msg = new FacesMessage("Paciente Agregado Exitosamente: ", this.nuevoPaciente.getNombre() + nuevoPaciente.getPrimerApellido());
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            
+
+            selectedPaciente = nuevoPaciente;
             nuevoPaciente = new Paciente();
-            
-            
-        
+
+            buscaIdBase();
+
         } catch (Exception ex) {
-            
-            FacesMessage msg = new FacesMessage("Error, Paciente No Se Pudo Agregar ", this.nuevoPaciente.getNombre()+ nuevoPaciente.getPrimerApellido());
+
+            FacesMessage msg = new FacesMessage("Error, Paciente No Se Pudo Agregar ", this.nuevoPaciente.getNombre() + nuevoPaciente.getPrimerApellido());
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
-   
-    public int PacienteNuevoEdad(){
+
+    public void HistoriaClinica(boolean permiso_editar, int consultorio) {
+
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+
+        String URL = ec.getRequestContextPath();
+
+        savedPaciente = selectedPaciente;
+
+        switch (consultorio) {
+            case 0:
+                if (permiso_editar) {
+                    URL += "/app/consultorios/ginecologia/antecedentes";
+                } else {
+                    URL += "/app/consultorios/ginecologia/consultarAntecedentes";
+                }
+                break;
+            case 1:
+                if (permiso_editar) {
+                    URL += "/app/consultorios/odontologia/antecedentes";
+                } else {
+                    URL += "/app/consultorios/odontologia/consultarAntecedentes";
+                }
+        }
+        try {
+            ec.redirect(URL);
+        } catch (IOException ex) {
+        }
+    }
+
+    public int PacienteNuevoEdad() {
         if (this.nuevoPaciente != null && this.nuevoPaciente.getNacimiento() != null) {
-            
+
             DateTime birthdate = new DateTime(nuevoPaciente.getNacimiento());
             DateTime now = new DateTime();
-            
+
             return Years.yearsBetween(birthdate, now).getYears();
         } else {
             return 0;
         }
     }
-    
-    public int calculaEdad(){
+
+    public int calculaEdad() {
         if (selectedPaciente.getNacimiento() != null) {
             LocalDate birthdate = new LocalDate(selectedPaciente.getNacimiento());
             LocalDate now = new LocalDate();
@@ -150,7 +224,7 @@ public class PacienteBean {
             return 0;
         }
     }
-    
+
     /**
      * @return the listaPacientes
      */
@@ -220,4 +294,13 @@ public class PacienteBean {
     public void setNuevoResponsable2(Responsable nuevoResponsable2) {
         this.nuevoResponsable2 = nuevoResponsable2;
     }
+
+    public static Paciente getSavedPaciente() {
+        return savedPaciente;
+    }
+
+    public static void setSavedPaciente(Paciente savedPaciente) {
+        PacienteBean.savedPaciente = savedPaciente;
+    }
+
 }
