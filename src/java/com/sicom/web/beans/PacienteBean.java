@@ -8,8 +8,6 @@ import com.sicom.entities.Paciente;
 import com.sicom.entities.Responsable;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -40,14 +38,18 @@ public class PacienteBean {
     private boolean skip;
 
     public PacienteBean() {
+
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
+
         nuevoPaciente = new Paciente();
+
         if (savedPaciente == null) {
             selectedPaciente = new Paciente();
         } else {
             selectedPaciente = savedPaciente;
             savedPaciente = null;
         }
+
         nuevoResponsable1 = new Responsable();
         nuevoResponsable2 = new Responsable();
         pjc = new PacienteJpaController(emf);
@@ -60,6 +62,8 @@ public class PacienteBean {
         listaPacientes = pjc.findPacienteEntities();
     }
 
+    //--------------------------------------------------------------------------
+    // AGREGAR PACIENTE
     public void agregar() throws Exception {
         pjc.create(nuevoPaciente);
         if (nuevoResponsable1.getId() != null) {
@@ -71,69 +75,6 @@ public class PacienteBean {
             rjc.create(nuevoResponsable2);
         }
 
-    }
-
-    public void modificar() throws Exception {
-        pjc.edit(selectedPaciente);
-    }
-
-    public Paciente consultarPaciente(String id) {
-        return pjc.findPaciente(id);
-    }
-
-    public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return this.cjv.findByCodeId(codigo);
-    }
-
-    public void verificaID() {
-        if (nuevoPaciente.getId() != null) {
-            selectedPaciente.setId(nuevoPaciente.getId());
-            this.buscaIdBase();
-        }
-    }
-
-    public void modificarAction() {
-
-        FacesContext fc = FacesContext.getCurrentInstance();
-        ExternalContext ec = fc.getExternalContext();
-
-        String URL = ec.getRequestContextPath() + "/app/paciente/editar";
-
-        savedPaciente = selectedPaciente;
-        
-        try {
-            ec.redirect(URL);
-        } catch (IOException ex) {
-        }
-    }
-
-    public void buscaIdBase() {
-
-        if (selectedPaciente.getId() != null) {
-
-            String id = selectedPaciente.getId();
-
-            Paciente p = this.pjc.findPaciente(selectedPaciente.getId());
-
-            if (p != null) {
-
-                FacesContext fc = FacesContext.getCurrentInstance();
-                ExternalContext ec = fc.getExternalContext();
-
-                String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
-
-                savedPaciente = p;
-
-                try {
-                    ec.redirect(URL);
-                } catch (IOException ex) {
-
-                }
-            } else {
-                FacesContext.getCurrentInstance().addMessage("No existe paciente asignado a la identificación: " + id, new FacesMessage(id));
-            }
-
-        }
     }
 
     /* Wizard Methods*/
@@ -153,6 +94,7 @@ public class PacienteBean {
             return event.getNewStep();
         }
     }
+    /**/
 
     public void save() {
         try {
@@ -172,6 +114,43 @@ public class PacienteBean {
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
+
+    public int PacienteNuevoEdad() {
+        if (this.nuevoPaciente != null && this.nuevoPaciente.getNacimiento() != null) {
+
+            DateTime birthdate = new DateTime(nuevoPaciente.getNacimiento());
+            DateTime now = new DateTime();
+
+            return Years.yearsBetween(birthdate, now).getYears();
+        } else {
+            return 0;
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    // INFORMACION DEL PACIENTE
+    
+    public void modificar() throws Exception {
+        pjc.edit(selectedPaciente);
+    }
+
+    public void modificarAction() {
+
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+
+        String URL = ec.getRequestContextPath() + "/app/paciente/editar";
+
+        savedPaciente = selectedPaciente;
+
+        try {
+            ec.redirect(URL);
+        } catch (IOException ex) {
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    // HISTORIA CLINICA DE PACIENTE
 
     public void HistoriaClinica(boolean permiso_editar, int consultorio) {
 
@@ -203,15 +182,34 @@ public class PacienteBean {
         }
     }
 
-    public int PacienteNuevoEdad() {
-        if (this.nuevoPaciente != null && this.nuevoPaciente.getNacimiento() != null) {
+    //--------------------------------------------------------------------------
+    // GENERAL METHODS
+    public void buscaIdBase() {
 
-            DateTime birthdate = new DateTime(nuevoPaciente.getNacimiento());
-            DateTime now = new DateTime();
+        if (selectedPaciente.getId() != null) {
 
-            return Years.yearsBetween(birthdate, now).getYears();
-        } else {
-            return 0;
+            String id = selectedPaciente.getId();
+
+            Paciente p = this.pjc.findPaciente(selectedPaciente.getId());
+
+            if (p != null) {
+
+                FacesContext fc = FacesContext.getCurrentInstance();
+                ExternalContext ec = fc.getExternalContext();
+
+                String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
+
+                savedPaciente = p;
+
+                try {
+                    ec.redirect(URL);
+                } catch (IOException ex) {
+
+                }
+            } else {
+                FacesContext.getCurrentInstance().addMessage("No existe paciente asignado a la identificación: " + id, new FacesMessage(id));
+            }
+
         }
     }
 
@@ -224,7 +222,24 @@ public class PacienteBean {
             return 0;
         }
     }
+    
+    public Paciente consultarPaciente(String id) {
+        return pjc.findPaciente(id);
+    }
 
+    public List<String> consultarValoresPorCodigo(Integer codigo) {
+        return this.cjv.findByCodeId(codigo);
+    }
+
+    public void verificaID() {
+        if (nuevoPaciente.getId() != null) {
+            selectedPaciente.setId(nuevoPaciente.getId());
+            this.buscaIdBase();
+        }
+    }
+    
+    //--------------------------------------------------------------------------\
+    //  GETTERS & SETTERS
     /**
      * @return the listaPacientes
      */
