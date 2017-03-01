@@ -22,9 +22,9 @@
                                 <p:inputText value="#{pacienteBean.selectedPaciente.nombre}" readonly="true"/>
 
                                 <p:outputLabel class="infoLabel" value="Fecha Nacimiento:"/>
-                                <h:inputText value="#{pacienteBean.selectedPaciente.nacimiento}" readonly="true">   
-                                    <f:convertDateTime pattern="MM/dd/yyyy" />
-                                </h:inputText>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.nacimiento}" readonly="true">   
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </p:inputText>
 
                                 <p:outputLabel class="infoLabel" value="Apellidos:"/>
                                 <p:inputText value="#{pacienteBean.selectedPaciente.primerApellido} #{pacienteBean.selectedPaciente.segundoApellido}" readonly="true"/>
@@ -54,7 +54,7 @@
                                 <p:inputTextarea value="#{pacienteBean.selectedPaciente.domicilio}" readonly="true"/>
 
                                 <p:outputLabel/>
-                                <p:commandButton value="Modificar Información" title="Click para modificar información del paciente." update="formInformacion" action="#{pacienteBean.modificarAction()}"/>
+                                <p:commandButton value="Modificar Información" title="Click para modificar información del paciente." update="formInformacion" action="#{pacienteBean.modificaRedirect()}"/>
                             </h:panelGrid>
                         </p:tab>
 

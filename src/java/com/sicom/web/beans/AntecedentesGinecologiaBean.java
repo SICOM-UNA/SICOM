@@ -5,6 +5,7 @@ import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.AntecedentesGinecologia;
 import com.sicom.entities.Paciente;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -23,17 +24,17 @@ public class AntecedentesGinecologiaBean {
     private final AntecedentesGinecologiaJpaController agjc;
     private final ValorJpaController vjc;
 
-    private String ClientName, ClientID;
+    private Paciente paciente;
 
     public AntecedentesGinecologiaBean() {
 
-        Paciente p = PacienteBean.getSavedPaciente();
+        paciente = PacienteBean.getSavedPaciente();
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
         agjc = new AntecedentesGinecologiaJpaController(emf);
         vjc = new ValorJpaController(emf);
 
-        if (p != null) {
+        if (paciente != null) {
 
             obj = new AntecedentesGinecologia();
 
@@ -41,9 +42,6 @@ public class AntecedentesGinecologiaBean {
             obj.setPartos(0);
             obj.setAbortos(0);
             obj.setEctopico(0);
-
-            ClientName = p.getNombre() + " " + p.getPrimerApellido() + " " + p.getSegundoApellido();
-            ClientID = p.getId();
 
         } else {
             FacesContext fc = FacesContext.getCurrentInstance();
@@ -54,13 +52,24 @@ public class AntecedentesGinecologiaBean {
             } catch (IOException ex) {
             }
         }
+        
+        //AntecedentesGinecologia obj_aux = consultarHistorial(paciente.getId());
+        /*
+        if(obj_aux != null){
+            obj = obj_aux;
+        }else{
+            obj = new AntecedentesGinecologia();
+        }
+        */
     }
 
     public void init() {
         listaAntecedentes = agjc.findAntecedentesGinecologiaEntities();
     }
 
-    public void agregar() throws Exception {
+    public void agregar(){
+        obj.setPacienteid(paciente);
+        obj.setFecha(new Date());
         agjc.create(obj);
         obj = new AntecedentesGinecologia();
     }
@@ -69,7 +78,7 @@ public class AntecedentesGinecologiaBean {
         agjc.edit(obj);
     }
 
-    public AntecedentesGinecologia consultarHistorial(Integer pacienteId) {
+    public final AntecedentesGinecologia consultarHistorial(String pacienteId) {
         return agjc.findAntecedentesGinecologia(pacienteId);
     }
 
@@ -82,6 +91,7 @@ public class AntecedentesGinecologiaBean {
             agregar();
             FacesMessage msg = new FacesMessage("Historial Agregado Exitosamente");
             FacesContext.getCurrentInstance().addMessage(null, msg);
+            
         } catch (Exception ex) {
             FacesMessage msg = new FacesMessage("Error, Paciente No Se Pudo Agregar");
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -108,20 +118,13 @@ public class AntecedentesGinecologiaBean {
         this.obj = nuevoAntecedente;
     }
 
-    public String getClientName() {
-        return ClientName;
+    public Paciente getPaciente() {
+        return paciente;
     }
 
-    public void setClientName(String ClientName) {
-        this.ClientName = ClientName;
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
     }
 
-    public String getClientID() {
-        return ClientID;
-    }
-
-    public void setClientID(String ClientID) {
-        this.ClientID = ClientID;
-    }
-
+    
 }

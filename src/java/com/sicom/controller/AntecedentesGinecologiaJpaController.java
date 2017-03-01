@@ -80,7 +80,7 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = antecedentesGinecologia.getId();
+                String id = antecedentesGinecologia.getPacienteid().getId();
                 if (findAntecedentesGinecologia(id) == null) {
                     throw new NonexistentEntityException("The antecedentesGinecologia with id " + id + " no longer exists.");
                 }
@@ -143,7 +143,7 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
         }
     }
 
-    public AntecedentesGinecologia findAntecedentesGinecologia(Integer id) {
+    public AntecedentesGinecologia findAntecedentesGinecologia(String id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(AntecedentesGinecologia.class, id);

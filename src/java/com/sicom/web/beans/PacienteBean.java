@@ -8,6 +8,8 @@ import com.sicom.entities.Paciente;
 import com.sicom.entities.Responsable;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -94,8 +96,8 @@ public class PacienteBean {
             return event.getNewStep();
         }
     }
-    /**/
 
+    /**/
     public void save() {
         try {
             agregar();
@@ -129,29 +131,44 @@ public class PacienteBean {
 
     //--------------------------------------------------------------------------
     // INFORMACION DEL PACIENTE
-    
-    public void modificar() throws Exception {
-        pjc.edit(selectedPaciente);
+    public void modificaRedirect() {
+        try {
+
+            FacesContext fc = FacesContext.getCurrentInstance();
+            ExternalContext ec = fc.getExternalContext();
+
+            String URL = ec.getRequestContextPath() + "/app/paciente/editar";
+
+            savedPaciente = selectedPaciente;
+
+            ec.redirect(URL);
+
+        } catch (IOException ex) {
+        } catch (Exception ex) {
+        }
     }
 
     public void modificarAction() {
-
-        FacesContext fc = FacesContext.getCurrentInstance();
-        ExternalContext ec = fc.getExternalContext();
-
-        String URL = ec.getRequestContextPath() + "/app/paciente/editar";
-
-        savedPaciente = selectedPaciente;
-
         try {
+
+            pjc.edit(selectedPaciente);
+
+            FacesContext fc = FacesContext.getCurrentInstance();
+            ExternalContext ec = fc.getExternalContext();
+
+            String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
+
+            savedPaciente = selectedPaciente;
+
             ec.redirect(URL);
+
         } catch (IOException ex) {
+        } catch (Exception ex) {
         }
     }
 
     //--------------------------------------------------------------------------
     // HISTORIA CLINICA DE PACIENTE
-
     public void HistoriaClinica(boolean permiso_editar, int consultorio) {
 
         FacesContext fc = FacesContext.getCurrentInstance();
@@ -207,7 +224,7 @@ public class PacienteBean {
 
                 }
             } else {
-                FacesContext.getCurrentInstance().addMessage("No existe paciente asignado a la identificación: " + id, new FacesMessage(id));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("No existe paciente asignado a la identificación: " + id));
             }
 
         }
@@ -222,7 +239,7 @@ public class PacienteBean {
             return 0;
         }
     }
-    
+
     public Paciente consultarPaciente(String id) {
         return pjc.findPaciente(id);
     }
@@ -237,7 +254,7 @@ public class PacienteBean {
             this.buscaIdBase();
         }
     }
-    
+
     //--------------------------------------------------------------------------\
     //  GETTERS & SETTERS
     /**

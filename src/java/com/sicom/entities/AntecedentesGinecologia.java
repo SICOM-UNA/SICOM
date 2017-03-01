@@ -388,5 +388,5 @@ public class AntecedentesGinecologia implements Serializable {
     public String toString() {
         return "com.sicom.entities.Antecedentesginecologia[ id=" + id + " ]";
     }
-    
+
 }

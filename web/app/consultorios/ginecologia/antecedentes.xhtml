@@ -15,11 +15,13 @@
 
                     <!-- Antecedentes Ginécologos -->
                     <p:panel header="Información del Paciente">
-                        <h:panelGrid columns="4">
+                        <h:panelGrid columns="6">
                             <p:spacer width="50"/>
-                            <p:outputLabel class="descripcion" value="#{antecedentesGinecologiaBean.clientName}"/>
+                            <p:outputLabel class="descripcion" value="#{antecedentesGinecologiaBean.paciente.nombre} #{antecedentesGinecologiaBean.paciente.primerApellido} #{antecedentesGinecologiaBean.paciente.segundoApellido}"/>
                             <p:spacer width="50"/>
-                            <p:outputLabel class="descripcion" value="#{antecedentesGinecologiaBean.clientID}"/>
+                            <p:outputLabel class="descripcion" value="#{antecedentesGinecologiaBean.paciente.id}"/>
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion" value="Última edición: #{now}"/>
                         </h:panelGrid>
                     </p:panel>
                     <p:panel header="Historia Clínica" id="panel1" >
@@ -47,7 +49,7 @@
 
                             <p:outputLabel class="descripcion" value="Antecedentes Gineco-obstétricos:"/>
 
-                            <h:panelGrid columns="6" cellspacing="18">
+                            <h:panelGrid columns="6" cellspacing="5">
                                 <p:outputLabel value="Menarca:"/>
                                 <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.menarca}" maxlength="4" size="8" class="numeric" onkeyup="validar()"/>    
                                 <p:outputLabel value="FUR:"/>
@@ -82,7 +84,7 @@
 
 
                                 <p:outputLabel value="U.PAP:" for="UPAP"/>
-                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.ultimoPap}" maxlength="10" size="43"  id="UPAP"/>
+                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.ultimoPap}" maxlength="10" size="40"  id="UPAP"/>
 
 
                                 <h:panelGrid columns="3" cellpadding="3">

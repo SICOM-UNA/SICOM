@@ -76,15 +76,6 @@
 
                                         </p:panel>
                                     </div>
-                                    <div class="ui-grid-col-5">
-                                        <p:panel header="Agregar Responsables">
-                                            <h:panelGrid columns="1">
-                                                <p:commandButton value="Responsable 1" title="Click para añadir responsable" icon="ui-icon-plus" oncomplete="PF('dialogAddResp1').show()" />
-                                                <p:spacer/>
-                                                <p:commandButton value="Responsable 2" title="Click para añadir responsable" icon="ui-icon-plus" oncomplete="PF('dialogAddResp2').show()"/>
-                                            </h:panelGrid>
-                                        </p:panel>
-                                    </div>
                                 </div>
                             </div>
                         </p:tab>
@@ -156,7 +147,8 @@
                 <!-- Agregar Responsable 1 -->
                 <p:dialog widgetVar="dialogAddResp1" header="Datos del Responsable 1" closable="false" resizable="false">
                     <h:form id="Resp1Form">
-
+                        
+                        <p:messages id="msg1" autoUpdate="true" closable="true" />
                         <o:validateAll components="nr1 idr1 tpr1 oc1 tr1" />
 
                         <h:panelGrid columns="1" cellpadding="5">
@@ -191,7 +183,9 @@
                             <p:spacer/>
 
                             <h:panelGroup>
-                                <p:commandButton value="Aceptar" immediate="true" oncomplete="PF('dialogAddResp1').hide()"/>
+                                <p:commandButton value="Aceptar" immediate="true" oncomplete="PF('dialogAddResp1').hide()">
+                                    <f:ajax render="Resp1Form msg1"/>
+                                </p:commandButton>
                                 <p:spacer width="2"/>
                                 <p:commandButton value="Cancelar" immediate="true" oncomplete="PF('dialogAddResp1').hide()">
                                     <f:ajax resetValues="true" render="Resp1Form" />
