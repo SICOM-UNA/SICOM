@@ -4,71 +4,74 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
-    
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:o="http://omnifaces.org/ui">
+
+
     <ui:define name="content">
         <div id="wrapper">
             <section>
                 <h:form>
-                    <p:messages id="msg" for="msg" globalOnly="true" closable="true" />
-                    
-                    <h:panelGrid columns="4" >
-                                <p:outputLabel class="descripcion" value="Nombre:"/>
-                                <p:inputText value="#{pacienteBean.selectedPaciente.nombre}" maxlength="45" class = "charWithSpaceToUpperCase" onkeyup="validar()"/>
+                    <p:messages id="msg" autoUpdate="true" closable="true" />
 
-                                <p:outputLabel class="descripcion" for="mask" value="Fecha Nacimiento:" style="padding-left: 50px;"/>
-                                <p:calendar id="mask" value="#{pacienteBean.selectedPaciente.nacimiento}" pattern="dd-MM-yyyy" mask="true" navigator="true"/>
+                    <p:panel header="Editar Paciente" id="panel1">
+                        
+                        <o:validateAll components="nom pa sa ec t1 g mask" message="Debe llenar los campos marcados en rojo."/>
+                        
+                        <h:panelGrid columns="4" >
+                            <p:outputLabel class="descripcion" value="Nombre:" for="nom"/>
+                            <p:inputText value="#{pacienteBean.selectedPaciente.nombre}" id="nom" maxlength="45" class = "charWithSpaceToUpperCase" onkeyup="validar()"/>
 
-                                <p:outputLabel class="descripcion" value="Primer Apellido:"/>
-                                <p:inputText value="#{pacienteBean.selectedPaciente.primerApellido}" maxlength="45" class = "charToUpperCase" onkeyup="validar()"/>
-                                
-                                <p:outputLabel class="descripcion" value="Genero:" style="padding-left: 50px;"/>
-                                                <p:selectOneMenu value="#{pacienteBean.selectedPaciente.genero}">
-                                                    <f:selectItem itemLabel="#{pacienteBean.selectedPaciente.genero}" />
-                                                    <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(0)}"/>
-                                                </p:selectOneMenu>
-                                
-                                <p:outputLabel class="descripcion" value="Segundo Apellido:"/>
-                                <p:inputText value="#{pacienteBean.selectedPaciente.segundoApellido}" maxlength="45" class = "charToUpperCase" onkeyup="validar()"/>
-                                
-                                
+                            <p:outputLabel class="descripcion" for="mask" value="Fecha Nacimiento:" style="padding-left: 50px;"/>
+                            <p:calendar id="mask" value="#{pacienteBean.selectedPaciente.nacimiento}" pattern="dd-MM-yyyy" mask="true" navigator="true"/>
 
-                                <p:outputLabel class="infoLabel" value="Identificación:" style="padding-left: 50px;"/>
-                                <p:outputLabel  value="{pacienteBean.selectedPaciente.id}"/>
+                            <p:outputLabel class="descripcion" value="Primer Apellido:" for="pa"/>
+                            <p:inputText value="#{pacienteBean.selectedPaciente.primerApellido}" id="pa" maxlength="45" class = "charToUpperCase" onkeyup="validar()"/>
 
-                                <p:outputLabel class="descripcion" value="Estado Civil:"/>
-                                <p:selectOneMenu value="#{pacienteBean.selectedPaciente.estadoCivil}">
-                                                    <f:selectItem itemLabel="#{pacienteBean.selectedPaciente.estadoCivil}"/>
-                                                    <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(1)}"/>
-                                                </p:selectOneMenu>
+                            <p:outputLabel class="descripcion" value="Genero:" style="padding-left: 50px;" for="g"/>
+                            <p:selectOneMenu value="#{pacienteBean.selectedPaciente.genero}" id="g">
+                                <f:selectItem itemLabel="Seleccione uno:" />
+                                <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(0)}"/>
+                            </p:selectOneMenu>
 
-                                <p:outputLabel class="infoLabel" value="Teléfono 1:" style="padding-left: 50px;"/>
-                                <p:inputText value="#{pacienteBean.selectedPaciente.telefono}" class="numeric" onkeyup="validar();"  maxlength="8"/>
+                            <p:outputLabel class="descripcion" value="Segundo Apellido:" for="sa"/>
+                            <p:inputText value="#{pacienteBean.selectedPaciente.segundoApellido}" id="sa" maxlength="45" class = "charToUpperCase" onkeyup="validar()"/>
 
-                                <p:outputLabel class="infoLabel" value="Correo electrónico:"/>
-                                <p:inputText value="#{pacienteBean.selectedPaciente.correo}"  class="correo" onkeyup="validar();"  maxlength="45">
-                                                    <f:validateRegex pattern="((([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+))|(^\s*$))"/>
-                                </p:inputText>
 
-                                <p:outputLabel class="infoLabel" value="Teléfono 2:" style="padding-left: 50px;"/>
-                                <p:inputText value="#{pacienteBean.selectedPaciente.celular}" class="numeric" onkeyup="validar();"  maxlength="8"/>
 
-                                <p:outputLabel class="infoLabel" value = "Ocupación:"/>
-                                <p:inputText value = "#{pacienteBean.selectedPaciente.ocupacion}" maxlength="45"/>
+                            <p:outputLabel class="infoLabel" value="Identificación:" style="padding-left: 50px;"/>
+                            <p:outputLabel  value="#{pacienteBean.selectedPaciente.id}"/>
 
-                                <p:outputLabel class="infoLabel" value="Domicilio:" style="padding-left: 50px;"/>
-                                <p:inputTextarea value="#{pacienteBean.selectedPaciente.domicilio}" maxlength="150" rows="4" cols = "28" autoResize="true"/>
+                            <p:outputLabel class="descripcion" value="Estado Civil:" for="ec"/>
+                            <p:selectOneMenu value="#{pacienteBean.selectedPaciente.estadoCivil}" id="ec" >
+                                <f:selectItem itemLabel="seleccione uno"/>
+                                <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(1)}"/>
+                            </p:selectOneMenu>
 
-                                
-                            </h:panelGrid>
-                    <p:outputLabel/>
-                                <p:commandButton value="Guardar Paciente" title="Click para guardar los datos." style="margin-left:55%; margin-top: 50px;"  action="#{pacienteBean.modificar()}"/>
-                    
+                            <p:outputLabel class="descripcion" value="Teléfono 1:" style="padding-left: 50px;" for="t1"/>
+                            <p:inputText value="#{pacienteBean.selectedPaciente.telefono}" id="t1" class="numeric" onkeyup="validar();"  maxlength="8"/>
+
+                            <p:outputLabel class="descripcion" value="Correo electrónico:" for="ce"/>
+                            <p:inputText value="#{pacienteBean.selectedPaciente.correo}" id="ce" class="correo" onkeyup="validar();"  maxlength="45">
+                                <f:validateRegex pattern="((([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+))|(^\s*$))"/>
+                            </p:inputText>
+
+                            <p:outputLabel class="descripcion" value="Teléfono 2:" style="padding-left: 50px;" for="t2"/>
+                            <p:inputText value="#{pacienteBean.selectedPaciente.celular}" id="t2" class="numeric" onkeyup="validar();"  maxlength="8"/>
+
+                            <p:outputLabel class="descripcion" value = "Ocupación:" for="oc"/>
+                            <p:inputText value = "#{pacienteBean.selectedPaciente.ocupacion}" id="oc" maxlength="45"/>
+
+                            <p:outputLabel class="descripcion" value="Domicilio:" for="do" style="padding-left: 50px;"/>
+                            <p:inputTextarea value="#{pacienteBean.selectedPaciente.domicilio}" id="do" maxlength="150" rows="4" cols = "28" autoResize="true"/>
+
+
+                        </h:panelGrid>
+                        <p:outputLabel/>
+                        <p:commandButton value="Guardar Paciente" title="Click para guardar los datos." style="margin-left:55%; margin-top: 50px;"  action="#{pacienteBean.modificar()}"/>
+                    </p:panel>
                 </h:form>
             </section>
         </div>
     </ui:define>
 </ui:composition>
-
-
-                    
