@@ -12,6 +12,17 @@
                     <p:messages id="msg" autoUpdate="true" closable="true" />
 
                     <!-- Antecedentes Odontologos -->
+                    <p:panel header="Información del Paciente">
+                        <h:panelGrid columns="6">
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion" value="#{antecedentesGinecologiaBean.paciente.nombre} #{antecedentesGinecologiaBean.paciente.primerApellido} #{antecedentesGinecologiaBean.paciente.segundoApellido}"/>
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion" value="#{antecedentesGinecologiaBean.paciente.id}"/>
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion" value="Última edición: #{now}"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    
                     <p:panel header="Historia Clínica" >
                         <h:panelGrid columns="1">
                             <h:panelGroup>
@@ -52,6 +63,7 @@
                             <h:panelGroup>
                                 <p:commandButton value="Guardar datos" action="#{antecedentesOdontologiaBean.save()}" title="Click para guardar información"/>
                             </h:panelGroup>
+                       
                         </h:panelGrid>
                     </p:panel>
                 </h:form>
