@@ -3,6 +3,7 @@ package com.sicom.web.beans;
 import com.sicom.controller.AntecedentesOdontologiaJpaController;
 import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.AntecedentesOdontologia;
+import com.sicom.entities.Paciente;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -18,6 +19,9 @@ public class AntecedentesOdontologiaBean{
     private List <AntecedentesOdontologia> listaAntecedentes;
     private final AntecedentesOdontologiaJpaController aojc;
     private final ValorJpaController vjc;
+    
+    private Paciente paciente;
+
    
     public AntecedentesOdontologiaBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");

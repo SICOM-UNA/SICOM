@@ -89,17 +89,23 @@ public class AntecedentesGinecologiaBean {
     public void save() {
         try {
             agregar();
+            
+            FacesContext fc = FacesContext.getCurrentInstance();
+            ExternalContext ec = fc.getExternalContext();
+
+            String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
+
+            PacienteBean.setSavedPaciente(this.paciente);
+
             FacesMessage msg = new FacesMessage("Historial Agregado Exitosamente");
             FacesContext.getCurrentInstance().addMessage(null, msg);
+            
+            ec.redirect(URL);
             
         } catch (Exception ex) {
             FacesMessage msg = new FacesMessage("Error, Paciente No Se Pudo Agregar");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
-    }
-
-    public void next() {
-
     }
 
     public List<AntecedentesGinecologia> getListaAntecedentes() {
