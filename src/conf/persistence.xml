@@ -10,10 +10,13 @@
     <class>com.sicom.entities.Responsable</class>
     <class>com.sicom.entities.Login</class>
     <class>com.sicom.entities.Valor</class>
-    <class>com.sicom.entities.Paciente</class>
     <class>com.sicom.entities.Consulta</class>
     <class>com.sicom.entities.AntecedentesGinecologia</class>
     <class>com.sicom.entities.AntecedentesOdontologia</class>
+    <class>com.sicom.entities.Antecedentesodontologia</class>
+    <class>com.sicom.entities.Antecedentesginecologia</class>
+    <class>com.sicom.entities.Paciente</class>
+    <class>com.sicom.entities.Examen</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/SICOM?zeroDateTimeBehavior=convertToNull"/>

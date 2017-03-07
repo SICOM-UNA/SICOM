@@ -6,20 +6,20 @@
 package com.sicom.controller;
 
 import com.sicom.controller.exceptions.NonexistentEntityException;
+import com.sicom.controller.exceptions.PreexistingEntityException;
 import com.sicom.entities.AntecedentesOdontologia;
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.sicom.entities.Paciente;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 public class AntecedentesOdontologiaJpaController implements Serializable {
 
@@ -32,22 +32,18 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(AntecedentesOdontologia antecedentesOdontologia) {
+    public void create(AntecedentesOdontologia antecedentesOdontologia) throws PreexistingEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Paciente pacienteid = antecedentesOdontologia.getPacienteid();
-            if (pacienteid != null) {
-                pacienteid = em.getReference(pacienteid.getClass(), pacienteid.getId());
-                antecedentesOdontologia.setPacienteid(pacienteid);
-            }
             em.persist(antecedentesOdontologia);
-            if (pacienteid != null) {
-                pacienteid.getAntecedentesOdontologiaList().add(antecedentesOdontologia);
-                pacienteid = em.merge(pacienteid);
-            }
             em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (findAntecedentesOdontologia(antecedentesOdontologia.getPacienteid()) != null) {
+                throw new PreexistingEntityException("AntecedentesOdontologia " + antecedentesOdontologia + " already exists.", ex);
+            }
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -60,27 +56,12 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            AntecedentesOdontologia persistentAntecedentesOdontologia = em.find(AntecedentesOdontologia.class, antecedentesOdontologia.getId());
-            Paciente pacienteidOld = persistentAntecedentesOdontologia.getPacienteid();
-            Paciente pacienteidNew = antecedentesOdontologia.getPacienteid();
-            if (pacienteidNew != null) {
-                pacienteidNew = em.getReference(pacienteidNew.getClass(), pacienteidNew.getId());
-                antecedentesOdontologia.setPacienteid(pacienteidNew);
-            }
             antecedentesOdontologia = em.merge(antecedentesOdontologia);
-            if (pacienteidOld != null && !pacienteidOld.equals(pacienteidNew)) {
-                pacienteidOld.getAntecedentesOdontologiaList().remove(antecedentesOdontologia);
-                pacienteidOld = em.merge(pacienteidOld);
-            }
-            if (pacienteidNew != null && !pacienteidNew.equals(pacienteidOld)) {
-                pacienteidNew.getAntecedentesOdontologiaList().add(antecedentesOdontologia);
-                pacienteidNew = em.merge(pacienteidNew);
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = antecedentesOdontologia.getId();
+                String id = antecedentesOdontologia.getPacienteid();
                 if (findAntecedentesOdontologia(id) == null) {
                     throw new NonexistentEntityException("The antecedentesOdontologia with id " + id + " no longer exists.");
                 }
@@ -93,7 +74,7 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(String id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -101,14 +82,9 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
             AntecedentesOdontologia antecedentesOdontologia;
             try {
                 antecedentesOdontologia = em.getReference(AntecedentesOdontologia.class, id);
-                antecedentesOdontologia.getId();
+                antecedentesOdontologia.getPacienteid();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The antecedentesOdontologia with id " + id + " no longer exists.", enfe);
-            }
-            Paciente pacienteid = antecedentesOdontologia.getPacienteid();
-            if (pacienteid != null) {
-                pacienteid.getAntecedentesOdontologiaList().remove(antecedentesOdontologia);
-                pacienteid = em.merge(pacienteid);
             }
             em.remove(antecedentesOdontologia);
             em.getTransaction().commit();
@@ -143,7 +119,7 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         }
     }
 
-    public AntecedentesOdontologia findAntecedentesOdontologia(Integer id) {
+    public AntecedentesOdontologia findAntecedentesOdontologia(String id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(AntecedentesOdontologia.class, id);

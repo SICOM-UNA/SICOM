@@ -18,10 +18,10 @@ import javax.persistence.Persistence;
 @ManagedBean
 @ViewScoped
 public class AntecedentesOdontologiaBean{
-    private AntecedentesOdontologia obj;
+    private AntecedentesOdontologia antecedentesOdontologia;
     private List <AntecedentesOdontologia> listaAntecedentes;
-    private final AntecedentesOdontologiaJpaController aojc;
-    private final ValorJpaController vjc;
+    private final AntecedentesOdontologiaJpaController controladorOdontologia;
+    private final ValorJpaController controladoraValores;
     
     private Paciente paciente;
 
@@ -29,37 +29,37 @@ public class AntecedentesOdontologiaBean{
     public AntecedentesOdontologiaBean() {
         paciente = PacienteBean.getSavedPaciente();
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
-        obj = new AntecedentesOdontologia();
-        aojc = new AntecedentesOdontologiaJpaController(emf);
-        vjc = new ValorJpaController(emf);
+        antecedentesOdontologia = new AntecedentesOdontologia();
+        controladorOdontologia = new AntecedentesOdontologiaJpaController(emf);
+        controladoraValores = new ValorJpaController(emf);
     }
     
     public void init(){
-        listaAntecedentes = aojc.findAntecedentesOdontologiaEntities();
+        listaAntecedentes = controladorOdontologia.findAntecedentesOdontologiaEntities();
     }
     
     public void agregar() throws Exception{
         
-        obj.setPacienteid(paciente);
-        obj.setFecha(new Date());
-        aojc.create(obj);
+        antecedentesOdontologia.setPacienteid(paciente.getId());
+        antecedentesOdontologia.setFecha(new Date());
+        controladorOdontologia.create(antecedentesOdontologia);
         
-        obj = new AntecedentesOdontologia();
+        antecedentesOdontologia = new AntecedentesOdontologia();
         
         
         
     }
     
     public void modificar() throws Exception{
-        aojc.edit(obj);
+        controladorOdontologia.edit(antecedentesOdontologia);
     }
     
-    public AntecedentesOdontologia consultarHistorial(Integer pacienteId){
-        return aojc.findAntecedentesOdontologia(pacienteId);
+    public AntecedentesOdontologia consultarHistorial(String pacienteId){
+        return controladorOdontologia.findAntecedentesOdontologia(pacienteId);
     }
     
     public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return this.vjc.findByCodeId(codigo);
+        return this.controladoraValores.findByCodeId(codigo);
     } 
    
     public List<AntecedentesOdontologia> getListaAntecedentes(){
@@ -71,11 +71,11 @@ public class AntecedentesOdontologiaBean{
     }
     
     public AntecedentesOdontologia getObjAntecedente(){
-        return obj;
+        return antecedentesOdontologia;
     }
     
     public void setObjAntecedente(AntecedentesOdontologia nuevoAntecedente){
-        this.obj=nuevoAntecedente;
+        this.antecedentesOdontologia=nuevoAntecedente;
     }
      
     public void save() {

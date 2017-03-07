@@ -25,37 +25,25 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 @Entity
 @Table(name = "paciente")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Paciente.findAll", query = "SELECT p FROM Paciente p")
-    ,
-    @NamedQuery(name = "Paciente.findById", query = "SELECT p FROM Paciente p WHERE p.id = :id")
-    ,
-    @NamedQuery(name = "Paciente.findByNombre", query = "SELECT p FROM Paciente p WHERE p.nombre = :nombre")
-    ,
-    @NamedQuery(name = "Paciente.findByPrimerApellido", query = "SELECT p FROM Paciente p WHERE p.primerApellido = :primerApellido")
-    ,
-    @NamedQuery(name = "Paciente.findBySegundoApellido", query = "SELECT p FROM Paciente p WHERE p.segundoApellido = :segundoApellido")
-    ,
-    @NamedQuery(name = "Paciente.findByTelefono", query = "SELECT p FROM Paciente p WHERE p.telefono = :telefono")
-    ,
-    @NamedQuery(name = "Paciente.findByCelular", query = "SELECT p FROM Paciente p WHERE p.celular = :celular")
-    ,
-    @NamedQuery(name = "Paciente.findByEstadoCivil", query = "SELECT p FROM Paciente p WHERE p.estadoCivil = :estadoCivil")
-    ,
-    @NamedQuery(name = "Paciente.findByNacimiento", query = "SELECT p FROM Paciente p WHERE p.nacimiento = :nacimiento")
-    ,
-    @NamedQuery(name = "Paciente.findByDomicilio", query = "SELECT p FROM Paciente p WHERE p.domicilio = :domicilio")
-    ,
-    @NamedQuery(name = "Paciente.findByOcupacion", query = "SELECT p FROM Paciente p WHERE p.ocupacion = :ocupacion")
-    ,
-    @NamedQuery(name = "Paciente.findByCorreo", query = "SELECT p FROM Paciente p WHERE p.correo = :correo")
-    ,
-    @NamedQuery(name = "Paciente.findByGenero", query = "SELECT p FROM Paciente p WHERE p.genero = :genero")})
+    , @NamedQuery(name = "Paciente.findById", query = "SELECT p FROM Paciente p WHERE p.id = :id")
+    , @NamedQuery(name = "Paciente.findByNombre", query = "SELECT p FROM Paciente p WHERE p.nombre = :nombre")
+    , @NamedQuery(name = "Paciente.findByPrimerApellido", query = "SELECT p FROM Paciente p WHERE p.primerApellido = :primerApellido")
+    , @NamedQuery(name = "Paciente.findBySegundoApellido", query = "SELECT p FROM Paciente p WHERE p.segundoApellido = :segundoApellido")
+    , @NamedQuery(name = "Paciente.findByTelefono", query = "SELECT p FROM Paciente p WHERE p.telefono = :telefono")
+    , @NamedQuery(name = "Paciente.findByCelular", query = "SELECT p FROM Paciente p WHERE p.celular = :celular")
+    , @NamedQuery(name = "Paciente.findByEstadoCivil", query = "SELECT p FROM Paciente p WHERE p.estadoCivil = :estadoCivil")
+    , @NamedQuery(name = "Paciente.findByNacimiento", query = "SELECT p FROM Paciente p WHERE p.nacimiento = :nacimiento")
+    , @NamedQuery(name = "Paciente.findByDomicilio", query = "SELECT p FROM Paciente p WHERE p.domicilio = :domicilio")
+    , @NamedQuery(name = "Paciente.findByOcupacion", query = "SELECT p FROM Paciente p WHERE p.ocupacion = :ocupacion")
+    , @NamedQuery(name = "Paciente.findByCorreo", query = "SELECT p FROM Paciente p WHERE p.correo = :correo")
+    , @NamedQuery(name = "Paciente.findByGenero", query = "SELECT p FROM Paciente p WHERE p.genero = :genero")})
 public class Paciente implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -87,17 +75,17 @@ public class Paciente implements Serializable {
     private String correo;
     @Column(name = "genero")
     private String genero;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacienteid", fetch = FetchType.LAZY)
-    private List<AntecedentesGinecologia> antecedentesGinecologiaList;
+
+    
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacienteid", fetch = FetchType.LAZY)
     private List<Responsable> responsableList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacienteid", fetch = FetchType.LAZY)
-    private List<AntecedentesOdontologia> antecedentesOdontologiaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacienteid", fetch = FetchType.LAZY)
     private List<Cita> citaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacienteid", fetch = FetchType.LAZY)
     private List<Consulta> consultaList;
-
+    
+    
     public Paciente() {
     }
 
@@ -206,51 +194,6 @@ public class Paciente implements Serializable {
         this.genero = genero;
     }
 
-    @XmlTransient
-    public List<AntecedentesGinecologia> getAntecedentesGinecologiaList() {
-        return antecedentesGinecologiaList;
-    }
-
-    public void setAntecedentesGinecologiaList(List<AntecedentesGinecologia> antecedentesGinecologiaList) {
-        this.antecedentesGinecologiaList = antecedentesGinecologiaList;
-    }
-
-    @XmlTransient
-    public List<Responsable> getResponsableList() {
-        return responsableList;
-    }
-
-    public void setResponsableList(List<Responsable> responsableList) {
-        this.responsableList = responsableList;
-    }
-
-    @XmlTransient
-    public List<AntecedentesOdontologia> getAntecedentesOdontologiaList() {
-        return antecedentesOdontologiaList;
-    }
-
-    public void setAntecedentesOdontologiaList(List<AntecedentesOdontologia> antecedentesOdontologiaList) {
-        this.antecedentesOdontologiaList = antecedentesOdontologiaList;
-    }
-
-    @XmlTransient
-    public List<Cita> getCitaList() {
-        return citaList;
-    }
-
-    public void setCitaList(List<Cita> citaList) {
-        this.citaList = citaList;
-    }
-
-    @XmlTransient
-    public List<Consulta> getConsultaList() {
-        return consultaList;
-    }
-
-    public void setConsultaList(List<Consulta> consultaList) {
-        this.consultaList = consultaList;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -271,15 +214,46 @@ public class Paciente implements Serializable {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "com.sicom.entities.Paciente[ id=" + id + " ]";
+    }
+    
+    
+    
+     @XmlTransient
+    public List<Responsable> getResponsableList() {
+        return responsableList;
+    }
+
+    public void setResponsableList(List<Responsable> responsableList) {
+        this.responsableList = responsableList;
+    }
+    
     public Responsable getResponsable(int i) {
         return (i >= 0 && i < responsableList.size())
                 ? responsableList.get(i)
                 : null;
     }
-
-    @Override
-    public String toString() {
-        return "com.sicom.entities.Paciente[ id=" + id + " ]";
+    
+    
+    @XmlTransient
+    public List<Cita> getCitaList() {
+        return citaList;
     }
 
+    public void setCitaList(List<Cita> citaList) {
+        this.citaList = citaList;
+    }
+
+     @XmlTransient
+    public List<Consulta> getConsultaList() {
+        return consultaList;
+    }
+
+    public void setConsultaList(List<Consulta> consultaList) {
+        this.consultaList = consultaList;
+    }
+    
+    
 }

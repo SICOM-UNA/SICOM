@@ -13,7 +13,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Departamento;
-import com.sicom.entities.Paciente;
 import com.sicom.entities.Personal;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -21,7 +20,7 @@ import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 public class CitaJpaController implements Serializable {
 
@@ -44,11 +43,6 @@ public class CitaJpaController implements Serializable {
                 departamentoId = em.getReference(departamentoId.getClass(), departamentoId.getId());
                 cita.setDepartamentoId(departamentoId);
             }
-            Paciente pacienteid = cita.getPacienteid();
-            if (pacienteid != null) {
-                pacienteid = em.getReference(pacienteid.getClass(), pacienteid.getId());
-                cita.setPacienteid(pacienteid);
-            }
             Personal personalid = cita.getPersonalid();
             if (personalid != null) {
                 personalid = em.getReference(personalid.getClass(), personalid.getId());
@@ -58,10 +52,6 @@ public class CitaJpaController implements Serializable {
             if (departamentoId != null) {
                 departamentoId.getCitaList().add(cita);
                 departamentoId = em.merge(departamentoId);
-            }
-            if (pacienteid != null) {
-                pacienteid.getCitaList().add(cita);
-                pacienteid = em.merge(pacienteid);
             }
             if (personalid != null) {
                 personalid.getCitaList().add(cita);
@@ -83,17 +73,11 @@ public class CitaJpaController implements Serializable {
             Cita persistentCita = em.find(Cita.class, cita.getId());
             Departamento departamentoIdOld = persistentCita.getDepartamentoId();
             Departamento departamentoIdNew = cita.getDepartamentoId();
-            Paciente pacienteidOld = persistentCita.getPacienteid();
-            Paciente pacienteidNew = cita.getPacienteid();
             Personal personalidOld = persistentCita.getPersonalid();
             Personal personalidNew = cita.getPersonalid();
             if (departamentoIdNew != null) {
                 departamentoIdNew = em.getReference(departamentoIdNew.getClass(), departamentoIdNew.getId());
                 cita.setDepartamentoId(departamentoIdNew);
-            }
-            if (pacienteidNew != null) {
-                pacienteidNew = em.getReference(pacienteidNew.getClass(), pacienteidNew.getId());
-                cita.setPacienteid(pacienteidNew);
             }
             if (personalidNew != null) {
                 personalidNew = em.getReference(personalidNew.getClass(), personalidNew.getId());
@@ -107,14 +91,6 @@ public class CitaJpaController implements Serializable {
             if (departamentoIdNew != null && !departamentoIdNew.equals(departamentoIdOld)) {
                 departamentoIdNew.getCitaList().add(cita);
                 departamentoIdNew = em.merge(departamentoIdNew);
-            }
-            if (pacienteidOld != null && !pacienteidOld.equals(pacienteidNew)) {
-                pacienteidOld.getCitaList().remove(cita);
-                pacienteidOld = em.merge(pacienteidOld);
-            }
-            if (pacienteidNew != null && !pacienteidNew.equals(pacienteidOld)) {
-                pacienteidNew.getCitaList().add(cita);
-                pacienteidNew = em.merge(pacienteidNew);
             }
             if (personalidOld != null && !personalidOld.equals(personalidNew)) {
                 personalidOld.getCitaList().remove(cita);
@@ -157,11 +133,6 @@ public class CitaJpaController implements Serializable {
             if (departamentoId != null) {
                 departamentoId.getCitaList().remove(cita);
                 departamentoId = em.merge(departamentoId);
-            }
-            Paciente pacienteid = cita.getPacienteid();
-            if (pacienteid != null) {
-                pacienteid.getCitaList().remove(cita);
-                pacienteid = em.merge(pacienteid);
             }
             Personal personalid = cita.getPersonalid();
             if (personalid != null) {

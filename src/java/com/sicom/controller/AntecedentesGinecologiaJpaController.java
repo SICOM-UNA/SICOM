@@ -5,21 +5,25 @@
  */
 package com.sicom.controller;
 
+import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.controller.exceptions.NonexistentEntityException;
+import com.sicom.controller.exceptions.PreexistingEntityException;
 import com.sicom.entities.AntecedentesGinecologia;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.sicom.entities.Paciente;
+import com.sicom.entities.Examen;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 public class AntecedentesGinecologiaJpaController implements Serializable {
 
@@ -32,22 +36,36 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(AntecedentesGinecologia antecedentesGinecologia) {
+    public void create(AntecedentesGinecologia antecedentesGinecologia) throws PreexistingEntityException, Exception {
+        if (antecedentesGinecologia.getExamenCollection() == null) {
+            antecedentesGinecologia.setExamenCollection(new ArrayList<Examen>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Paciente pacienteid = antecedentesGinecologia.getPacienteid();
-            if (pacienteid != null) {
-                pacienteid = em.getReference(pacienteid.getClass(), pacienteid.getId());
-                antecedentesGinecologia.setPacienteid(pacienteid);
+            Collection<Examen> attachedExamenCollection = new ArrayList<Examen>();
+            for (Examen examenCollectionExamenToAttach : antecedentesGinecologia.getExamenCollection()) {
+                examenCollectionExamenToAttach = em.getReference(examenCollectionExamenToAttach.getClass(), examenCollectionExamenToAttach.getId());
+                attachedExamenCollection.add(examenCollectionExamenToAttach);
             }
+            antecedentesGinecologia.setExamenCollection(attachedExamenCollection);
             em.persist(antecedentesGinecologia);
-            if (pacienteid != null) {
-                pacienteid.getAntecedentesGinecologiaList().add(antecedentesGinecologia);
-                pacienteid = em.merge(pacienteid);
+            for (Examen examenCollectionExamen : antecedentesGinecologia.getExamenCollection()) {
+                AntecedentesGinecologia oldPacienteIdOfExamenCollectionExamen = examenCollectionExamen.getPacienteId();
+                examenCollectionExamen.setPacienteId(antecedentesGinecologia);
+                examenCollectionExamen = em.merge(examenCollectionExamen);
+                if (oldPacienteIdOfExamenCollectionExamen != null) {
+                    oldPacienteIdOfExamenCollectionExamen.getExamenCollection().remove(examenCollectionExamen);
+                    oldPacienteIdOfExamenCollectionExamen = em.merge(oldPacienteIdOfExamenCollectionExamen);
+                }
             }
             em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (findAntecedentesGinecologia(antecedentesGinecologia.getPacienteid()) != null) {
+                throw new PreexistingEntityException("AntecedentesGinecologia " + antecedentesGinecologia + " already exists.", ex);
+            }
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -55,32 +73,50 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
         }
     }
 
-    public void edit(AntecedentesGinecologia antecedentesGinecologia) throws NonexistentEntityException, Exception {
+    public void edit(AntecedentesGinecologia antecedentesGinecologia) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            AntecedentesGinecologia persistentAntecedentesGinecologia = em.find(AntecedentesGinecologia.class, antecedentesGinecologia.getId());
-            Paciente pacienteidOld = persistentAntecedentesGinecologia.getPacienteid();
-            Paciente pacienteidNew = antecedentesGinecologia.getPacienteid();
-            if (pacienteidNew != null) {
-                pacienteidNew = em.getReference(pacienteidNew.getClass(), pacienteidNew.getId());
-                antecedentesGinecologia.setPacienteid(pacienteidNew);
+            AntecedentesGinecologia persistentAntecedentesGinecologia = em.find(AntecedentesGinecologia.class, antecedentesGinecologia.getPacienteid());
+            Collection<Examen> examenCollectionOld = persistentAntecedentesGinecologia.getExamenCollection();
+            Collection<Examen> examenCollectionNew = antecedentesGinecologia.getExamenCollection();
+            List<String> illegalOrphanMessages = null;
+            for (Examen examenCollectionOldExamen : examenCollectionOld) {
+                if (!examenCollectionNew.contains(examenCollectionOldExamen)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain Examen " + examenCollectionOldExamen + " since its pacienteId field is not nullable.");
+                }
             }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            Collection<Examen> attachedExamenCollectionNew = new ArrayList<Examen>();
+            for (Examen examenCollectionNewExamenToAttach : examenCollectionNew) {
+                examenCollectionNewExamenToAttach = em.getReference(examenCollectionNewExamenToAttach.getClass(), examenCollectionNewExamenToAttach.getId());
+                attachedExamenCollectionNew.add(examenCollectionNewExamenToAttach);
+            }
+            examenCollectionNew = attachedExamenCollectionNew;
+            antecedentesGinecologia.setExamenCollection(examenCollectionNew);
             antecedentesGinecologia = em.merge(antecedentesGinecologia);
-            if (pacienteidOld != null && !pacienteidOld.equals(pacienteidNew)) {
-                pacienteidOld.getAntecedentesGinecologiaList().remove(antecedentesGinecologia);
-                pacienteidOld = em.merge(pacienteidOld);
-            }
-            if (pacienteidNew != null && !pacienteidNew.equals(pacienteidOld)) {
-                pacienteidNew.getAntecedentesGinecologiaList().add(antecedentesGinecologia);
-                pacienteidNew = em.merge(pacienteidNew);
+            for (Examen examenCollectionNewExamen : examenCollectionNew) {
+                if (!examenCollectionOld.contains(examenCollectionNewExamen)) {
+                    AntecedentesGinecologia oldPacienteIdOfExamenCollectionNewExamen = examenCollectionNewExamen.getPacienteId();
+                    examenCollectionNewExamen.setPacienteId(antecedentesGinecologia);
+                    examenCollectionNewExamen = em.merge(examenCollectionNewExamen);
+                    if (oldPacienteIdOfExamenCollectionNewExamen != null && !oldPacienteIdOfExamenCollectionNewExamen.equals(antecedentesGinecologia)) {
+                        oldPacienteIdOfExamenCollectionNewExamen.getExamenCollection().remove(examenCollectionNewExamen);
+                        oldPacienteIdOfExamenCollectionNewExamen = em.merge(oldPacienteIdOfExamenCollectionNewExamen);
+                    }
+                }
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                String id = antecedentesGinecologia.getPacienteid().getId();
+                String id = antecedentesGinecologia.getPacienteid();
                 if (findAntecedentesGinecologia(id) == null) {
                     throw new NonexistentEntityException("The antecedentesGinecologia with id " + id + " no longer exists.");
                 }
@@ -93,7 +129,7 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(String id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -101,14 +137,20 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
             AntecedentesGinecologia antecedentesGinecologia;
             try {
                 antecedentesGinecologia = em.getReference(AntecedentesGinecologia.class, id);
-                antecedentesGinecologia.getId();
+                antecedentesGinecologia.getPacienteid();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The antecedentesGinecologia with id " + id + " no longer exists.", enfe);
             }
-            Paciente pacienteid = antecedentesGinecologia.getPacienteid();
-            if (pacienteid != null) {
-                pacienteid.getAntecedentesGinecologiaList().remove(antecedentesGinecologia);
-                pacienteid = em.merge(pacienteid);
+            List<String> illegalOrphanMessages = null;
+            Collection<Examen> examenCollectionOrphanCheck = antecedentesGinecologia.getExamenCollection();
+            for (Examen examenCollectionOrphanCheckExamen : examenCollectionOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This AntecedentesGinecologia (" + antecedentesGinecologia + ") cannot be destroyed since the Examen " + examenCollectionOrphanCheckExamen + " in its examenCollection field has a non-nullable pacienteId field.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(antecedentesGinecologia);
             em.getTransaction().commit();
