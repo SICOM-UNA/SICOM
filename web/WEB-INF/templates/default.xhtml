@@ -56,7 +56,12 @@ and open the template in the editor.
                             <p:menuitem value="Agregar" url="/app/personal/agregar" icon="ui-icon-plus"/>
                             <p:menuitem value="Buscar" url="/app/paciente/consultar" icon="ui-icon-search"/>
                         </p:submenu>
-
+                        
+                        <p:submenu label="Usuario" icon="ui-icon-person">
+                            <p:menuitem value="Agregar" url="/app/usuario/agregar" icon="ui-icon-plus"/>
+                            <p:menuitem value="Modificar" url="/app/usuario/modificar" icon="ui-icon-pencil"/>
+                            <p:menuitem value="Buscar" url="/app/usuario/consultar" icon="ui-icon-search"/>
+                        </p:submenu>
                         
                         <f:facet name="options">
                             <p:commandButton value="Salir" action="#{loginBean.cerrarSesion}" icon="ui-icon-power"/>
