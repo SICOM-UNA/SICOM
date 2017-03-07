@@ -36,29 +36,11 @@ public class LoginJpaController implements Serializable {
     }
 
     public void create(Login login) throws PreexistingEntityException, Exception {
-        if (login.getPersonalList() == null) {
-            login.setPersonalList(new ArrayList<Personal>());
-        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<Personal> attachedPersonalList = new ArrayList<Personal>();
-            for (Personal personalListPersonalToAttach : login.getPersonalList()) {
-                personalListPersonalToAttach = em.getReference(personalListPersonalToAttach.getClass(), personalListPersonalToAttach.getId());
-                attachedPersonalList.add(personalListPersonalToAttach);
-            }
-            login.setPersonalList(attachedPersonalList);
             em.persist(login);
-            for (Personal personalListPersonal : login.getPersonalList()) {
-                Login oldLoginUsuarioOfPersonalListPersonal = personalListPersonal.getLoginUsuario();
-                personalListPersonal.setLoginUsuario(login);
-                personalListPersonal = em.merge(personalListPersonal);
-                if (oldLoginUsuarioOfPersonalListPersonal != null) {
-                    oldLoginUsuarioOfPersonalListPersonal.getPersonalList().remove(personalListPersonal);
-                    oldLoginUsuarioOfPersonalListPersonal = em.merge(oldLoginUsuarioOfPersonalListPersonal);
-                }
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findLogin(login.getUsuario()) != null) {
@@ -77,40 +59,7 @@ public class LoginJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Login persistentLogin = em.find(Login.class, login.getUsuario());
-            List<Personal> personalListOld = persistentLogin.getPersonalList();
-            List<Personal> personalListNew = login.getPersonalList();
-            List<String> illegalOrphanMessages = null;
-            for (Personal personalListOldPersonal : personalListOld) {
-                if (!personalListNew.contains(personalListOldPersonal)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Personal " + personalListOldPersonal + " since its loginUsuario field is not nullable.");
-                }
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            List<Personal> attachedPersonalListNew = new ArrayList<Personal>();
-            for (Personal personalListNewPersonalToAttach : personalListNew) {
-                personalListNewPersonalToAttach = em.getReference(personalListNewPersonalToAttach.getClass(), personalListNewPersonalToAttach.getId());
-                attachedPersonalListNew.add(personalListNewPersonalToAttach);
-            }
-            personalListNew = attachedPersonalListNew;
-            login.setPersonalList(personalListNew);
             login = em.merge(login);
-            for (Personal personalListNewPersonal : personalListNew) {
-                if (!personalListOld.contains(personalListNewPersonal)) {
-                    Login oldLoginUsuarioOfPersonalListNewPersonal = personalListNewPersonal.getLoginUsuario();
-                    personalListNewPersonal.setLoginUsuario(login);
-                    personalListNewPersonal = em.merge(personalListNewPersonal);
-                    if (oldLoginUsuarioOfPersonalListNewPersonal != null && !oldLoginUsuarioOfPersonalListNewPersonal.equals(login)) {
-                        oldLoginUsuarioOfPersonalListNewPersonal.getPersonalList().remove(personalListNewPersonal);
-                        oldLoginUsuarioOfPersonalListNewPersonal = em.merge(oldLoginUsuarioOfPersonalListNewPersonal);
-                    }
-                }
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
