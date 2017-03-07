@@ -7,18 +7,21 @@ package com.sicom.entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -72,11 +75,17 @@ public class Paciente implements Serializable {
     private String correo;
     @Column(name = "genero")
     private String genero;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "paciente")
-    private AntecedentesGinecologia antecedentesGinecologia;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "paciente")
-    private AntecedentesOdontologia antecedentesOdontologia;
 
+    
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacienteid", fetch = FetchType.LAZY)
+    private List<Responsable> responsableList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacienteid", fetch = FetchType.LAZY)
+    private List<Cita> citaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacienteid", fetch = FetchType.LAZY)
+    private List<Consulta> consultaList;
+    
+    
     public Paciente() {
     }
 
@@ -185,22 +194,6 @@ public class Paciente implements Serializable {
         this.genero = genero;
     }
 
-    public AntecedentesGinecologia getAntecedentesGinecologia() {
-        return antecedentesGinecologia;
-    }
-
-    public void setAntecedentesGinecologia(AntecedentesGinecologia antecedentesGinecologia) {
-        this.antecedentesGinecologia = antecedentesGinecologia;
-    }
-
-    public AntecedentesOdontologia getAntecedentesOdontologia() {
-        return antecedentesOdontologia;
-    }
-
-    public void setAntecedentesOdontologia(AntecedentesOdontologia antecedentesOdontologia) {
-        this.antecedentesOdontologia = antecedentesOdontologia;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -225,5 +218,42 @@ public class Paciente implements Serializable {
     public String toString() {
         return "com.sicom.entities.Paciente[ id=" + id + " ]";
     }
+    
+    
+    
+     @XmlTransient
+    public List<Responsable> getResponsableList() {
+        return responsableList;
+    }
+
+    public void setResponsableList(List<Responsable> responsableList) {
+        this.responsableList = responsableList;
+    }
+    
+    public Responsable getResponsable(int i) {
+        return (i >= 0 && i < responsableList.size())
+                ? responsableList.get(i)
+                : null;
+    }
+    
+    
+    @XmlTransient
+    public List<Cita> getCitaList() {
+        return citaList;
+    }
+
+    public void setCitaList(List<Cita> citaList) {
+        this.citaList = citaList;
+    }
+
+     @XmlTransient
+    public List<Consulta> getConsultaList() {
+        return consultaList;
+    }
+
+    public void setConsultaList(List<Consulta> consultaList) {
+        this.consultaList = consultaList;
+    }
+    
     
 }

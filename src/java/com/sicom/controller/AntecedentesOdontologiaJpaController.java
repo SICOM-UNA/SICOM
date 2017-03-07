@@ -5,20 +5,17 @@
  */
 package com.sicom.controller;
 
-import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.controller.exceptions.PreexistingEntityException;
 import com.sicom.entities.AntecedentesOdontologia;
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.sicom.entities.Paciente;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 /**
  *
@@ -35,35 +32,12 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(AntecedentesOdontologia antecedentesOdontologia) throws IllegalOrphanException, PreexistingEntityException, Exception {
-        List<String> illegalOrphanMessages = null;
-        Paciente pacienteOrphanCheck = antecedentesOdontologia.getPaciente();
-        if (pacienteOrphanCheck != null) {
-            AntecedentesOdontologia oldAntecedentesOdontologiaOfPaciente = pacienteOrphanCheck.getAntecedentesOdontologia();
-            if (oldAntecedentesOdontologiaOfPaciente != null) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("The Paciente " + pacienteOrphanCheck + " already has an item of type AntecedentesOdontologia whose paciente column cannot be null. Please make another selection for the paciente field.");
-            }
-        }
-        if (illegalOrphanMessages != null) {
-            throw new IllegalOrphanException(illegalOrphanMessages);
-        }
+    public void create(AntecedentesOdontologia antecedentesOdontologia) throws PreexistingEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Paciente paciente = antecedentesOdontologia.getPaciente();
-            if (paciente != null) {
-                paciente = em.getReference(paciente.getClass(), paciente.getId());
-                antecedentesOdontologia.setPaciente(paciente);
-            }
             em.persist(antecedentesOdontologia);
-            if (paciente != null) {
-                paciente.setAntecedentesOdontologia(antecedentesOdontologia);
-                paciente = em.merge(paciente);
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findAntecedentesOdontologia(antecedentesOdontologia.getPacienteid()) != null) {
@@ -77,40 +51,12 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         }
     }
 
-    public void edit(AntecedentesOdontologia antecedentesOdontologia) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(AntecedentesOdontologia antecedentesOdontologia) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            AntecedentesOdontologia persistentAntecedentesOdontologia = em.find(AntecedentesOdontologia.class, antecedentesOdontologia.getPacienteid());
-            Paciente pacienteOld = persistentAntecedentesOdontologia.getPaciente();
-            Paciente pacienteNew = antecedentesOdontologia.getPaciente();
-            List<String> illegalOrphanMessages = null;
-            if (pacienteNew != null && !pacienteNew.equals(pacienteOld)) {
-                AntecedentesOdontologia oldAntecedentesOdontologiaOfPaciente = pacienteNew.getAntecedentesOdontologia();
-                if (oldAntecedentesOdontologiaOfPaciente != null) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("The Paciente " + pacienteNew + " already has an item of type AntecedentesOdontologia whose paciente column cannot be null. Please make another selection for the paciente field.");
-                }
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            if (pacienteNew != null) {
-                pacienteNew = em.getReference(pacienteNew.getClass(), pacienteNew.getId());
-                antecedentesOdontologia.setPaciente(pacienteNew);
-            }
             antecedentesOdontologia = em.merge(antecedentesOdontologia);
-            if (pacienteOld != null && !pacienteOld.equals(pacienteNew)) {
-                pacienteOld.setAntecedentesOdontologia(null);
-                pacienteOld = em.merge(pacienteOld);
-            }
-            if (pacienteNew != null && !pacienteNew.equals(pacienteOld)) {
-                pacienteNew.setAntecedentesOdontologia(antecedentesOdontologia);
-                pacienteNew = em.merge(pacienteNew);
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -139,11 +85,6 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
                 antecedentesOdontologia.getPacienteid();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The antecedentesOdontologia with id " + id + " no longer exists.", enfe);
-            }
-            Paciente paciente = antecedentesOdontologia.getPaciente();
-            if (paciente != null) {
-                paciente.setAntecedentesOdontologia(null);
-                paciente = em.merge(paciente);
             }
             em.remove(antecedentesOdontologia);
             em.getTransaction().commit();

@@ -14,7 +14,6 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.sicom.entities.Paciente;
 import com.sicom.entities.Examen;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,33 +36,14 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(AntecedentesGinecologia antecedentesGinecologia) throws IllegalOrphanException, PreexistingEntityException, Exception {
+    public void create(AntecedentesGinecologia antecedentesGinecologia) throws PreexistingEntityException, Exception {
         if (antecedentesGinecologia.getExamenCollection() == null) {
             antecedentesGinecologia.setExamenCollection(new ArrayList<Examen>());
-        }
-        List<String> illegalOrphanMessages = null;
-        Paciente pacienteOrphanCheck = antecedentesGinecologia.getPaciente();
-        if (pacienteOrphanCheck != null) {
-            AntecedentesGinecologia oldAntecedentesGinecologiaOfPaciente = pacienteOrphanCheck.getAntecedentesGinecologia();
-            if (oldAntecedentesGinecologiaOfPaciente != null) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("The Paciente " + pacienteOrphanCheck + " already has an item of type AntecedentesGinecologia whose paciente column cannot be null. Please make another selection for the paciente field.");
-            }
-        }
-        if (illegalOrphanMessages != null) {
-            throw new IllegalOrphanException(illegalOrphanMessages);
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Paciente paciente = antecedentesGinecologia.getPaciente();
-            if (paciente != null) {
-                paciente = em.getReference(paciente.getClass(), paciente.getId());
-                antecedentesGinecologia.setPaciente(paciente);
-            }
             Collection<Examen> attachedExamenCollection = new ArrayList<Examen>();
             for (Examen examenCollectionExamenToAttach : antecedentesGinecologia.getExamenCollection()) {
                 examenCollectionExamenToAttach = em.getReference(examenCollectionExamenToAttach.getClass(), examenCollectionExamenToAttach.getId());
@@ -71,10 +51,6 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
             }
             antecedentesGinecologia.setExamenCollection(attachedExamenCollection);
             em.persist(antecedentesGinecologia);
-            if (paciente != null) {
-                paciente.setAntecedentesGinecologia(antecedentesGinecologia);
-                paciente = em.merge(paciente);
-            }
             for (Examen examenCollectionExamen : antecedentesGinecologia.getExamenCollection()) {
                 AntecedentesGinecologia oldPacienteIdOfExamenCollectionExamen = examenCollectionExamen.getPacienteId();
                 examenCollectionExamen.setPacienteId(antecedentesGinecologia);
@@ -103,20 +79,9 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             AntecedentesGinecologia persistentAntecedentesGinecologia = em.find(AntecedentesGinecologia.class, antecedentesGinecologia.getPacienteid());
-            Paciente pacienteOld = persistentAntecedentesGinecologia.getPaciente();
-            Paciente pacienteNew = antecedentesGinecologia.getPaciente();
             Collection<Examen> examenCollectionOld = persistentAntecedentesGinecologia.getExamenCollection();
             Collection<Examen> examenCollectionNew = antecedentesGinecologia.getExamenCollection();
             List<String> illegalOrphanMessages = null;
-            if (pacienteNew != null && !pacienteNew.equals(pacienteOld)) {
-                AntecedentesGinecologia oldAntecedentesGinecologiaOfPaciente = pacienteNew.getAntecedentesGinecologia();
-                if (oldAntecedentesGinecologiaOfPaciente != null) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("The Paciente " + pacienteNew + " already has an item of type AntecedentesGinecologia whose paciente column cannot be null. Please make another selection for the paciente field.");
-                }
-            }
             for (Examen examenCollectionOldExamen : examenCollectionOld) {
                 if (!examenCollectionNew.contains(examenCollectionOldExamen)) {
                     if (illegalOrphanMessages == null) {
@@ -128,10 +93,6 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (pacienteNew != null) {
-                pacienteNew = em.getReference(pacienteNew.getClass(), pacienteNew.getId());
-                antecedentesGinecologia.setPaciente(pacienteNew);
-            }
             Collection<Examen> attachedExamenCollectionNew = new ArrayList<Examen>();
             for (Examen examenCollectionNewExamenToAttach : examenCollectionNew) {
                 examenCollectionNewExamenToAttach = em.getReference(examenCollectionNewExamenToAttach.getClass(), examenCollectionNewExamenToAttach.getId());
@@ -140,14 +101,6 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
             examenCollectionNew = attachedExamenCollectionNew;
             antecedentesGinecologia.setExamenCollection(examenCollectionNew);
             antecedentesGinecologia = em.merge(antecedentesGinecologia);
-            if (pacienteOld != null && !pacienteOld.equals(pacienteNew)) {
-                pacienteOld.setAntecedentesGinecologia(null);
-                pacienteOld = em.merge(pacienteOld);
-            }
-            if (pacienteNew != null && !pacienteNew.equals(pacienteOld)) {
-                pacienteNew.setAntecedentesGinecologia(antecedentesGinecologia);
-                pacienteNew = em.merge(pacienteNew);
-            }
             for (Examen examenCollectionNewExamen : examenCollectionNew) {
                 if (!examenCollectionOld.contains(examenCollectionNewExamen)) {
                     AntecedentesGinecologia oldPacienteIdOfExamenCollectionNewExamen = examenCollectionNewExamen.getPacienteId();
@@ -198,11 +151,6 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            Paciente paciente = antecedentesGinecologia.getPaciente();
-            if (paciente != null) {
-                paciente.setAntecedentesGinecologia(null);
-                paciente = em.merge(paciente);
             }
             em.remove(antecedentesGinecologia);
             em.getTransaction().commit();
