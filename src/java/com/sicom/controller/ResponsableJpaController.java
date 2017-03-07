@@ -7,20 +7,19 @@ package com.sicom.controller;
 
 import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.controller.exceptions.PreexistingEntityException;
+import com.sicom.entities.Responsable;
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.sicom.entities.Paciente;
-import com.sicom.entities.Responsable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 public class ResponsableJpaController implements Serializable {
 
@@ -38,16 +37,7 @@ public class ResponsableJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Paciente pacienteid = responsable.getPacienteid();
-            if (pacienteid != null) {
-                pacienteid = em.getReference(pacienteid.getClass(), pacienteid.getId());
-                responsable.setPacienteid(pacienteid);
-            }
             em.persist(responsable);
-            if (pacienteid != null) {
-                pacienteid.getResponsableList().add(responsable);
-                pacienteid = em.merge(pacienteid);
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findResponsable(responsable.getId()) != null) {
@@ -66,22 +56,7 @@ public class ResponsableJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Responsable persistentResponsable = em.find(Responsable.class, responsable.getId());
-            Paciente pacienteidOld = persistentResponsable.getPacienteid();
-            Paciente pacienteidNew = responsable.getPacienteid();
-            if (pacienteidNew != null) {
-                pacienteidNew = em.getReference(pacienteidNew.getClass(), pacienteidNew.getId());
-                responsable.setPacienteid(pacienteidNew);
-            }
             responsable = em.merge(responsable);
-            if (pacienteidOld != null && !pacienteidOld.equals(pacienteidNew)) {
-                pacienteidOld.getResponsableList().remove(responsable);
-                pacienteidOld = em.merge(pacienteidOld);
-            }
-            if (pacienteidNew != null && !pacienteidNew.equals(pacienteidOld)) {
-                pacienteidNew.getResponsableList().add(responsable);
-                pacienteidNew = em.merge(pacienteidNew);
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -110,11 +85,6 @@ public class ResponsableJpaController implements Serializable {
                 responsable.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The responsable with id " + id + " no longer exists.", enfe);
-            }
-            Paciente pacienteid = responsable.getPacienteid();
-            if (pacienteid != null) {
-                pacienteid.getResponsableList().remove(responsable);
-                pacienteid = em.merge(pacienteid);
             }
             em.remove(responsable);
             em.getTransaction().commit();

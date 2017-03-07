@@ -14,7 +14,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Departamento;
-import com.sicom.entities.Paciente;
 import com.sicom.entities.Personal;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +22,7 @@ import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 public class ConsultaJpaController implements Serializable {
 
@@ -46,11 +45,6 @@ public class ConsultaJpaController implements Serializable {
                 departamentoId = em.getReference(departamentoId.getClass(), departamentoId.getId());
                 consulta.setDepartamentoId(departamentoId);
             }
-            Paciente pacienteid = consulta.getPacienteid();
-            if (pacienteid != null) {
-                pacienteid = em.getReference(pacienteid.getClass(), pacienteid.getId());
-                consulta.setPacienteid(pacienteid);
-            }
             Personal personalId = consulta.getPersonalId();
             if (personalId != null) {
                 personalId = em.getReference(personalId.getClass(), personalId.getId());
@@ -60,10 +54,6 @@ public class ConsultaJpaController implements Serializable {
             if (departamentoId != null) {
                 departamentoId.getConsultaList().add(consulta);
                 departamentoId = em.merge(departamentoId);
-            }
-            if (pacienteid != null) {
-                pacienteid.getConsultaList().add(consulta);
-                pacienteid = em.merge(pacienteid);
             }
             if (personalId != null) {
                 personalId.getConsultaList().add(consulta);
@@ -90,17 +80,11 @@ public class ConsultaJpaController implements Serializable {
             Consulta persistentConsulta = em.find(Consulta.class, consulta.getFecha());
             Departamento departamentoIdOld = persistentConsulta.getDepartamentoId();
             Departamento departamentoIdNew = consulta.getDepartamentoId();
-            Paciente pacienteidOld = persistentConsulta.getPacienteid();
-            Paciente pacienteidNew = consulta.getPacienteid();
             Personal personalIdOld = persistentConsulta.getPersonalId();
             Personal personalIdNew = consulta.getPersonalId();
             if (departamentoIdNew != null) {
                 departamentoIdNew = em.getReference(departamentoIdNew.getClass(), departamentoIdNew.getId());
                 consulta.setDepartamentoId(departamentoIdNew);
-            }
-            if (pacienteidNew != null) {
-                pacienteidNew = em.getReference(pacienteidNew.getClass(), pacienteidNew.getId());
-                consulta.setPacienteid(pacienteidNew);
             }
             if (personalIdNew != null) {
                 personalIdNew = em.getReference(personalIdNew.getClass(), personalIdNew.getId());
@@ -114,14 +98,6 @@ public class ConsultaJpaController implements Serializable {
             if (departamentoIdNew != null && !departamentoIdNew.equals(departamentoIdOld)) {
                 departamentoIdNew.getConsultaList().add(consulta);
                 departamentoIdNew = em.merge(departamentoIdNew);
-            }
-            if (pacienteidOld != null && !pacienteidOld.equals(pacienteidNew)) {
-                pacienteidOld.getConsultaList().remove(consulta);
-                pacienteidOld = em.merge(pacienteidOld);
-            }
-            if (pacienteidNew != null && !pacienteidNew.equals(pacienteidOld)) {
-                pacienteidNew.getConsultaList().add(consulta);
-                pacienteidNew = em.merge(pacienteidNew);
             }
             if (personalIdOld != null && !personalIdOld.equals(personalIdNew)) {
                 personalIdOld.getConsultaList().remove(consulta);
@@ -164,11 +140,6 @@ public class ConsultaJpaController implements Serializable {
             if (departamentoId != null) {
                 departamentoId.getConsultaList().remove(consulta);
                 departamentoId = em.merge(departamentoId);
-            }
-            Paciente pacienteid = consulta.getPacienteid();
-            if (pacienteid != null) {
-                pacienteid.getConsultaList().remove(consulta);
-                pacienteid = em.merge(pacienteid);
             }
             Personal personalId = consulta.getPersonalId();
             if (personalId != null) {

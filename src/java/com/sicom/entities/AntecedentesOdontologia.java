@@ -10,14 +10,11 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -25,30 +22,29 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 @Entity
 @Table(name = "antecedentesodontologia")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "AntecedentesOdontologia.findAll", query = "SELECT a FROM AntecedentesOdontologia a"),
-    @NamedQuery(name = "AntecedentesOdontologia.findById", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.id = :id"),
-    @NamedQuery(name = "AntecedentesOdontologia.findByFecha", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.fecha = :fecha"),
-    @NamedQuery(name = "AntecedentesOdontologia.findByPatologicos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.patologicos = :patologicos"),
-    @NamedQuery(name = "AntecedentesOdontologia.findByNoPatologicos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.noPatologicos = :noPatologicos"),
-    @NamedQuery(name = "AntecedentesOdontologia.findByHereditarios", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.hereditarios = :hereditarios"),
-    @NamedQuery(name = "AntecedentesOdontologia.findByAlergias", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.alergias = :alergias"),
-    @NamedQuery(name = "AntecedentesOdontologia.findByQuirurgicos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.quirurgicos = :quirurgicos"),
-    @NamedQuery(name = "AntecedentesOdontologia.findByMoitvoConsulta", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.moitvoConsulta = :moitvoConsulta"),
-    @NamedQuery(name = "AntecedentesOdontologia.findByHabitos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.habitos = :habitos")})
+    @NamedQuery(name = "AntecedentesOdontologia.findAll", query = "SELECT a FROM AntecedentesOdontologia a")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByPacienteid", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.pacienteid = :pacienteid")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByFecha", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.fecha = :fecha")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByPatologicos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.patologicos = :patologicos")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByNoPatologicos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.noPatologicos = :noPatologicos")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByHereditarios", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.hereditarios = :hereditarios")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByAlergias", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.alergias = :alergias")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByQuirurgicos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.quirurgicos = :quirurgicos")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByMoitvoConsulta", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.moitvoConsulta = :moitvoConsulta")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByHabitos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.habitos = :habitos")})
 public class AntecedentesOdontologia implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
+    @Column(name = "Paciente_id")
+    private String pacienteid;
     @Basic(optional = false)
     @Column(name = "fecha")
     @Temporal(TemporalType.DATE)
@@ -68,29 +64,29 @@ public class AntecedentesOdontologia implements Serializable {
     private String moitvoConsulta;
     @Column(name = "habitos")
     private String habitos;
-    @JoinColumn(name = "Paciente_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Paciente pacienteid;
+    @JoinColumn(name = "Paciente_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @OneToOne(optional = false)
+    private Paciente paciente;
 
     public AntecedentesOdontologia() {
     }
 
-    public AntecedentesOdontologia(Integer id) {
-        this.id = id;
+    public AntecedentesOdontologia(String pacienteid) {
+        this.pacienteid = pacienteid;
     }
 
-    public AntecedentesOdontologia(Integer id, Date fecha, String patologicos) {
-        this.id = id;
+    public AntecedentesOdontologia(String pacienteid, Date fecha, String patologicos) {
+        this.pacienteid = pacienteid;
         this.fecha = fecha;
         this.patologicos = patologicos;
     }
 
-    public Integer getId() {
-        return id;
+    public String getPacienteid() {
+        return pacienteid;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setPacienteid(String pacienteid) {
+        this.pacienteid = pacienteid;
     }
 
     public Date getFecha() {
@@ -157,18 +153,18 @@ public class AntecedentesOdontologia implements Serializable {
         this.habitos = habitos;
     }
 
-    public Paciente getPacienteid() {
-        return pacienteid;
+    public Paciente getPaciente() {
+        return paciente;
     }
 
-    public void setPacienteid(Paciente pacienteid) {
-        this.pacienteid = pacienteid;
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (pacienteid != null ? pacienteid.hashCode() : 0);
         return hash;
     }
 
@@ -179,7 +175,7 @@ public class AntecedentesOdontologia implements Serializable {
             return false;
         }
         AntecedentesOdontologia other = (AntecedentesOdontologia) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.pacienteid == null && other.pacienteid != null) || (this.pacienteid != null && !this.pacienteid.equals(other.pacienteid))) {
             return false;
         }
         return true;
@@ -187,7 +183,7 @@ public class AntecedentesOdontologia implements Serializable {
 
     @Override
     public String toString() {
-        return "com.sicom.entities.AntecedentesOdontologia[ id=" + id + " ]";
+        return "com.sicom.entities.AntecedentesOdontologia[ pacienteid=" + pacienteid + " ]";
     }
     
 }

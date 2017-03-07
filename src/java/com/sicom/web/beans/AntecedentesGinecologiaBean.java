@@ -2,11 +2,14 @@ package com.sicom.web.beans;
 
 import com.sicom.controller.AntecedentesGinecologiaJpaController;
 import com.sicom.controller.ValorJpaController;
+import com.sicom.controller.exceptions.PreexistingEntityException;
 import com.sicom.entities.AntecedentesGinecologia;
 import com.sicom.entities.Paciente;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -19,7 +22,7 @@ import javax.persistence.Persistence;
 @ViewScoped
 public class AntecedentesGinecologiaBean {
 
-    private AntecedentesGinecologia obj;
+    private AntecedentesGinecologia antecedentesGinecologia;
     private List<AntecedentesGinecologia> listaAntecedentes;
     private final AntecedentesGinecologiaJpaController agjc;
     private final ValorJpaController vjc;
@@ -36,12 +39,12 @@ public class AntecedentesGinecologiaBean {
 
         if (paciente != null) {
 
-            obj = new AntecedentesGinecologia();
+            antecedentesGinecologia = new AntecedentesGinecologia();
 
-            obj.setGesta(0);
-            obj.setPartos(0);
-            obj.setAbortos(0);
-            obj.setEctopico(0);
+            antecedentesGinecologia.setGesta(0);
+            antecedentesGinecologia.setPartos(0);
+            antecedentesGinecologia.setAbortos(0);
+            antecedentesGinecologia.setEctopico(0);
 
         } else {
             FacesContext fc = FacesContext.getCurrentInstance();
@@ -56,9 +59,9 @@ public class AntecedentesGinecologiaBean {
         //AntecedentesGinecologia obj_aux = consultarHistorial(paciente.getId());
         /*
         if(obj_aux != null){
-            obj = obj_aux;
+            antecedentesGinecologia = obj_aux;
         }else{
-            obj = new AntecedentesGinecologia();
+            antecedentesGinecologia = new AntecedentesGinecologia();
         }
         */
     }
@@ -67,15 +70,19 @@ public class AntecedentesGinecologiaBean {
         listaAntecedentes = agjc.findAntecedentesGinecologiaEntities();
     }
 
-    public void agregar(){
-        obj.setPacienteid(paciente);
-        obj.setFecha(new Date());
-        agjc.create(obj);
-        obj = new AntecedentesGinecologia();
+    public void agregar() throws PreexistingEntityException{
+        try {
+            antecedentesGinecologia.setPacienteid(paciente.getId());
+            antecedentesGinecologia.setFecha(new Date());
+            agjc.create(antecedentesGinecologia);
+            antecedentesGinecologia = new AntecedentesGinecologia();
+        } catch (Exception ex) {
+            Logger.getLogger(AntecedentesGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void modificar() throws Exception {
-        agjc.edit(obj);
+        agjc.edit(antecedentesGinecologia);
     }
 
     public final AntecedentesGinecologia consultarHistorial(String pacienteId) {
@@ -117,11 +124,11 @@ public class AntecedentesGinecologiaBean {
     }
 
     public AntecedentesGinecologia getObjAntecedente() {
-        return obj;
+        return antecedentesGinecologia;
     }
 
     public void setObjAntecedente(AntecedentesGinecologia nuevoAntecedente) {
-        this.obj = nuevoAntecedente;
+        this.antecedentesGinecologia = nuevoAntecedente;
     }
 
     public Paciente getPaciente() {
