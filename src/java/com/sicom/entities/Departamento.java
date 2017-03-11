@@ -11,7 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,15 +23,15 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 @Entity
 @Table(name = "departamento")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Departamento.findAll", query = "SELECT d FROM Departamento d"),
-    @NamedQuery(name = "Departamento.findById", query = "SELECT d FROM Departamento d WHERE d.id = :id"),
-    @NamedQuery(name = "Departamento.findByNombre", query = "SELECT d FROM Departamento d WHERE d.nombre = :nombre")})
+    @NamedQuery(name = "Departamento.findAll", query = "SELECT d FROM Departamento d")
+    , @NamedQuery(name = "Departamento.findById", query = "SELECT d FROM Departamento d WHERE d.id = :id")
+    , @NamedQuery(name = "Departamento.findByNombre", query = "SELECT d FROM Departamento d WHERE d.nombre = :nombre")})
 public class Departamento implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,12 +43,12 @@ public class Departamento implements Serializable {
     @Basic(optional = false)
     @Column(name = "nombre")
     private String nombre;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamentoId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamentoid")
     private List<Personal> personalList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamentoId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamentoid")
+    private List<Documentos> documentosList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamentoid")
     private List<Cita> citaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamentoId", fetch = FetchType.LAZY)
-    private List<Consulta> consultaList;
 
     public Departamento() {
     }
@@ -89,21 +88,21 @@ public class Departamento implements Serializable {
     }
 
     @XmlTransient
+    public List<Documentos> getDocumentosList() {
+        return documentosList;
+    }
+
+    public void setDocumentosList(List<Documentos> documentosList) {
+        this.documentosList = documentosList;
+    }
+
+    @XmlTransient
     public List<Cita> getCitaList() {
         return citaList;
     }
 
     public void setCitaList(List<Cita> citaList) {
         this.citaList = citaList;
-    }
-
-    @XmlTransient
-    public List<Consulta> getConsultaList() {
-        return consultaList;
-    }
-
-    public void setConsultaList(List<Consulta> consultaList) {
-        this.consultaList = consultaList;
     }
 
     @Override

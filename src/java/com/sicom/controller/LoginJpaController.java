@@ -5,24 +5,21 @@
  */
 package com.sicom.controller;
 
-import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.controller.exceptions.PreexistingEntityException;
 import com.sicom.entities.Login;
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.sicom.entities.Personal;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 public class LoginJpaController implements Serializable {
 
@@ -54,7 +51,7 @@ public class LoginJpaController implements Serializable {
         }
     }
 
-    public void edit(Login login) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(Login login) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -77,7 +74,7 @@ public class LoginJpaController implements Serializable {
         }
     }
 
-    public void destroy(String id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(String id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -88,17 +85,6 @@ public class LoginJpaController implements Serializable {
                 login.getUsuario();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The login with id " + id + " no longer exists.", enfe);
-            }
-            List<String> illegalOrphanMessages = null;
-            List<Personal> personalListOrphanCheck = login.getPersonalList();
-            for (Personal personalListOrphanCheckPersonal : personalListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Login (" + login + ") cannot be destroyed since the Personal " + personalListOrphanCheckPersonal + " in its personalList field has a non-nullable loginUsuario field.");
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(login);
             em.getTransaction().commit();

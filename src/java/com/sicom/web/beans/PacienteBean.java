@@ -8,8 +8,6 @@ import com.sicom.entities.Paciente;
 import com.sicom.entities.Responsable;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -68,12 +66,12 @@ public class PacienteBean {
     // AGREGAR PACIENTE
     public void agregar() throws Exception {
         pjc.create(nuevoPaciente);
-        if (nuevoResponsable1.getId() != null) {
-            nuevoResponsable1.setPacienteid(nuevoPaciente);
+        if (nuevoResponsable1.getCedula() != null) {
+         nuevoResponsable1.setPacientecedula(nuevoPaciente);
             rjc.create(nuevoResponsable1);
         }
-        if (nuevoResponsable2.getId() != null) {
-            nuevoResponsable2.setPacienteid(nuevoPaciente);
+        if (nuevoResponsable2.getCedula() != null) {
+            nuevoResponsable2.setPacientecedula(nuevoPaciente);
             rjc.create(nuevoResponsable2);
         }
 
@@ -203,11 +201,11 @@ public class PacienteBean {
     // GENERAL METHODS
     public void buscaIdBase() {
 
-        if (selectedPaciente.getId() != null) {
+        if (selectedPaciente.getCedula() != null) {
 
-            String id = selectedPaciente.getId();
+            String id = selectedPaciente.getCedula();
 
-            Paciente p = this.pjc.findPaciente(selectedPaciente.getId());
+            Paciente p = this.pjc.findPaciente(selectedPaciente.getCedula());
 
             if (p != null) {
 
@@ -249,8 +247,8 @@ public class PacienteBean {
     }
 
     public void verificaID() {
-        if (nuevoPaciente.getId() != null) {
-            selectedPaciente.setId(nuevoPaciente.getId());
+        if (nuevoPaciente.getCedula() != null) {
+            selectedPaciente.setCedula(nuevoPaciente.getCedula());
             this.buscaIdBase();
         }
     }

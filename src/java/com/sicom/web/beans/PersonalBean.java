@@ -1,11 +1,8 @@
 package com.sicom.web.beans;
 
-
-
 import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.Personal;
 import com.sicom.controller.PersonalJpaController;
-
 import java.io.IOException;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -38,7 +35,6 @@ public class PersonalBean {
         selectedPersonal = new Personal();
         pjc = new PersonalJpaController(emf);
         cjv = new ValorJpaController(emf);
-       
     }
     
     @PostConstruct
@@ -48,8 +44,6 @@ public class PersonalBean {
     
     public void agregar() throws Exception {
         pjc.create(nuevoPersonal);
-        
-        
     }
     
     public void modificar() throws Exception {
@@ -66,14 +60,12 @@ public class PersonalBean {
 
     public void buscaIdBase() throws IOException{
      
-        if (selectedPersonal.getId() != null) {
-
-            Personal p = this.pjc.findPersonal(selectedPersonal.getId());
-
+        if (selectedPersonal.getCedula() != null) {
+            Personal p = this.pjc.findPersonal(selectedPersonal.getCedula());
             if (p != null) {
                 this.selectedPersonal = p;
-            } else {
-                FacesContext.getCurrentInstance().addMessage("No existe personal asignado a la identificación: ", new FacesMessage(p.getId()));
+            }else {
+                FacesContext.getCurrentInstance().addMessage("No existe personal asignado a la identificación: ", new FacesMessage(p.getCedula()));
             } 
         }
     }
@@ -104,11 +96,7 @@ public class PersonalBean {
             
             FacesMessage msg = new FacesMessage("Personal Agregado Exitosamente: ", this.nuevoPersonal.getNombre()+ nuevoPersonal.getPrimerApellido());
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            
             nuevoPersonal = new Personal();
-            
-            
-        
         } catch (Exception ex) {
             
             FacesMessage msg = new FacesMessage("Error, Personal No Se Pudo Agregar ", this.nuevoPersonal.getNombre()+ nuevoPersonal.getPrimerApellido());
@@ -118,10 +106,8 @@ public class PersonalBean {
    
       public int PersonalNuevoEdad(){
         if (this.nuevoPersonal != null && this.nuevoPersonal.getNacimiento() != null) {
-            
             DateTime birthdate = new DateTime(nuevoPersonal.getNacimiento());
             DateTime now = new DateTime();
-            
             return Years.yearsBetween(birthdate, now).getYears();
         } else {
             return 0;

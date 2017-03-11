@@ -6,7 +6,7 @@
 package com.sicom.controller;
 
 import com.sicom.controller.exceptions.NonexistentEntityException;
-import com.sicom.entities.AntecedentesOdontologia;
+import com.sicom.entities.ExamenColposcopia;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -21,9 +21,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author Pablo
  */
-public class AntecedentesOdontologiaJpaController implements Serializable {
+public class ExamenColposcopiaJpaController implements Serializable {
 
-    public AntecedentesOdontologiaJpaController(EntityManagerFactory emf) {
+    public ExamenColposcopiaJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -32,19 +32,19 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(AntecedentesOdontologia antecedentesOdontologia) {
+    public void create(ExamenColposcopia examenColposcopia) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Expediente expedienteid = antecedentesOdontologia.getExpedienteid();
+            Expediente expedienteid = examenColposcopia.getExpedienteid();
             if (expedienteid != null) {
                 expedienteid = em.getReference(expedienteid.getClass(), expedienteid.getId());
-                antecedentesOdontologia.setExpedienteid(expedienteid);
+                examenColposcopia.setExpedienteid(expedienteid);
             }
-            em.persist(antecedentesOdontologia);
+            em.persist(examenColposcopia);
             if (expedienteid != null) {
-                expedienteid.getAntecedentesOdontologiaList().add(antecedentesOdontologia);
+                expedienteid.getExamenColposcopiaList().add(examenColposcopia);
                 expedienteid = em.merge(expedienteid);
             }
             em.getTransaction().commit();
@@ -55,34 +55,34 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         }
     }
 
-    public void edit(AntecedentesOdontologia antecedentesOdontologia) throws NonexistentEntityException, Exception {
+    public void edit(ExamenColposcopia examenColposcopia) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            AntecedentesOdontologia persistentAntecedentesOdontologia = em.find(AntecedentesOdontologia.class, antecedentesOdontologia.getId());
-            Expediente expedienteidOld = persistentAntecedentesOdontologia.getExpedienteid();
-            Expediente expedienteidNew = antecedentesOdontologia.getExpedienteid();
+            ExamenColposcopia persistentExamenColposcopia = em.find(ExamenColposcopia.class, examenColposcopia.getId());
+            Expediente expedienteidOld = persistentExamenColposcopia.getExpedienteid();
+            Expediente expedienteidNew = examenColposcopia.getExpedienteid();
             if (expedienteidNew != null) {
                 expedienteidNew = em.getReference(expedienteidNew.getClass(), expedienteidNew.getId());
-                antecedentesOdontologia.setExpedienteid(expedienteidNew);
+                examenColposcopia.setExpedienteid(expedienteidNew);
             }
-            antecedentesOdontologia = em.merge(antecedentesOdontologia);
+            examenColposcopia = em.merge(examenColposcopia);
             if (expedienteidOld != null && !expedienteidOld.equals(expedienteidNew)) {
-                expedienteidOld.getAntecedentesOdontologiaList().remove(antecedentesOdontologia);
+                expedienteidOld.getExamenColposcopiaList().remove(examenColposcopia);
                 expedienteidOld = em.merge(expedienteidOld);
             }
             if (expedienteidNew != null && !expedienteidNew.equals(expedienteidOld)) {
-                expedienteidNew.getAntecedentesOdontologiaList().add(antecedentesOdontologia);
+                expedienteidNew.getExamenColposcopiaList().add(examenColposcopia);
                 expedienteidNew = em.merge(expedienteidNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = antecedentesOdontologia.getId();
-                if (findAntecedentesOdontologia(id) == null) {
-                    throw new NonexistentEntityException("The antecedentesOdontologia with id " + id + " no longer exists.");
+                Integer id = examenColposcopia.getId();
+                if (findExamenColposcopia(id) == null) {
+                    throw new NonexistentEntityException("The examenColposcopia with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -98,19 +98,19 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            AntecedentesOdontologia antecedentesOdontologia;
+            ExamenColposcopia examenColposcopia;
             try {
-                antecedentesOdontologia = em.getReference(AntecedentesOdontologia.class, id);
-                antecedentesOdontologia.getId();
+                examenColposcopia = em.getReference(ExamenColposcopia.class, id);
+                examenColposcopia.getId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The antecedentesOdontologia with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The examenColposcopia with id " + id + " no longer exists.", enfe);
             }
-            Expediente expedienteid = antecedentesOdontologia.getExpedienteid();
+            Expediente expedienteid = examenColposcopia.getExpedienteid();
             if (expedienteid != null) {
-                expedienteid.getAntecedentesOdontologiaList().remove(antecedentesOdontologia);
+                expedienteid.getExamenColposcopiaList().remove(examenColposcopia);
                 expedienteid = em.merge(expedienteid);
             }
-            em.remove(antecedentesOdontologia);
+            em.remove(examenColposcopia);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -119,19 +119,19 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         }
     }
 
-    public List<AntecedentesOdontologia> findAntecedentesOdontologiaEntities() {
-        return findAntecedentesOdontologiaEntities(true, -1, -1);
+    public List<ExamenColposcopia> findExamenColposcopiaEntities() {
+        return findExamenColposcopiaEntities(true, -1, -1);
     }
 
-    public List<AntecedentesOdontologia> findAntecedentesOdontologiaEntities(int maxResults, int firstResult) {
-        return findAntecedentesOdontologiaEntities(false, maxResults, firstResult);
+    public List<ExamenColposcopia> findExamenColposcopiaEntities(int maxResults, int firstResult) {
+        return findExamenColposcopiaEntities(false, maxResults, firstResult);
     }
 
-    private List<AntecedentesOdontologia> findAntecedentesOdontologiaEntities(boolean all, int maxResults, int firstResult) {
+    private List<ExamenColposcopia> findExamenColposcopiaEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(AntecedentesOdontologia.class));
+            cq.select(cq.from(ExamenColposcopia.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -143,20 +143,20 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         }
     }
 
-    public AntecedentesOdontologia findAntecedentesOdontologia(Integer id) {
+    public ExamenColposcopia findExamenColposcopia(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(AntecedentesOdontologia.class, id);
+            return em.find(ExamenColposcopia.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getAntecedentesOdontologiaCount() {
+    public int getExamenColposcopiaCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<AntecedentesOdontologia> rt = cq.from(AntecedentesOdontologia.class);
+            Root<ExamenColposcopia> rt = cq.from(ExamenColposcopia.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

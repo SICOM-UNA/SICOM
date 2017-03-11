@@ -13,14 +13,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Codigo;
 import com.sicom.entities.Valor;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 public class ValorJpaController implements Serializable {
 
@@ -166,67 +166,16 @@ public class ValorJpaController implements Serializable {
         }
     }
     
-    public List<String> findByCodeId(Integer codigo) {
-        List<String> listaValores = new ArrayList<>();
-
-        switch(codigo){
-            case 0://género
-                listaValores.add("Masculino");
-                listaValores.add("Femenino");
-                
-                break;
-            case 1://estado civil
-                listaValores.add("Soltero/a");
-                listaValores.add("Casado/a");
-                listaValores.add("Viudo/a");
-                listaValores.add("Divorciado/a");
-                
-                break;
-            case 2://vínculo
-                listaValores.add("Padre");
-                listaValores.add("Madre");
-                listaValores.add("Familiar");
-                listaValores.add("Esposo/a");
-                listaValores.add("Amigo/a");
-                listaValores.add("Otro");
-                
-                break;
-            case 3://referencias
-                listaValores.add("Periodico");
-                listaValores.add("Internet");
-                listaValores.add("Television");
-                listaValores.add("Otro");
-                
-                break;
-            case 4://tipoPeriodo
-                listaValores.add("Regular");
-                listaValores.add("Irregular");
-                listaValores.add("No Presenta");
-                
-                break;
-             case 5://tipoPlanificacion
-                listaValores.add("GO");
-                listaValores.add("GI");
-                listaValores.add("Condón");
-                listaValores.add("Ritmo");
-                listaValores.add("Coito Interrumpido");
-                listaValores.add("DIU");
-                listaValores.add("SPB");
-                listaValores.add("Vasectomia");
-                listaValores.add("Otro");
-                
-                break;
-                
-             case 6://nivel autorizacion
-                 listaValores.add("2 Subjefe");
-                 listaValores.add("3 Medico");
-                 listaValores.add("4 Asistente");
-                 listaValores.add("5 Secretaria");
-             
-                 break;
-           
-        }
-
+    public List<String> findByCodeId(Integer codigo_id) {
+        EntityManager em = getEntityManager();
+        
+        TypedQuery consulta = em.createNamedQuery("Valor.findByCodigoId", String.class);
+        consulta.setParameter("codigoId", codigo_id);
+        List<String> listaValores = consulta.getResultList();
+        
         return listaValores;
-   }
+    }
+    
+    
+    
 }

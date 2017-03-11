@@ -15,15 +15,15 @@ import javax.persistence.criteria.Root;
 import com.sicom.entities.Personal;
 import java.util.ArrayList;
 import java.util.List;
+import com.sicom.entities.Documentos;
 import com.sicom.entities.Cita;
-import com.sicom.entities.Consulta;
 import com.sicom.entities.Departamento;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 public class DepartamentoJpaController implements Serializable {
 
@@ -40,11 +40,11 @@ public class DepartamentoJpaController implements Serializable {
         if (departamento.getPersonalList() == null) {
             departamento.setPersonalList(new ArrayList<Personal>());
         }
+        if (departamento.getDocumentosList() == null) {
+            departamento.setDocumentosList(new ArrayList<Documentos>());
+        }
         if (departamento.getCitaList() == null) {
             departamento.setCitaList(new ArrayList<Cita>());
-        }
-        if (departamento.getConsultaList() == null) {
-            departamento.setConsultaList(new ArrayList<Consulta>());
         }
         EntityManager em = null;
         try {
@@ -52,48 +52,48 @@ public class DepartamentoJpaController implements Serializable {
             em.getTransaction().begin();
             List<Personal> attachedPersonalList = new ArrayList<Personal>();
             for (Personal personalListPersonalToAttach : departamento.getPersonalList()) {
-                personalListPersonalToAttach = em.getReference(personalListPersonalToAttach.getClass(), personalListPersonalToAttach.getId());
+                personalListPersonalToAttach = em.getReference(personalListPersonalToAttach.getClass(), personalListPersonalToAttach.getCedula());
                 attachedPersonalList.add(personalListPersonalToAttach);
             }
             departamento.setPersonalList(attachedPersonalList);
+            List<Documentos> attachedDocumentosList = new ArrayList<Documentos>();
+            for (Documentos documentosListDocumentosToAttach : departamento.getDocumentosList()) {
+                documentosListDocumentosToAttach = em.getReference(documentosListDocumentosToAttach.getClass(), documentosListDocumentosToAttach.getId());
+                attachedDocumentosList.add(documentosListDocumentosToAttach);
+            }
+            departamento.setDocumentosList(attachedDocumentosList);
             List<Cita> attachedCitaList = new ArrayList<Cita>();
             for (Cita citaListCitaToAttach : departamento.getCitaList()) {
                 citaListCitaToAttach = em.getReference(citaListCitaToAttach.getClass(), citaListCitaToAttach.getId());
                 attachedCitaList.add(citaListCitaToAttach);
             }
             departamento.setCitaList(attachedCitaList);
-            List<Consulta> attachedConsultaList = new ArrayList<Consulta>();
-            for (Consulta consultaListConsultaToAttach : departamento.getConsultaList()) {
-                consultaListConsultaToAttach = em.getReference(consultaListConsultaToAttach.getClass(), consultaListConsultaToAttach.getFecha());
-                attachedConsultaList.add(consultaListConsultaToAttach);
-            }
-            departamento.setConsultaList(attachedConsultaList);
             em.persist(departamento);
             for (Personal personalListPersonal : departamento.getPersonalList()) {
-                Departamento oldDepartamentoIdOfPersonalListPersonal = personalListPersonal.getDepartamentoId();
-                personalListPersonal.setDepartamentoId(departamento);
+                Departamento oldDepartamentoidOfPersonalListPersonal = personalListPersonal.getDepartamentoid();
+                personalListPersonal.setDepartamentoid(departamento);
                 personalListPersonal = em.merge(personalListPersonal);
-                if (oldDepartamentoIdOfPersonalListPersonal != null) {
-                    oldDepartamentoIdOfPersonalListPersonal.getPersonalList().remove(personalListPersonal);
-                    oldDepartamentoIdOfPersonalListPersonal = em.merge(oldDepartamentoIdOfPersonalListPersonal);
+                if (oldDepartamentoidOfPersonalListPersonal != null) {
+                    oldDepartamentoidOfPersonalListPersonal.getPersonalList().remove(personalListPersonal);
+                    oldDepartamentoidOfPersonalListPersonal = em.merge(oldDepartamentoidOfPersonalListPersonal);
+                }
+            }
+            for (Documentos documentosListDocumentos : departamento.getDocumentosList()) {
+                Departamento oldDepartamentoidOfDocumentosListDocumentos = documentosListDocumentos.getDepartamentoid();
+                documentosListDocumentos.setDepartamentoid(departamento);
+                documentosListDocumentos = em.merge(documentosListDocumentos);
+                if (oldDepartamentoidOfDocumentosListDocumentos != null) {
+                    oldDepartamentoidOfDocumentosListDocumentos.getDocumentosList().remove(documentosListDocumentos);
+                    oldDepartamentoidOfDocumentosListDocumentos = em.merge(oldDepartamentoidOfDocumentosListDocumentos);
                 }
             }
             for (Cita citaListCita : departamento.getCitaList()) {
-                Departamento oldDepartamentoIdOfCitaListCita = citaListCita.getDepartamentoId();
-                citaListCita.setDepartamentoId(departamento);
+                Departamento oldDepartamentoidOfCitaListCita = citaListCita.getDepartamentoid();
+                citaListCita.setDepartamentoid(departamento);
                 citaListCita = em.merge(citaListCita);
-                if (oldDepartamentoIdOfCitaListCita != null) {
-                    oldDepartamentoIdOfCitaListCita.getCitaList().remove(citaListCita);
-                    oldDepartamentoIdOfCitaListCita = em.merge(oldDepartamentoIdOfCitaListCita);
-                }
-            }
-            for (Consulta consultaListConsulta : departamento.getConsultaList()) {
-                Departamento oldDepartamentoIdOfConsultaListConsulta = consultaListConsulta.getDepartamentoId();
-                consultaListConsulta.setDepartamentoId(departamento);
-                consultaListConsulta = em.merge(consultaListConsulta);
-                if (oldDepartamentoIdOfConsultaListConsulta != null) {
-                    oldDepartamentoIdOfConsultaListConsulta.getConsultaList().remove(consultaListConsulta);
-                    oldDepartamentoIdOfConsultaListConsulta = em.merge(oldDepartamentoIdOfConsultaListConsulta);
+                if (oldDepartamentoidOfCitaListCita != null) {
+                    oldDepartamentoidOfCitaListCita.getCitaList().remove(citaListCita);
+                    oldDepartamentoidOfCitaListCita = em.merge(oldDepartamentoidOfCitaListCita);
                 }
             }
             em.getTransaction().commit();
@@ -112,17 +112,25 @@ public class DepartamentoJpaController implements Serializable {
             Departamento persistentDepartamento = em.find(Departamento.class, departamento.getId());
             List<Personal> personalListOld = persistentDepartamento.getPersonalList();
             List<Personal> personalListNew = departamento.getPersonalList();
+            List<Documentos> documentosListOld = persistentDepartamento.getDocumentosList();
+            List<Documentos> documentosListNew = departamento.getDocumentosList();
             List<Cita> citaListOld = persistentDepartamento.getCitaList();
             List<Cita> citaListNew = departamento.getCitaList();
-            List<Consulta> consultaListOld = persistentDepartamento.getConsultaList();
-            List<Consulta> consultaListNew = departamento.getConsultaList();
             List<String> illegalOrphanMessages = null;
             for (Personal personalListOldPersonal : personalListOld) {
                 if (!personalListNew.contains(personalListOldPersonal)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Personal " + personalListOldPersonal + " since its departamentoId field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Personal " + personalListOldPersonal + " since its departamentoid field is not nullable.");
+                }
+            }
+            for (Documentos documentosListOldDocumentos : documentosListOld) {
+                if (!documentosListNew.contains(documentosListOldDocumentos)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain Documentos " + documentosListOldDocumentos + " since its departamentoid field is not nullable.");
                 }
             }
             for (Cita citaListOldCita : citaListOld) {
@@ -130,15 +138,7 @@ public class DepartamentoJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Cita " + citaListOldCita + " since its departamentoId field is not nullable.");
-                }
-            }
-            for (Consulta consultaListOldConsulta : consultaListOld) {
-                if (!consultaListNew.contains(consultaListOldConsulta)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Consulta " + consultaListOldConsulta + " since its departamentoId field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Cita " + citaListOldCita + " since its departamentoid field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -146,11 +146,18 @@ public class DepartamentoJpaController implements Serializable {
             }
             List<Personal> attachedPersonalListNew = new ArrayList<Personal>();
             for (Personal personalListNewPersonalToAttach : personalListNew) {
-                personalListNewPersonalToAttach = em.getReference(personalListNewPersonalToAttach.getClass(), personalListNewPersonalToAttach.getId());
+                personalListNewPersonalToAttach = em.getReference(personalListNewPersonalToAttach.getClass(), personalListNewPersonalToAttach.getCedula());
                 attachedPersonalListNew.add(personalListNewPersonalToAttach);
             }
             personalListNew = attachedPersonalListNew;
             departamento.setPersonalList(personalListNew);
+            List<Documentos> attachedDocumentosListNew = new ArrayList<Documentos>();
+            for (Documentos documentosListNewDocumentosToAttach : documentosListNew) {
+                documentosListNewDocumentosToAttach = em.getReference(documentosListNewDocumentosToAttach.getClass(), documentosListNewDocumentosToAttach.getId());
+                attachedDocumentosListNew.add(documentosListNewDocumentosToAttach);
+            }
+            documentosListNew = attachedDocumentosListNew;
+            departamento.setDocumentosList(documentosListNew);
             List<Cita> attachedCitaListNew = new ArrayList<Cita>();
             for (Cita citaListNewCitaToAttach : citaListNew) {
                 citaListNewCitaToAttach = em.getReference(citaListNewCitaToAttach.getClass(), citaListNewCitaToAttach.getId());
@@ -158,44 +165,37 @@ public class DepartamentoJpaController implements Serializable {
             }
             citaListNew = attachedCitaListNew;
             departamento.setCitaList(citaListNew);
-            List<Consulta> attachedConsultaListNew = new ArrayList<Consulta>();
-            for (Consulta consultaListNewConsultaToAttach : consultaListNew) {
-                consultaListNewConsultaToAttach = em.getReference(consultaListNewConsultaToAttach.getClass(), consultaListNewConsultaToAttach.getFecha());
-                attachedConsultaListNew.add(consultaListNewConsultaToAttach);
-            }
-            consultaListNew = attachedConsultaListNew;
-            departamento.setConsultaList(consultaListNew);
             departamento = em.merge(departamento);
             for (Personal personalListNewPersonal : personalListNew) {
                 if (!personalListOld.contains(personalListNewPersonal)) {
-                    Departamento oldDepartamentoIdOfPersonalListNewPersonal = personalListNewPersonal.getDepartamentoId();
-                    personalListNewPersonal.setDepartamentoId(departamento);
+                    Departamento oldDepartamentoidOfPersonalListNewPersonal = personalListNewPersonal.getDepartamentoid();
+                    personalListNewPersonal.setDepartamentoid(departamento);
                     personalListNewPersonal = em.merge(personalListNewPersonal);
-                    if (oldDepartamentoIdOfPersonalListNewPersonal != null && !oldDepartamentoIdOfPersonalListNewPersonal.equals(departamento)) {
-                        oldDepartamentoIdOfPersonalListNewPersonal.getPersonalList().remove(personalListNewPersonal);
-                        oldDepartamentoIdOfPersonalListNewPersonal = em.merge(oldDepartamentoIdOfPersonalListNewPersonal);
+                    if (oldDepartamentoidOfPersonalListNewPersonal != null && !oldDepartamentoidOfPersonalListNewPersonal.equals(departamento)) {
+                        oldDepartamentoidOfPersonalListNewPersonal.getPersonalList().remove(personalListNewPersonal);
+                        oldDepartamentoidOfPersonalListNewPersonal = em.merge(oldDepartamentoidOfPersonalListNewPersonal);
+                    }
+                }
+            }
+            for (Documentos documentosListNewDocumentos : documentosListNew) {
+                if (!documentosListOld.contains(documentosListNewDocumentos)) {
+                    Departamento oldDepartamentoidOfDocumentosListNewDocumentos = documentosListNewDocumentos.getDepartamentoid();
+                    documentosListNewDocumentos.setDepartamentoid(departamento);
+                    documentosListNewDocumentos = em.merge(documentosListNewDocumentos);
+                    if (oldDepartamentoidOfDocumentosListNewDocumentos != null && !oldDepartamentoidOfDocumentosListNewDocumentos.equals(departamento)) {
+                        oldDepartamentoidOfDocumentosListNewDocumentos.getDocumentosList().remove(documentosListNewDocumentos);
+                        oldDepartamentoidOfDocumentosListNewDocumentos = em.merge(oldDepartamentoidOfDocumentosListNewDocumentos);
                     }
                 }
             }
             for (Cita citaListNewCita : citaListNew) {
                 if (!citaListOld.contains(citaListNewCita)) {
-                    Departamento oldDepartamentoIdOfCitaListNewCita = citaListNewCita.getDepartamentoId();
-                    citaListNewCita.setDepartamentoId(departamento);
+                    Departamento oldDepartamentoidOfCitaListNewCita = citaListNewCita.getDepartamentoid();
+                    citaListNewCita.setDepartamentoid(departamento);
                     citaListNewCita = em.merge(citaListNewCita);
-                    if (oldDepartamentoIdOfCitaListNewCita != null && !oldDepartamentoIdOfCitaListNewCita.equals(departamento)) {
-                        oldDepartamentoIdOfCitaListNewCita.getCitaList().remove(citaListNewCita);
-                        oldDepartamentoIdOfCitaListNewCita = em.merge(oldDepartamentoIdOfCitaListNewCita);
-                    }
-                }
-            }
-            for (Consulta consultaListNewConsulta : consultaListNew) {
-                if (!consultaListOld.contains(consultaListNewConsulta)) {
-                    Departamento oldDepartamentoIdOfConsultaListNewConsulta = consultaListNewConsulta.getDepartamentoId();
-                    consultaListNewConsulta.setDepartamentoId(departamento);
-                    consultaListNewConsulta = em.merge(consultaListNewConsulta);
-                    if (oldDepartamentoIdOfConsultaListNewConsulta != null && !oldDepartamentoIdOfConsultaListNewConsulta.equals(departamento)) {
-                        oldDepartamentoIdOfConsultaListNewConsulta.getConsultaList().remove(consultaListNewConsulta);
-                        oldDepartamentoIdOfConsultaListNewConsulta = em.merge(oldDepartamentoIdOfConsultaListNewConsulta);
+                    if (oldDepartamentoidOfCitaListNewCita != null && !oldDepartamentoidOfCitaListNewCita.equals(departamento)) {
+                        oldDepartamentoidOfCitaListNewCita.getCitaList().remove(citaListNewCita);
+                        oldDepartamentoidOfCitaListNewCita = em.merge(oldDepartamentoidOfCitaListNewCita);
                     }
                 }
             }
@@ -234,21 +234,21 @@ public class DepartamentoJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Departamento (" + departamento + ") cannot be destroyed since the Personal " + personalListOrphanCheckPersonal + " in its personalList field has a non-nullable departamentoId field.");
+                illegalOrphanMessages.add("This Departamento (" + departamento + ") cannot be destroyed since the Personal " + personalListOrphanCheckPersonal + " in its personalList field has a non-nullable departamentoid field.");
+            }
+            List<Documentos> documentosListOrphanCheck = departamento.getDocumentosList();
+            for (Documentos documentosListOrphanCheckDocumentos : documentosListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Departamento (" + departamento + ") cannot be destroyed since the Documentos " + documentosListOrphanCheckDocumentos + " in its documentosList field has a non-nullable departamentoid field.");
             }
             List<Cita> citaListOrphanCheck = departamento.getCitaList();
             for (Cita citaListOrphanCheckCita : citaListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Departamento (" + departamento + ") cannot be destroyed since the Cita " + citaListOrphanCheckCita + " in its citaList field has a non-nullable departamentoId field.");
-            }
-            List<Consulta> consultaListOrphanCheck = departamento.getConsultaList();
-            for (Consulta consultaListOrphanCheckConsulta : consultaListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Departamento (" + departamento + ") cannot be destroyed since the Consulta " + consultaListOrphanCheckConsulta + " in its consultaList field has a non-nullable departamentoId field.");
+                illegalOrphanMessages.add("This Departamento (" + departamento + ") cannot be destroyed since the Cita " + citaListOrphanCheckCita + " in its citaList field has a non-nullable departamentoid field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

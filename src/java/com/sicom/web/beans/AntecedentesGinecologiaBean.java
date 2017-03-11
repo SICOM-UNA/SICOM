@@ -72,7 +72,8 @@ public class AntecedentesGinecologiaBean {
 
     public void agregar() throws PreexistingEntityException{
         try {
-            antecedentesGinecologia.setPacienteid(paciente.getId());
+          
+           
             antecedentesGinecologia.setFecha(new Date());
             agjc.create(antecedentesGinecologia);
             antecedentesGinecologia = new AntecedentesGinecologia();
@@ -85,9 +86,7 @@ public class AntecedentesGinecologiaBean {
         agjc.edit(antecedentesGinecologia);
     }
 
-    public final AntecedentesGinecologia consultarHistorial(String pacienteId) {
-        return agjc.findAntecedentesGinecologia(pacienteId);
-    }
+    
 
     public List<String> consultarValoresPorCodigo(Integer codigo) {
         return this.vjc.findByCodeId(codigo);
