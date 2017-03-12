@@ -9,56 +9,89 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form>
-                    <p:messages id="msg" for="msg" globalOnly="true" closable="true" />
+                <h:form id="modificaForm">
+                    <p:panel header="Modificación de información">
+                        <p:messages id="msg" for="msg" globalOnly="true" closable="true" />
 
-                    <h:panelGrid columns="4" >
-                        <p:outputLabel class="descripcion" value="Nombre:"/>
-                        <p:inputText value="#{pacienteBean.selectedPaciente.nombre}" maxlength="45" class = "charWithSpaceToUpperCase" onkeyup="validar()"/>
+                        <h:panelGrid columns="2">    
+                            <h:panelGrid columns="2">
+                                <h:panelGrid columns="2" cellspacing="3">
 
-                        <p:outputLabel class="descripcion" for="mask" value="Fecha Nacimiento:" style="padding-left: 50px;"/>
-                        <p:calendar id="mask" value="#{pacienteBean.selectedPaciente.nacimiento}" pattern="dd-MM-yyyy" mask="true" navigator="true"/>
+                                    <p:outputLabel for="id" value="Identificación:"/>
+                                    <h:panelGrid columns="3">
+                                        <p:inputMask id="id" value="#{pacienteBean.selectedPaciente.cedula}" required="true" maxlength="12" size="13" 
+                                                     mask="9-9999-9999" requiredMessage="- Falta la identificación." placeholder="0-0000-0000" />
+                                        <p:tooltip id="toolTipFocus" for="id" showEvent="focus" position="bottom" value="Identificación Nacional: Ej 0-0000-0000."/>
+                                        <p:commandButton icon="ui-icon-search">
+                                            <f:ajax />
+                                        </p:commandButton>   
+                                    </h:panelGrid>         
 
-                        <p:outputLabel class="descripcion" value="Primer Apellido:"/>
-                        <p:inputText value="#{pacienteBean.selectedPaciente.primerApellido}" maxlength="45" class = "charToUpperCase" onkeyup="validar()"/>
+                                    <p:outputLabel for="nom" value="Nombre:" />
+                                    <p:inputText  id="nom"  value="#{pacienteBean.selectedPaciente.nombre}" maxlength="45" class = "charWithSpaceToUpperCase"
+                                                  onkeyup="validar()" required="true" requiredMessage="- Falta el nombre."
+                                                  />
 
-                        <p:outputLabel class="descripcion" value="Genero:" style="padding-left: 50px;"/>
-                        <p:selectOneMenu value="#{pacienteBean.selectedPaciente.genero}">
-                            <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(0)}"/>
-                        </p:selectOneMenu>
+                                    <p:outputLabel for="pa" value="Primer apellido:" />
+                                    <p:inputText id="pa"  value="#{pacienteBean.selectedPaciente.primerApellido}" maxlength="45" class = "charToUpperCase" onkeyup="validar()"
+                                                 required="true" requiredMessage="- Falta el primer apellido."/>
 
-                        <p:outputLabel class="descripcion" value="Segundo Apellido:"/>
-                        <p:inputText value="#{pacienteBean.selectedPaciente.segundoApellido}" maxlength="45" class = "charToUpperCase" onkeyup="validar()"/>
+                                    <p:outputLabel for="sa" value="Segundo apellido:" />
+                                    <p:inputText id="sa" value="#{pacienteBean.selectedPaciente.segundoApellido}"  maxlength="45" class = "charToUpperCase" onkeyup="validar()"
+                                                 required="true" requiredMessage="- Falta el segundo apellido."/>
 
-                        <p:outputLabel class="infoLabel" value="Identificación:" style="padding-left: 50px;"/>
-                        <p:outputLabel  value="#{pacienteBean.selectedPaciente.id}"/>
+                                    <p:outputLabel for="mask" value="Fecha Nacimiento:"/>
+                                    <p:calendar id="mask" value="#{pacienteBean.selectedPaciente.nacimiento}" pattern="dd-MM-yyyy" mask="true" navigator="true"
+                                                maxdate="#{now}" mindate="#{pacienteBean.disablePastDates()}" required="true" requiredMessage=" - Falta fecha de nacimiento."
+                                                placeholder="#{now.date}-#{now.month+1}-#{now.year+1900}"/>
 
-                        <p:outputLabel class="descripcion" value="Estado Civil:"/>
-                        <p:selectOneMenu value="#{pacienteBean.selectedPaciente.estadoCivil}">
-                            <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(1)}"/>
-                        </p:selectOneMenu>
+                                    <p:outputLabel value="Estado Civil:" for="ec"/>
+                                    <p:selectOneMenu value="#{pacienteBean.selectedPaciente.estadoCivil}"  id="ec" requiredMessage="- Falta el estado civil.">
+                                        <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
+                                        <f:selectItems value="{pacienteBean.consultarValoresPorCodigo(1)}"/>
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                            <h:panelGrid columns="2" cellspacing="3"> 
 
-                        <p:outputLabel class="infoLabel" value="Teléfono 1:" style="padding-left: 50px;"/>
-                        <p:inputText value="#{pacienteBean.selectedPaciente.telefono}" class="numeric" onkeyup="validar();"  maxlength="8"/>
+                                <p:outputLabel value="Genero:" for="g"/>
+                                <p:selectOneMenu id="g" value="#{pacienteBean.selectedPaciente.genero}" requiredMessage="- Falta el género.">
+                                    <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
+                                    <f:selectItems value="{pacienteBean.consultarValoresPorCodigo(0)}"/>
+                                </p:selectOneMenu>
 
-                        <p:outputLabel class="infoLabel" value="Correo electrónico:"/>
-                        <p:inputText value="#{pacienteBean.selectedPaciente.correo}"  class="correo" onkeyup="validar();"  maxlength="45">
-                            <f:validateRegex pattern="((([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+))|(^\s*$))"/>
-                        </p:inputText>
+                                <p:outputLabel value="Teléfono 1:" for="t1"/>
+                                <p:inputMask id="t1" value="#{pacienteBean.selectedPaciente.telefono}" mask="9999-9999" 
+                                             required="true" requiredMessage="- Falta el teléfono 1" placeholder="0000-0000"/>
 
-                        <p:outputLabel class="infoLabel" value="Teléfono 2:" style="padding-left: 50px;"/>
-                        <p:inputText value="#{pacienteBean.selectedPaciente.celular}" class="numeric" onkeyup="validar();"  maxlength="8"/>
+                                <p:outputLabel value="Teléfono 2:" for="t2"/>
+                                <p:inputMask id="t2" value="#{pacienteBean.selectedPaciente.celular}" mask="9999-9999" placeholder="0000-0000"/>
 
-                        <p:outputLabel class="infoLabel" value = "Ocupación:"/>
-                        <p:inputText value = "#{pacienteBean.selectedPaciente.ocupacion}" maxlength="45"/>
+                                <p:outputLabel value="Correo electrónico:" for="ce"/>
+                                <h:panelGroup>
+                                    <p:tooltip for="ce" showEvent="focus" position="bottom" value="Ejemplo de correo: cento_medico@outlook.com"/>
+                                    <p:inputText id="ce" value="#{pacienteBean.selectedPaciente.correo}"  class="correo" onkeyup="validar();"  maxlength="45"
+                                                 validatorMessage="- Correo electrónico incorrecto, ej: centro_medico@outlook.com" placeholder="nombre@servidor.com" >
+                                        <f:validateRegex pattern="((([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+))|(^\s*$))" />
+                                    </p:inputText>
+                                </h:panelGroup>
 
-                        <p:outputLabel class="infoLabel" value="Domicilio:" style="padding-left: 50px;"/>
-                        <p:inputTextarea value="#{pacienteBean.selectedPaciente.domicilio}" maxlength="150" rows="4" cols = "28" autoResize="true"/>
 
-                    </h:panelGrid>
-                    
-                    <p:commandButton value="Guardar Paciente" title="Click para guardar los datos." style="margin-left:55%; margin-top: 50px;"  action="#{pacienteBean.modificarAction()}"/>
+                                <p:outputLabel value = "Ocupación:" for="oc"/>
+                                <p:inputText value = "#{pacienteBean.selectedPaciente.ocupacion}" maxlength="45" id="oc"/>
 
+                                <p:outputLabel value="Domicilio:" for="do"/>
+                                <p:inputTextarea value="#{pacienteBean.selectedPaciente.domicilio}" maxlength="150" rows="3" cols = "18" autoResize="false" id="do"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+
+                        <f:facet name="footer" >
+                            <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                <p:commandButton value="Guardar Cambios" icon="ui-icon-pencil" action="#{pacienteBean.modificarAction()}" title="Click para guardar información." update="modificaForm msg"/>
+                                <p:commandButton value="Cancelar" icon="ui-icon-closethick" action="#{pacienteBean.cancelarAction()}" immediate="true" title="Click para guardar información." update="modificaForm msg"/>
+                            </div>
+                        </f:facet>
+                    </p:panel>
                 </h:form>
             </section>
         </div>
