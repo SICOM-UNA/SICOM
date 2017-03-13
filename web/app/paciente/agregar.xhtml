@@ -8,14 +8,14 @@
                 xmlns:o="http://omnifaces.org/ui">
 
     <ui:define name="content">
-        <div id="wrapper">
+        <div id="wrapper" align="center">
             <section>
-                <p:messages id="msg" autoUpdate="true" closable="true"/>
-                <p:panel header="Formulario - Agregar Paciente" id="panel">
-                    <div class="ui-grid ui-grid-responsive">
-                        <div class="ui-grid-row">
-                            <div class="ui-grid-col-12">
-                                <h:form id="agregaForm">
+                <h:form id="formulario">
+                    <p:messages id="msg" autoUpdate="true" closable="true"/>
+                    <p:panel header="Formulario - Agregar Paciente" id="panel">
+                        <div class="ui-grid ui-grid-responsive">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12">
                                     <p:panel header="Información Personal">
                                         <h:panelGrid columns="2">    
                                             <h:panelGrid columns="2">
@@ -101,77 +101,18 @@
 
                                         <f:facet name="footer" >
                                             <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                                <p:commandButton value="Guardar Paciente" icon="ui-icon-plus" action="#{pacienteBean.save()}" title="Click para guardar información." update="agregaForm msg"/>
+                                                <p:commandButton value="Guardar Paciente" icon="ui-icon-plus" action="#{pacienteBean.save()}" title="Click para guardar información." update="formulario msg"/>
                                                 <p:commandButton value="Limpiar Formulario" icon="ui-icon-refresh" title="Click para limpiar formulario."  immediate="true">
-                                                    <f:ajax resetValues="true" render="agregaForm"/>
+                                                    <f:ajax resetValues="true" render="formulario"/>
                                                 </p:commandButton> 
                                             </div>
                                         </f:facet>
                                     </p:panel>
-                                </h:form>
+                                </div>
                             </div>
-                            <!--div class="ui-grid-col-3">
-                                <h:form id="formResponsable">
-                                    <h:panelGrid columns="1">
-                                        <p:panel header="Responsables">
-                                            <h:panelGrid columns="1">
-                                                <p:outputLabel for="idr1" value="Identificación"/>
-                                                <h:panelGroup>
-                                                    <p:inputMask id="idr1" value="{pacienteBean.nuevoResponsable.id}" required="true" size="16" 
-                                                                 mask="9-9999-9999" requiredMessage="- Falta la identificación del responsable." placeholder="0-0000-0000" />
-                                                    <p:tooltip id="tooltipIdResponsable" for="idr1" showEvent="focus" position="bottom" value="Identificación Nacional: Ej 0-0000-0000."/>
-                                                </h:panelGroup>
-
-                                                <p:outputLabel value="Nombre" for="nr1"/>
-                                                <p:inputText value="{pacienteBean.nuevoResponsable.nombre}" maxlength="45" size="16" id="nr1" class="charWithSpaceToUpperCase" onkeyup="validar()"/>
-
-                                                <p:outputLabel value="Tipo de Relacion" for="tpr1"/>
-                                                <p:selectOneMenu value="{pacienteBean.nuevoResponsable.vinculo}"  id="tpr1" autoWidth="false">
-                                                    <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                                    <f:selectItems value="{pacienteBean.consultarValoresPorCodigo(2)}"/>
-                                                </p:selectOneMenu>
-
-                                                <p:outputLabel value = "Ocupación" for="oc1"/>
-                                                <p:inputText value = "{pacienteBean.nuevoResponsable.ocupacion}" required = "false" maxlength="45" size="16" id="oc1"/>
-
-                                                <p:outputLabel value="Telefono" for="tr1"/>
-                                                <p:inputMask id="tr1" value="{pacienteBean.nuevoResponsable.telefono}" size="16" mask="9999-9999" 
-                                                             required="true" requiredMessage="- Falta el teléfono 1" placeholder="0000-0000"/>
-                                            </h:panelGrid>   
-                                            <f:facet name="footer">
-                                                <p:commandButton value="Añadir" icon="ui-icon-plus" action="{pacienteBean.reinit}" update="formResponsable @parent">
-                                                    <p:collector value="{pacienteBean.nuevoResponsable}" addTo="{pacienteBean.listaResponsables}" unique="true"/>
-                                                </p:commandButton>
-                                                <p:spacer width="5"/>
-                                                <p:commandButton icon="ui-icon-refresh" immediate="true">
-                                                    <f:ajax resetValues="true" render="formResponsable"/>
-                                                </p:commandButton>
-                                            </f:facet>
-
-                                            <p:outputPanel id="responsables" rendered="{not empty pacienteBean.listaResponsables}">
-                                                <p:dataTable id="tabla" value="{pacienteBean.listaResponsables}" var="responsable">
-                                                    <p:column headerText="Id">
-                                                        <h:outputText value="{responsable.id}"/>
-                                                    </p:column>
-
-                                                    <p:column headerText="Nombre">
-                                                        <h:outputText value="{responsable.nombre}"/>
-                                                    </p:column>
-
-                                                    <p:column width="18">
-                                                        <p:commandLink styleClass="ui-icon ui-icon-trash" update="formResponsable" process="formResponsable" title="Eliminar">
-                                                            <p:collector value="{responsable}" removeFrom="{pacienteBean.listaResponsables}" unique="true"/>
-                                                        </p:commandLink>
-                                                    </p:column>
-                                                </p:dataTable>
-                                            </p:outputPanel>
-                                        </p:panel>
-                                    </h:panelGrid>
-                                </h:form>
-                            </div-->                                 
                         </div>
-                    </div>
-                </p:panel>
+                    </p:panel>
+                </h:form>
             </section>
         </div>
     </ui:define>

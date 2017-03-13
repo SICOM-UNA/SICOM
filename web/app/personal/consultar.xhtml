@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/templates/default.xhtml" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content">
+        <div id="wrapper">
+            <section>
+                <h:form id="buscar">
+                    <p:panel header="Informacion del Usuario" id="INFO">
+                        <div class="ui-grid ui-grid-responsive">
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-6" align="center">
+                                    <p:messages id="msg" autoUpdate="true" closable="true" />
+
+                                    <o:validateOneOrMore message="Debe digitar la cédula" id="oneOrMore" components="id" />
+                                    <h:panelGrid columns="2" cellpadding="5">
+                                        <p:outputLabel value="Tipo Identificación:"/>
+                                        <p:selectOneMenu id="tipoIdSel">
+                                            <f:selectItems value="{pacienteBean.consultarValoresPorCodigo(8)}" />
+                                        </p:selectOneMenu>
+
+                                        <p:outputLabel class="descripcion" value="Digite Identificación:" for="id"/>
+                                        <h:panelGroup>
+                                            <p:inputMask id="id" value="#{personalBean.selectedPersonal.cedula}" required="true" maxlength="12" size="13" 
+                                                         mask="9-9999-9999" requiredMessage="- Falta la identificación." placeholder="0-0000-0000" />
+                                            <p:tooltip id="toolTipFocus" for="id" showEvent="focus" position="bottom" value="Identificación Nacional: Ej 0-0000-0000."/>
+                                        </h:panelGroup>
+                                    </h:panelGrid>
+
+                                </div>
+                                <div class="ui-grid-col-3" align="center">
+                                    <h:panelGroup>
+                                        <p:outputLabel class="descripcion" value="Realizar Consulta Civil (TSE)" />
+                                        <h:outputLink value="http://www.consulta.tse.go.cr/consulta_persona/consulta_nombres.aspx" title="Página del Tribunal Supremo de Elecciones." target="_blank">
+                                            <h:graphicImage class="myicon" value="../../imagenes/search.jpg"/>
+                                        </h:outputLink>
+                                    </h:panelGroup>
+                                </div>
+                            </div>
+                        </div>
+                        <f:facet name="footer" >
+                            <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                <p:commandButton value="Mostrar Resultados" action="#{personalBean.buscaIdBase()}" update="buscar msg"/>
+                            </div>
+                        </f:facet>
+                    </p:panel>
+                </h:form>
+            </section>
+        </div>
+    </ui:define>
+</ui:composition>
