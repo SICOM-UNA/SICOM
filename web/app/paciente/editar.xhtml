@@ -31,7 +31,7 @@
                         <p:inputText value="#{pacienteBean.selectedPaciente.segundoApellido}" maxlength="45" class = "charToUpperCase" onkeyup="validar()"/>
 
                         <p:outputLabel class="infoLabel" value="Identificación:" style="padding-left: 50px;"/>
-                        <p:outputLabel  value="#{pacienteBean.selectedPaciente.id}"/>
+                        <p:outputLabel  value="#{pacienteBean.selectedPaciente.cedula}"/>
 
                         <p:outputLabel class="descripcion" value="Estado Civil:"/>
                         <p:selectOneMenu value="#{pacienteBean.selectedPaciente.estadoCivil}">

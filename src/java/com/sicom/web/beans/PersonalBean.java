@@ -28,7 +28,6 @@ public class PersonalBean {
     private List<Personal> listaPersonal;
     private final PersonalJpaController pjc;
     private final ValorJpaController cjv;
-    
     /* Wizard */
     private boolean skip;
         
@@ -38,7 +37,6 @@ public class PersonalBean {
         selectedPersonal = new Personal();
         pjc = new PersonalJpaController(emf);
         cjv = new ValorJpaController(emf);
-       
     }
     
     @PostConstruct
@@ -48,8 +46,6 @@ public class PersonalBean {
     
     public void agregar() throws Exception {
         pjc.create(nuevoPersonal);
-        
-        
     }
     
     public void modificar() throws Exception {
@@ -65,21 +61,19 @@ public class PersonalBean {
     }
 
     public void buscaIdBase() throws IOException{
-     
-        if (selectedPersonal.getId() != null) {
+        if (selectedPersonal.getCedula() != null) {
 
-            Personal p = this.pjc.findPersonal(selectedPersonal.getId());
+            Personal p = this.pjc.findPersonal(selectedPersonal.getCedula());
 
             if (p != null) {
                 this.selectedPersonal = p;
             } else {
-                FacesContext.getCurrentInstance().addMessage("No existe personal asignado a la identificación: ", new FacesMessage(p.getId()));
+                FacesContext.getCurrentInstance().addMessage("No existe personal asignado a la identificación: ", new FacesMessage(p.getCedula()));
             } 
         }
     }
     
     /* Wizard Methods*/
-     
     public boolean isSkip() {
         return skip;
     }
@@ -92,8 +86,7 @@ public class PersonalBean {
         if(skip) {
             skip = false;   
             return "confirm";
-        }
-        else {
+        } else {
             return event.getNewStep();
         }
     }
@@ -128,7 +121,7 @@ public class PersonalBean {
         }
     }
     
-  public int calculaEdad(){
+    public int calculaEdad(){
         if (selectedPersonal.getNacimiento() != null) {
             LocalDate birthdate = new LocalDate(selectedPersonal.getNacimiento());
             LocalDate now = new LocalDate();
@@ -137,10 +130,7 @@ public class PersonalBean {
             return 0;
         }
     }
-  
-  
-  
-    
+
     /**
      * @return the listaPersonal
      */
@@ -183,5 +173,3 @@ public class PersonalBean {
         this.selectedPersonal = selectedPersonal;
     }
 }
-
-   

@@ -45,7 +45,7 @@ public class AutorizacionJpaController implements Serializable {
             em.getTransaction().begin();
             List<Personal> attachedPersonalList = new ArrayList<Personal>();
             for (Personal personalListPersonalToAttach : autorizacion.getPersonalList()) {
-                personalListPersonalToAttach = em.getReference(personalListPersonalToAttach.getClass(), personalListPersonalToAttach.getId());
+                personalListPersonalToAttach = em.getReference(personalListPersonalToAttach.getClass(), personalListPersonalToAttach.getCedula());
                 attachedPersonalList.add(personalListPersonalToAttach);
             }
             autorizacion.setPersonalList(attachedPersonalList);
@@ -94,7 +94,7 @@ public class AutorizacionJpaController implements Serializable {
             }
             List<Personal> attachedPersonalListNew = new ArrayList<Personal>();
             for (Personal personalListNewPersonalToAttach : personalListNew) {
-                personalListNewPersonalToAttach = em.getReference(personalListNewPersonalToAttach.getClass(), personalListNewPersonalToAttach.getId());
+                personalListNewPersonalToAttach = em.getReference(personalListNewPersonalToAttach.getClass(), personalListNewPersonalToAttach.getCedula());
                 attachedPersonalListNew.add(personalListNewPersonalToAttach);
             }
             personalListNew = attachedPersonalListNew;

@@ -24,7 +24,7 @@
                                     <h:panelGrid columns="2">
                                         <h:panelGroup>
                                             <p:outputLabel class="descripcion" value="Digite Identificación:" for="id"/>
-                                            <p:inputText  value="#{pacienteBean.selectedPaciente.id}" id="id"  maxlength="45" class = "alphanumericToUpperCase" onkeyup="validar()"/>
+                                            <p:inputText  value="#{pacienteBean.selectedPaciente.cedula}" id="id"  maxlength="45" class = "alphanumericToUpperCase" onkeyup="validar()"/>
                                         </h:panelGroup>
                                         <p:commandButton value="Mostrar Resultados" action="#{pacienteBean.buscaIdBase()}" update="formBuscarPaciente"/>
                                     </h:panelGrid>

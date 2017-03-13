@@ -12,11 +12,11 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -25,32 +25,32 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 @Entity
 @Table(name = "paciente")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Paciente.findAll", query = "SELECT p FROM Paciente p")
-    , @NamedQuery(name = "Paciente.findById", query = "SELECT p FROM Paciente p WHERE p.id = :id")
-    , @NamedQuery(name = "Paciente.findByNombre", query = "SELECT p FROM Paciente p WHERE p.nombre = :nombre")
-    , @NamedQuery(name = "Paciente.findByPrimerApellido", query = "SELECT p FROM Paciente p WHERE p.primerApellido = :primerApellido")
-    , @NamedQuery(name = "Paciente.findBySegundoApellido", query = "SELECT p FROM Paciente p WHERE p.segundoApellido = :segundoApellido")
-    , @NamedQuery(name = "Paciente.findByTelefono", query = "SELECT p FROM Paciente p WHERE p.telefono = :telefono")
-    , @NamedQuery(name = "Paciente.findByCelular", query = "SELECT p FROM Paciente p WHERE p.celular = :celular")
-    , @NamedQuery(name = "Paciente.findByEstadoCivil", query = "SELECT p FROM Paciente p WHERE p.estadoCivil = :estadoCivil")
-    , @NamedQuery(name = "Paciente.findByNacimiento", query = "SELECT p FROM Paciente p WHERE p.nacimiento = :nacimiento")
-    , @NamedQuery(name = "Paciente.findByDomicilio", query = "SELECT p FROM Paciente p WHERE p.domicilio = :domicilio")
-    , @NamedQuery(name = "Paciente.findByOcupacion", query = "SELECT p FROM Paciente p WHERE p.ocupacion = :ocupacion")
-    , @NamedQuery(name = "Paciente.findByCorreo", query = "SELECT p FROM Paciente p WHERE p.correo = :correo")
-    , @NamedQuery(name = "Paciente.findByGenero", query = "SELECT p FROM Paciente p WHERE p.genero = :genero")})
+    @NamedQuery(name = "Paciente.findAll", query = "SELECT p FROM Paciente p"),
+    @NamedQuery(name = "Paciente.findByCedula", query = "SELECT p FROM Paciente p WHERE p.cedula = :cedula"),
+    @NamedQuery(name = "Paciente.findByNombre", query = "SELECT p FROM Paciente p WHERE p.nombre = :nombre"),
+    @NamedQuery(name = "Paciente.findByPrimerApellido", query = "SELECT p FROM Paciente p WHERE p.primerApellido = :primerApellido"),
+    @NamedQuery(name = "Paciente.findBySegundoApellido", query = "SELECT p FROM Paciente p WHERE p.segundoApellido = :segundoApellido"),
+    @NamedQuery(name = "Paciente.findByTelefono", query = "SELECT p FROM Paciente p WHERE p.telefono = :telefono"),
+    @NamedQuery(name = "Paciente.findByCelular", query = "SELECT p FROM Paciente p WHERE p.celular = :celular"),
+    @NamedQuery(name = "Paciente.findByEstadoCivil", query = "SELECT p FROM Paciente p WHERE p.estadoCivil = :estadoCivil"),
+    @NamedQuery(name = "Paciente.findByNacimiento", query = "SELECT p FROM Paciente p WHERE p.nacimiento = :nacimiento"),
+    @NamedQuery(name = "Paciente.findByDomicilio", query = "SELECT p FROM Paciente p WHERE p.domicilio = :domicilio"),
+    @NamedQuery(name = "Paciente.findByOcupacion", query = "SELECT p FROM Paciente p WHERE p.ocupacion = :ocupacion"),
+    @NamedQuery(name = "Paciente.findByCorreo", query = "SELECT p FROM Paciente p WHERE p.correo = :correo"),
+    @NamedQuery(name = "Paciente.findByGenero", query = "SELECT p FROM Paciente p WHERE p.genero = :genero")})
 public class Paciente implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "id")
-    private String id;
+    @Column(name = "cedula")
+    private String cedula;
     @Basic(optional = false)
     @Column(name = "nombre")
     private String nombre;
@@ -75,35 +75,30 @@ public class Paciente implements Serializable {
     private String correo;
     @Column(name = "genero")
     private String genero;
-
-    
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacienteid", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacientecedula")
     private List<Responsable> responsableList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacienteid", fetch = FetchType.LAZY)
-    private List<Cita> citaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacienteid", fetch = FetchType.LAZY)
-    private List<Consulta> consultaList;
-    
-    
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "paciente")
+    private Expediente expediente;
+
     public Paciente() {
+        expediente = new Expediente();
     }
 
-    public Paciente(String id) {
-        this.id = id;
+    public Paciente(String cedula) {
+        this.cedula = cedula;
     }
 
-    public Paciente(String id, String nombre) {
-        this.id = id;
+    public Paciente(String cedula, String nombre) {
+        this.cedula = cedula;
         this.nombre = nombre;
     }
 
-    public String getId() {
-        return id;
+    public String getCedula() {
+        return cedula;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
     }
 
     public String getNombre() {
@@ -194,10 +189,27 @@ public class Paciente implements Serializable {
         this.genero = genero;
     }
 
+    @XmlTransient
+    public List<Responsable> getResponsableList() {
+        return responsableList;
+    }
+
+    public void setResponsableList(List<Responsable> responsableList) {
+        this.responsableList = responsableList;
+    }
+
+    public Expediente getExpediente() {
+        return expediente;
+    }
+
+    public void setExpediente(Expediente expediente) {
+        this.expediente = expediente;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (cedula != null ? cedula.hashCode() : 0);
         return hash;
     }
 
@@ -208,7 +220,7 @@ public class Paciente implements Serializable {
             return false;
         }
         Paciente other = (Paciente) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.cedula == null && other.cedula != null) || (this.cedula != null && !this.cedula.equals(other.cedula))) {
             return false;
         }
         return true;
@@ -216,44 +228,7 @@ public class Paciente implements Serializable {
 
     @Override
     public String toString() {
-        return "com.sicom.entities.Paciente[ id=" + id + " ]";
+        return "com.sicom.entities.Paciente[ cedula=" + cedula + " ]";
     }
-    
-    
-    
-     @XmlTransient
-    public List<Responsable> getResponsableList() {
-        return responsableList;
-    }
-
-    public void setResponsableList(List<Responsable> responsableList) {
-        this.responsableList = responsableList;
-    }
-    
-    public Responsable getResponsable(int i) {
-        return (i >= 0 && i < responsableList.size())
-                ? responsableList.get(i)
-                : null;
-    }
-    
-    
-    @XmlTransient
-    public List<Cita> getCitaList() {
-        return citaList;
-    }
-
-    public void setCitaList(List<Cita> citaList) {
-        this.citaList = citaList;
-    }
-
-     @XmlTransient
-    public List<Consulta> getConsultaList() {
-        return consultaList;
-    }
-
-    public void setConsultaList(List<Consulta> consultaList) {
-        this.consultaList = consultaList;
-    }
-    
     
 }

@@ -40,7 +40,21 @@ public class LoginJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Personal personal = login.getPersonal();
+            if (personal != null) {
+                personal = em.getReference(personal.getClass(), personal.getCedula());
+                login.setPersonal(personal);
+            }
             em.persist(login);
+            if (personal != null) {
+                Login oldLoginUsuarioOfPersonal = personal.getLoginUsuario();
+                if (oldLoginUsuarioOfPersonal != null) {
+                    oldLoginUsuarioOfPersonal.setPersonal(null);
+                    oldLoginUsuarioOfPersonal = em.merge(oldLoginUsuarioOfPersonal);
+                }
+                personal.setLoginUsuario(login);
+                personal = em.merge(personal);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findLogin(login.getUsuario()) != null) {
@@ -59,7 +73,33 @@ public class LoginJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Login persistentLogin = em.find(Login.class, login.getUsuario());
+            Personal personalOld = persistentLogin.getPersonal();
+            Personal personalNew = login.getPersonal();
+            List<String> illegalOrphanMessages = null;
+            if (personalOld != null && !personalOld.equals(personalNew)) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("You must retain Personal " + personalOld + " since its loginUsuario field is not nullable.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            if (personalNew != null) {
+                personalNew = em.getReference(personalNew.getClass(), personalNew.getCedula());
+                login.setPersonal(personalNew);
+            }
             login = em.merge(login);
+            if (personalNew != null && !personalNew.equals(personalOld)) {
+                Login oldLoginUsuarioOfPersonal = personalNew.getLoginUsuario();
+                if (oldLoginUsuarioOfPersonal != null) {
+                    oldLoginUsuarioOfPersonal.setPersonal(null);
+                    oldLoginUsuarioOfPersonal = em.merge(oldLoginUsuarioOfPersonal);
+                }
+                personalNew.setLoginUsuario(login);
+                personalNew = em.merge(personalNew);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -90,12 +130,12 @@ public class LoginJpaController implements Serializable {
                 throw new NonexistentEntityException("The login with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            List<Personal> personalListOrphanCheck = login.getPersonalList();
-            for (Personal personalListOrphanCheckPersonal : personalListOrphanCheck) {
+            Personal personalOrphanCheck = login.getPersonal();
+            if (personalOrphanCheck != null) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Login (" + login + ") cannot be destroyed since the Personal " + personalListOrphanCheckPersonal + " in its personalList field has a non-nullable loginUsuario field.");
+                illegalOrphanMessages.add("This Login (" + login + ") cannot be destroyed since the Personal " + personalOrphanCheck + " in its personal field has a non-nullable loginUsuario field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

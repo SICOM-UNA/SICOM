@@ -6,20 +6,17 @@
 package com.sicom.entities;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -39,24 +36,19 @@ public class Login implements Serializable {
     @Basic(optional = false)
     @Column(name = "usuario")
     private String usuario;
-    @Basic(optional = false)
     @Column(name = "contrasena")
     private String contrasena;
     @Transient
     private Boolean autenticado;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "loginUsuario", fetch = FetchType.LAZY)
-    private List<Personal> personalList;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "loginUsuario")
+    private Personal personal;
 
     public Login() {
+        personal = new Personal();
     }
 
     public Login(String usuario) {
         this.usuario = usuario;
-    }
-
-    public Login(String usuario, String contrasena) {
-        this.usuario = usuario;
-        this.contrasena = contrasena;
     }
 
     public String getUsuario() {
@@ -75,13 +67,12 @@ public class Login implements Serializable {
         this.contrasena = contrasena;
     }
 
-    @XmlTransient
-    public List<Personal> getPersonalList() {
-        return personalList;
+    public Personal getPersonal() {
+        return personal;
     }
 
-    public void setPersonalList(List<Personal> personalList) {
-        this.personalList = personalList;
+    public void setPersonal(Personal personal) {
+        this.personal = personal;
     }
 
     @Override
@@ -122,4 +113,5 @@ public class Login implements Serializable {
     public void setAutenticado(Boolean autenticado) {
         this.autenticado = autenticado;
     }
+    
 }

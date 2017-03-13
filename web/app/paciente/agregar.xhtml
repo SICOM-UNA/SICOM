@@ -25,7 +25,7 @@
                                             <h:panelGrid columns="4" cellspacing="2">
 
                                                 <p:outputLabel class="descripcion" value="Identificación:" for="id"/>
-                                                <p:inputText  value="#{pacienteBean.nuevoPaciente.id}"  onchange="#{pacienteBean.verificaID()}" id="id"  maxlength="45" class = "alphanumericToUpperCase" onkeyup="validar()">
+                                                <p:inputText  value="#{pacienteBean.nuevoPaciente.cedula}"  onchange="#{pacienteBean.verificaID()}" id="id"  maxlength="45" class = "alphanumericToUpperCase" onkeyup="validar()">
                                                     <p:ajax update="agregaForm msg"/>
                                                 </p:inputText>
 
@@ -87,7 +87,7 @@
                                         <p:panel header=" Información Personal">
                                             <h:panelGrid columns="4" >
                                                 <p:outputLabel  value="Cédula:" class="rad"/>
-                                                <p:inputText  value="#{pacienteBean.nuevoPaciente.id}" readonly="true"/>
+                                                <p:inputText  value="#{pacienteBean.nuevoPaciente.cedula}" readonly="true"/>
 
                                                 <p:outputLabel value="Género:" class="rad"/>
                                                 <p:inputText value="#{pacienteBean.nuevoPaciente.genero}" readonly="true"/>
@@ -161,7 +161,7 @@
 
                             <h:panelGroup>
                                 <p:outputLabel class="descripcion" value="Identificación:" for="idr1"/>
-                                <p:inputText value="#{pacienteBean.nuevoResponsable1.id}" maxlength="45" id="idr1" class="alphanumericToUpperCase" onkeyup="validar()"/>
+                                <p:inputText value="#{pacienteBean.nuevoResponsable1.cedula}" maxlength="45" id="idr1" class="alphanumericToUpperCase" onkeyup="validar()"/>
                             </h:panelGroup>
 
                             <h:panelGroup>    
@@ -210,7 +210,7 @@
 
                             <h:panelGroup>
                                 <p:outputLabel class="descripcion" value="Identificación:" for="idr2"/>
-                                <p:inputText value="#{pacienteBean.nuevoResponsable2.id}" maxlength="45" id="idr2" class="alphanumericToUpperCase" onkeyup="validar()"/>
+                                <p:inputText value="#{pacienteBean.nuevoResponsable2.cedula}" maxlength="45" id="idr2" class="alphanumericToUpperCase" onkeyup="validar()"/>
                             </h:panelGroup>
 
                             <h:panelGroup>    

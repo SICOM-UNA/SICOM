@@ -9,7 +9,6 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,18 +26,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Responsable.findAll", query = "SELECT r FROM Responsable r"),
-    @NamedQuery(name = "Responsable.findById", query = "SELECT r FROM Responsable r WHERE r.id = :id"),
+    @NamedQuery(name = "Responsable.findByCedula", query = "SELECT r FROM Responsable r WHERE r.cedula = :cedula"),
     @NamedQuery(name = "Responsable.findByNombre", query = "SELECT r FROM Responsable r WHERE r.nombre = :nombre"),
     @NamedQuery(name = "Responsable.findByTelefono", query = "SELECT r FROM Responsable r WHERE r.telefono = :telefono"),
-    @NamedQuery(name = "Responsable.findByProfesion", query = "SELECT r FROM Responsable r WHERE r.ocupacion = :ocupacion"),
+    @NamedQuery(name = "Responsable.findByOcupacion", query = "SELECT r FROM Responsable r WHERE r.ocupacion = :ocupacion"),
     @NamedQuery(name = "Responsable.findByVinculo", query = "SELECT r FROM Responsable r WHERE r.vinculo = :vinculo")})
 public class Responsable implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "id")
-    private String id;
+    @Column(name = "cedula")
+    private String cedula;
     @Column(name = "nombre")
     private String nombre;
     @Column(name = "telefono")
@@ -47,23 +46,23 @@ public class Responsable implements Serializable {
     private String ocupacion;
     @Column(name = "vinculo")
     private String vinculo;
-    @JoinColumn(name = "Paciente_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Paciente pacienteid;
+    @JoinColumn(name = "Paciente_cedula", referencedColumnName = "cedula")
+    @ManyToOne(optional = false)
+    private Paciente pacientecedula;
 
     public Responsable() {
     }
 
-    public Responsable(String id) {
-        this.id = id;
+    public Responsable(String cedula) {
+        this.cedula = cedula;
     }
 
-    public String getId() {
-        return id;
+    public String getCedula() {
+        return cedula;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
     }
 
     public String getNombre() {
@@ -98,18 +97,18 @@ public class Responsable implements Serializable {
         this.vinculo = vinculo;
     }
 
-    public Paciente getPacienteid() {
-        return pacienteid;
+    public Paciente getPacientecedula() {
+        return pacientecedula;
     }
 
-    public void setPacienteid(Paciente pacienteid) {
-        this.pacienteid = pacienteid;
+    public void setPacientecedula(Paciente pacientecedula) {
+        this.pacientecedula = pacientecedula;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (cedula != null ? cedula.hashCode() : 0);
         return hash;
     }
 
@@ -120,7 +119,7 @@ public class Responsable implements Serializable {
             return false;
         }
         Responsable other = (Responsable) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.cedula == null && other.cedula != null) || (this.cedula != null && !this.cedula.equals(other.cedula))) {
             return false;
         }
         return true;
@@ -128,7 +127,7 @@ public class Responsable implements Serializable {
 
     @Override
     public String toString() {
-        return "com.sicom.entities.Responsable[ id=" + id + " ]";
+        return "com.sicom.entities.Responsable[ cedula=" + cedula + " ]";
     }
     
 }

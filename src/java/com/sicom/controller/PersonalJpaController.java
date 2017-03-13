@@ -16,10 +16,11 @@ import javax.persistence.criteria.Root;
 import com.sicom.entities.Autorizacion;
 import com.sicom.entities.Departamento;
 import com.sicom.entities.Login;
-import com.sicom.entities.Cita;
+import com.sicom.entities.ExamenColposcopia;
 import java.util.ArrayList;
 import java.util.List;
-import com.sicom.entities.Consulta;
+import com.sicom.entities.ExamenOdontologia;
+import com.sicom.entities.ExamenGinecologia;
 import com.sicom.entities.Personal;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -39,12 +40,29 @@ public class PersonalJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Personal personal) throws PreexistingEntityException, Exception {
-        if (personal.getCitaList() == null) {
-            personal.setCitaList(new ArrayList<Cita>());
+    public void create(Personal personal) throws IllegalOrphanException, PreexistingEntityException, Exception {
+        if (personal.getExamenColposcopiaList() == null) {
+            personal.setExamenColposcopiaList(new ArrayList<ExamenColposcopia>());
         }
-        if (personal.getConsultaList() == null) {
-            personal.setConsultaList(new ArrayList<Consulta>());
+        if (personal.getExamenOdontologiaList() == null) {
+            personal.setExamenOdontologiaList(new ArrayList<ExamenOdontologia>());
+        }
+        if (personal.getExamenGinecologiaList() == null) {
+            personal.setExamenGinecologiaList(new ArrayList<ExamenGinecologia>());
+        }
+        List<String> illegalOrphanMessages = null;
+        Login loginUsuarioOrphanCheck = personal.getLoginUsuario();
+        if (loginUsuarioOrphanCheck != null) {
+            Personal oldPersonalOfLoginUsuario = loginUsuarioOrphanCheck.getPersonal();
+            if (oldPersonalOfLoginUsuario != null) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("The Login " + loginUsuarioOrphanCheck + " already has an item of type Personal whose loginUsuario column cannot be null. Please make another selection for the loginUsuario field.");
+            }
+        }
+        if (illegalOrphanMessages != null) {
+            throw new IllegalOrphanException(illegalOrphanMessages);
         }
         EntityManager em = null;
         try {
@@ -65,18 +83,24 @@ public class PersonalJpaController implements Serializable {
                 loginUsuario = em.getReference(loginUsuario.getClass(), loginUsuario.getUsuario());
                 personal.setLoginUsuario(loginUsuario);
             }
-            List<Cita> attachedCitaList = new ArrayList<Cita>();
-            for (Cita citaListCitaToAttach : personal.getCitaList()) {
-                citaListCitaToAttach = em.getReference(citaListCitaToAttach.getClass(), citaListCitaToAttach.getId());
-                attachedCitaList.add(citaListCitaToAttach);
+            List<ExamenColposcopia> attachedExamenColposcopiaList = new ArrayList<ExamenColposcopia>();
+            for (ExamenColposcopia examenColposcopiaListExamenColposcopiaToAttach : personal.getExamenColposcopiaList()) {
+                examenColposcopiaListExamenColposcopiaToAttach = em.getReference(examenColposcopiaListExamenColposcopiaToAttach.getClass(), examenColposcopiaListExamenColposcopiaToAttach.getId());
+                attachedExamenColposcopiaList.add(examenColposcopiaListExamenColposcopiaToAttach);
             }
-            personal.setCitaList(attachedCitaList);
-            List<Consulta> attachedConsultaList = new ArrayList<Consulta>();
-            for (Consulta consultaListConsultaToAttach : personal.getConsultaList()) {
-                consultaListConsultaToAttach = em.getReference(consultaListConsultaToAttach.getClass(), consultaListConsultaToAttach.getFecha());
-                attachedConsultaList.add(consultaListConsultaToAttach);
+            personal.setExamenColposcopiaList(attachedExamenColposcopiaList);
+            List<ExamenOdontologia> attachedExamenOdontologiaList = new ArrayList<ExamenOdontologia>();
+            for (ExamenOdontologia examenOdontologiaListExamenOdontologiaToAttach : personal.getExamenOdontologiaList()) {
+                examenOdontologiaListExamenOdontologiaToAttach = em.getReference(examenOdontologiaListExamenOdontologiaToAttach.getClass(), examenOdontologiaListExamenOdontologiaToAttach.getId());
+                attachedExamenOdontologiaList.add(examenOdontologiaListExamenOdontologiaToAttach);
             }
-            personal.setConsultaList(attachedConsultaList);
+            personal.setExamenOdontologiaList(attachedExamenOdontologiaList);
+            List<ExamenGinecologia> attachedExamenGinecologiaList = new ArrayList<ExamenGinecologia>();
+            for (ExamenGinecologia examenGinecologiaListExamenGinecologiaToAttach : personal.getExamenGinecologiaList()) {
+                examenGinecologiaListExamenGinecologiaToAttach = em.getReference(examenGinecologiaListExamenGinecologiaToAttach.getClass(), examenGinecologiaListExamenGinecologiaToAttach.getId());
+                attachedExamenGinecologiaList.add(examenGinecologiaListExamenGinecologiaToAttach);
+            }
+            personal.setExamenGinecologiaList(attachedExamenGinecologiaList);
             em.persist(personal);
             if (autorizacionNivel != null) {
                 autorizacionNivel.getPersonalList().add(personal);
@@ -87,30 +111,39 @@ public class PersonalJpaController implements Serializable {
                 departamentoId = em.merge(departamentoId);
             }
             if (loginUsuario != null) {
-                loginUsuario.getPersonalList().add(personal);
+                loginUsuario.setPersonal(personal);
                 loginUsuario = em.merge(loginUsuario);
             }
-            for (Cita citaListCita : personal.getCitaList()) {
-                Personal oldPersonalidOfCitaListCita = citaListCita.getPersonalid();
-                citaListCita.setPersonalid(personal);
-                citaListCita = em.merge(citaListCita);
-                if (oldPersonalidOfCitaListCita != null) {
-                    oldPersonalidOfCitaListCita.getCitaList().remove(citaListCita);
-                    oldPersonalidOfCitaListCita = em.merge(oldPersonalidOfCitaListCita);
+            for (ExamenColposcopia examenColposcopiaListExamenColposcopia : personal.getExamenColposcopiaList()) {
+                Personal oldPersonalCedulaOfExamenColposcopiaListExamenColposcopia = examenColposcopiaListExamenColposcopia.getPersonalCedula();
+                examenColposcopiaListExamenColposcopia.setPersonalCedula(personal);
+                examenColposcopiaListExamenColposcopia = em.merge(examenColposcopiaListExamenColposcopia);
+                if (oldPersonalCedulaOfExamenColposcopiaListExamenColposcopia != null) {
+                    oldPersonalCedulaOfExamenColposcopiaListExamenColposcopia.getExamenColposcopiaList().remove(examenColposcopiaListExamenColposcopia);
+                    oldPersonalCedulaOfExamenColposcopiaListExamenColposcopia = em.merge(oldPersonalCedulaOfExamenColposcopiaListExamenColposcopia);
                 }
             }
-            for (Consulta consultaListConsulta : personal.getConsultaList()) {
-                Personal oldPersonalIdOfConsultaListConsulta = consultaListConsulta.getPersonalId();
-                consultaListConsulta.setPersonalId(personal);
-                consultaListConsulta = em.merge(consultaListConsulta);
-                if (oldPersonalIdOfConsultaListConsulta != null) {
-                    oldPersonalIdOfConsultaListConsulta.getConsultaList().remove(consultaListConsulta);
-                    oldPersonalIdOfConsultaListConsulta = em.merge(oldPersonalIdOfConsultaListConsulta);
+            for (ExamenOdontologia examenOdontologiaListExamenOdontologia : personal.getExamenOdontologiaList()) {
+                Personal oldPersonalCedulaOfExamenOdontologiaListExamenOdontologia = examenOdontologiaListExamenOdontologia.getPersonalCedula();
+                examenOdontologiaListExamenOdontologia.setPersonalCedula(personal);
+                examenOdontologiaListExamenOdontologia = em.merge(examenOdontologiaListExamenOdontologia);
+                if (oldPersonalCedulaOfExamenOdontologiaListExamenOdontologia != null) {
+                    oldPersonalCedulaOfExamenOdontologiaListExamenOdontologia.getExamenOdontologiaList().remove(examenOdontologiaListExamenOdontologia);
+                    oldPersonalCedulaOfExamenOdontologiaListExamenOdontologia = em.merge(oldPersonalCedulaOfExamenOdontologiaListExamenOdontologia);
+                }
+            }
+            for (ExamenGinecologia examenGinecologiaListExamenGinecologia : personal.getExamenGinecologiaList()) {
+                Personal oldPersonalCedulaOfExamenGinecologiaListExamenGinecologia = examenGinecologiaListExamenGinecologia.getPersonalCedula();
+                examenGinecologiaListExamenGinecologia.setPersonalCedula(personal);
+                examenGinecologiaListExamenGinecologia = em.merge(examenGinecologiaListExamenGinecologia);
+                if (oldPersonalCedulaOfExamenGinecologiaListExamenGinecologia != null) {
+                    oldPersonalCedulaOfExamenGinecologiaListExamenGinecologia.getExamenGinecologiaList().remove(examenGinecologiaListExamenGinecologia);
+                    oldPersonalCedulaOfExamenGinecologiaListExamenGinecologia = em.merge(oldPersonalCedulaOfExamenGinecologiaListExamenGinecologia);
                 }
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
-            if (findPersonal(personal.getId()) != null) {
+            if (findPersonal(personal.getCedula()) != null) {
                 throw new PreexistingEntityException("Personal " + personal + " already exists.", ex);
             }
             throw ex;
@@ -126,32 +159,51 @@ public class PersonalJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Personal persistentPersonal = em.find(Personal.class, personal.getId());
+            Personal persistentPersonal = em.find(Personal.class, personal.getCedula());
             Autorizacion autorizacionNivelOld = persistentPersonal.getAutorizacionNivel();
             Autorizacion autorizacionNivelNew = personal.getAutorizacionNivel();
             Departamento departamentoIdOld = persistentPersonal.getDepartamentoId();
             Departamento departamentoIdNew = personal.getDepartamentoId();
             Login loginUsuarioOld = persistentPersonal.getLoginUsuario();
             Login loginUsuarioNew = personal.getLoginUsuario();
-            List<Cita> citaListOld = persistentPersonal.getCitaList();
-            List<Cita> citaListNew = personal.getCitaList();
-            List<Consulta> consultaListOld = persistentPersonal.getConsultaList();
-            List<Consulta> consultaListNew = personal.getConsultaList();
+            List<ExamenColposcopia> examenColposcopiaListOld = persistentPersonal.getExamenColposcopiaList();
+            List<ExamenColposcopia> examenColposcopiaListNew = personal.getExamenColposcopiaList();
+            List<ExamenOdontologia> examenOdontologiaListOld = persistentPersonal.getExamenOdontologiaList();
+            List<ExamenOdontologia> examenOdontologiaListNew = personal.getExamenOdontologiaList();
+            List<ExamenGinecologia> examenGinecologiaListOld = persistentPersonal.getExamenGinecologiaList();
+            List<ExamenGinecologia> examenGinecologiaListNew = personal.getExamenGinecologiaList();
             List<String> illegalOrphanMessages = null;
-            for (Cita citaListOldCita : citaListOld) {
-                if (!citaListNew.contains(citaListOldCita)) {
+            if (loginUsuarioNew != null && !loginUsuarioNew.equals(loginUsuarioOld)) {
+                Personal oldPersonalOfLoginUsuario = loginUsuarioNew.getPersonal();
+                if (oldPersonalOfLoginUsuario != null) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Cita " + citaListOldCita + " since its personalid field is not nullable.");
+                    illegalOrphanMessages.add("The Login " + loginUsuarioNew + " already has an item of type Personal whose loginUsuario column cannot be null. Please make another selection for the loginUsuario field.");
                 }
             }
-            for (Consulta consultaListOldConsulta : consultaListOld) {
-                if (!consultaListNew.contains(consultaListOldConsulta)) {
+            for (ExamenColposcopia examenColposcopiaListOldExamenColposcopia : examenColposcopiaListOld) {
+                if (!examenColposcopiaListNew.contains(examenColposcopiaListOldExamenColposcopia)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Consulta " + consultaListOldConsulta + " since its personalId field is not nullable.");
+                    illegalOrphanMessages.add("You must retain ExamenColposcopia " + examenColposcopiaListOldExamenColposcopia + " since its personalCedula field is not nullable.");
+                }
+            }
+            for (ExamenOdontologia examenOdontologiaListOldExamenOdontologia : examenOdontologiaListOld) {
+                if (!examenOdontologiaListNew.contains(examenOdontologiaListOldExamenOdontologia)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain ExamenOdontologia " + examenOdontologiaListOldExamenOdontologia + " since its personalCedula field is not nullable.");
+                }
+            }
+            for (ExamenGinecologia examenGinecologiaListOldExamenGinecologia : examenGinecologiaListOld) {
+                if (!examenGinecologiaListNew.contains(examenGinecologiaListOldExamenGinecologia)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain ExamenGinecologia " + examenGinecologiaListOldExamenGinecologia + " since its personalCedula field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -169,20 +221,27 @@ public class PersonalJpaController implements Serializable {
                 loginUsuarioNew = em.getReference(loginUsuarioNew.getClass(), loginUsuarioNew.getUsuario());
                 personal.setLoginUsuario(loginUsuarioNew);
             }
-            List<Cita> attachedCitaListNew = new ArrayList<Cita>();
-            for (Cita citaListNewCitaToAttach : citaListNew) {
-                citaListNewCitaToAttach = em.getReference(citaListNewCitaToAttach.getClass(), citaListNewCitaToAttach.getId());
-                attachedCitaListNew.add(citaListNewCitaToAttach);
+            List<ExamenColposcopia> attachedExamenColposcopiaListNew = new ArrayList<ExamenColposcopia>();
+            for (ExamenColposcopia examenColposcopiaListNewExamenColposcopiaToAttach : examenColposcopiaListNew) {
+                examenColposcopiaListNewExamenColposcopiaToAttach = em.getReference(examenColposcopiaListNewExamenColposcopiaToAttach.getClass(), examenColposcopiaListNewExamenColposcopiaToAttach.getId());
+                attachedExamenColposcopiaListNew.add(examenColposcopiaListNewExamenColposcopiaToAttach);
             }
-            citaListNew = attachedCitaListNew;
-            personal.setCitaList(citaListNew);
-            List<Consulta> attachedConsultaListNew = new ArrayList<Consulta>();
-            for (Consulta consultaListNewConsultaToAttach : consultaListNew) {
-                consultaListNewConsultaToAttach = em.getReference(consultaListNewConsultaToAttach.getClass(), consultaListNewConsultaToAttach.getFecha());
-                attachedConsultaListNew.add(consultaListNewConsultaToAttach);
+            examenColposcopiaListNew = attachedExamenColposcopiaListNew;
+            personal.setExamenColposcopiaList(examenColposcopiaListNew);
+            List<ExamenOdontologia> attachedExamenOdontologiaListNew = new ArrayList<ExamenOdontologia>();
+            for (ExamenOdontologia examenOdontologiaListNewExamenOdontologiaToAttach : examenOdontologiaListNew) {
+                examenOdontologiaListNewExamenOdontologiaToAttach = em.getReference(examenOdontologiaListNewExamenOdontologiaToAttach.getClass(), examenOdontologiaListNewExamenOdontologiaToAttach.getId());
+                attachedExamenOdontologiaListNew.add(examenOdontologiaListNewExamenOdontologiaToAttach);
             }
-            consultaListNew = attachedConsultaListNew;
-            personal.setConsultaList(consultaListNew);
+            examenOdontologiaListNew = attachedExamenOdontologiaListNew;
+            personal.setExamenOdontologiaList(examenOdontologiaListNew);
+            List<ExamenGinecologia> attachedExamenGinecologiaListNew = new ArrayList<ExamenGinecologia>();
+            for (ExamenGinecologia examenGinecologiaListNewExamenGinecologiaToAttach : examenGinecologiaListNew) {
+                examenGinecologiaListNewExamenGinecologiaToAttach = em.getReference(examenGinecologiaListNewExamenGinecologiaToAttach.getClass(), examenGinecologiaListNewExamenGinecologiaToAttach.getId());
+                attachedExamenGinecologiaListNew.add(examenGinecologiaListNewExamenGinecologiaToAttach);
+            }
+            examenGinecologiaListNew = attachedExamenGinecologiaListNew;
+            personal.setExamenGinecologiaList(examenGinecologiaListNew);
             personal = em.merge(personal);
             if (autorizacionNivelOld != null && !autorizacionNivelOld.equals(autorizacionNivelNew)) {
                 autorizacionNivelOld.getPersonalList().remove(personal);
@@ -201,32 +260,43 @@ public class PersonalJpaController implements Serializable {
                 departamentoIdNew = em.merge(departamentoIdNew);
             }
             if (loginUsuarioOld != null && !loginUsuarioOld.equals(loginUsuarioNew)) {
-                loginUsuarioOld.getPersonalList().remove(personal);
+                loginUsuarioOld.setPersonal(null);
                 loginUsuarioOld = em.merge(loginUsuarioOld);
             }
             if (loginUsuarioNew != null && !loginUsuarioNew.equals(loginUsuarioOld)) {
-                loginUsuarioNew.getPersonalList().add(personal);
+                loginUsuarioNew.setPersonal(personal);
                 loginUsuarioNew = em.merge(loginUsuarioNew);
             }
-            for (Cita citaListNewCita : citaListNew) {
-                if (!citaListOld.contains(citaListNewCita)) {
-                    Personal oldPersonalidOfCitaListNewCita = citaListNewCita.getPersonalid();
-                    citaListNewCita.setPersonalid(personal);
-                    citaListNewCita = em.merge(citaListNewCita);
-                    if (oldPersonalidOfCitaListNewCita != null && !oldPersonalidOfCitaListNewCita.equals(personal)) {
-                        oldPersonalidOfCitaListNewCita.getCitaList().remove(citaListNewCita);
-                        oldPersonalidOfCitaListNewCita = em.merge(oldPersonalidOfCitaListNewCita);
+            for (ExamenColposcopia examenColposcopiaListNewExamenColposcopia : examenColposcopiaListNew) {
+                if (!examenColposcopiaListOld.contains(examenColposcopiaListNewExamenColposcopia)) {
+                    Personal oldPersonalCedulaOfExamenColposcopiaListNewExamenColposcopia = examenColposcopiaListNewExamenColposcopia.getPersonalCedula();
+                    examenColposcopiaListNewExamenColposcopia.setPersonalCedula(personal);
+                    examenColposcopiaListNewExamenColposcopia = em.merge(examenColposcopiaListNewExamenColposcopia);
+                    if (oldPersonalCedulaOfExamenColposcopiaListNewExamenColposcopia != null && !oldPersonalCedulaOfExamenColposcopiaListNewExamenColposcopia.equals(personal)) {
+                        oldPersonalCedulaOfExamenColposcopiaListNewExamenColposcopia.getExamenColposcopiaList().remove(examenColposcopiaListNewExamenColposcopia);
+                        oldPersonalCedulaOfExamenColposcopiaListNewExamenColposcopia = em.merge(oldPersonalCedulaOfExamenColposcopiaListNewExamenColposcopia);
                     }
                 }
             }
-            for (Consulta consultaListNewConsulta : consultaListNew) {
-                if (!consultaListOld.contains(consultaListNewConsulta)) {
-                    Personal oldPersonalIdOfConsultaListNewConsulta = consultaListNewConsulta.getPersonalId();
-                    consultaListNewConsulta.setPersonalId(personal);
-                    consultaListNewConsulta = em.merge(consultaListNewConsulta);
-                    if (oldPersonalIdOfConsultaListNewConsulta != null && !oldPersonalIdOfConsultaListNewConsulta.equals(personal)) {
-                        oldPersonalIdOfConsultaListNewConsulta.getConsultaList().remove(consultaListNewConsulta);
-                        oldPersonalIdOfConsultaListNewConsulta = em.merge(oldPersonalIdOfConsultaListNewConsulta);
+            for (ExamenOdontologia examenOdontologiaListNewExamenOdontologia : examenOdontologiaListNew) {
+                if (!examenOdontologiaListOld.contains(examenOdontologiaListNewExamenOdontologia)) {
+                    Personal oldPersonalCedulaOfExamenOdontologiaListNewExamenOdontologia = examenOdontologiaListNewExamenOdontologia.getPersonalCedula();
+                    examenOdontologiaListNewExamenOdontologia.setPersonalCedula(personal);
+                    examenOdontologiaListNewExamenOdontologia = em.merge(examenOdontologiaListNewExamenOdontologia);
+                    if (oldPersonalCedulaOfExamenOdontologiaListNewExamenOdontologia != null && !oldPersonalCedulaOfExamenOdontologiaListNewExamenOdontologia.equals(personal)) {
+                        oldPersonalCedulaOfExamenOdontologiaListNewExamenOdontologia.getExamenOdontologiaList().remove(examenOdontologiaListNewExamenOdontologia);
+                        oldPersonalCedulaOfExamenOdontologiaListNewExamenOdontologia = em.merge(oldPersonalCedulaOfExamenOdontologiaListNewExamenOdontologia);
+                    }
+                }
+            }
+            for (ExamenGinecologia examenGinecologiaListNewExamenGinecologia : examenGinecologiaListNew) {
+                if (!examenGinecologiaListOld.contains(examenGinecologiaListNewExamenGinecologia)) {
+                    Personal oldPersonalCedulaOfExamenGinecologiaListNewExamenGinecologia = examenGinecologiaListNewExamenGinecologia.getPersonalCedula();
+                    examenGinecologiaListNewExamenGinecologia.setPersonalCedula(personal);
+                    examenGinecologiaListNewExamenGinecologia = em.merge(examenGinecologiaListNewExamenGinecologia);
+                    if (oldPersonalCedulaOfExamenGinecologiaListNewExamenGinecologia != null && !oldPersonalCedulaOfExamenGinecologiaListNewExamenGinecologia.equals(personal)) {
+                        oldPersonalCedulaOfExamenGinecologiaListNewExamenGinecologia.getExamenGinecologiaList().remove(examenGinecologiaListNewExamenGinecologia);
+                        oldPersonalCedulaOfExamenGinecologiaListNewExamenGinecologia = em.merge(oldPersonalCedulaOfExamenGinecologiaListNewExamenGinecologia);
                     }
                 }
             }
@@ -234,7 +304,7 @@ public class PersonalJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                String id = personal.getId();
+                String id = personal.getCedula();
                 if (findPersonal(id) == null) {
                     throw new NonexistentEntityException("The personal with id " + id + " no longer exists.");
                 }
@@ -255,24 +325,31 @@ public class PersonalJpaController implements Serializable {
             Personal personal;
             try {
                 personal = em.getReference(Personal.class, id);
-                personal.getId();
+                personal.getCedula();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The personal with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            List<Cita> citaListOrphanCheck = personal.getCitaList();
-            for (Cita citaListOrphanCheckCita : citaListOrphanCheck) {
+            List<ExamenColposcopia> examenColposcopiaListOrphanCheck = personal.getExamenColposcopiaList();
+            for (ExamenColposcopia examenColposcopiaListOrphanCheckExamenColposcopia : examenColposcopiaListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Personal (" + personal + ") cannot be destroyed since the Cita " + citaListOrphanCheckCita + " in its citaList field has a non-nullable personalid field.");
+                illegalOrphanMessages.add("This Personal (" + personal + ") cannot be destroyed since the ExamenColposcopia " + examenColposcopiaListOrphanCheckExamenColposcopia + " in its examenColposcopiaList field has a non-nullable personalCedula field.");
             }
-            List<Consulta> consultaListOrphanCheck = personal.getConsultaList();
-            for (Consulta consultaListOrphanCheckConsulta : consultaListOrphanCheck) {
+            List<ExamenOdontologia> examenOdontologiaListOrphanCheck = personal.getExamenOdontologiaList();
+            for (ExamenOdontologia examenOdontologiaListOrphanCheckExamenOdontologia : examenOdontologiaListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Personal (" + personal + ") cannot be destroyed since the Consulta " + consultaListOrphanCheckConsulta + " in its consultaList field has a non-nullable personalId field.");
+                illegalOrphanMessages.add("This Personal (" + personal + ") cannot be destroyed since the ExamenOdontologia " + examenOdontologiaListOrphanCheckExamenOdontologia + " in its examenOdontologiaList field has a non-nullable personalCedula field.");
+            }
+            List<ExamenGinecologia> examenGinecologiaListOrphanCheck = personal.getExamenGinecologiaList();
+            for (ExamenGinecologia examenGinecologiaListOrphanCheckExamenGinecologia : examenGinecologiaListOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Personal (" + personal + ") cannot be destroyed since the ExamenGinecologia " + examenGinecologiaListOrphanCheckExamenGinecologia + " in its examenGinecologiaList field has a non-nullable personalCedula field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
@@ -289,7 +366,7 @@ public class PersonalJpaController implements Serializable {
             }
             Login loginUsuario = personal.getLoginUsuario();
             if (loginUsuario != null) {
-                loginUsuario.getPersonalList().remove(personal);
+                loginUsuario.setPersonal(null);
                 loginUsuario = em.merge(loginUsuario);
             }
             em.remove(personal);

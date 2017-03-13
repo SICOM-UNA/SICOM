@@ -27,7 +27,7 @@
                                             <h:panelGrid columns="4" cellspacing="2">
 
                                                 <p:outputLabel class="descripcion" value="Identificación:" for="id"/>
-                                                <p:inputText  value="#{personalBean.nuevoPersonal.id}"  onchange="#{personalBean.buscaIdBase()}" id="id"  maxlength="45" class = "alphanumericToUpperCase" onkeyup="validar()">
+                                                <p:inputText  value="#{personalBean.nuevoPersonal.cedula}"  onchange="#{personalBean.buscaIdBase()}" id="id"  maxlength="45" class = "alphanumericToUpperCase" onkeyup="validar()">
                                                     <p:ajax update="msg panel1"/>
                                                 </p:inputText>
 
@@ -130,7 +130,7 @@
                                         <p:panel header=" Información Personal">
                                             <h:panelGrid columns="4" >
                                                 <p:outputLabel  value="Cédula:" class="rad"/>
-                                                <p:inputText  value="#{personalBean.nuevoPersonal.id}" readonly="true"/>
+                                                <p:inputText  value="#{personalBean.nuevoPersonal.cedula}" readonly="true"/>
 
                                                 <p:outputLabel value="Género:" class="rad"/>
                                                 <p:inputText value="#{personalBean.nuevoPersonal.genero}" readonly="true"/>

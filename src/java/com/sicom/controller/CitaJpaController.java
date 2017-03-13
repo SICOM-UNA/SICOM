@@ -13,14 +13,13 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Departamento;
-import com.sicom.entities.Personal;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 public class CitaJpaController implements Serializable {
 
@@ -43,19 +42,10 @@ public class CitaJpaController implements Serializable {
                 departamentoId = em.getReference(departamentoId.getClass(), departamentoId.getId());
                 cita.setDepartamentoId(departamentoId);
             }
-            Personal personalid = cita.getPersonalid();
-            if (personalid != null) {
-                personalid = em.getReference(personalid.getClass(), personalid.getId());
-                cita.setPersonalid(personalid);
-            }
             em.persist(cita);
             if (departamentoId != null) {
                 departamentoId.getCitaList().add(cita);
                 departamentoId = em.merge(departamentoId);
-            }
-            if (personalid != null) {
-                personalid.getCitaList().add(cita);
-                personalid = em.merge(personalid);
             }
             em.getTransaction().commit();
         } finally {
@@ -73,15 +63,9 @@ public class CitaJpaController implements Serializable {
             Cita persistentCita = em.find(Cita.class, cita.getId());
             Departamento departamentoIdOld = persistentCita.getDepartamentoId();
             Departamento departamentoIdNew = cita.getDepartamentoId();
-            Personal personalidOld = persistentCita.getPersonalid();
-            Personal personalidNew = cita.getPersonalid();
             if (departamentoIdNew != null) {
                 departamentoIdNew = em.getReference(departamentoIdNew.getClass(), departamentoIdNew.getId());
                 cita.setDepartamentoId(departamentoIdNew);
-            }
-            if (personalidNew != null) {
-                personalidNew = em.getReference(personalidNew.getClass(), personalidNew.getId());
-                cita.setPersonalid(personalidNew);
             }
             cita = em.merge(cita);
             if (departamentoIdOld != null && !departamentoIdOld.equals(departamentoIdNew)) {
@@ -91,14 +75,6 @@ public class CitaJpaController implements Serializable {
             if (departamentoIdNew != null && !departamentoIdNew.equals(departamentoIdOld)) {
                 departamentoIdNew.getCitaList().add(cita);
                 departamentoIdNew = em.merge(departamentoIdNew);
-            }
-            if (personalidOld != null && !personalidOld.equals(personalidNew)) {
-                personalidOld.getCitaList().remove(cita);
-                personalidOld = em.merge(personalidOld);
-            }
-            if (personalidNew != null && !personalidNew.equals(personalidOld)) {
-                personalidNew.getCitaList().add(cita);
-                personalidNew = em.merge(personalidNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -133,11 +109,6 @@ public class CitaJpaController implements Serializable {
             if (departamentoId != null) {
                 departamentoId.getCitaList().remove(cita);
                 departamentoId = em.merge(departamentoId);
-            }
-            Personal personalid = cita.getPersonalid();
-            if (personalid != null) {
-                personalid.getCitaList().remove(cita);
-                personalid = em.merge(personalid);
             }
             em.remove(cita);
             em.getTransaction().commit();

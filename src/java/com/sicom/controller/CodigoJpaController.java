@@ -44,18 +44,18 @@ public class CodigoJpaController implements Serializable {
             em.getTransaction().begin();
             List<Valor> attachedValorList = new ArrayList<Valor>();
             for (Valor valorListValorToAttach : codigo.getValorList()) {
-                valorListValorToAttach = em.getReference(valorListValorToAttach.getClass(), valorListValorToAttach.getId());
+                valorListValorToAttach = em.getReference(valorListValorToAttach.getClass(), valorListValorToAttach.getValorPK());
                 attachedValorList.add(valorListValorToAttach);
             }
             codigo.setValorList(attachedValorList);
             em.persist(codigo);
             for (Valor valorListValor : codigo.getValorList()) {
-                Codigo oldCodigoIdOfValorListValor = valorListValor.getCodigoId();
-                valorListValor.setCodigoId(codigo);
+                Codigo oldCodigoOfValorListValor = valorListValor.getCodigo();
+                valorListValor.setCodigo(codigo);
                 valorListValor = em.merge(valorListValor);
-                if (oldCodigoIdOfValorListValor != null) {
-                    oldCodigoIdOfValorListValor.getValorList().remove(valorListValor);
-                    oldCodigoIdOfValorListValor = em.merge(oldCodigoIdOfValorListValor);
+                if (oldCodigoOfValorListValor != null) {
+                    oldCodigoOfValorListValor.getValorList().remove(valorListValor);
+                    oldCodigoOfValorListValor = em.merge(oldCodigoOfValorListValor);
                 }
             }
             em.getTransaction().commit();
@@ -80,7 +80,7 @@ public class CodigoJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Valor " + valorListOldValor + " since its codigoId field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Valor " + valorListOldValor + " since its codigo field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -88,7 +88,7 @@ public class CodigoJpaController implements Serializable {
             }
             List<Valor> attachedValorListNew = new ArrayList<Valor>();
             for (Valor valorListNewValorToAttach : valorListNew) {
-                valorListNewValorToAttach = em.getReference(valorListNewValorToAttach.getClass(), valorListNewValorToAttach.getId());
+                valorListNewValorToAttach = em.getReference(valorListNewValorToAttach.getClass(), valorListNewValorToAttach.getValorPK());
                 attachedValorListNew.add(valorListNewValorToAttach);
             }
             valorListNew = attachedValorListNew;
@@ -96,12 +96,12 @@ public class CodigoJpaController implements Serializable {
             codigo = em.merge(codigo);
             for (Valor valorListNewValor : valorListNew) {
                 if (!valorListOld.contains(valorListNewValor)) {
-                    Codigo oldCodigoIdOfValorListNewValor = valorListNewValor.getCodigoId();
-                    valorListNewValor.setCodigoId(codigo);
+                    Codigo oldCodigoOfValorListNewValor = valorListNewValor.getCodigo();
+                    valorListNewValor.setCodigo(codigo);
                     valorListNewValor = em.merge(valorListNewValor);
-                    if (oldCodigoIdOfValorListNewValor != null && !oldCodigoIdOfValorListNewValor.equals(codigo)) {
-                        oldCodigoIdOfValorListNewValor.getValorList().remove(valorListNewValor);
-                        oldCodigoIdOfValorListNewValor = em.merge(oldCodigoIdOfValorListNewValor);
+                    if (oldCodigoOfValorListNewValor != null && !oldCodigoOfValorListNewValor.equals(codigo)) {
+                        oldCodigoOfValorListNewValor.getValorList().remove(valorListNewValor);
+                        oldCodigoOfValorListNewValor = em.merge(oldCodigoOfValorListNewValor);
                     }
                 }
             }
@@ -140,7 +140,7 @@ public class CodigoJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Codigo (" + codigo + ") cannot be destroyed since the Valor " + valorListOrphanCheckValor + " in its valorList field has a non-nullable codigoId field.");
+                illegalOrphanMessages.add("This Codigo (" + codigo + ") cannot be destroyed since the Valor " + valorListOrphanCheckValor + " in its valorList field has a non-nullable codigo field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

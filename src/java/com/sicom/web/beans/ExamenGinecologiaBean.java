@@ -10,12 +10,12 @@ import javax.persistence.Persistence;
 
 @ManagedBean
 @ViewScoped
-public class ExamenFisicoGinecBean {
+public class ExamenGinecologiaBean {
 
     private Date hoy;
     private final ValorJpaController vjc;
 
-    public ExamenFisicoGinecBean(){
+    public ExamenGinecologiaBean(){
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
         vjc = new ValorJpaController(emf);
     

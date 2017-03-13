@@ -11,7 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,12 +43,12 @@ public class Departamento implements Serializable {
     @Basic(optional = false)
     @Column(name = "nombre")
     private String nombre;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamentoId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamentoId")
     private List<Personal> personalList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamentoId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamentoId")
+    private List<Documentos> documentosList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamentoId")
     private List<Cita> citaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamentoId", fetch = FetchType.LAZY)
-    private List<Consulta> consultaList;
 
     public Departamento() {
     }
@@ -89,21 +88,21 @@ public class Departamento implements Serializable {
     }
 
     @XmlTransient
+    public List<Documentos> getDocumentosList() {
+        return documentosList;
+    }
+
+    public void setDocumentosList(List<Documentos> documentosList) {
+        this.documentosList = documentosList;
+    }
+
+    @XmlTransient
     public List<Cita> getCitaList() {
         return citaList;
     }
 
     public void setCitaList(List<Cita> citaList) {
         this.citaList = citaList;
-    }
-
-    @XmlTransient
-    public List<Consulta> getConsultaList() {
-        return consultaList;
-    }
-
-    public void setConsultaList(List<Consulta> consultaList) {
-        this.consultaList = consultaList;
     }
 
     @Override

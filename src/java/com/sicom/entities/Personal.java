@@ -12,13 +12,13 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -34,33 +34,40 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Personal.findAll", query = "SELECT p FROM Personal p"),
-    @NamedQuery(name = "Personal.findById", query = "SELECT p FROM Personal p WHERE p.id = :id"),
+    @NamedQuery(name = "Personal.findByCedula", query = "SELECT p FROM Personal p WHERE p.cedula = :cedula"),
     @NamedQuery(name = "Personal.findByNombre", query = "SELECT p FROM Personal p WHERE p.nombre = :nombre"),
+    @NamedQuery(name = "Personal.findByPrimerApellido", query = "SELECT p FROM Personal p WHERE p.primerApellido = :primerApellido"),
+    @NamedQuery(name = "Personal.findBySegundoApellido", query = "SELECT p FROM Personal p WHERE p.segundoApellido = :segundoApellido"),
+    @NamedQuery(name = "Personal.findByGenero", query = "SELECT p FROM Personal p WHERE p.genero = :genero"),
+    @NamedQuery(name = "Personal.findByCelular", query = "SELECT p FROM Personal p WHERE p.celular = :celular"),
     @NamedQuery(name = "Personal.findByTelefono", query = "SELECT p FROM Personal p WHERE p.telefono = :telefono"),
     @NamedQuery(name = "Personal.findByCargo", query = "SELECT p FROM Personal p WHERE p.cargo = :cargo"),
-    @NamedQuery(name = "Personal.findByCorreo", query = "SELECT p FROM Personal p WHERE p.correo = :correo")})
+    @NamedQuery(name = "Personal.findByCorreo", query = "SELECT p FROM Personal p WHERE p.correo = :correo"),
+    @NamedQuery(name = "Personal.findByNacimiento", query = "SELECT p FROM Personal p WHERE p.nacimiento = :nacimiento"),
+    @NamedQuery(name = "Personal.findByDomicilio", query = "SELECT p FROM Personal p WHERE p.domicilio = :domicilio"),
+    @NamedQuery(name = "Personal.findByEstadoCivil", query = "SELECT p FROM Personal p WHERE p.estadoCivil = :estadoCivil")})
 public class Personal implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "id")
-    private String id;
+    @Column(name = "cedula")
+    private String cedula;
     @Basic(optional = false)
     @Column(name = "nombre")
     private String nombre;
+    @Basic(optional = false)
     @Column(name = "primer_apellido")
     private String primerApellido;
+    @Basic(optional = false)
     @Column(name = "segundo_apellido")
     private String segundoApellido;
-     @Column(name = "genero")
+    @Column(name = "genero")
     private String genero;
-    @Column(name = "telefono")
-    private String telefono;
     @Column(name = "celular")
     private String celular;
-     @Column(name = "estado_civil")
-    private String estadoCivil;
+    @Column(name = "telefono")
+    private String telefono;
     @Column(name = "cargo")
     private String cargo;
     @Column(name = "correo")
@@ -70,40 +77,47 @@ public class Personal implements Serializable {
     private Date nacimiento;
     @Column(name = "domicilio")
     private String domicilio;
-    
-    
-    @JoinColumn(name = "autorizacion_nivel", referencedColumnName = "nivel")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @Column(name = "estado_civil")
+    private String estadoCivil;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalCedula")
+    private List<ExamenColposcopia> examenColposcopiaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalCedula")
+    private List<ExamenOdontologia> examenOdontologiaList;
+    @JoinColumn(name = "Autorizacion_nivel", referencedColumnName = "nivel")
+    @ManyToOne(optional = false)
     private Autorizacion autorizacionNivel;
-    @JoinColumn(name = "departamento_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "Departamento_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
     private Departamento departamentoId;
-    @JoinColumn(name = "login_usuario", referencedColumnName = "usuario")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "Login_usuario", referencedColumnName = "usuario")
+    @OneToOne(optional = false)
     private Login loginUsuario;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalid", fetch = FetchType.LAZY)
-    private List<Cita> citaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalId", fetch = FetchType.LAZY)
-    private List<Consulta> consultaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalCedula")
+    private List<ExamenGinecologia> examenGinecologiaList;
 
     public Personal() {
+        autorizacionNivel = new Autorizacion();
+        departamentoId = new Departamento();
+        loginUsuario = new Login();
     }
 
-    public Personal(String id) {
-        this.id = id;
+    public Personal(String cedula) {
+        this.cedula = cedula;
     }
 
-    public Personal(String id, String nombre) {
-        this.id = id;
+    public Personal(String cedula, String nombre, String primerApellido, String segundoApellido) {
+        this.cedula = cedula;
         this.nombre = nombre;
+        this.primerApellido = primerApellido;
+        this.segundoApellido = segundoApellido;
     }
 
-    public String getId() {
-        return id;
+    public String getCedula() {
+        return cedula;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
     }
 
     public String getNombre() {
@@ -113,7 +127,7 @@ public class Personal implements Serializable {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    
+
     public String getPrimerApellido() {
         return primerApellido;
     }
@@ -129,17 +143,23 @@ public class Personal implements Serializable {
     public void setSegundoApellido(String segundoApellido) {
         this.segundoApellido = segundoApellido;
     }
-      public String getGenero() {
+
+    public String getGenero() {
         return genero;
     }
 
     public void setGenero(String genero) {
         this.genero = genero;
     }
-    
-    
-    
-   
+
+    public String getCelular() {
+        return celular;
+    }
+
+    public void setCelular(String celular) {
+        this.celular = celular;
+    }
+
     public String getTelefono() {
         return telefono;
     }
@@ -147,22 +167,7 @@ public class Personal implements Serializable {
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
-   public String getCelular() {
-        return celular;
-    }
 
-    public void setCelular(String celular) {
-        this.celular = celular;
-    }
-    
-    public String getEstadoCivil() {
-        return estadoCivil;
-    }
-
-    public void setEstadoCivil(String estadoCivil) {
-        this.estadoCivil = estadoCivil;
-    }
-    
     public String getCargo() {
         return cargo;
     }
@@ -177,6 +182,48 @@ public class Personal implements Serializable {
 
     public void setCorreo(String correo) {
         this.correo = correo;
+    }
+
+    public Date getNacimiento() {
+        return nacimiento;
+    }
+
+    public void setNacimiento(Date nacimiento) {
+        this.nacimiento = nacimiento;
+    }
+
+    public String getDomicilio() {
+        return domicilio;
+    }
+
+    public void setDomicilio(String domicilio) {
+        this.domicilio = domicilio;
+    }
+
+    public String getEstadoCivil() {
+        return estadoCivil;
+    }
+
+    public void setEstadoCivil(String estadoCivil) {
+        this.estadoCivil = estadoCivil;
+    }
+
+    @XmlTransient
+    public List<ExamenColposcopia> getExamenColposcopiaList() {
+        return examenColposcopiaList;
+    }
+
+    public void setExamenColposcopiaList(List<ExamenColposcopia> examenColposcopiaList) {
+        this.examenColposcopiaList = examenColposcopiaList;
+    }
+
+    @XmlTransient
+    public List<ExamenOdontologia> getExamenOdontologiaList() {
+        return examenOdontologiaList;
+    }
+
+    public void setExamenOdontologiaList(List<ExamenOdontologia> examenOdontologiaList) {
+        this.examenOdontologiaList = examenOdontologiaList;
     }
 
     public Autorizacion getAutorizacionNivel() {
@@ -203,58 +250,19 @@ public class Personal implements Serializable {
         this.loginUsuario = loginUsuario;
     }
 
-     public Date getNacimiento() {
-        return nacimiento;
-    }
-
-    public void setNacimiento(Date nacimiento) {
-        this.nacimiento = nacimiento;
-    }
-
-    public String getDomicilio() {
-        return domicilio;
-    }
-
-    public void setDomicilio(String domicilio) {
-        this.domicilio = domicilio;
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     @XmlTransient
-    public List<Cita> getCitaList() {
-        return citaList;
+    public List<ExamenGinecologia> getExamenGinecologiaList() {
+        return examenGinecologiaList;
     }
 
-    public void setCitaList(List<Cita> citaList) {
-        this.citaList = citaList;
-    }
-
-    @XmlTransient
-    public List<Consulta> getConsultaList() {
-        return consultaList;
-    }
-
-    public void setConsultaList(List<Consulta> consultaList) {
-        this.consultaList = consultaList;
+    public void setExamenGinecologiaList(List<ExamenGinecologia> examenGinecologiaList) {
+        this.examenGinecologiaList = examenGinecologiaList;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (cedula != null ? cedula.hashCode() : 0);
         return hash;
     }
 
@@ -265,7 +273,7 @@ public class Personal implements Serializable {
             return false;
         }
         Personal other = (Personal) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.cedula == null && other.cedula != null) || (this.cedula != null && !this.cedula.equals(other.cedula))) {
             return false;
         }
         return true;
@@ -273,7 +281,7 @@ public class Personal implements Serializable {
 
     @Override
     public String toString() {
-        return "com.sicom.entities.Personal[ id=" + id + " ]";
+        return "com.sicom.entities.Personal[ cedula=" + cedula + " ]";
     }
     
 }

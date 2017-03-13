@@ -26,7 +26,6 @@ import org.primefaces.event.FlowEvent;
 @ManagedBean
 @ViewScoped
 public class PacienteBean {
-
     private Paciente nuevoPaciente, selectedPaciente;
     private static Paciente savedPaciente;
     private Responsable nuevoResponsable1;
@@ -40,9 +39,7 @@ public class PacienteBean {
     private boolean skip;
 
     public PacienteBean() {
-
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
-
         nuevoPaciente = new Paciente();
 
         if (savedPaciente == null) {
@@ -64,19 +61,12 @@ public class PacienteBean {
         listaPacientes = pjc.findPacienteEntities();
     }
 
-    //--------------------------------------------------------------------------
-    // AGREGAR PACIENTE
+    /**
+     * 
+     * @throws Exception 
+     */
     public void agregar() throws Exception {
         pjc.create(nuevoPaciente);
-        if (nuevoResponsable1.getId() != null) {
-            nuevoResponsable1.setPacienteid(nuevoPaciente);
-            rjc.create(nuevoResponsable1);
-        }
-        if (nuevoResponsable2.getId() != null) {
-            nuevoResponsable2.setPacienteid(nuevoPaciente);
-            rjc.create(nuevoResponsable2);
-        }
-
     }
 
     /* Wizard Methods*/
@@ -97,7 +87,9 @@ public class PacienteBean {
         }
     }
 
-    /**/
+    /**
+     * Guardar paciente
+     */
     public void save() {
         try {
             agregar();
@@ -129,8 +121,9 @@ public class PacienteBean {
         }
     }
 
-    //--------------------------------------------------------------------------
-    // INFORMACION DEL PACIENTE
+    /**
+     * Información del paciente
+     */
     public void modificaRedirect() {
         try {
 
@@ -167,8 +160,11 @@ public class PacienteBean {
         }
     }
 
-    //--------------------------------------------------------------------------
-    // HISTORIA CLINICA DE PACIENTE
+    /**
+     * Historia Clínica del paciente
+     * @param permiso_editar
+     * @param consultorio 
+     */
     public void HistoriaClinica(boolean permiso_editar, int consultorio) {
 
         FacesContext fc = FacesContext.getCurrentInstance();
@@ -196,26 +192,19 @@ public class PacienteBean {
         try {
             ec.redirect(URL);
         } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
-    //--------------------------------------------------------------------------
-    // GENERAL METHODS
     public void buscaIdBase() {
-
-        if (selectedPaciente.getId() != null) {
-
-            String id = selectedPaciente.getId();
-
-            Paciente p = this.pjc.findPaciente(selectedPaciente.getId());
+        if (selectedPaciente.getCedula() != null) {
+            String id = selectedPaciente.getCedula();
+            Paciente p = this.pjc.findPaciente(selectedPaciente.getCedula());
 
             if (p != null) {
-
                 FacesContext fc = FacesContext.getCurrentInstance();
                 ExternalContext ec = fc.getExternalContext();
-
                 String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
-
                 savedPaciente = p;
 
                 try {
@@ -249,14 +238,12 @@ public class PacienteBean {
     }
 
     public void verificaID() {
-        if (nuevoPaciente.getId() != null) {
-            selectedPaciente.setId(nuevoPaciente.getId());
+        if (nuevoPaciente.getCedula() != null) {
+            selectedPaciente.setCedula(nuevoPaciente.getCedula());
             this.buscaIdBase();
         }
     }
 
-    //--------------------------------------------------------------------------\
-    //  GETTERS & SETTERS
     /**
      * @return the listaPacientes
      */
@@ -334,5 +321,4 @@ public class PacienteBean {
     public static void setSavedPaciente(Paciente savedPaciente) {
         PacienteBean.savedPaciente = savedPaciente;
     }
-
 }

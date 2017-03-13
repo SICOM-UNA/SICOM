@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -27,17 +28,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author WVQ
  */
 @Entity
-@Table(name = "cita")
+@Table(name = "documentos")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Cita.findAll", query = "SELECT c FROM Cita c"),
-    @NamedQuery(name = "Cita.findById", query = "SELECT c FROM Cita c WHERE c.id = :id"),
-    @NamedQuery(name = "Cita.findByFecha", query = "SELECT c FROM Cita c WHERE c.fecha = :fecha"),
-    @NamedQuery(name = "Cita.findByEstado", query = "SELECT c FROM Cita c WHERE c.estado = :estado"),
-    @NamedQuery(name = "Cita.findByMotivo", query = "SELECT c FROM Cita c WHERE c.motivo = :motivo"),
-    @NamedQuery(name = "Cita.findByNombre", query = "SELECT c FROM Cita c WHERE c.nombre = :nombre"),
-    @NamedQuery(name = "Cita.findByTelefono", query = "SELECT c FROM Cita c WHERE c.telefono = :telefono")})
-public class Cita implements Serializable {
+    @NamedQuery(name = "Documentos.findAll", query = "SELECT d FROM Documentos d"),
+    @NamedQuery(name = "Documentos.findById", query = "SELECT d FROM Documentos d WHERE d.id = :id"),
+    @NamedQuery(name = "Documentos.findByFecha", query = "SELECT d FROM Documentos d WHERE d.fecha = :fecha")})
+public class Documentos implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -45,27 +42,32 @@ public class Cita implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Column(name = "fecha")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fecha;
-    @Column(name = "estado")
-    private String estado;
-    @Column(name = "motivo")
-    private String motivo;
+    @Basic(optional = false)
+    @Lob
     @Column(name = "nombre")
-    private String nombre;
-    @Column(name = "telefono")
-    private Integer telefono;
+    private byte[] nombre;
+    @Basic(optional = false)
+    @Column(name = "fecha")
+    @Temporal(TemporalType.DATE)
+    private Date fecha;
     @JoinColumn(name = "Departamento_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Departamento departamentoId;
+    @JoinColumn(name = "Expediente_Paciente_cedula", referencedColumnName = "Paciente_cedula")
+    @ManyToOne(optional = false)
+    private Expediente expedientePacienteCedula;
 
-    public Cita() {
-        departamentoId = new Departamento();
+    public Documentos() {
     }
 
-    public Cita(Integer id) {
+    public Documentos(Integer id) {
         this.id = id;
+    }
+
+    public Documentos(Integer id, byte[] nombre, Date fecha) {
+        this.id = id;
+        this.nombre = nombre;
+        this.fecha = fecha;
     }
 
     public Integer getId() {
@@ -76,6 +78,14 @@ public class Cita implements Serializable {
         this.id = id;
     }
 
+    public byte[] getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(byte[] nombre) {
+        this.nombre = nombre;
+    }
+
     public Date getFecha() {
         return fecha;
     }
@@ -84,44 +94,20 @@ public class Cita implements Serializable {
         this.fecha = fecha;
     }
 
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public String getMotivo() {
-        return motivo;
-    }
-
-    public void setMotivo(String motivo) {
-        this.motivo = motivo;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public Integer getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(Integer telefono) {
-        this.telefono = telefono;
-    }
-
     public Departamento getDepartamentoId() {
         return departamentoId;
     }
 
     public void setDepartamentoId(Departamento departamentoId) {
         this.departamentoId = departamentoId;
+    }
+
+    public Expediente getExpedientePacienteCedula() {
+        return expedientePacienteCedula;
+    }
+
+    public void setExpedientePacienteCedula(Expediente expedientePacienteCedula) {
+        this.expedientePacienteCedula = expedientePacienteCedula;
     }
 
     @Override
@@ -134,10 +120,10 @@ public class Cita implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Cita)) {
+        if (!(object instanceof Documentos)) {
             return false;
         }
-        Cita other = (Cita) object;
+        Documentos other = (Documentos) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -146,7 +132,7 @@ public class Cita implements Serializable {
 
     @Override
     public String toString() {
-        return "com.sicom.entities.Cita[ id=" + id + " ]";
+        return "com.sicom.entities.Documentos[ id=" + id + " ]";
     }
     
 }

@@ -6,6 +6,7 @@
 package com.sicom.controller;
 
 import com.sicom.controller.exceptions.NonexistentEntityException;
+import com.sicom.controller.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -13,10 +14,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Codigo;
 import com.sicom.entities.Valor;
-import java.util.ArrayList;
+import com.sicom.entities.ValorPK;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -33,22 +35,31 @@ public class ValorJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Valor valor) {
+    public void create(Valor valor) throws PreexistingEntityException, Exception {
+        if (valor.getValorPK() == null) {
+            valor.setValorPK(new ValorPK());
+        }
+        valor.getValorPK().setCodigoId(valor.getCodigo().getId());
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Codigo codigoId = valor.getCodigoId();
-            if (codigoId != null) {
-                codigoId = em.getReference(codigoId.getClass(), codigoId.getId());
-                valor.setCodigoId(codigoId);
+            Codigo codigo = valor.getCodigo();
+            if (codigo != null) {
+                codigo = em.getReference(codigo.getClass(), codigo.getId());
+                valor.setCodigo(codigo);
             }
             em.persist(valor);
-            if (codigoId != null) {
-                codigoId.getValorList().add(valor);
-                codigoId = em.merge(codigoId);
+            if (codigo != null) {
+                codigo.getValorList().add(valor);
+                codigo = em.merge(codigo);
             }
             em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (findValor(valor.getValorPK()) != null) {
+                throw new PreexistingEntityException("Valor " + valor + " already exists.", ex);
+            }
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -57,31 +68,32 @@ public class ValorJpaController implements Serializable {
     }
 
     public void edit(Valor valor) throws NonexistentEntityException, Exception {
+        valor.getValorPK().setCodigoId(valor.getCodigo().getId());
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Valor persistentValor = em.find(Valor.class, valor.getId());
-            Codigo codigoIdOld = persistentValor.getCodigoId();
-            Codigo codigoIdNew = valor.getCodigoId();
-            if (codigoIdNew != null) {
-                codigoIdNew = em.getReference(codigoIdNew.getClass(), codigoIdNew.getId());
-                valor.setCodigoId(codigoIdNew);
+            Valor persistentValor = em.find(Valor.class, valor.getValorPK());
+            Codigo codigoOld = persistentValor.getCodigo();
+            Codigo codigoNew = valor.getCodigo();
+            if (codigoNew != null) {
+                codigoNew = em.getReference(codigoNew.getClass(), codigoNew.getId());
+                valor.setCodigo(codigoNew);
             }
             valor = em.merge(valor);
-            if (codigoIdOld != null && !codigoIdOld.equals(codigoIdNew)) {
-                codigoIdOld.getValorList().remove(valor);
-                codigoIdOld = em.merge(codigoIdOld);
+            if (codigoOld != null && !codigoOld.equals(codigoNew)) {
+                codigoOld.getValorList().remove(valor);
+                codigoOld = em.merge(codigoOld);
             }
-            if (codigoIdNew != null && !codigoIdNew.equals(codigoIdOld)) {
-                codigoIdNew.getValorList().add(valor);
-                codigoIdNew = em.merge(codigoIdNew);
+            if (codigoNew != null && !codigoNew.equals(codigoOld)) {
+                codigoNew.getValorList().add(valor);
+                codigoNew = em.merge(codigoNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = valor.getId();
+                ValorPK id = valor.getValorPK();
                 if (findValor(id) == null) {
                     throw new NonexistentEntityException("The valor with id " + id + " no longer exists.");
                 }
@@ -94,7 +106,7 @@ public class ValorJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(ValorPK id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -102,14 +114,14 @@ public class ValorJpaController implements Serializable {
             Valor valor;
             try {
                 valor = em.getReference(Valor.class, id);
-                valor.getId();
+                valor.getValorPK();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The valor with id " + id + " no longer exists.", enfe);
             }
-            Codigo codigoId = valor.getCodigoId();
-            if (codigoId != null) {
-                codigoId.getValorList().remove(valor);
-                codigoId = em.merge(codigoId);
+            Codigo codigo = valor.getCodigo();
+            if (codigo != null) {
+                codigo.getValorList().remove(valor);
+                codigo = em.merge(codigo);
             }
             em.remove(valor);
             em.getTransaction().commit();
@@ -144,7 +156,7 @@ public class ValorJpaController implements Serializable {
         }
     }
 
-    public Valor findValor(Integer id) {
+    public Valor findValor(ValorPK id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(Valor.class, id);
@@ -166,67 +178,13 @@ public class ValorJpaController implements Serializable {
         }
     }
     
-    public List<String> findByCodeId(Integer codigo) {
-        List<String> listaValores = new ArrayList<>();
-
-        switch(codigo){
-            case 0://género
-                listaValores.add("Masculino");
-                listaValores.add("Femenino");
-                
-                break;
-            case 1://estado civil
-                listaValores.add("Soltero/a");
-                listaValores.add("Casado/a");
-                listaValores.add("Viudo/a");
-                listaValores.add("Divorciado/a");
-                
-                break;
-            case 2://vínculo
-                listaValores.add("Padre");
-                listaValores.add("Madre");
-                listaValores.add("Familiar");
-                listaValores.add("Esposo/a");
-                listaValores.add("Amigo/a");
-                listaValores.add("Otro");
-                
-                break;
-            case 3://referencias
-                listaValores.add("Periodico");
-                listaValores.add("Internet");
-                listaValores.add("Television");
-                listaValores.add("Otro");
-                
-                break;
-            case 4://tipoPeriodo
-                listaValores.add("Regular");
-                listaValores.add("Irregular");
-                listaValores.add("No Presenta");
-                
-                break;
-             case 5://tipoPlanificacion
-                listaValores.add("GO");
-                listaValores.add("GI");
-                listaValores.add("Condón");
-                listaValores.add("Ritmo");
-                listaValores.add("Coito Interrumpido");
-                listaValores.add("DIU");
-                listaValores.add("SPB");
-                listaValores.add("Vasectomia");
-                listaValores.add("Otro");
-                
-                break;
-                
-             case 6://nivel autorizacion
-                 listaValores.add("2 Subjefe");
-                 listaValores.add("3 Medico");
-                 listaValores.add("4 Asistente");
-                 listaValores.add("5 Secretaria");
-             
-                 break;
-           
-        }
-
+    public List<String> findByCodeId(Integer codigo_id) {
+        EntityManager em = getEntityManager();
+        
+        TypedQuery consulta = em.createNamedQuery("Valor.findByCodigoId", String.class);
+        consulta.setParameter("codigo_id", codigo_id);
+        List<String> listaValores = consulta.getResultList();
+        
         return listaValores;
-   }
+    }
 }
