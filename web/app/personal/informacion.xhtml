@@ -10,50 +10,74 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form id="formModificarUsuario">
-                    <p:messages autoUpdate="true" closable="true"/>
-                    
-                    <div class="ui-grid ui-grid-responsive">
-                        <div class="ui-grid-row">
-                            <div class="ui-grid-col-12">
-                                <p:panel header="Modificar usuario" id="panel1">
-                                    <o:validateEqual components="contrasena contrasena2" message="Las contraseñas no coinciden"/>
-                                    <o:validateAll components="contrasenaActual contrasena contrasena2" message="Todos los campos son obligatorios"/>
-                                    
-                                    <h:panelGrid cellspacing="2">
-                                        <p:outputLabel value="Nombre de usuario:" class="descripcion" for="usuario"/>
-                                        <p:inputText id="usuario" value="#{login.usuario}" disabled="true"/>
+                <h:form id="informacion" >
+                    <p:messages id="msg" autoUpdate="true" closable="true" />
+                    <p:tabView orientation="top">
+                        <p:tab title="Información Personal">
+                            <h:panelGrid columns="4" cellpadding="5" >
+                                <p:outputLabel class="infoLabel" value="Identificación:"/>
+                                <p:inputText  value="#{personalBean.selectedPersonal.cedula}" readonly="true"/>
 
-                                        <p:outputLabel value="Contraseña actual:" class="descripcion" for="contrasenaActual"/>
-                                        <p:password id="contrasenaActual" value="#{contrasenaActual}" required="true" maxlength="45" redisplay="false">
-                                            <f:validator validatorId="passwordValidator"/>
-                                        </p:password>
-                                        
-                                        <p:outputLabel value="Nueva contraseña:" class="descripcion" for="contrasena"/>
-                                        <p:password id="contrasena" value="#{usuarioBean.selectedUsuario.contrasena}" required="true" redisplay="false" maxlength="45" feedback="true" promptLabel="Ingrese una contraseña" weakLabel="Débil" goodLabel="Segura" strongLabel="Óptima"/>
+                                <p:outputLabel class="infoLabel" value="Fecha Nacimiento:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.nacimiento}" readonly="true">   
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </p:inputText>
 
-                                        <p:outputLabel value="Confirmar contraseña:" class="descripcion" for="contrasena2"/>
-                                        <p:password id="contrasena2" value="#{confirmarContrasena}" required="true" redisplay="false" maxlength="45" feedback="true" promptLabel="Ingrese una contraseña" weakLabel="Débil" goodLabel="Segura" strongLabel="Óptima"/>
-                                        
-                                        <f:facet name="footer">
-                                            <div style="margin: 1em 0;">
-                                                <p:commandButton value="Modificar" action="#{usuarioBean.modificarUsuario}" update="formModificarUsuario">
-                                                    <f:setPropertyActionListener target="#{usuarioBean.selectedUsuario.usuario}" value="#{login.usuario}">
-                                                        
-                                                    </f:setPropertyActionListener>
-                                                </p:commandButton>
-                                                <p:spacer width="10"/>
-                                                <p:commandButton value="Cancelar" immediate="true">
-                                                    <p:ajax resetValues="true" update="formModificarUsuario" immediate="true"/>
-                                                </p:commandButton>
-                                            </div>
-                                        </f:facet>
+                                <p:outputLabel class="infoLabel" value="Nombre:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.nombre}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Edad:"/>
+                                <p:inputText value="#{personalBean.calculaEdad()}" readonly="true"/>   
+
+                                <p:outputLabel class="infoLabel" value="Apellidos:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.primerApellido} #{personalBean.selectedPersonal.segundoApellido}" readonly="true"/>
+
+
+                                <p:outputLabel class="infoLabel" value="Género:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.genero}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Teléfono 1:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.telefono}" readonly="true"/>
+
+
+                                <p:outputLabel class="infoLabel" value="Estado Civil:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.estadoCivil}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Teléfono 2:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.celular}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Correo electrónico:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.correo}" readonly="true" />
+
+                                <p:outputLabel class="infoLabel" value = "Cargo:"/>
+                                <p:inputText value = "#{personalBean.selectedPersonal.cargo}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Domicilio:"/>
+                                <p:inputTextarea value="#{personalBean.selectedPersonal.domicilio}" readonly="true"/>
+
+                                <p:outputLabel/>
+                                <p:commandButton value="Modificar Información" title="Click para modificar información del personal." update="informacion" action="#{personalBean.modificaRedirect()}"/>
+                            </h:panelGrid>
+                        </p:tab>
+
+                        <p:tab title="Información de Log In">
+                            <h:panelGrid columns="2">
+                                <p:panel header="Información de Usuario">
+                                    <h:panelGrid columns="2" cellpadding="5">
+                                        <p:outputLabel class="infoLabel" value="Nombre de usuario:"/>
+                                        <p:inputText value="#{personalBean.selectedUsuario.usuario}" readonly="true"/>
+
+                                        <p:outputLabel class="infoLabel" value="Contraseña"/>
+                                        <p:inputText value="#{personalBean.selectedUsuario.contrasena}" readonly="true"/>
+
+                                        <p:commandButton value="Modificar Información" title="Click para modificar información de Sesión." update="informacion" action="#{personalBean.modificaRedirect()}"/>
                                     </h:panelGrid>
                                 </p:panel>
-                            </div>
-                        </div>
-                    </div>
+                            </h:panelGrid>
+                        </p:tab>
+                    </p:tabView>
                 </h:form>
+
             </section>
         </div>
     </ui:define>

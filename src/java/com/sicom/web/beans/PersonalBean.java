@@ -30,7 +30,8 @@ import org.joda.time.Years;
 public class PersonalBean {
 
     private static Personal savedPersonal;
-
+    private static Login savedUsuario;
+    
     private Personal nuevoPersonal, selectedPersonal;
     private List<Personal> listaPersonal;
     private Login nuevoUsuario, selectedUsuario;
@@ -44,13 +45,14 @@ public class PersonalBean {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
 
         nuevoPersonal = new Personal();
-        selectedPersonal = new Personal();
         nuevoUsuario = new Login();
-        selectedUsuario = new Login();
 
         ljc = new LoginJpaController(emf);
         pjc = new PersonalJpaController(emf);
         cjv = new ValorJpaController(emf);
+        
+        selectedPersonal = (savedPersonal != null)? savedPersonal : new Personal();
+        selectedUsuario = (savedUsuario != null)? savedUsuario : new Login();
     }
 
     @PostConstruct
@@ -134,6 +136,7 @@ public class PersonalBean {
         if (selectedPersonal.getCedula() != null) {
 
             Personal p = this.pjc.findPersonal(selectedPersonal.getCedula());
+            
             if (p != null) {
 
                 FacesContext fc = FacesContext.getCurrentInstance();
@@ -142,6 +145,7 @@ public class PersonalBean {
                 String URL = ec.getRequestContextPath() + "/app/personal/informacion";
 
                 savedPersonal = p;
+                savedUsuario = ljc.findLogin(p.getLoginusuario().getUsuario());
 
                 try {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Personal encontrado exitosamente."));
@@ -264,4 +268,12 @@ public class PersonalBean {
         PersonalBean.savedPersonal = savedPersonal;
     }
 
+    public static Login getSavedUsuario() {
+        return savedUsuario;
+    }
+
+    public static void setSavedUsuario(Login savedUsuario) {
+        PersonalBean.savedUsuario = savedUsuario;
+    }
+    
 }
