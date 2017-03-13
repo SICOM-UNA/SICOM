@@ -6,57 +6,58 @@
 package com.sicom.entities;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 @Entity
 @Table(name = "login")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Login.findAll", query = "SELECT l FROM Login l"),
-    @NamedQuery(name = "Login.findByUsuario", query = "SELECT l FROM Login l WHERE l.usuario = :usuario"),
-    @NamedQuery(name = "Login.findByContrasena", query = "SELECT l FROM Login l WHERE l.contrasena = :contrasena")})
+    @NamedQuery(name = "Login.findAll", query = "SELECT l FROM Login l")
+    , @NamedQuery(name = "Login.findByUsuario", query = "SELECT l FROM Login l WHERE l.usuario = :usuario")
+    , @NamedQuery(name = "Login.findByContrasena", query = "SELECT l FROM Login l WHERE l.contrasena = :contrasena")})
 public class Login implements Serializable {
+
+    /**
+     * @return the autenticado
+     */
+    public Boolean getAutenticado() {
+        return autenticado;
+    }
+
+    /**
+     * @param autenticado the autenticado to set
+     */
+    public void setAutenticado(Boolean autenticado) {
+        this.autenticado = autenticado;
+    }
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @Column(name = "usuario")
     private String usuario;
-    @Basic(optional = false)
     @Column(name = "contrasena")
     private String contrasena;
-    @Transient
+     @Transient
     private Boolean autenticado;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "loginUsuario", fetch = FetchType.LAZY)
-    private List<Personal> personalList;
 
     public Login() {
     }
 
     public Login(String usuario) {
         this.usuario = usuario;
-    }
-
-    public Login(String usuario, String contrasena) {
-        this.usuario = usuario;
-        this.contrasena = contrasena;
     }
 
     public String getUsuario() {
@@ -73,15 +74,6 @@ public class Login implements Serializable {
 
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
-    }
-
-    @XmlTransient
-    public List<Personal> getPersonalList() {
-        return personalList;
-    }
-
-    public void setPersonalList(List<Personal> personalList) {
-        this.personalList = personalList;
     }
 
     @Override
@@ -108,18 +100,5 @@ public class Login implements Serializable {
     public String toString() {
         return "com.sicom.entities.Login[ usuario=" + usuario + " ]";
     }
-
-    /**
-     * @return the autenticado
-     */
-    public Boolean getAutenticado() {
-        return autenticado;
-    }
-
-    /**
-     * @param autenticado the autenticado to set
-     */
-    public void setAutenticado(Boolean autenticado) {
-        this.autenticado = autenticado;
-    }
+    
 }

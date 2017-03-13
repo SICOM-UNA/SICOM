@@ -6,23 +6,21 @@
 package com.sicom.entities;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -33,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "AntecedentesGinecologia.findAll", query = "SELECT a FROM AntecedentesGinecologia a")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByPacienteid", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.pacienteid = :pacienteid")
+    , @NamedQuery(name = "AntecedentesGinecologia.findById", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.id = :id")
     , @NamedQuery(name = "AntecedentesGinecologia.findByFecha", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.fecha = :fecha")
     , @NamedQuery(name = "AntecedentesGinecologia.findByHerediatarios", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.herediatarios = :herediatarios")
     , @NamedQuery(name = "AntecedentesGinecologia.findByPatologicos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.patologicos = :patologicos")
@@ -64,9 +62,10 @@ public class AntecedentesGinecologia implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "Paciente_id")
-    private String pacienteid;
+    @Column(name = "id")
+    private Integer id;
     @Basic(optional = false)
     @Column(name = "fecha")
     @Temporal(TemporalType.DATE)
@@ -123,30 +122,28 @@ public class AntecedentesGinecologia implements Serializable {
     private String comentarioGPA;
     @Column(name = "informacionAdicional")
     private String informacionAdicional;
-    @JoinColumn(name = "Paciente_id", referencedColumnName = "id", insertable = false, updatable = false)
-    @OneToOne(optional = false)
-    private Paciente paciente;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacienteId")
-    private Collection<Examen> examenCollection;
+    @JoinColumn(name = "Expediente_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Expediente expedienteid;
 
     public AntecedentesGinecologia() {
     }
 
-    public AntecedentesGinecologia(String pacienteid) {
-        this.pacienteid = pacienteid;
+    public AntecedentesGinecologia(Integer id) {
+        this.id = id;
     }
 
-    public AntecedentesGinecologia(String pacienteid, Date fecha) {
-        this.pacienteid = pacienteid;
+    public AntecedentesGinecologia(Integer id, Date fecha) {
+        this.id = id;
         this.fecha = fecha;
     }
 
-    public String getPacienteid() {
-        return pacienteid;
+    public Integer getId() {
+        return id;
     }
 
-    public void setPacienteid(String pacienteid) {
-        this.pacienteid = pacienteid;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Date getFecha() {
@@ -357,27 +354,18 @@ public class AntecedentesGinecologia implements Serializable {
         this.informacionAdicional = informacionAdicional;
     }
 
-    public Paciente getPaciente() {
-        return paciente;
+    public Expediente getExpedienteid() {
+        return expedienteid;
     }
 
-    public void setPaciente(Paciente paciente) {
-        this.paciente = paciente;
-    }
-
-    @XmlTransient
-    public Collection<Examen> getExamenCollection() {
-        return examenCollection;
-    }
-
-    public void setExamenCollection(Collection<Examen> examenCollection) {
-        this.examenCollection = examenCollection;
+    public void setExpedienteid(Expediente expedienteid) {
+        this.expedienteid = expedienteid;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (pacienteid != null ? pacienteid.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -388,7 +376,7 @@ public class AntecedentesGinecologia implements Serializable {
             return false;
         }
         AntecedentesGinecologia other = (AntecedentesGinecologia) object;
-        if ((this.pacienteid == null && other.pacienteid != null) || (this.pacienteid != null && !this.pacienteid.equals(other.pacienteid))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -396,7 +384,7 @@ public class AntecedentesGinecologia implements Serializable {
 
     @Override
     public String toString() {
-        return "com.sicom.entities.AntecedentesGinecologia[ pacienteid=" + pacienteid + " ]";
+        return "com.sicom.entities.AntecedentesGinecologia[ id=" + id + " ]";
     }
     
 }

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/templates/default.xhtml" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:o="http://omnifaces.org/ui">
+
+    <ui:define name="content">
+        <div id="wrapper">
+            <section>
+                <h:form id="informacion" >
+                    <p:messages id="msg" autoUpdate="true" closable="true" />
+                    <p:tabView orientation="top">
+                        <p:tab title="Información Personal">
+                            <h:panelGrid columns="4" cellpadding="5" >
+                                <p:outputLabel class="infoLabel" value="Identificación:"/>
+                                <p:inputText  value="#{personalBean.selectedPersonal.cedula}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Fecha Nacimiento:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.nacimiento}" readonly="true">   
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </p:inputText>
+
+                                <p:outputLabel class="infoLabel" value="Nombre:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.nombre}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Edad:"/>
+                                <p:inputText value="#{personalBean.calculaEdad()}" readonly="true"/>   
+
+                                <p:outputLabel class="infoLabel" value="Apellidos:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.primerApellido} #{personalBean.selectedPersonal.segundoApellido}" readonly="true"/>
+
+
+                                <p:outputLabel class="infoLabel" value="Género:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.genero}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Teléfono 1:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.telefono}" readonly="true"/>
+
+
+                                <p:outputLabel class="infoLabel" value="Estado Civil:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.estadoCivil}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Teléfono 2:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.celular}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Correo electrónico:"/>
+                                <p:inputText value="#{personalBean.selectedPersonal.correo}" readonly="true" />
+
+                                <p:outputLabel class="infoLabel" value = "Cargo:"/>
+                                <p:inputText value = "#{personalBean.selectedPersonal.cargo}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Domicilio:"/>
+                                <p:inputTextarea value="#{personalBean.selectedPersonal.domicilio}" readonly="true"/>
+
+                                <p:outputLabel/>
+                                <p:commandButton value="Modificar Información" title="Click para modificar información del personal." update="informacion" action="#{personalBean.modificaRedirect()}"/>
+                            </h:panelGrid>
+                        </p:tab>
+
+                        <p:tab title="Información de Log In">
+                            <h:panelGrid columns="2">
+                                <p:panel header="Información de Usuario">
+                                    <h:panelGrid columns="2" cellpadding="5">
+                                        <p:outputLabel class="infoLabel" value="Nombre de usuario:"/>
+                                        <p:inputText value="#{personalBean.selectedUsuario.usuario}" readonly="true"/>
+
+                                        <p:outputLabel class="infoLabel" value="Contraseña"/>
+                                        <p:inputText value="#{personalBean.selectedUsuario.contrasena}" readonly="true"/>
+
+                                        <p:commandButton value="Modificar Información" title="Click para modificar información de Sesión." update="informacion" action="#{personalBean.modificaRedirect()}"/>
+                                    </h:panelGrid>
+                                </p:panel>
+                            </h:panelGrid>
+                        </p:tab>
+                    </p:tabView>
+                </h:form>
+
+            </section>
+        </div>
+    </ui:define>
+</ui:composition>

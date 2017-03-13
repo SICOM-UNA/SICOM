@@ -39,23 +39,13 @@ public class AntecedentesOdontologiaBean{
     }
     
     public void agregar() throws Exception{
-        
-        antecedentesOdontologia.setPacienteid(paciente.getId());
         antecedentesOdontologia.setFecha(new Date());
         controladorOdontologia.create(antecedentesOdontologia);
-        
         antecedentesOdontologia = new AntecedentesOdontologia();
-        
-        
-        
     }
     
     public void modificar() throws Exception{
         controladorOdontologia.edit(antecedentesOdontologia);
-    }
-    
-    public AntecedentesOdontologia consultarHistorial(String pacienteId){
-        return controladorOdontologia.findAntecedentesOdontologia(pacienteId);
     }
     
     public List<String> consultarValoresPorCodigo(Integer codigo) {

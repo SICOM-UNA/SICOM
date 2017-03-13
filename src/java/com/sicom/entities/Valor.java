@@ -9,7 +9,6 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,19 +17,20 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 @Entity
 @Table(name = "valor")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Valor.findAll", query = "SELECT v FROM Valor v"),
-    @NamedQuery(name = "Valor.findById", query = "SELECT v FROM Valor v WHERE v.id = :id"),
-    @NamedQuery(name = "Valor.findByDescripcion", query = "SELECT v FROM Valor v WHERE v.descripcion = :descripcion")})
+    @NamedQuery(name = "Valor.findAll", query = "SELECT v FROM Valor v")
+    , @NamedQuery(name = "Valor.findById", query = "SELECT v FROM Valor v WHERE v.id = :id")
+    , @NamedQuery(name = "Valor.findByDescripcion", query = "SELECT v FROM Valor v WHERE v.descripcion = :descripcion")})
 public class Valor implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,8 +42,9 @@ public class Valor implements Serializable {
     @Basic(optional = false)
     @Column(name = "descripcion")
     private String descripcion;
+   
     @JoinColumn(name = "codigo_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     private Codigo codigoId;
 
     public Valor() {
@@ -106,5 +107,6 @@ public class Valor implements Serializable {
     public String toString() {
         return "com.sicom.entities.Valor[ id=" + id + " ]";
     }
-    
+
+
 }

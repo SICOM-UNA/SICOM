@@ -16,8 +16,7 @@ import javax.persistence.criteria.Root;
 import com.sicom.entities.Responsable;
 import java.util.ArrayList;
 import java.util.List;
-import com.sicom.entities.Cita;
-import com.sicom.entities.Consulta;
+import com.sicom.entities.Expediente;
 import com.sicom.entities.Paciente;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -41,11 +40,8 @@ public class PacienteJpaController implements Serializable {
         if (paciente.getResponsableList() == null) {
             paciente.setResponsableList(new ArrayList<Responsable>());
         }
-        if (paciente.getCitaList() == null) {
-            paciente.setCitaList(new ArrayList<Cita>());
-        }
-        if (paciente.getConsultaList() == null) {
-            paciente.setConsultaList(new ArrayList<Consulta>());
+        if (paciente.getExpedienteList() == null) {
+            paciente.setExpedienteList(new ArrayList<Expediente>());
         }
         EntityManager em = null;
         try {
@@ -53,53 +49,38 @@ public class PacienteJpaController implements Serializable {
             em.getTransaction().begin();
             List<Responsable> attachedResponsableList = new ArrayList<Responsable>();
             for (Responsable responsableListResponsableToAttach : paciente.getResponsableList()) {
-                responsableListResponsableToAttach = em.getReference(responsableListResponsableToAttach.getClass(), responsableListResponsableToAttach.getId());
+                responsableListResponsableToAttach = em.getReference(responsableListResponsableToAttach.getClass(), responsableListResponsableToAttach.getCedula());
                 attachedResponsableList.add(responsableListResponsableToAttach);
             }
             paciente.setResponsableList(attachedResponsableList);
-            List<Cita> attachedCitaList = new ArrayList<Cita>();
-            for (Cita citaListCitaToAttach : paciente.getCitaList()) {
-                citaListCitaToAttach = em.getReference(citaListCitaToAttach.getClass(), citaListCitaToAttach.getId());
-                attachedCitaList.add(citaListCitaToAttach);
+            List<Expediente> attachedExpedienteList = new ArrayList<Expediente>();
+            for (Expediente expedienteListExpedienteToAttach : paciente.getExpedienteList()) {
+                expedienteListExpedienteToAttach = em.getReference(expedienteListExpedienteToAttach.getClass(), expedienteListExpedienteToAttach.getId());
+                attachedExpedienteList.add(expedienteListExpedienteToAttach);
             }
-            paciente.setCitaList(attachedCitaList);
-            List<Consulta> attachedConsultaList = new ArrayList<Consulta>();
-            for (Consulta consultaListConsultaToAttach : paciente.getConsultaList()) {
-                consultaListConsultaToAttach = em.getReference(consultaListConsultaToAttach.getClass(), consultaListConsultaToAttach.getFecha());
-                attachedConsultaList.add(consultaListConsultaToAttach);
-            }
-            paciente.setConsultaList(attachedConsultaList);
+            paciente.setExpedienteList(attachedExpedienteList);
             em.persist(paciente);
             for (Responsable responsableListResponsable : paciente.getResponsableList()) {
-                Paciente oldPacienteidOfResponsableListResponsable = responsableListResponsable.getPacienteid();
-                responsableListResponsable.setPacienteid(paciente);
+                Paciente oldPacientecedulaOfResponsableListResponsable = responsableListResponsable.getPacientecedula();
+                responsableListResponsable.setPacientecedula(paciente);
                 responsableListResponsable = em.merge(responsableListResponsable);
-                if (oldPacienteidOfResponsableListResponsable != null) {
-                    oldPacienteidOfResponsableListResponsable.getResponsableList().remove(responsableListResponsable);
-                    oldPacienteidOfResponsableListResponsable = em.merge(oldPacienteidOfResponsableListResponsable);
+                if (oldPacientecedulaOfResponsableListResponsable != null) {
+                    oldPacientecedulaOfResponsableListResponsable.getResponsableList().remove(responsableListResponsable);
+                    oldPacientecedulaOfResponsableListResponsable = em.merge(oldPacientecedulaOfResponsableListResponsable);
                 }
             }
-            for (Cita citaListCita : paciente.getCitaList()) {
-                Paciente oldPacienteidOfCitaListCita = citaListCita.getPacienteid();
-                citaListCita.setPacienteid(paciente);
-                citaListCita = em.merge(citaListCita);
-                if (oldPacienteidOfCitaListCita != null) {
-                    oldPacienteidOfCitaListCita.getCitaList().remove(citaListCita);
-                    oldPacienteidOfCitaListCita = em.merge(oldPacienteidOfCitaListCita);
-                }
-            }
-            for (Consulta consultaListConsulta : paciente.getConsultaList()) {
-                Paciente oldPacienteidOfConsultaListConsulta = consultaListConsulta.getPacienteid();
-                consultaListConsulta.setPacienteid(paciente);
-                consultaListConsulta = em.merge(consultaListConsulta);
-                if (oldPacienteidOfConsultaListConsulta != null) {
-                    oldPacienteidOfConsultaListConsulta.getConsultaList().remove(consultaListConsulta);
-                    oldPacienteidOfConsultaListConsulta = em.merge(oldPacienteidOfConsultaListConsulta);
+            for (Expediente expedienteListExpediente : paciente.getExpedienteList()) {
+                Paciente oldPacientecedulaOfExpedienteListExpediente = expedienteListExpediente.getPacientecedula();
+                expedienteListExpediente.setPacientecedula(paciente);
+                expedienteListExpediente = em.merge(expedienteListExpediente);
+                if (oldPacientecedulaOfExpedienteListExpediente != null) {
+                    oldPacientecedulaOfExpedienteListExpediente.getExpedienteList().remove(expedienteListExpediente);
+                    oldPacientecedulaOfExpedienteListExpediente = em.merge(oldPacientecedulaOfExpedienteListExpediente);
                 }
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
-            if (findPaciente(paciente.getId()) != null) {
+            if (findPaciente(paciente.getCedula()) != null) {
                 throw new PreexistingEntityException("Paciente " + paciente + " already exists.", ex);
             }
             throw ex;
@@ -115,36 +96,26 @@ public class PacienteJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Paciente persistentPaciente = em.find(Paciente.class, paciente.getId());
+            Paciente persistentPaciente = em.find(Paciente.class, paciente.getCedula());
             List<Responsable> responsableListOld = persistentPaciente.getResponsableList();
             List<Responsable> responsableListNew = paciente.getResponsableList();
-            List<Cita> citaListOld = persistentPaciente.getCitaList();
-            List<Cita> citaListNew = paciente.getCitaList();
-            List<Consulta> consultaListOld = persistentPaciente.getConsultaList();
-            List<Consulta> consultaListNew = paciente.getConsultaList();
+            List<Expediente> expedienteListOld = persistentPaciente.getExpedienteList();
+            List<Expediente> expedienteListNew = paciente.getExpedienteList();
             List<String> illegalOrphanMessages = null;
             for (Responsable responsableListOldResponsable : responsableListOld) {
                 if (!responsableListNew.contains(responsableListOldResponsable)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Responsable " + responsableListOldResponsable + " since its pacienteid field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Responsable " + responsableListOldResponsable + " since its pacientecedula field is not nullable.");
                 }
             }
-            for (Cita citaListOldCita : citaListOld) {
-                if (!citaListNew.contains(citaListOldCita)) {
+            for (Expediente expedienteListOldExpediente : expedienteListOld) {
+                if (!expedienteListNew.contains(expedienteListOldExpediente)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Cita " + citaListOldCita + " since its pacienteid field is not nullable.");
-                }
-            }
-            for (Consulta consultaListOldConsulta : consultaListOld) {
-                if (!consultaListNew.contains(consultaListOldConsulta)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Consulta " + consultaListOldConsulta + " since its pacienteid field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Expediente " + expedienteListOldExpediente + " since its pacientecedula field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -152,56 +123,38 @@ public class PacienteJpaController implements Serializable {
             }
             List<Responsable> attachedResponsableListNew = new ArrayList<Responsable>();
             for (Responsable responsableListNewResponsableToAttach : responsableListNew) {
-                responsableListNewResponsableToAttach = em.getReference(responsableListNewResponsableToAttach.getClass(), responsableListNewResponsableToAttach.getId());
+                responsableListNewResponsableToAttach = em.getReference(responsableListNewResponsableToAttach.getClass(), responsableListNewResponsableToAttach.getCedula());
                 attachedResponsableListNew.add(responsableListNewResponsableToAttach);
             }
             responsableListNew = attachedResponsableListNew;
             paciente.setResponsableList(responsableListNew);
-            List<Cita> attachedCitaListNew = new ArrayList<Cita>();
-            for (Cita citaListNewCitaToAttach : citaListNew) {
-                citaListNewCitaToAttach = em.getReference(citaListNewCitaToAttach.getClass(), citaListNewCitaToAttach.getId());
-                attachedCitaListNew.add(citaListNewCitaToAttach);
+            List<Expediente> attachedExpedienteListNew = new ArrayList<Expediente>();
+            for (Expediente expedienteListNewExpedienteToAttach : expedienteListNew) {
+                expedienteListNewExpedienteToAttach = em.getReference(expedienteListNewExpedienteToAttach.getClass(), expedienteListNewExpedienteToAttach.getId());
+                attachedExpedienteListNew.add(expedienteListNewExpedienteToAttach);
             }
-            citaListNew = attachedCitaListNew;
-            paciente.setCitaList(citaListNew);
-            List<Consulta> attachedConsultaListNew = new ArrayList<Consulta>();
-            for (Consulta consultaListNewConsultaToAttach : consultaListNew) {
-                consultaListNewConsultaToAttach = em.getReference(consultaListNewConsultaToAttach.getClass(), consultaListNewConsultaToAttach.getFecha());
-                attachedConsultaListNew.add(consultaListNewConsultaToAttach);
-            }
-            consultaListNew = attachedConsultaListNew;
-            paciente.setConsultaList(consultaListNew);
+            expedienteListNew = attachedExpedienteListNew;
+            paciente.setExpedienteList(expedienteListNew);
             paciente = em.merge(paciente);
             for (Responsable responsableListNewResponsable : responsableListNew) {
                 if (!responsableListOld.contains(responsableListNewResponsable)) {
-                    Paciente oldPacienteidOfResponsableListNewResponsable = responsableListNewResponsable.getPacienteid();
-                    responsableListNewResponsable.setPacienteid(paciente);
+                    Paciente oldPacientecedulaOfResponsableListNewResponsable = responsableListNewResponsable.getPacientecedula();
+                    responsableListNewResponsable.setPacientecedula(paciente);
                     responsableListNewResponsable = em.merge(responsableListNewResponsable);
-                    if (oldPacienteidOfResponsableListNewResponsable != null && !oldPacienteidOfResponsableListNewResponsable.equals(paciente)) {
-                        oldPacienteidOfResponsableListNewResponsable.getResponsableList().remove(responsableListNewResponsable);
-                        oldPacienteidOfResponsableListNewResponsable = em.merge(oldPacienteidOfResponsableListNewResponsable);
+                    if (oldPacientecedulaOfResponsableListNewResponsable != null && !oldPacientecedulaOfResponsableListNewResponsable.equals(paciente)) {
+                        oldPacientecedulaOfResponsableListNewResponsable.getResponsableList().remove(responsableListNewResponsable);
+                        oldPacientecedulaOfResponsableListNewResponsable = em.merge(oldPacientecedulaOfResponsableListNewResponsable);
                     }
                 }
             }
-            for (Cita citaListNewCita : citaListNew) {
-                if (!citaListOld.contains(citaListNewCita)) {
-                    Paciente oldPacienteidOfCitaListNewCita = citaListNewCita.getPacienteid();
-                    citaListNewCita.setPacienteid(paciente);
-                    citaListNewCita = em.merge(citaListNewCita);
-                    if (oldPacienteidOfCitaListNewCita != null && !oldPacienteidOfCitaListNewCita.equals(paciente)) {
-                        oldPacienteidOfCitaListNewCita.getCitaList().remove(citaListNewCita);
-                        oldPacienteidOfCitaListNewCita = em.merge(oldPacienteidOfCitaListNewCita);
-                    }
-                }
-            }
-            for (Consulta consultaListNewConsulta : consultaListNew) {
-                if (!consultaListOld.contains(consultaListNewConsulta)) {
-                    Paciente oldPacienteidOfConsultaListNewConsulta = consultaListNewConsulta.getPacienteid();
-                    consultaListNewConsulta.setPacienteid(paciente);
-                    consultaListNewConsulta = em.merge(consultaListNewConsulta);
-                    if (oldPacienteidOfConsultaListNewConsulta != null && !oldPacienteidOfConsultaListNewConsulta.equals(paciente)) {
-                        oldPacienteidOfConsultaListNewConsulta.getConsultaList().remove(consultaListNewConsulta);
-                        oldPacienteidOfConsultaListNewConsulta = em.merge(oldPacienteidOfConsultaListNewConsulta);
+            for (Expediente expedienteListNewExpediente : expedienteListNew) {
+                if (!expedienteListOld.contains(expedienteListNewExpediente)) {
+                    Paciente oldPacientecedulaOfExpedienteListNewExpediente = expedienteListNewExpediente.getPacientecedula();
+                    expedienteListNewExpediente.setPacientecedula(paciente);
+                    expedienteListNewExpediente = em.merge(expedienteListNewExpediente);
+                    if (oldPacientecedulaOfExpedienteListNewExpediente != null && !oldPacientecedulaOfExpedienteListNewExpediente.equals(paciente)) {
+                        oldPacientecedulaOfExpedienteListNewExpediente.getExpedienteList().remove(expedienteListNewExpediente);
+                        oldPacientecedulaOfExpedienteListNewExpediente = em.merge(oldPacientecedulaOfExpedienteListNewExpediente);
                     }
                 }
             }
@@ -209,7 +162,7 @@ public class PacienteJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                String id = paciente.getId();
+                String id = paciente.getCedula();
                 if (findPaciente(id) == null) {
                     throw new NonexistentEntityException("The paciente with id " + id + " no longer exists.");
                 }
@@ -230,7 +183,7 @@ public class PacienteJpaController implements Serializable {
             Paciente paciente;
             try {
                 paciente = em.getReference(Paciente.class, id);
-                paciente.getId();
+                paciente.getCedula();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The paciente with id " + id + " no longer exists.", enfe);
             }
@@ -240,21 +193,14 @@ public class PacienteJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Paciente (" + paciente + ") cannot be destroyed since the Responsable " + responsableListOrphanCheckResponsable + " in its responsableList field has a non-nullable pacienteid field.");
+                illegalOrphanMessages.add("This Paciente (" + paciente + ") cannot be destroyed since the Responsable " + responsableListOrphanCheckResponsable + " in its responsableList field has a non-nullable pacientecedula field.");
             }
-            List<Cita> citaListOrphanCheck = paciente.getCitaList();
-            for (Cita citaListOrphanCheckCita : citaListOrphanCheck) {
+            List<Expediente> expedienteListOrphanCheck = paciente.getExpedienteList();
+            for (Expediente expedienteListOrphanCheckExpediente : expedienteListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Paciente (" + paciente + ") cannot be destroyed since the Cita " + citaListOrphanCheckCita + " in its citaList field has a non-nullable pacienteid field.");
-            }
-            List<Consulta> consultaListOrphanCheck = paciente.getConsultaList();
-            for (Consulta consultaListOrphanCheckConsulta : consultaListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Paciente (" + paciente + ") cannot be destroyed since the Consulta " + consultaListOrphanCheckConsulta + " in its consultaList field has a non-nullable pacienteid field.");
+                illegalOrphanMessages.add("This Paciente (" + paciente + ") cannot be destroyed since the Expediente " + expedienteListOrphanCheckExpediente + " in its expedienteList field has a non-nullable pacientecedula field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

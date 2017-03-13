@@ -22,7 +22,7 @@ import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 public class AutorizacionJpaController implements Serializable {
 
@@ -45,18 +45,18 @@ public class AutorizacionJpaController implements Serializable {
             em.getTransaction().begin();
             List<Personal> attachedPersonalList = new ArrayList<Personal>();
             for (Personal personalListPersonalToAttach : autorizacion.getPersonalList()) {
-                personalListPersonalToAttach = em.getReference(personalListPersonalToAttach.getClass(), personalListPersonalToAttach.getId());
+                personalListPersonalToAttach = em.getReference(personalListPersonalToAttach.getClass(), personalListPersonalToAttach.getCedula());
                 attachedPersonalList.add(personalListPersonalToAttach);
             }
             autorizacion.setPersonalList(attachedPersonalList);
             em.persist(autorizacion);
             for (Personal personalListPersonal : autorizacion.getPersonalList()) {
-                Autorizacion oldAutorizacionNivelOfPersonalListPersonal = personalListPersonal.getAutorizacionNivel();
-                personalListPersonal.setAutorizacionNivel(autorizacion);
+                Autorizacion oldAutorizacionnivelOfPersonalListPersonal = personalListPersonal.getAutorizacionnivel();
+                personalListPersonal.setAutorizacionnivel(autorizacion);
                 personalListPersonal = em.merge(personalListPersonal);
-                if (oldAutorizacionNivelOfPersonalListPersonal != null) {
-                    oldAutorizacionNivelOfPersonalListPersonal.getPersonalList().remove(personalListPersonal);
-                    oldAutorizacionNivelOfPersonalListPersonal = em.merge(oldAutorizacionNivelOfPersonalListPersonal);
+                if (oldAutorizacionnivelOfPersonalListPersonal != null) {
+                    oldAutorizacionnivelOfPersonalListPersonal.getPersonalList().remove(personalListPersonal);
+                    oldAutorizacionnivelOfPersonalListPersonal = em.merge(oldAutorizacionnivelOfPersonalListPersonal);
                 }
             }
             em.getTransaction().commit();
@@ -86,7 +86,7 @@ public class AutorizacionJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Personal " + personalListOldPersonal + " since its autorizacionNivel field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Personal " + personalListOldPersonal + " since its autorizacionnivel field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -94,7 +94,7 @@ public class AutorizacionJpaController implements Serializable {
             }
             List<Personal> attachedPersonalListNew = new ArrayList<Personal>();
             for (Personal personalListNewPersonalToAttach : personalListNew) {
-                personalListNewPersonalToAttach = em.getReference(personalListNewPersonalToAttach.getClass(), personalListNewPersonalToAttach.getId());
+                personalListNewPersonalToAttach = em.getReference(personalListNewPersonalToAttach.getClass(), personalListNewPersonalToAttach.getCedula());
                 attachedPersonalListNew.add(personalListNewPersonalToAttach);
             }
             personalListNew = attachedPersonalListNew;
@@ -102,12 +102,12 @@ public class AutorizacionJpaController implements Serializable {
             autorizacion = em.merge(autorizacion);
             for (Personal personalListNewPersonal : personalListNew) {
                 if (!personalListOld.contains(personalListNewPersonal)) {
-                    Autorizacion oldAutorizacionNivelOfPersonalListNewPersonal = personalListNewPersonal.getAutorizacionNivel();
-                    personalListNewPersonal.setAutorizacionNivel(autorizacion);
+                    Autorizacion oldAutorizacionnivelOfPersonalListNewPersonal = personalListNewPersonal.getAutorizacionnivel();
+                    personalListNewPersonal.setAutorizacionnivel(autorizacion);
                     personalListNewPersonal = em.merge(personalListNewPersonal);
-                    if (oldAutorizacionNivelOfPersonalListNewPersonal != null && !oldAutorizacionNivelOfPersonalListNewPersonal.equals(autorizacion)) {
-                        oldAutorizacionNivelOfPersonalListNewPersonal.getPersonalList().remove(personalListNewPersonal);
-                        oldAutorizacionNivelOfPersonalListNewPersonal = em.merge(oldAutorizacionNivelOfPersonalListNewPersonal);
+                    if (oldAutorizacionnivelOfPersonalListNewPersonal != null && !oldAutorizacionnivelOfPersonalListNewPersonal.equals(autorizacion)) {
+                        oldAutorizacionnivelOfPersonalListNewPersonal.getPersonalList().remove(personalListNewPersonal);
+                        oldAutorizacionnivelOfPersonalListNewPersonal = em.merge(oldAutorizacionnivelOfPersonalListNewPersonal);
                     }
                 }
             }
@@ -146,7 +146,7 @@ public class AutorizacionJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Autorizacion (" + autorizacion + ") cannot be destroyed since the Personal " + personalListOrphanCheckPersonal + " in its personalList field has a non-nullable autorizacionNivel field.");
+                illegalOrphanMessages.add("This Autorizacion (" + autorizacion + ") cannot be destroyed since the Personal " + personalListOrphanCheckPersonal + " in its personalList field has a non-nullable autorizacionnivel field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

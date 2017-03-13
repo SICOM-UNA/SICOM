@@ -7,9 +7,9 @@ import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.Paciente;
 import com.sicom.entities.Responsable;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -21,7 +21,6 @@ import javax.persistence.Persistence;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
-import org.primefaces.event.FlowEvent;
 
 @ManagedBean
 @ViewScoped
@@ -29,8 +28,8 @@ public class PacienteBean {
 
     private Paciente nuevoPaciente, selectedPaciente;
     private static Paciente savedPaciente;
-    private Responsable nuevoResponsable1;
-    private Responsable nuevoResponsable2;
+    private Responsable nuevoResponsable;
+    private List<Responsable> listaResponsable;
     private List<Paciente> listaPacientes;
     private final PacienteJpaController pjc;
     private final ResponsableJpaController rjc;
@@ -52,8 +51,7 @@ public class PacienteBean {
             savedPaciente = null;
         }
 
-        nuevoResponsable1 = new Responsable();
-        nuevoResponsable2 = new Responsable();
+        nuevoResponsable = new Responsable();
         pjc = new PacienteJpaController(emf);
         cjv = new ValorJpaController(emf);
         rjc = new ResponsableJpaController(emf);
@@ -64,40 +62,22 @@ public class PacienteBean {
         listaPacientes = pjc.findPacienteEntities();
     }
 
+    public String reinit() {
+        nuevoResponsable = new Responsable();
+        return null;
+    }
+
     //--------------------------------------------------------------------------
     // AGREGAR PACIENTE
     public void agregar() throws Exception {
         pjc.create(nuevoPaciente);
-        if (nuevoResponsable1.getId() != null) {
-            nuevoResponsable1.setPacienteid(nuevoPaciente);
-            rjc.create(nuevoResponsable1);
-        }
-        if (nuevoResponsable2.getId() != null) {
-            nuevoResponsable2.setPacienteid(nuevoPaciente);
-            rjc.create(nuevoResponsable2);
-        }
 
-    }
-
-    /* Wizard Methods*/
-    public boolean isSkip() {
-        return skip;
-    }
-
-    public void setSkip(boolean skip) {
-        this.skip = skip;
-    }
-
-    public String onFlowProcess(FlowEvent event) {
-        if (skip) {
-            skip = false;
-            return "confirm";
-        } else {
-            return event.getNewStep();
+        if (nuevoResponsable.getCedula() != null) {
+            nuevoResponsable.setPacientecedula(nuevoPaciente);
+            rjc.create(nuevoResponsable);
         }
     }
 
-    /**/
     public void save() {
         try {
             agregar();
@@ -167,6 +147,10 @@ public class PacienteBean {
         }
     }
 
+    public void cancelarAction() {
+        this.buscaIdBase();
+    }
+
     //--------------------------------------------------------------------------
     // HISTORIA CLINICA DE PACIENTE
     public void HistoriaClinica(boolean permiso_editar, int consultorio) {
@@ -203,11 +187,11 @@ public class PacienteBean {
     // GENERAL METHODS
     public void buscaIdBase() {
 
-        if (selectedPaciente.getId() != null) {
+        if (selectedPaciente.getCedula() != null) {
 
-            String id = selectedPaciente.getId();
+            String id = selectedPaciente.getCedula();
 
-            Paciente p = this.pjc.findPaciente(selectedPaciente.getId());
+            Paciente p = this.pjc.findPaciente(selectedPaciente.getCedula());
 
             if (p != null) {
 
@@ -219,6 +203,7 @@ public class PacienteBean {
                 savedPaciente = p;
 
                 try {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("No existe paciente asignado a la identificación: " + id));
                     ec.redirect(URL);
                 } catch (IOException ex) {
 
@@ -230,14 +215,19 @@ public class PacienteBean {
         }
     }
 
+    public Date disablePastDates() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, -43800); //43800 = 120 años
+        return c.getTime();
+    }
+
     public int calculaEdad() {
         if (selectedPaciente.getNacimiento() != null) {
             LocalDate birthdate = new LocalDate(selectedPaciente.getNacimiento());
             LocalDate now = new LocalDate();
             return Years.yearsBetween(birthdate, now).getYears();
-        } else {
-            return 0;
         }
+        return 0;
     }
 
     public Paciente consultarPaciente(String id) {
@@ -249,12 +239,14 @@ public class PacienteBean {
     }
 
     public void verificaID() {
-        if (nuevoPaciente.getId() != null) {
-            selectedPaciente.setId(nuevoPaciente.getId());
+        if (nuevoPaciente.getCedula() != null) {
+            selectedPaciente.setCedula(nuevoPaciente.getCedula());
             this.buscaIdBase();
         }
     }
 
+    //--------------------------------------------------------------------------\
+    //  COLLECTOR
     //--------------------------------------------------------------------------\
     //  GETTERS & SETTERS
     /**
@@ -302,29 +294,15 @@ public class PacienteBean {
     /**
      * @return the nuevoResponsable1
      */
-    public Responsable getNuevoResponsable1() {
-        return nuevoResponsable1;
+    public Responsable getNuevoResponsable() {
+        return nuevoResponsable;
     }
 
     /**
-     * @param nuevoResponsable1 the nuevoResponsable1 to set
+     * @param nuevoResponsable the nuevoResponsable to set
      */
-    public void setNuevoResponsable1(Responsable nuevoResponsable1) {
-        this.nuevoResponsable1 = nuevoResponsable1;
-    }
-
-    /**
-     * @return the nuevoResponsable2
-     */
-    public Responsable getNuevoResponsable2() {
-        return nuevoResponsable2;
-    }
-
-    /**
-     * @param nuevoResponsable2 the nuevoResponsable2 to set
-     */
-    public void setNuevoResponsable2(Responsable nuevoResponsable2) {
-        this.nuevoResponsable2 = nuevoResponsable2;
+    public void setNuevoResponsable(Responsable nuevoResponsable) {
+        this.nuevoResponsable = nuevoResponsable;
     }
 
     public static Paciente getSavedPaciente() {
@@ -333,6 +311,10 @@ public class PacienteBean {
 
     public static void setSavedPaciente(Paciente savedPaciente) {
         PacienteBean.savedPaciente = savedPaciente;
+    }
+
+    public List<Responsable> getListaResponsables() {
+        return listaResponsable;
     }
 
 }
