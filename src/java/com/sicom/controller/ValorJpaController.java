@@ -15,6 +15,8 @@ import javax.persistence.criteria.Root;
 import com.sicom.entities.Codigo;
 import com.sicom.entities.Valor;
 import com.sicom.entities.ValorPK;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -177,14 +179,21 @@ public class ValorJpaController implements Serializable {
             em.close();
         }
     }
-    
+
     public List<String> findByCodeId(Integer codigo_id) {
         EntityManager em = getEntityManager();
-        
+
         TypedQuery consulta = em.createNamedQuery("Valor.findByCodigoId", String.class);
-        consulta.setParameter("codigo_id", codigo_id);
-        List<String> listaValores = consulta.getResultList();
-        
-        return listaValores;
+        consulta.setParameter("codigoId", codigo_id);
+        List<Valor> listaValores = consulta.getResultList();
+
+        List<String> listaDescripciones = new ArrayList<>();
+        Iterator<Valor> itr = listaValores.iterator();
+
+        while (itr.hasNext()) {
+            Valor aux = itr.next();
+            listaDescripciones.add(aux.getDescripcion());
+        }
+        return listaDescripciones;
     }
 }

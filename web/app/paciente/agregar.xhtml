@@ -62,7 +62,7 @@
                                                     <p:outputLabel value="Estado Civil:" for="ec"/>
                                                     <p:selectOneMenu value="#{pacienteBean.nuevoPaciente.estadoCivil}"  id="ec" requiredMessage="- Falta el estado civil.">
                                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                                        <f:selectItems value="{pacienteBean.consultarValoresPorCodigo(1)}"/>
+                                                        <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(2)}"/>
                                                     </p:selectOneMenu>
                                                 </h:panelGrid>
                                             </h:panelGrid>
@@ -71,7 +71,7 @@
                                                 <p:outputLabel value="Genero:" for="g"/>
                                                 <p:selectOneMenu id="g" value="#{pacienteBean.nuevoPaciente.genero}" requiredMessage="- Falta el género.">
                                                     <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                                    <f:selectItems value="{pacienteBean.consultarValoresPorCodigo(0)}"/>
+                                                    <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(1)}"/>
                                                 </p:selectOneMenu>
 
                                                 <p:outputLabel value="Teléfono 1:" for="t1"/>

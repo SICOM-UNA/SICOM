@@ -203,7 +203,8 @@ public class PacienteBean {
                 savedPaciente = p;
 
                 try {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("No existe paciente asignado a la identificación: " + id));
+                    ec.getFlash().setKeepMessages(true);
+                    fc.addMessage("msg", new FacesMessage("No existe paciente asignado a la identificación: " + id));
                     ec.redirect(URL);
                 } catch (IOException ex) {
 
