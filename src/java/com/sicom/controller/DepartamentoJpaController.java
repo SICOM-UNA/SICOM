@@ -70,30 +70,30 @@ public class DepartamentoJpaController implements Serializable {
             departamento.setCitaList(attachedCitaList);
             em.persist(departamento);
             for (Personal personalListPersonal : departamento.getPersonalList()) {
-                Departamento oldDepartamentoIdOfPersonalListPersonal = personalListPersonal.getDepartamentoId();
+                Departamento oldDepartamentoidOfPersonalListPersonal = personalListPersonal.getDepartamentoId();
                 personalListPersonal.setDepartamentoId(departamento);
                 personalListPersonal = em.merge(personalListPersonal);
-                if (oldDepartamentoIdOfPersonalListPersonal != null) {
-                    oldDepartamentoIdOfPersonalListPersonal.getPersonalList().remove(personalListPersonal);
-                    oldDepartamentoIdOfPersonalListPersonal = em.merge(oldDepartamentoIdOfPersonalListPersonal);
+                if (oldDepartamentoidOfPersonalListPersonal != null) {
+                    oldDepartamentoidOfPersonalListPersonal.getPersonalList().remove(personalListPersonal);
+                    oldDepartamentoidOfPersonalListPersonal = em.merge(oldDepartamentoidOfPersonalListPersonal);
                 }
             }
             for (Documentos documentosListDocumentos : departamento.getDocumentosList()) {
-                Departamento oldDepartamentoIdOfDocumentosListDocumentos = documentosListDocumentos.getDepartamentoId();
-                documentosListDocumentos.setDepartamentoId(departamento);
+                Departamento oldDepartamentoidOfDocumentosListDocumentos = documentosListDocumentos.getDepartamentoid();
+                documentosListDocumentos.setDepartamentoid(departamento);
                 documentosListDocumentos = em.merge(documentosListDocumentos);
-                if (oldDepartamentoIdOfDocumentosListDocumentos != null) {
-                    oldDepartamentoIdOfDocumentosListDocumentos.getDocumentosList().remove(documentosListDocumentos);
-                    oldDepartamentoIdOfDocumentosListDocumentos = em.merge(oldDepartamentoIdOfDocumentosListDocumentos);
+                if (oldDepartamentoidOfDocumentosListDocumentos != null) {
+                    oldDepartamentoidOfDocumentosListDocumentos.getDocumentosList().remove(documentosListDocumentos);
+                    oldDepartamentoidOfDocumentosListDocumentos = em.merge(oldDepartamentoidOfDocumentosListDocumentos);
                 }
             }
             for (Cita citaListCita : departamento.getCitaList()) {
-                Departamento oldDepartamentoIdOfCitaListCita = citaListCita.getDepartamentoId();
-                citaListCita.setDepartamentoId(departamento);
+                Departamento oldDepartamentoidOfCitaListCita = citaListCita.getDepartamentoid();
+                citaListCita.setDepartamentoid(departamento);
                 citaListCita = em.merge(citaListCita);
-                if (oldDepartamentoIdOfCitaListCita != null) {
-                    oldDepartamentoIdOfCitaListCita.getCitaList().remove(citaListCita);
-                    oldDepartamentoIdOfCitaListCita = em.merge(oldDepartamentoIdOfCitaListCita);
+                if (oldDepartamentoidOfCitaListCita != null) {
+                    oldDepartamentoidOfCitaListCita.getCitaList().remove(citaListCita);
+                    oldDepartamentoidOfCitaListCita = em.merge(oldDepartamentoidOfCitaListCita);
                 }
             }
             em.getTransaction().commit();
@@ -122,7 +122,7 @@ public class DepartamentoJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Personal " + personalListOldPersonal + " since its departamentoId field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Personal " + personalListOldPersonal + " since its departamentoid field is not nullable.");
                 }
             }
             for (Documentos documentosListOldDocumentos : documentosListOld) {
@@ -130,7 +130,7 @@ public class DepartamentoJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Documentos " + documentosListOldDocumentos + " since its departamentoId field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Documentos " + documentosListOldDocumentos + " since its departamentoid field is not nullable.");
                 }
             }
             for (Cita citaListOldCita : citaListOld) {
@@ -138,7 +138,7 @@ public class DepartamentoJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Cita " + citaListOldCita + " since its departamentoId field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Cita " + citaListOldCita + " since its departamentoid field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -168,34 +168,34 @@ public class DepartamentoJpaController implements Serializable {
             departamento = em.merge(departamento);
             for (Personal personalListNewPersonal : personalListNew) {
                 if (!personalListOld.contains(personalListNewPersonal)) {
-                    Departamento oldDepartamentoIdOfPersonalListNewPersonal = personalListNewPersonal.getDepartamentoId();
+                    Departamento oldDepartamentoidOfPersonalListNewPersonal = personalListNewPersonal.getDepartamentoId();
                     personalListNewPersonal.setDepartamentoId(departamento);
                     personalListNewPersonal = em.merge(personalListNewPersonal);
-                    if (oldDepartamentoIdOfPersonalListNewPersonal != null && !oldDepartamentoIdOfPersonalListNewPersonal.equals(departamento)) {
-                        oldDepartamentoIdOfPersonalListNewPersonal.getPersonalList().remove(personalListNewPersonal);
-                        oldDepartamentoIdOfPersonalListNewPersonal = em.merge(oldDepartamentoIdOfPersonalListNewPersonal);
+                    if (oldDepartamentoidOfPersonalListNewPersonal != null && !oldDepartamentoidOfPersonalListNewPersonal.equals(departamento)) {
+                        oldDepartamentoidOfPersonalListNewPersonal.getPersonalList().remove(personalListNewPersonal);
+                        oldDepartamentoidOfPersonalListNewPersonal = em.merge(oldDepartamentoidOfPersonalListNewPersonal);
                     }
                 }
             }
             for (Documentos documentosListNewDocumentos : documentosListNew) {
                 if (!documentosListOld.contains(documentosListNewDocumentos)) {
-                    Departamento oldDepartamentoIdOfDocumentosListNewDocumentos = documentosListNewDocumentos.getDepartamentoId();
-                    documentosListNewDocumentos.setDepartamentoId(departamento);
+                    Departamento oldDepartamentoidOfDocumentosListNewDocumentos = documentosListNewDocumentos.getDepartamentoid();
+                    documentosListNewDocumentos.setDepartamentoid(departamento);
                     documentosListNewDocumentos = em.merge(documentosListNewDocumentos);
-                    if (oldDepartamentoIdOfDocumentosListNewDocumentos != null && !oldDepartamentoIdOfDocumentosListNewDocumentos.equals(departamento)) {
-                        oldDepartamentoIdOfDocumentosListNewDocumentos.getDocumentosList().remove(documentosListNewDocumentos);
-                        oldDepartamentoIdOfDocumentosListNewDocumentos = em.merge(oldDepartamentoIdOfDocumentosListNewDocumentos);
+                    if (oldDepartamentoidOfDocumentosListNewDocumentos != null && !oldDepartamentoidOfDocumentosListNewDocumentos.equals(departamento)) {
+                        oldDepartamentoidOfDocumentosListNewDocumentos.getDocumentosList().remove(documentosListNewDocumentos);
+                        oldDepartamentoidOfDocumentosListNewDocumentos = em.merge(oldDepartamentoidOfDocumentosListNewDocumentos);
                     }
                 }
             }
             for (Cita citaListNewCita : citaListNew) {
                 if (!citaListOld.contains(citaListNewCita)) {
-                    Departamento oldDepartamentoIdOfCitaListNewCita = citaListNewCita.getDepartamentoId();
-                    citaListNewCita.setDepartamentoId(departamento);
+                    Departamento oldDepartamentoidOfCitaListNewCita = citaListNewCita.getDepartamentoid();
+                    citaListNewCita.setDepartamentoid(departamento);
                     citaListNewCita = em.merge(citaListNewCita);
-                    if (oldDepartamentoIdOfCitaListNewCita != null && !oldDepartamentoIdOfCitaListNewCita.equals(departamento)) {
-                        oldDepartamentoIdOfCitaListNewCita.getCitaList().remove(citaListNewCita);
-                        oldDepartamentoIdOfCitaListNewCita = em.merge(oldDepartamentoIdOfCitaListNewCita);
+                    if (oldDepartamentoidOfCitaListNewCita != null && !oldDepartamentoidOfCitaListNewCita.equals(departamento)) {
+                        oldDepartamentoidOfCitaListNewCita.getCitaList().remove(citaListNewCita);
+                        oldDepartamentoidOfCitaListNewCita = em.merge(oldDepartamentoidOfCitaListNewCita);
                     }
                 }
             }
@@ -234,21 +234,21 @@ public class DepartamentoJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Departamento (" + departamento + ") cannot be destroyed since the Personal " + personalListOrphanCheckPersonal + " in its personalList field has a non-nullable departamentoId field.");
+                illegalOrphanMessages.add("This Departamento (" + departamento + ") cannot be destroyed since the Personal " + personalListOrphanCheckPersonal + " in its personalList field has a non-nullable departamentoid field.");
             }
             List<Documentos> documentosListOrphanCheck = departamento.getDocumentosList();
             for (Documentos documentosListOrphanCheckDocumentos : documentosListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Departamento (" + departamento + ") cannot be destroyed since the Documentos " + documentosListOrphanCheckDocumentos + " in its documentosList field has a non-nullable departamentoId field.");
+                illegalOrphanMessages.add("This Departamento (" + departamento + ") cannot be destroyed since the Documentos " + documentosListOrphanCheckDocumentos + " in its documentosList field has a non-nullable departamentoid field.");
             }
             List<Cita> citaListOrphanCheck = departamento.getCitaList();
             for (Cita citaListOrphanCheckCita : citaListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Departamento (" + departamento + ") cannot be destroyed since the Cita " + citaListOrphanCheckCita + " in its citaList field has a non-nullable departamentoId field.");
+                illegalOrphanMessages.add("This Departamento (" + departamento + ") cannot be destroyed since the Cita " + citaListOrphanCheckCita + " in its citaList field has a non-nullable departamentoid field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

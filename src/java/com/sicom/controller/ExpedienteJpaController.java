@@ -7,7 +7,6 @@ package com.sicom.controller;
 
 import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.controller.exceptions.NonexistentEntityException;
-import com.sicom.controller.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -23,7 +22,6 @@ import com.sicom.entities.AntecedentesOdontologia;
 import com.sicom.entities.Documentos;
 import com.sicom.entities.ExamenGinecologia;
 import com.sicom.entities.Expediente;
-import com.sicom.entities.ExpedientePK;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -42,10 +40,7 @@ public class ExpedienteJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Expediente expediente) throws IllegalOrphanException, PreexistingEntityException, Exception {
-        if (expediente.getExpedientePK() == null) {
-            expediente.setExpedientePK(new ExpedientePK());
-        }
+    public void create(Expediente expediente) throws IllegalOrphanException {
         if (expediente.getAntecedentesGinecologiaList() == null) {
             expediente.setAntecedentesGinecologiaList(new ArrayList<AntecedentesGinecologia>());
         }
@@ -64,16 +59,15 @@ public class ExpedienteJpaController implements Serializable {
         if (expediente.getExamenGinecologiaList() == null) {
             expediente.setExamenGinecologiaList(new ArrayList<ExamenGinecologia>());
         }
-        expediente.getExpedientePK().setPacienteCedula(expediente.getPaciente().getCedula());
         List<String> illegalOrphanMessages = null;
-        Paciente pacienteOrphanCheck = expediente.getPaciente();
-        if (pacienteOrphanCheck != null) {
-            Expediente oldExpedienteOfPaciente = pacienteOrphanCheck.getExpediente();
-            if (oldExpedienteOfPaciente != null) {
+        Paciente pacientecedulaOrphanCheck = expediente.getPacientecedula();
+        if (pacientecedulaOrphanCheck != null) {
+            Expediente oldExpedienteOfPacientecedula = pacientecedulaOrphanCheck.getExpediente();
+            if (oldExpedienteOfPacientecedula != null) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("The Paciente " + pacienteOrphanCheck + " already has an item of type Expediente whose paciente column cannot be null. Please make another selection for the paciente field.");
+                illegalOrphanMessages.add("The Paciente " + pacientecedulaOrphanCheck + " already has an item of type Expediente whose pacientecedula column cannot be null. Please make another selection for the pacientecedula field.");
             }
         }
         if (illegalOrphanMessages != null) {
@@ -83,10 +77,10 @@ public class ExpedienteJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Paciente paciente = expediente.getPaciente();
-            if (paciente != null) {
-                paciente = em.getReference(paciente.getClass(), paciente.getCedula());
-                expediente.setPaciente(paciente);
+            Paciente pacientecedula = expediente.getPacientecedula();
+            if (pacientecedula != null) {
+                pacientecedula = em.getReference(pacientecedula.getClass(), pacientecedula.getCedula());
+                expediente.setPacientecedula(pacientecedula);
             }
             List<AntecedentesGinecologia> attachedAntecedentesGinecologiaList = new ArrayList<AntecedentesGinecologia>();
             for (AntecedentesGinecologia antecedentesGinecologiaListAntecedentesGinecologiaToAttach : expediente.getAntecedentesGinecologiaList()) {
@@ -125,70 +119,65 @@ public class ExpedienteJpaController implements Serializable {
             }
             expediente.setExamenGinecologiaList(attachedExamenGinecologiaList);
             em.persist(expediente);
-            if (paciente != null) {
-                paciente.setExpediente(expediente);
-                paciente = em.merge(paciente);
+            if (pacientecedula != null) {
+                pacientecedula.setExpediente(expediente);
+                pacientecedula = em.merge(pacientecedula);
             }
             for (AntecedentesGinecologia antecedentesGinecologiaListAntecedentesGinecologia : expediente.getAntecedentesGinecologiaList()) {
-                Expediente oldExpedientePacienteCedulaOfAntecedentesGinecologiaListAntecedentesGinecologia = antecedentesGinecologiaListAntecedentesGinecologia.getExpedientePacienteCedula();
-                antecedentesGinecologiaListAntecedentesGinecologia.setExpedientePacienteCedula(expediente);
+                Expediente oldExpedientePacientecedulaOfAntecedentesGinecologiaListAntecedentesGinecologia = antecedentesGinecologiaListAntecedentesGinecologia.getExpedientePacientecedula();
+                antecedentesGinecologiaListAntecedentesGinecologia.setExpedientePacientecedula(expediente);
                 antecedentesGinecologiaListAntecedentesGinecologia = em.merge(antecedentesGinecologiaListAntecedentesGinecologia);
-                if (oldExpedientePacienteCedulaOfAntecedentesGinecologiaListAntecedentesGinecologia != null) {
-                    oldExpedientePacienteCedulaOfAntecedentesGinecologiaListAntecedentesGinecologia.getAntecedentesGinecologiaList().remove(antecedentesGinecologiaListAntecedentesGinecologia);
-                    oldExpedientePacienteCedulaOfAntecedentesGinecologiaListAntecedentesGinecologia = em.merge(oldExpedientePacienteCedulaOfAntecedentesGinecologiaListAntecedentesGinecologia);
+                if (oldExpedientePacientecedulaOfAntecedentesGinecologiaListAntecedentesGinecologia != null) {
+                    oldExpedientePacientecedulaOfAntecedentesGinecologiaListAntecedentesGinecologia.getAntecedentesGinecologiaList().remove(antecedentesGinecologiaListAntecedentesGinecologia);
+                    oldExpedientePacientecedulaOfAntecedentesGinecologiaListAntecedentesGinecologia = em.merge(oldExpedientePacientecedulaOfAntecedentesGinecologiaListAntecedentesGinecologia);
                 }
             }
             for (ExamenColposcopia examenColposcopiaListExamenColposcopia : expediente.getExamenColposcopiaList()) {
-                Expediente oldExpedientePacienteCedulaOfExamenColposcopiaListExamenColposcopia = examenColposcopiaListExamenColposcopia.getExpedientePacienteCedula();
-                examenColposcopiaListExamenColposcopia.setExpedientePacienteCedula(expediente);
+                Expediente oldExpedientePacientecedulaOfExamenColposcopiaListExamenColposcopia = examenColposcopiaListExamenColposcopia.getExpedientePacientecedula();
+                examenColposcopiaListExamenColposcopia.setExpedientePacientecedula(expediente);
                 examenColposcopiaListExamenColposcopia = em.merge(examenColposcopiaListExamenColposcopia);
-                if (oldExpedientePacienteCedulaOfExamenColposcopiaListExamenColposcopia != null) {
-                    oldExpedientePacienteCedulaOfExamenColposcopiaListExamenColposcopia.getExamenColposcopiaList().remove(examenColposcopiaListExamenColposcopia);
-                    oldExpedientePacienteCedulaOfExamenColposcopiaListExamenColposcopia = em.merge(oldExpedientePacienteCedulaOfExamenColposcopiaListExamenColposcopia);
+                if (oldExpedientePacientecedulaOfExamenColposcopiaListExamenColposcopia != null) {
+                    oldExpedientePacientecedulaOfExamenColposcopiaListExamenColposcopia.getExamenColposcopiaList().remove(examenColposcopiaListExamenColposcopia);
+                    oldExpedientePacientecedulaOfExamenColposcopiaListExamenColposcopia = em.merge(oldExpedientePacientecedulaOfExamenColposcopiaListExamenColposcopia);
                 }
             }
             for (ExamenOdontologia examenOdontologiaListExamenOdontologia : expediente.getExamenOdontologiaList()) {
-                Expediente oldExpedientePacienteCedulaOfExamenOdontologiaListExamenOdontologia = examenOdontologiaListExamenOdontologia.getExpedientePacienteCedula();
-                examenOdontologiaListExamenOdontologia.setExpedientePacienteCedula(expediente);
+                Expediente oldExpedientePacientecedulaOfExamenOdontologiaListExamenOdontologia = examenOdontologiaListExamenOdontologia.getExpedientePacientecedula();
+                examenOdontologiaListExamenOdontologia.setExpedientePacientecedula(expediente);
                 examenOdontologiaListExamenOdontologia = em.merge(examenOdontologiaListExamenOdontologia);
-                if (oldExpedientePacienteCedulaOfExamenOdontologiaListExamenOdontologia != null) {
-                    oldExpedientePacienteCedulaOfExamenOdontologiaListExamenOdontologia.getExamenOdontologiaList().remove(examenOdontologiaListExamenOdontologia);
-                    oldExpedientePacienteCedulaOfExamenOdontologiaListExamenOdontologia = em.merge(oldExpedientePacienteCedulaOfExamenOdontologiaListExamenOdontologia);
+                if (oldExpedientePacientecedulaOfExamenOdontologiaListExamenOdontologia != null) {
+                    oldExpedientePacientecedulaOfExamenOdontologiaListExamenOdontologia.getExamenOdontologiaList().remove(examenOdontologiaListExamenOdontologia);
+                    oldExpedientePacientecedulaOfExamenOdontologiaListExamenOdontologia = em.merge(oldExpedientePacientecedulaOfExamenOdontologiaListExamenOdontologia);
                 }
             }
             for (AntecedentesOdontologia antecedentesOdontologiaListAntecedentesOdontologia : expediente.getAntecedentesOdontologiaList()) {
-                Expediente oldExpedientePacienteCedulaOfAntecedentesOdontologiaListAntecedentesOdontologia = antecedentesOdontologiaListAntecedentesOdontologia.getExpedientePacienteCedula();
-                antecedentesOdontologiaListAntecedentesOdontologia.setExpedientePacienteCedula(expediente);
+                Expediente oldExpedientePacientecedulaOfAntecedentesOdontologiaListAntecedentesOdontologia = antecedentesOdontologiaListAntecedentesOdontologia.getExpedientePacientecedula();
+                antecedentesOdontologiaListAntecedentesOdontologia.setExpedientePacientecedula(expediente);
                 antecedentesOdontologiaListAntecedentesOdontologia = em.merge(antecedentesOdontologiaListAntecedentesOdontologia);
-                if (oldExpedientePacienteCedulaOfAntecedentesOdontologiaListAntecedentesOdontologia != null) {
-                    oldExpedientePacienteCedulaOfAntecedentesOdontologiaListAntecedentesOdontologia.getAntecedentesOdontologiaList().remove(antecedentesOdontologiaListAntecedentesOdontologia);
-                    oldExpedientePacienteCedulaOfAntecedentesOdontologiaListAntecedentesOdontologia = em.merge(oldExpedientePacienteCedulaOfAntecedentesOdontologiaListAntecedentesOdontologia);
+                if (oldExpedientePacientecedulaOfAntecedentesOdontologiaListAntecedentesOdontologia != null) {
+                    oldExpedientePacientecedulaOfAntecedentesOdontologiaListAntecedentesOdontologia.getAntecedentesOdontologiaList().remove(antecedentesOdontologiaListAntecedentesOdontologia);
+                    oldExpedientePacientecedulaOfAntecedentesOdontologiaListAntecedentesOdontologia = em.merge(oldExpedientePacientecedulaOfAntecedentesOdontologiaListAntecedentesOdontologia);
                 }
             }
             for (Documentos documentosListDocumentos : expediente.getDocumentosList()) {
-                Expediente oldExpedientePacienteCedulaOfDocumentosListDocumentos = documentosListDocumentos.getExpedientePacienteCedula();
-                documentosListDocumentos.setExpedientePacienteCedula(expediente);
+                Expediente oldExpedientePacientecedulaOfDocumentosListDocumentos = documentosListDocumentos.getExpedientePacientecedula();
+                documentosListDocumentos.setExpedientePacientecedula(expediente);
                 documentosListDocumentos = em.merge(documentosListDocumentos);
-                if (oldExpedientePacienteCedulaOfDocumentosListDocumentos != null) {
-                    oldExpedientePacienteCedulaOfDocumentosListDocumentos.getDocumentosList().remove(documentosListDocumentos);
-                    oldExpedientePacienteCedulaOfDocumentosListDocumentos = em.merge(oldExpedientePacienteCedulaOfDocumentosListDocumentos);
+                if (oldExpedientePacientecedulaOfDocumentosListDocumentos != null) {
+                    oldExpedientePacientecedulaOfDocumentosListDocumentos.getDocumentosList().remove(documentosListDocumentos);
+                    oldExpedientePacientecedulaOfDocumentosListDocumentos = em.merge(oldExpedientePacientecedulaOfDocumentosListDocumentos);
                 }
             }
             for (ExamenGinecologia examenGinecologiaListExamenGinecologia : expediente.getExamenGinecologiaList()) {
-                Expediente oldExpedientePacienteCedulaOfExamenGinecologiaListExamenGinecologia = examenGinecologiaListExamenGinecologia.getExpedientePacienteCedula();
-                examenGinecologiaListExamenGinecologia.setExpedientePacienteCedula(expediente);
+                Expediente oldExpedientePacientecedulaOfExamenGinecologiaListExamenGinecologia = examenGinecologiaListExamenGinecologia.getExpedientePacientecedula();
+                examenGinecologiaListExamenGinecologia.setExpedientePacientecedula(expediente);
                 examenGinecologiaListExamenGinecologia = em.merge(examenGinecologiaListExamenGinecologia);
-                if (oldExpedientePacienteCedulaOfExamenGinecologiaListExamenGinecologia != null) {
-                    oldExpedientePacienteCedulaOfExamenGinecologiaListExamenGinecologia.getExamenGinecologiaList().remove(examenGinecologiaListExamenGinecologia);
-                    oldExpedientePacienteCedulaOfExamenGinecologiaListExamenGinecologia = em.merge(oldExpedientePacienteCedulaOfExamenGinecologiaListExamenGinecologia);
+                if (oldExpedientePacientecedulaOfExamenGinecologiaListExamenGinecologia != null) {
+                    oldExpedientePacientecedulaOfExamenGinecologiaListExamenGinecologia.getExamenGinecologiaList().remove(examenGinecologiaListExamenGinecologia);
+                    oldExpedientePacientecedulaOfExamenGinecologiaListExamenGinecologia = em.merge(oldExpedientePacientecedulaOfExamenGinecologiaListExamenGinecologia);
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findExpediente(expediente.getExpedientePK()) != null) {
-                throw new PreexistingEntityException("Expediente " + expediente + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -197,14 +186,13 @@ public class ExpedienteJpaController implements Serializable {
     }
 
     public void edit(Expediente expediente) throws IllegalOrphanException, NonexistentEntityException, Exception {
-        expediente.getExpedientePK().setPacienteCedula(expediente.getPaciente().getCedula());
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Expediente persistentExpediente = em.find(Expediente.class, expediente.getExpedientePK());
-            Paciente pacienteOld = persistentExpediente.getPaciente();
-            Paciente pacienteNew = expediente.getPaciente();
+            Expediente persistentExpediente = em.find(Expediente.class, expediente.getId());
+            Paciente pacientecedulaOld = persistentExpediente.getPacientecedula();
+            Paciente pacientecedulaNew = expediente.getPacientecedula();
             List<AntecedentesGinecologia> antecedentesGinecologiaListOld = persistentExpediente.getAntecedentesGinecologiaList();
             List<AntecedentesGinecologia> antecedentesGinecologiaListNew = expediente.getAntecedentesGinecologiaList();
             List<ExamenColposcopia> examenColposcopiaListOld = persistentExpediente.getExamenColposcopiaList();
@@ -218,13 +206,13 @@ public class ExpedienteJpaController implements Serializable {
             List<ExamenGinecologia> examenGinecologiaListOld = persistentExpediente.getExamenGinecologiaList();
             List<ExamenGinecologia> examenGinecologiaListNew = expediente.getExamenGinecologiaList();
             List<String> illegalOrphanMessages = null;
-            if (pacienteNew != null && !pacienteNew.equals(pacienteOld)) {
-                Expediente oldExpedienteOfPaciente = pacienteNew.getExpediente();
-                if (oldExpedienteOfPaciente != null) {
+            if (pacientecedulaNew != null && !pacientecedulaNew.equals(pacientecedulaOld)) {
+                Expediente oldExpedienteOfPacientecedula = pacientecedulaNew.getExpediente();
+                if (oldExpedienteOfPacientecedula != null) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("The Paciente " + pacienteNew + " already has an item of type Expediente whose paciente column cannot be null. Please make another selection for the paciente field.");
+                    illegalOrphanMessages.add("The Paciente " + pacientecedulaNew + " already has an item of type Expediente whose pacientecedula column cannot be null. Please make another selection for the pacientecedula field.");
                 }
             }
             for (AntecedentesGinecologia antecedentesGinecologiaListOldAntecedentesGinecologia : antecedentesGinecologiaListOld) {
@@ -232,7 +220,7 @@ public class ExpedienteJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain AntecedentesGinecologia " + antecedentesGinecologiaListOldAntecedentesGinecologia + " since its expedientePacienteCedula field is not nullable.");
+                    illegalOrphanMessages.add("You must retain AntecedentesGinecologia " + antecedentesGinecologiaListOldAntecedentesGinecologia + " since its expedientePacientecedula field is not nullable.");
                 }
             }
             for (ExamenColposcopia examenColposcopiaListOldExamenColposcopia : examenColposcopiaListOld) {
@@ -240,7 +228,7 @@ public class ExpedienteJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain ExamenColposcopia " + examenColposcopiaListOldExamenColposcopia + " since its expedientePacienteCedula field is not nullable.");
+                    illegalOrphanMessages.add("You must retain ExamenColposcopia " + examenColposcopiaListOldExamenColposcopia + " since its expedientePacientecedula field is not nullable.");
                 }
             }
             for (ExamenOdontologia examenOdontologiaListOldExamenOdontologia : examenOdontologiaListOld) {
@@ -248,7 +236,7 @@ public class ExpedienteJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain ExamenOdontologia " + examenOdontologiaListOldExamenOdontologia + " since its expedientePacienteCedula field is not nullable.");
+                    illegalOrphanMessages.add("You must retain ExamenOdontologia " + examenOdontologiaListOldExamenOdontologia + " since its expedientePacientecedula field is not nullable.");
                 }
             }
             for (AntecedentesOdontologia antecedentesOdontologiaListOldAntecedentesOdontologia : antecedentesOdontologiaListOld) {
@@ -256,7 +244,7 @@ public class ExpedienteJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain AntecedentesOdontologia " + antecedentesOdontologiaListOldAntecedentesOdontologia + " since its expedientePacienteCedula field is not nullable.");
+                    illegalOrphanMessages.add("You must retain AntecedentesOdontologia " + antecedentesOdontologiaListOldAntecedentesOdontologia + " since its expedientePacientecedula field is not nullable.");
                 }
             }
             for (Documentos documentosListOldDocumentos : documentosListOld) {
@@ -264,7 +252,7 @@ public class ExpedienteJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Documentos " + documentosListOldDocumentos + " since its expedientePacienteCedula field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Documentos " + documentosListOldDocumentos + " since its expedientePacientecedula field is not nullable.");
                 }
             }
             for (ExamenGinecologia examenGinecologiaListOldExamenGinecologia : examenGinecologiaListOld) {
@@ -272,15 +260,15 @@ public class ExpedienteJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain ExamenGinecologia " + examenGinecologiaListOldExamenGinecologia + " since its expedientePacienteCedula field is not nullable.");
+                    illegalOrphanMessages.add("You must retain ExamenGinecologia " + examenGinecologiaListOldExamenGinecologia + " since its expedientePacientecedula field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (pacienteNew != null) {
-                pacienteNew = em.getReference(pacienteNew.getClass(), pacienteNew.getCedula());
-                expediente.setPaciente(pacienteNew);
+            if (pacientecedulaNew != null) {
+                pacientecedulaNew = em.getReference(pacientecedulaNew.getClass(), pacientecedulaNew.getCedula());
+                expediente.setPacientecedula(pacientecedulaNew);
             }
             List<AntecedentesGinecologia> attachedAntecedentesGinecologiaListNew = new ArrayList<AntecedentesGinecologia>();
             for (AntecedentesGinecologia antecedentesGinecologiaListNewAntecedentesGinecologiaToAttach : antecedentesGinecologiaListNew) {
@@ -325,77 +313,77 @@ public class ExpedienteJpaController implements Serializable {
             examenGinecologiaListNew = attachedExamenGinecologiaListNew;
             expediente.setExamenGinecologiaList(examenGinecologiaListNew);
             expediente = em.merge(expediente);
-            if (pacienteOld != null && !pacienteOld.equals(pacienteNew)) {
-                pacienteOld.setExpediente(null);
-                pacienteOld = em.merge(pacienteOld);
+            if (pacientecedulaOld != null && !pacientecedulaOld.equals(pacientecedulaNew)) {
+                pacientecedulaOld.setExpediente(null);
+                pacientecedulaOld = em.merge(pacientecedulaOld);
             }
-            if (pacienteNew != null && !pacienteNew.equals(pacienteOld)) {
-                pacienteNew.setExpediente(expediente);
-                pacienteNew = em.merge(pacienteNew);
+            if (pacientecedulaNew != null && !pacientecedulaNew.equals(pacientecedulaOld)) {
+                pacientecedulaNew.setExpediente(expediente);
+                pacientecedulaNew = em.merge(pacientecedulaNew);
             }
             for (AntecedentesGinecologia antecedentesGinecologiaListNewAntecedentesGinecologia : antecedentesGinecologiaListNew) {
                 if (!antecedentesGinecologiaListOld.contains(antecedentesGinecologiaListNewAntecedentesGinecologia)) {
-                    Expediente oldExpedientePacienteCedulaOfAntecedentesGinecologiaListNewAntecedentesGinecologia = antecedentesGinecologiaListNewAntecedentesGinecologia.getExpedientePacienteCedula();
-                    antecedentesGinecologiaListNewAntecedentesGinecologia.setExpedientePacienteCedula(expediente);
+                    Expediente oldExpedientePacientecedulaOfAntecedentesGinecologiaListNewAntecedentesGinecologia = antecedentesGinecologiaListNewAntecedentesGinecologia.getExpedientePacientecedula();
+                    antecedentesGinecologiaListNewAntecedentesGinecologia.setExpedientePacientecedula(expediente);
                     antecedentesGinecologiaListNewAntecedentesGinecologia = em.merge(antecedentesGinecologiaListNewAntecedentesGinecologia);
-                    if (oldExpedientePacienteCedulaOfAntecedentesGinecologiaListNewAntecedentesGinecologia != null && !oldExpedientePacienteCedulaOfAntecedentesGinecologiaListNewAntecedentesGinecologia.equals(expediente)) {
-                        oldExpedientePacienteCedulaOfAntecedentesGinecologiaListNewAntecedentesGinecologia.getAntecedentesGinecologiaList().remove(antecedentesGinecologiaListNewAntecedentesGinecologia);
-                        oldExpedientePacienteCedulaOfAntecedentesGinecologiaListNewAntecedentesGinecologia = em.merge(oldExpedientePacienteCedulaOfAntecedentesGinecologiaListNewAntecedentesGinecologia);
+                    if (oldExpedientePacientecedulaOfAntecedentesGinecologiaListNewAntecedentesGinecologia != null && !oldExpedientePacientecedulaOfAntecedentesGinecologiaListNewAntecedentesGinecologia.equals(expediente)) {
+                        oldExpedientePacientecedulaOfAntecedentesGinecologiaListNewAntecedentesGinecologia.getAntecedentesGinecologiaList().remove(antecedentesGinecologiaListNewAntecedentesGinecologia);
+                        oldExpedientePacientecedulaOfAntecedentesGinecologiaListNewAntecedentesGinecologia = em.merge(oldExpedientePacientecedulaOfAntecedentesGinecologiaListNewAntecedentesGinecologia);
                     }
                 }
             }
             for (ExamenColposcopia examenColposcopiaListNewExamenColposcopia : examenColposcopiaListNew) {
                 if (!examenColposcopiaListOld.contains(examenColposcopiaListNewExamenColposcopia)) {
-                    Expediente oldExpedientePacienteCedulaOfExamenColposcopiaListNewExamenColposcopia = examenColposcopiaListNewExamenColposcopia.getExpedientePacienteCedula();
-                    examenColposcopiaListNewExamenColposcopia.setExpedientePacienteCedula(expediente);
+                    Expediente oldExpedientePacientecedulaOfExamenColposcopiaListNewExamenColposcopia = examenColposcopiaListNewExamenColposcopia.getExpedientePacientecedula();
+                    examenColposcopiaListNewExamenColposcopia.setExpedientePacientecedula(expediente);
                     examenColposcopiaListNewExamenColposcopia = em.merge(examenColposcopiaListNewExamenColposcopia);
-                    if (oldExpedientePacienteCedulaOfExamenColposcopiaListNewExamenColposcopia != null && !oldExpedientePacienteCedulaOfExamenColposcopiaListNewExamenColposcopia.equals(expediente)) {
-                        oldExpedientePacienteCedulaOfExamenColposcopiaListNewExamenColposcopia.getExamenColposcopiaList().remove(examenColposcopiaListNewExamenColposcopia);
-                        oldExpedientePacienteCedulaOfExamenColposcopiaListNewExamenColposcopia = em.merge(oldExpedientePacienteCedulaOfExamenColposcopiaListNewExamenColposcopia);
+                    if (oldExpedientePacientecedulaOfExamenColposcopiaListNewExamenColposcopia != null && !oldExpedientePacientecedulaOfExamenColposcopiaListNewExamenColposcopia.equals(expediente)) {
+                        oldExpedientePacientecedulaOfExamenColposcopiaListNewExamenColposcopia.getExamenColposcopiaList().remove(examenColposcopiaListNewExamenColposcopia);
+                        oldExpedientePacientecedulaOfExamenColposcopiaListNewExamenColposcopia = em.merge(oldExpedientePacientecedulaOfExamenColposcopiaListNewExamenColposcopia);
                     }
                 }
             }
             for (ExamenOdontologia examenOdontologiaListNewExamenOdontologia : examenOdontologiaListNew) {
                 if (!examenOdontologiaListOld.contains(examenOdontologiaListNewExamenOdontologia)) {
-                    Expediente oldExpedientePacienteCedulaOfExamenOdontologiaListNewExamenOdontologia = examenOdontologiaListNewExamenOdontologia.getExpedientePacienteCedula();
-                    examenOdontologiaListNewExamenOdontologia.setExpedientePacienteCedula(expediente);
+                    Expediente oldExpedientePacientecedulaOfExamenOdontologiaListNewExamenOdontologia = examenOdontologiaListNewExamenOdontologia.getExpedientePacientecedula();
+                    examenOdontologiaListNewExamenOdontologia.setExpedientePacientecedula(expediente);
                     examenOdontologiaListNewExamenOdontologia = em.merge(examenOdontologiaListNewExamenOdontologia);
-                    if (oldExpedientePacienteCedulaOfExamenOdontologiaListNewExamenOdontologia != null && !oldExpedientePacienteCedulaOfExamenOdontologiaListNewExamenOdontologia.equals(expediente)) {
-                        oldExpedientePacienteCedulaOfExamenOdontologiaListNewExamenOdontologia.getExamenOdontologiaList().remove(examenOdontologiaListNewExamenOdontologia);
-                        oldExpedientePacienteCedulaOfExamenOdontologiaListNewExamenOdontologia = em.merge(oldExpedientePacienteCedulaOfExamenOdontologiaListNewExamenOdontologia);
+                    if (oldExpedientePacientecedulaOfExamenOdontologiaListNewExamenOdontologia != null && !oldExpedientePacientecedulaOfExamenOdontologiaListNewExamenOdontologia.equals(expediente)) {
+                        oldExpedientePacientecedulaOfExamenOdontologiaListNewExamenOdontologia.getExamenOdontologiaList().remove(examenOdontologiaListNewExamenOdontologia);
+                        oldExpedientePacientecedulaOfExamenOdontologiaListNewExamenOdontologia = em.merge(oldExpedientePacientecedulaOfExamenOdontologiaListNewExamenOdontologia);
                     }
                 }
             }
             for (AntecedentesOdontologia antecedentesOdontologiaListNewAntecedentesOdontologia : antecedentesOdontologiaListNew) {
                 if (!antecedentesOdontologiaListOld.contains(antecedentesOdontologiaListNewAntecedentesOdontologia)) {
-                    Expediente oldExpedientePacienteCedulaOfAntecedentesOdontologiaListNewAntecedentesOdontologia = antecedentesOdontologiaListNewAntecedentesOdontologia.getExpedientePacienteCedula();
-                    antecedentesOdontologiaListNewAntecedentesOdontologia.setExpedientePacienteCedula(expediente);
+                    Expediente oldExpedientePacientecedulaOfAntecedentesOdontologiaListNewAntecedentesOdontologia = antecedentesOdontologiaListNewAntecedentesOdontologia.getExpedientePacientecedula();
+                    antecedentesOdontologiaListNewAntecedentesOdontologia.setExpedientePacientecedula(expediente);
                     antecedentesOdontologiaListNewAntecedentesOdontologia = em.merge(antecedentesOdontologiaListNewAntecedentesOdontologia);
-                    if (oldExpedientePacienteCedulaOfAntecedentesOdontologiaListNewAntecedentesOdontologia != null && !oldExpedientePacienteCedulaOfAntecedentesOdontologiaListNewAntecedentesOdontologia.equals(expediente)) {
-                        oldExpedientePacienteCedulaOfAntecedentesOdontologiaListNewAntecedentesOdontologia.getAntecedentesOdontologiaList().remove(antecedentesOdontologiaListNewAntecedentesOdontologia);
-                        oldExpedientePacienteCedulaOfAntecedentesOdontologiaListNewAntecedentesOdontologia = em.merge(oldExpedientePacienteCedulaOfAntecedentesOdontologiaListNewAntecedentesOdontologia);
+                    if (oldExpedientePacientecedulaOfAntecedentesOdontologiaListNewAntecedentesOdontologia != null && !oldExpedientePacientecedulaOfAntecedentesOdontologiaListNewAntecedentesOdontologia.equals(expediente)) {
+                        oldExpedientePacientecedulaOfAntecedentesOdontologiaListNewAntecedentesOdontologia.getAntecedentesOdontologiaList().remove(antecedentesOdontologiaListNewAntecedentesOdontologia);
+                        oldExpedientePacientecedulaOfAntecedentesOdontologiaListNewAntecedentesOdontologia = em.merge(oldExpedientePacientecedulaOfAntecedentesOdontologiaListNewAntecedentesOdontologia);
                     }
                 }
             }
             for (Documentos documentosListNewDocumentos : documentosListNew) {
                 if (!documentosListOld.contains(documentosListNewDocumentos)) {
-                    Expediente oldExpedientePacienteCedulaOfDocumentosListNewDocumentos = documentosListNewDocumentos.getExpedientePacienteCedula();
-                    documentosListNewDocumentos.setExpedientePacienteCedula(expediente);
+                    Expediente oldExpedientePacientecedulaOfDocumentosListNewDocumentos = documentosListNewDocumentos.getExpedientePacientecedula();
+                    documentosListNewDocumentos.setExpedientePacientecedula(expediente);
                     documentosListNewDocumentos = em.merge(documentosListNewDocumentos);
-                    if (oldExpedientePacienteCedulaOfDocumentosListNewDocumentos != null && !oldExpedientePacienteCedulaOfDocumentosListNewDocumentos.equals(expediente)) {
-                        oldExpedientePacienteCedulaOfDocumentosListNewDocumentos.getDocumentosList().remove(documentosListNewDocumentos);
-                        oldExpedientePacienteCedulaOfDocumentosListNewDocumentos = em.merge(oldExpedientePacienteCedulaOfDocumentosListNewDocumentos);
+                    if (oldExpedientePacientecedulaOfDocumentosListNewDocumentos != null && !oldExpedientePacientecedulaOfDocumentosListNewDocumentos.equals(expediente)) {
+                        oldExpedientePacientecedulaOfDocumentosListNewDocumentos.getDocumentosList().remove(documentosListNewDocumentos);
+                        oldExpedientePacientecedulaOfDocumentosListNewDocumentos = em.merge(oldExpedientePacientecedulaOfDocumentosListNewDocumentos);
                     }
                 }
             }
             for (ExamenGinecologia examenGinecologiaListNewExamenGinecologia : examenGinecologiaListNew) {
                 if (!examenGinecologiaListOld.contains(examenGinecologiaListNewExamenGinecologia)) {
-                    Expediente oldExpedientePacienteCedulaOfExamenGinecologiaListNewExamenGinecologia = examenGinecologiaListNewExamenGinecologia.getExpedientePacienteCedula();
-                    examenGinecologiaListNewExamenGinecologia.setExpedientePacienteCedula(expediente);
+                    Expediente oldExpedientePacientecedulaOfExamenGinecologiaListNewExamenGinecologia = examenGinecologiaListNewExamenGinecologia.getExpedientePacientecedula();
+                    examenGinecologiaListNewExamenGinecologia.setExpedientePacientecedula(expediente);
                     examenGinecologiaListNewExamenGinecologia = em.merge(examenGinecologiaListNewExamenGinecologia);
-                    if (oldExpedientePacienteCedulaOfExamenGinecologiaListNewExamenGinecologia != null && !oldExpedientePacienteCedulaOfExamenGinecologiaListNewExamenGinecologia.equals(expediente)) {
-                        oldExpedientePacienteCedulaOfExamenGinecologiaListNewExamenGinecologia.getExamenGinecologiaList().remove(examenGinecologiaListNewExamenGinecologia);
-                        oldExpedientePacienteCedulaOfExamenGinecologiaListNewExamenGinecologia = em.merge(oldExpedientePacienteCedulaOfExamenGinecologiaListNewExamenGinecologia);
+                    if (oldExpedientePacientecedulaOfExamenGinecologiaListNewExamenGinecologia != null && !oldExpedientePacientecedulaOfExamenGinecologiaListNewExamenGinecologia.equals(expediente)) {
+                        oldExpedientePacientecedulaOfExamenGinecologiaListNewExamenGinecologia.getExamenGinecologiaList().remove(examenGinecologiaListNewExamenGinecologia);
+                        oldExpedientePacientecedulaOfExamenGinecologiaListNewExamenGinecologia = em.merge(oldExpedientePacientecedulaOfExamenGinecologiaListNewExamenGinecologia);
                     }
                 }
             }
@@ -403,7 +391,7 @@ public class ExpedienteJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                ExpedientePK id = expediente.getExpedientePK();
+                Integer id = expediente.getId();
                 if (findExpediente(id) == null) {
                     throw new NonexistentEntityException("The expediente with id " + id + " no longer exists.");
                 }
@@ -416,7 +404,7 @@ public class ExpedienteJpaController implements Serializable {
         }
     }
 
-    public void destroy(ExpedientePK id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -424,7 +412,7 @@ public class ExpedienteJpaController implements Serializable {
             Expediente expediente;
             try {
                 expediente = em.getReference(Expediente.class, id);
-                expediente.getExpedientePK();
+                expediente.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The expediente with id " + id + " no longer exists.", enfe);
             }
@@ -434,50 +422,50 @@ public class ExpedienteJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the AntecedentesGinecologia " + antecedentesGinecologiaListOrphanCheckAntecedentesGinecologia + " in its antecedentesGinecologiaList field has a non-nullable expedientePacienteCedula field.");
+                illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the AntecedentesGinecologia " + antecedentesGinecologiaListOrphanCheckAntecedentesGinecologia + " in its antecedentesGinecologiaList field has a non-nullable expedientePacientecedula field.");
             }
             List<ExamenColposcopia> examenColposcopiaListOrphanCheck = expediente.getExamenColposcopiaList();
             for (ExamenColposcopia examenColposcopiaListOrphanCheckExamenColposcopia : examenColposcopiaListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the ExamenColposcopia " + examenColposcopiaListOrphanCheckExamenColposcopia + " in its examenColposcopiaList field has a non-nullable expedientePacienteCedula field.");
+                illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the ExamenColposcopia " + examenColposcopiaListOrphanCheckExamenColposcopia + " in its examenColposcopiaList field has a non-nullable expedientePacientecedula field.");
             }
             List<ExamenOdontologia> examenOdontologiaListOrphanCheck = expediente.getExamenOdontologiaList();
             for (ExamenOdontologia examenOdontologiaListOrphanCheckExamenOdontologia : examenOdontologiaListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the ExamenOdontologia " + examenOdontologiaListOrphanCheckExamenOdontologia + " in its examenOdontologiaList field has a non-nullable expedientePacienteCedula field.");
+                illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the ExamenOdontologia " + examenOdontologiaListOrphanCheckExamenOdontologia + " in its examenOdontologiaList field has a non-nullable expedientePacientecedula field.");
             }
             List<AntecedentesOdontologia> antecedentesOdontologiaListOrphanCheck = expediente.getAntecedentesOdontologiaList();
             for (AntecedentesOdontologia antecedentesOdontologiaListOrphanCheckAntecedentesOdontologia : antecedentesOdontologiaListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the AntecedentesOdontologia " + antecedentesOdontologiaListOrphanCheckAntecedentesOdontologia + " in its antecedentesOdontologiaList field has a non-nullable expedientePacienteCedula field.");
+                illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the AntecedentesOdontologia " + antecedentesOdontologiaListOrphanCheckAntecedentesOdontologia + " in its antecedentesOdontologiaList field has a non-nullable expedientePacientecedula field.");
             }
             List<Documentos> documentosListOrphanCheck = expediente.getDocumentosList();
             for (Documentos documentosListOrphanCheckDocumentos : documentosListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the Documentos " + documentosListOrphanCheckDocumentos + " in its documentosList field has a non-nullable expedientePacienteCedula field.");
+                illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the Documentos " + documentosListOrphanCheckDocumentos + " in its documentosList field has a non-nullable expedientePacientecedula field.");
             }
             List<ExamenGinecologia> examenGinecologiaListOrphanCheck = expediente.getExamenGinecologiaList();
             for (ExamenGinecologia examenGinecologiaListOrphanCheckExamenGinecologia : examenGinecologiaListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the ExamenGinecologia " + examenGinecologiaListOrphanCheckExamenGinecologia + " in its examenGinecologiaList field has a non-nullable expedientePacienteCedula field.");
+                illegalOrphanMessages.add("This Expediente (" + expediente + ") cannot be destroyed since the ExamenGinecologia " + examenGinecologiaListOrphanCheckExamenGinecologia + " in its examenGinecologiaList field has a non-nullable expedientePacientecedula field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            Paciente paciente = expediente.getPaciente();
-            if (paciente != null) {
-                paciente.setExpediente(null);
-                paciente = em.merge(paciente);
+            Paciente pacientecedula = expediente.getPacientecedula();
+            if (pacientecedula != null) {
+                pacientecedula.setExpediente(null);
+                pacientecedula = em.merge(pacientecedula);
             }
             em.remove(expediente);
             em.getTransaction().commit();
@@ -512,7 +500,7 @@ public class ExpedienteJpaController implements Serializable {
         }
     }
 
-    public Expediente findExpediente(ExpedientePK id) {
+    public Expediente findExpediente(Integer id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(Expediente.class, id);

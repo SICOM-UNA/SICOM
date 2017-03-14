@@ -42,7 +42,6 @@ public class Valor implements Serializable {
     private Codigo codigo;
 
     public Valor() {
-        codigo = new Codigo();
     }
 
     public Valor(ValorPK valorPK) {

@@ -58,10 +58,9 @@ public class Cita implements Serializable {
     private Integer telefono;
     @JoinColumn(name = "Departamento_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private Departamento departamentoId;
+    private Departamento departamentoid;
 
     public Cita() {
-        departamentoId = new Departamento();
     }
 
     public Cita(Integer id) {
@@ -116,12 +115,12 @@ public class Cita implements Serializable {
         this.telefono = telefono;
     }
 
-    public Departamento getDepartamentoId() {
-        return departamentoId;
+    public Departamento getDepartamentoid() {
+        return departamentoid;
     }
 
-    public void setDepartamentoId(Departamento departamentoId) {
-        this.departamentoId = departamentoId;
+    public void setDepartamentoid(Departamento departamentoid) {
+        this.departamentoid = departamentoid;
     }
 
     @Override

@@ -18,34 +18,28 @@ import javax.servlet.RequestDispatcher;
 @ManagedBean
 @ViewScoped
 public class LoginBean {
+
     private Login login;
-    
     private String originalURL;
-    
     private final LoginJpaController ljc;
     private final PersonalJpaController pjc;
-    
+
     public LoginBean() {
-        
         login = new Login();
-        
         EntityManagerFactory em = Persistence.createEntityManagerFactory("SICOM_v1PU");
-        
         ljc = new LoginJpaController(em);
         pjc = new PersonalJpaController(em);
-    
     }
-    
+
     @PostConstruct
     public void init() {
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
-        
         originalURL = (String) externalContext.getRequestMap().get(RequestDispatcher.FORWARD_REQUEST_URI);
 
         if (originalURL == null) {
             originalURL = externalContext.getRequestContextPath() + "/app/index";
-        }else{
+        } else {
             String originalQuery = (String) externalContext.getRequestMap().get(RequestDispatcher.FORWARD_QUERY_STRING);
 
             if (originalQuery != null) {
@@ -55,30 +49,26 @@ public class LoginBean {
     }
 
     public void iniciarSesion(String from) throws IOException {
-        
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
-        
         Login nuevo = ljc.findLogin(login.getUsuario());
-                
-        if(nuevo != null && nuevo.getContrasena().equals(login.getContrasena())) {
-                       
+
+        if (nuevo != null && nuevo.getContrasena().equals(login.getContrasena())) {
             login.setAutenticado(true);
             Personal personal = pjc.findPersonal(login.getUsuario());
-            
-            if(personal == null) personal = new Personal();
-            
-            login.setPersonal(personal);
-            login.getPersonal().setLoginUsuario(login);
-            
+
+            if (personal != null) {
+                personal = new Personal();
+                String dim = ("Masculino".equals(personal.getGenero())) ? "Sr. " : "Sra. ";
+                login.setPersonal(personal);
+                login.getPersonal().setLoginUsuario(login);
+                ec.getFlash().setKeepMessages(true);
+                fc.addMessage("msg", new FacesMessage("Bienvenido " + dim + personal.getNombre().concat(" ") + personal.getPrimerApellido().concat(" ") + personal.getSegundoApellido().concat(".")));
+            }
+
             ec.getSessionMap().put("login", login);
-            
-            String dim = ("Masculino".equals(personal.getGenero()))? "Sr. " : "Sra. ";
-            
-            ec.getFlash().setKeepMessages(true);
-            fc.addMessage("msg", new FacesMessage("Bienvenido "+dim+ personal.getNombre().concat(" ")+ personal.getPrimerApellido().concat(" ") + personal.getSegundoApellido().concat(".") ));
-            
-            if(from == null || from.isEmpty()) {
+
+            if (from == null || from.isEmpty()) {
                 ec.redirect(originalURL);
             } else {
                 ec.redirect(from);
@@ -87,7 +77,7 @@ public class LoginBean {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Usuario y/o contraseña incorrectos", getLogin().getUsuario()));
         }
     }
-    
+
     public void cerrarSesion() throws IOException {
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
@@ -95,7 +85,6 @@ public class LoginBean {
         ec.getFlash().setKeepMessages(true);
         ec.invalidateSession();
         ec.redirect(ec.getRequestContextPath() + "/login");
-        
         login = new Login();
     }
 

@@ -51,12 +51,12 @@ public class AutorizacionJpaController implements Serializable {
             autorizacion.setPersonalList(attachedPersonalList);
             em.persist(autorizacion);
             for (Personal personalListPersonal : autorizacion.getPersonalList()) {
-                Autorizacion oldAutorizacionNivelOfPersonalListPersonal = personalListPersonal.getAutorizacionNivel();
+                Autorizacion oldAutorizacionnivelOfPersonalListPersonal = personalListPersonal.getAutorizacionNivel();
                 personalListPersonal.setAutorizacionNivel(autorizacion);
                 personalListPersonal = em.merge(personalListPersonal);
-                if (oldAutorizacionNivelOfPersonalListPersonal != null) {
-                    oldAutorizacionNivelOfPersonalListPersonal.getPersonalList().remove(personalListPersonal);
-                    oldAutorizacionNivelOfPersonalListPersonal = em.merge(oldAutorizacionNivelOfPersonalListPersonal);
+                if (oldAutorizacionnivelOfPersonalListPersonal != null) {
+                    oldAutorizacionnivelOfPersonalListPersonal.getPersonalList().remove(personalListPersonal);
+                    oldAutorizacionnivelOfPersonalListPersonal = em.merge(oldAutorizacionnivelOfPersonalListPersonal);
                 }
             }
             em.getTransaction().commit();
@@ -86,7 +86,7 @@ public class AutorizacionJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Personal " + personalListOldPersonal + " since its autorizacionNivel field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Personal " + personalListOldPersonal + " since its autorizacionnivel field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -102,12 +102,12 @@ public class AutorizacionJpaController implements Serializable {
             autorizacion = em.merge(autorizacion);
             for (Personal personalListNewPersonal : personalListNew) {
                 if (!personalListOld.contains(personalListNewPersonal)) {
-                    Autorizacion oldAutorizacionNivelOfPersonalListNewPersonal = personalListNewPersonal.getAutorizacionNivel();
+                    Autorizacion oldAutorizacionnivelOfPersonalListNewPersonal = personalListNewPersonal.getAutorizacionNivel();
                     personalListNewPersonal.setAutorizacionNivel(autorizacion);
                     personalListNewPersonal = em.merge(personalListNewPersonal);
-                    if (oldAutorizacionNivelOfPersonalListNewPersonal != null && !oldAutorizacionNivelOfPersonalListNewPersonal.equals(autorizacion)) {
-                        oldAutorizacionNivelOfPersonalListNewPersonal.getPersonalList().remove(personalListNewPersonal);
-                        oldAutorizacionNivelOfPersonalListNewPersonal = em.merge(oldAutorizacionNivelOfPersonalListNewPersonal);
+                    if (oldAutorizacionnivelOfPersonalListNewPersonal != null && !oldAutorizacionnivelOfPersonalListNewPersonal.equals(autorizacion)) {
+                        oldAutorizacionnivelOfPersonalListNewPersonal.getPersonalList().remove(personalListNewPersonal);
+                        oldAutorizacionnivelOfPersonalListNewPersonal = em.merge(oldAutorizacionnivelOfPersonalListNewPersonal);
                     }
                 }
             }
@@ -146,7 +146,7 @@ public class AutorizacionJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Autorizacion (" + autorizacion + ") cannot be destroyed since the Personal " + personalListOrphanCheckPersonal + " in its personalList field has a non-nullable autorizacionNivel field.");
+                illegalOrphanMessages.add("This Autorizacion (" + autorizacion + ") cannot be destroyed since the Personal " + personalListOrphanCheckPersonal + " in its personalList field has a non-nullable autorizacionnivel field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

@@ -47,10 +47,10 @@ public class LoginJpaController implements Serializable {
             }
             em.persist(login);
             if (personal != null) {
-                Login oldLoginUsuarioOfPersonal = personal.getLoginUsuario();
-                if (oldLoginUsuarioOfPersonal != null) {
-                    oldLoginUsuarioOfPersonal.setPersonal(null);
-                    oldLoginUsuarioOfPersonal = em.merge(oldLoginUsuarioOfPersonal);
+                Login oldLoginusuarioOfPersonal = personal.getLoginUsuario();
+                if (oldLoginusuarioOfPersonal != null) {
+                    oldLoginusuarioOfPersonal.setPersonal(null);
+                    oldLoginusuarioOfPersonal = em.merge(oldLoginusuarioOfPersonal);
                 }
                 personal.setLoginUsuario(login);
                 personal = em.merge(personal);
@@ -81,7 +81,7 @@ public class LoginJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("You must retain Personal " + personalOld + " since its loginUsuario field is not nullable.");
+                illegalOrphanMessages.add("You must retain Personal " + personalOld + " since its loginusuario field is not nullable.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
@@ -92,10 +92,10 @@ public class LoginJpaController implements Serializable {
             }
             login = em.merge(login);
             if (personalNew != null && !personalNew.equals(personalOld)) {
-                Login oldLoginUsuarioOfPersonal = personalNew.getLoginUsuario();
-                if (oldLoginUsuarioOfPersonal != null) {
-                    oldLoginUsuarioOfPersonal.setPersonal(null);
-                    oldLoginUsuarioOfPersonal = em.merge(oldLoginUsuarioOfPersonal);
+                Login oldLoginusuarioOfPersonal = personalNew.getLoginUsuario();
+                if (oldLoginusuarioOfPersonal != null) {
+                    oldLoginusuarioOfPersonal.setPersonal(null);
+                    oldLoginusuarioOfPersonal = em.merge(oldLoginusuarioOfPersonal);
                 }
                 personalNew.setLoginUsuario(login);
                 personalNew = em.merge(personalNew);
@@ -135,7 +135,7 @@ public class LoginJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Login (" + login + ") cannot be destroyed since the Personal " + personalOrphanCheck + " in its personal field has a non-nullable loginUsuario field.");
+                illegalOrphanMessages.add("This Login (" + login + ") cannot be destroyed since the Personal " + personalOrphanCheck + " in its personal field has a non-nullable loginusuario field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

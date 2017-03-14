@@ -46,7 +46,7 @@ public class PacienteJpaController implements Serializable {
             em.getTransaction().begin();
             Expediente expediente = paciente.getExpediente();
             if (expediente != null) {
-                expediente = em.getReference(expediente.getClass(), expediente.getExpedientePK());
+                expediente = em.getReference(expediente.getClass(), expediente.getId());
                 paciente.setExpediente(expediente);
             }
             List<Responsable> attachedResponsableList = new ArrayList<Responsable>();
@@ -57,12 +57,12 @@ public class PacienteJpaController implements Serializable {
             paciente.setResponsableList(attachedResponsableList);
             em.persist(paciente);
             if (expediente != null) {
-                Paciente oldPacienteOfExpediente = expediente.getPaciente();
-                if (oldPacienteOfExpediente != null) {
-                    oldPacienteOfExpediente.setExpediente(null);
-                    oldPacienteOfExpediente = em.merge(oldPacienteOfExpediente);
+                Paciente oldPacientecedulaOfExpediente = expediente.getPacientecedula();
+                if (oldPacientecedulaOfExpediente != null) {
+                    oldPacientecedulaOfExpediente.setExpediente(null);
+                    oldPacientecedulaOfExpediente = em.merge(oldPacientecedulaOfExpediente);
                 }
-                expediente.setPaciente(paciente);
+                expediente.setPacientecedula(paciente);
                 expediente = em.merge(expediente);
             }
             for (Responsable responsableListResponsable : paciente.getResponsableList()) {
@@ -102,7 +102,7 @@ public class PacienteJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("You must retain Expediente " + expedienteOld + " since its paciente field is not nullable.");
+                illegalOrphanMessages.add("You must retain Expediente " + expedienteOld + " since its pacientecedula field is not nullable.");
             }
             for (Responsable responsableListOldResponsable : responsableListOld) {
                 if (!responsableListNew.contains(responsableListOldResponsable)) {
@@ -116,7 +116,7 @@ public class PacienteJpaController implements Serializable {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
             if (expedienteNew != null) {
-                expedienteNew = em.getReference(expedienteNew.getClass(), expedienteNew.getExpedientePK());
+                expedienteNew = em.getReference(expedienteNew.getClass(), expedienteNew.getId());
                 paciente.setExpediente(expedienteNew);
             }
             List<Responsable> attachedResponsableListNew = new ArrayList<Responsable>();
@@ -128,12 +128,12 @@ public class PacienteJpaController implements Serializable {
             paciente.setResponsableList(responsableListNew);
             paciente = em.merge(paciente);
             if (expedienteNew != null && !expedienteNew.equals(expedienteOld)) {
-                Paciente oldPacienteOfExpediente = expedienteNew.getPaciente();
-                if (oldPacienteOfExpediente != null) {
-                    oldPacienteOfExpediente.setExpediente(null);
-                    oldPacienteOfExpediente = em.merge(oldPacienteOfExpediente);
+                Paciente oldPacientecedulaOfExpediente = expedienteNew.getPacientecedula();
+                if (oldPacientecedulaOfExpediente != null) {
+                    oldPacientecedulaOfExpediente.setExpediente(null);
+                    oldPacientecedulaOfExpediente = em.merge(oldPacientecedulaOfExpediente);
                 }
-                expedienteNew.setPaciente(paciente);
+                expedienteNew.setPacientecedula(paciente);
                 expedienteNew = em.merge(expedienteNew);
             }
             for (Responsable responsableListNewResponsable : responsableListNew) {
@@ -182,7 +182,7 @@ public class PacienteJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Paciente (" + paciente + ") cannot be destroyed since the Expediente " + expedienteOrphanCheck + " in its expediente field has a non-nullable paciente field.");
+                illegalOrphanMessages.add("This Paciente (" + paciente + ") cannot be destroyed since the Expediente " + expedienteOrphanCheck + " in its expediente field has a non-nullable pacientecedula field.");
             }
             List<Responsable> responsableListOrphanCheck = paciente.getResponsableList();
             for (Responsable responsableListOrphanCheckResponsable : responsableListOrphanCheck) {

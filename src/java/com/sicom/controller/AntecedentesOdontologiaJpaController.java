@@ -37,15 +37,15 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Expediente expedientePacienteCedula = antecedentesOdontologia.getExpedientePacienteCedula();
-            if (expedientePacienteCedula != null) {
-                expedientePacienteCedula = em.getReference(expedientePacienteCedula.getClass(), expedientePacienteCedula.getExpedientePK());
-                antecedentesOdontologia.setExpedientePacienteCedula(expedientePacienteCedula);
+            Expediente expedientePacientecedula = antecedentesOdontologia.getExpedientePacientecedula();
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula = em.getReference(expedientePacientecedula.getClass(), expedientePacientecedula.getId());
+                antecedentesOdontologia.setExpedientePacientecedula(expedientePacientecedula);
             }
             em.persist(antecedentesOdontologia);
-            if (expedientePacienteCedula != null) {
-                expedientePacienteCedula.getAntecedentesOdontologiaList().add(antecedentesOdontologia);
-                expedientePacienteCedula = em.merge(expedientePacienteCedula);
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula.getAntecedentesOdontologiaList().add(antecedentesOdontologia);
+                expedientePacientecedula = em.merge(expedientePacientecedula);
             }
             em.getTransaction().commit();
         } finally {
@@ -61,20 +61,20 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             AntecedentesOdontologia persistentAntecedentesOdontologia = em.find(AntecedentesOdontologia.class, antecedentesOdontologia.getId());
-            Expediente expedientePacienteCedulaOld = persistentAntecedentesOdontologia.getExpedientePacienteCedula();
-            Expediente expedientePacienteCedulaNew = antecedentesOdontologia.getExpedientePacienteCedula();
-            if (expedientePacienteCedulaNew != null) {
-                expedientePacienteCedulaNew = em.getReference(expedientePacienteCedulaNew.getClass(), expedientePacienteCedulaNew.getExpedientePK());
-                antecedentesOdontologia.setExpedientePacienteCedula(expedientePacienteCedulaNew);
+            Expediente expedientePacientecedulaOld = persistentAntecedentesOdontologia.getExpedientePacientecedula();
+            Expediente expedientePacientecedulaNew = antecedentesOdontologia.getExpedientePacientecedula();
+            if (expedientePacientecedulaNew != null) {
+                expedientePacientecedulaNew = em.getReference(expedientePacientecedulaNew.getClass(), expedientePacientecedulaNew.getId());
+                antecedentesOdontologia.setExpedientePacientecedula(expedientePacientecedulaNew);
             }
             antecedentesOdontologia = em.merge(antecedentesOdontologia);
-            if (expedientePacienteCedulaOld != null && !expedientePacienteCedulaOld.equals(expedientePacienteCedulaNew)) {
-                expedientePacienteCedulaOld.getAntecedentesOdontologiaList().remove(antecedentesOdontologia);
-                expedientePacienteCedulaOld = em.merge(expedientePacienteCedulaOld);
+            if (expedientePacientecedulaOld != null && !expedientePacientecedulaOld.equals(expedientePacientecedulaNew)) {
+                expedientePacientecedulaOld.getAntecedentesOdontologiaList().remove(antecedentesOdontologia);
+                expedientePacientecedulaOld = em.merge(expedientePacientecedulaOld);
             }
-            if (expedientePacienteCedulaNew != null && !expedientePacienteCedulaNew.equals(expedientePacienteCedulaOld)) {
-                expedientePacienteCedulaNew.getAntecedentesOdontologiaList().add(antecedentesOdontologia);
-                expedientePacienteCedulaNew = em.merge(expedientePacienteCedulaNew);
+            if (expedientePacientecedulaNew != null && !expedientePacientecedulaNew.equals(expedientePacientecedulaOld)) {
+                expedientePacientecedulaNew.getAntecedentesOdontologiaList().add(antecedentesOdontologia);
+                expedientePacientecedulaNew = em.merge(expedientePacientecedulaNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -105,10 +105,10 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The antecedentesOdontologia with id " + id + " no longer exists.", enfe);
             }
-            Expediente expedientePacienteCedula = antecedentesOdontologia.getExpedientePacienteCedula();
-            if (expedientePacienteCedula != null) {
-                expedientePacienteCedula.getAntecedentesOdontologiaList().remove(antecedentesOdontologia);
-                expedientePacienteCedula = em.merge(expedientePacienteCedula);
+            Expediente expedientePacientecedula = antecedentesOdontologia.getExpedientePacientecedula();
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula.getAntecedentesOdontologiaList().remove(antecedentesOdontologia);
+                expedientePacientecedula = em.merge(expedientePacientecedula);
             }
             em.remove(antecedentesOdontologia);
             em.getTransaction().commit();

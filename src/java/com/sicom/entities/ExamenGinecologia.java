@@ -120,13 +120,12 @@ public class ExamenGinecologia implements Serializable {
     private String tx;
     @JoinColumn(name = "Expediente_Paciente_cedula", referencedColumnName = "Paciente_cedula")
     @ManyToOne(optional = false)
-    private Expediente expedientePacienteCedula;
+    private Expediente expedientePacientecedula;
     @JoinColumn(name = "Personal_cedula", referencedColumnName = "cedula")
     @ManyToOne(optional = false)
-    private Personal personalCedula;
+    private Personal personalcedula;
 
     public ExamenGinecologia() {
-        personalCedula = new Personal();
     }
 
     public ExamenGinecologia(Integer id) {
@@ -346,20 +345,20 @@ public class ExamenGinecologia implements Serializable {
         this.tx = tx;
     }
 
-    public Expediente getExpedientePacienteCedula() {
-        return expedientePacienteCedula;
+    public Expediente getExpedientePacientecedula() {
+        return expedientePacientecedula;
     }
 
-    public void setExpedientePacienteCedula(Expediente expedientePacienteCedula) {
-        this.expedientePacienteCedula = expedientePacienteCedula;
+    public void setExpedientePacientecedula(Expediente expedientePacientecedula) {
+        this.expedientePacientecedula = expedientePacientecedula;
     }
 
-    public Personal getPersonalCedula() {
-        return personalCedula;
+    public Personal getPersonalcedula() {
+        return personalcedula;
     }
 
-    public void setPersonalCedula(Personal personalCedula) {
-        this.personalCedula = personalCedula;
+    public void setPersonalcedula(Personal personalcedula) {
+        this.personalcedula = personalcedula;
     }
 
     @Override

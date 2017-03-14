@@ -113,5 +113,4 @@ public class Login implements Serializable {
     public void setAutenticado(Boolean autenticado) {
         this.autenticado = autenticado;
     }
-    
 }

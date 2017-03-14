@@ -52,10 +52,10 @@ public class Documentos implements Serializable {
     private Date fecha;
     @JoinColumn(name = "Departamento_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private Departamento departamentoId;
+    private Departamento departamentoid;
     @JoinColumn(name = "Expediente_Paciente_cedula", referencedColumnName = "Paciente_cedula")
     @ManyToOne(optional = false)
-    private Expediente expedientePacienteCedula;
+    private Expediente expedientePacientecedula;
 
     public Documentos() {
     }
@@ -94,20 +94,20 @@ public class Documentos implements Serializable {
         this.fecha = fecha;
     }
 
-    public Departamento getDepartamentoId() {
-        return departamentoId;
+    public Departamento getDepartamentoid() {
+        return departamentoid;
     }
 
-    public void setDepartamentoId(Departamento departamentoId) {
-        this.departamentoId = departamentoId;
+    public void setDepartamentoid(Departamento departamentoid) {
+        this.departamentoid = departamentoid;
     }
 
-    public Expediente getExpedientePacienteCedula() {
-        return expedientePacienteCedula;
+    public Expediente getExpedientePacientecedula() {
+        return expedientePacientecedula;
     }
 
-    public void setExpedientePacienteCedula(Expediente expedientePacienteCedula) {
-        this.expedientePacienteCedula = expedientePacienteCedula;
+    public void setExpedientePacientecedula(Expediente expedientePacientecedula) {
+        this.expedientePacientecedula = expedientePacientecedula;
     }
 
     @Override

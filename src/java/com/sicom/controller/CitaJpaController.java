@@ -37,15 +37,15 @@ public class CitaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Departamento departamentoId = cita.getDepartamentoId();
-            if (departamentoId != null) {
-                departamentoId = em.getReference(departamentoId.getClass(), departamentoId.getId());
-                cita.setDepartamentoId(departamentoId);
+            Departamento departamentoid = cita.getDepartamentoid();
+            if (departamentoid != null) {
+                departamentoid = em.getReference(departamentoid.getClass(), departamentoid.getId());
+                cita.setDepartamentoid(departamentoid);
             }
             em.persist(cita);
-            if (departamentoId != null) {
-                departamentoId.getCitaList().add(cita);
-                departamentoId = em.merge(departamentoId);
+            if (departamentoid != null) {
+                departamentoid.getCitaList().add(cita);
+                departamentoid = em.merge(departamentoid);
             }
             em.getTransaction().commit();
         } finally {
@@ -61,20 +61,20 @@ public class CitaJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Cita persistentCita = em.find(Cita.class, cita.getId());
-            Departamento departamentoIdOld = persistentCita.getDepartamentoId();
-            Departamento departamentoIdNew = cita.getDepartamentoId();
-            if (departamentoIdNew != null) {
-                departamentoIdNew = em.getReference(departamentoIdNew.getClass(), departamentoIdNew.getId());
-                cita.setDepartamentoId(departamentoIdNew);
+            Departamento departamentoidOld = persistentCita.getDepartamentoid();
+            Departamento departamentoidNew = cita.getDepartamentoid();
+            if (departamentoidNew != null) {
+                departamentoidNew = em.getReference(departamentoidNew.getClass(), departamentoidNew.getId());
+                cita.setDepartamentoid(departamentoidNew);
             }
             cita = em.merge(cita);
-            if (departamentoIdOld != null && !departamentoIdOld.equals(departamentoIdNew)) {
-                departamentoIdOld.getCitaList().remove(cita);
-                departamentoIdOld = em.merge(departamentoIdOld);
+            if (departamentoidOld != null && !departamentoidOld.equals(departamentoidNew)) {
+                departamentoidOld.getCitaList().remove(cita);
+                departamentoidOld = em.merge(departamentoidOld);
             }
-            if (departamentoIdNew != null && !departamentoIdNew.equals(departamentoIdOld)) {
-                departamentoIdNew.getCitaList().add(cita);
-                departamentoIdNew = em.merge(departamentoIdNew);
+            if (departamentoidNew != null && !departamentoidNew.equals(departamentoidOld)) {
+                departamentoidNew.getCitaList().add(cita);
+                departamentoidNew = em.merge(departamentoidNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -105,10 +105,10 @@ public class CitaJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The cita with id " + id + " no longer exists.", enfe);
             }
-            Departamento departamentoId = cita.getDepartamentoId();
-            if (departamentoId != null) {
-                departamentoId.getCitaList().remove(cita);
-                departamentoId = em.merge(departamentoId);
+            Departamento departamentoid = cita.getDepartamentoid();
+            if (departamentoid != null) {
+                departamentoid.getCitaList().remove(cita);
+                departamentoid = em.merge(departamentoid);
             }
             em.remove(cita);
             em.getTransaction().commit();

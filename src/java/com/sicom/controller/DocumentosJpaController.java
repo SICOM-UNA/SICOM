@@ -38,24 +38,24 @@ public class DocumentosJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Departamento departamentoId = documentos.getDepartamentoId();
-            if (departamentoId != null) {
-                departamentoId = em.getReference(departamentoId.getClass(), departamentoId.getId());
-                documentos.setDepartamentoId(departamentoId);
+            Departamento departamentoid = documentos.getDepartamentoid();
+            if (departamentoid != null) {
+                departamentoid = em.getReference(departamentoid.getClass(), departamentoid.getId());
+                documentos.setDepartamentoid(departamentoid);
             }
-            Expediente expedientePacienteCedula = documentos.getExpedientePacienteCedula();
-            if (expedientePacienteCedula != null) {
-                expedientePacienteCedula = em.getReference(expedientePacienteCedula.getClass(), expedientePacienteCedula.getExpedientePK());
-                documentos.setExpedientePacienteCedula(expedientePacienteCedula);
+            Expediente expedientePacientecedula = documentos.getExpedientePacientecedula();
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula = em.getReference(expedientePacientecedula.getClass(), expedientePacientecedula.getId());
+                documentos.setExpedientePacientecedula(expedientePacientecedula);
             }
             em.persist(documentos);
-            if (departamentoId != null) {
-                departamentoId.getDocumentosList().add(documentos);
-                departamentoId = em.merge(departamentoId);
+            if (departamentoid != null) {
+                departamentoid.getDocumentosList().add(documentos);
+                departamentoid = em.merge(departamentoid);
             }
-            if (expedientePacienteCedula != null) {
-                expedientePacienteCedula.getDocumentosList().add(documentos);
-                expedientePacienteCedula = em.merge(expedientePacienteCedula);
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula.getDocumentosList().add(documentos);
+                expedientePacientecedula = em.merge(expedientePacientecedula);
             }
             em.getTransaction().commit();
         } finally {
@@ -71,34 +71,34 @@ public class DocumentosJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Documentos persistentDocumentos = em.find(Documentos.class, documentos.getId());
-            Departamento departamentoIdOld = persistentDocumentos.getDepartamentoId();
-            Departamento departamentoIdNew = documentos.getDepartamentoId();
-            Expediente expedientePacienteCedulaOld = persistentDocumentos.getExpedientePacienteCedula();
-            Expediente expedientePacienteCedulaNew = documentos.getExpedientePacienteCedula();
-            if (departamentoIdNew != null) {
-                departamentoIdNew = em.getReference(departamentoIdNew.getClass(), departamentoIdNew.getId());
-                documentos.setDepartamentoId(departamentoIdNew);
+            Departamento departamentoidOld = persistentDocumentos.getDepartamentoid();
+            Departamento departamentoidNew = documentos.getDepartamentoid();
+            Expediente expedientePacientecedulaOld = persistentDocumentos.getExpedientePacientecedula();
+            Expediente expedientePacientecedulaNew = documentos.getExpedientePacientecedula();
+            if (departamentoidNew != null) {
+                departamentoidNew = em.getReference(departamentoidNew.getClass(), departamentoidNew.getId());
+                documentos.setDepartamentoid(departamentoidNew);
             }
-            if (expedientePacienteCedulaNew != null) {
-                expedientePacienteCedulaNew = em.getReference(expedientePacienteCedulaNew.getClass(), expedientePacienteCedulaNew.getExpedientePK());
-                documentos.setExpedientePacienteCedula(expedientePacienteCedulaNew);
+            if (expedientePacientecedulaNew != null) {
+                expedientePacientecedulaNew = em.getReference(expedientePacientecedulaNew.getClass(), expedientePacientecedulaNew.getId());
+                documentos.setExpedientePacientecedula(expedientePacientecedulaNew);
             }
             documentos = em.merge(documentos);
-            if (departamentoIdOld != null && !departamentoIdOld.equals(departamentoIdNew)) {
-                departamentoIdOld.getDocumentosList().remove(documentos);
-                departamentoIdOld = em.merge(departamentoIdOld);
+            if (departamentoidOld != null && !departamentoidOld.equals(departamentoidNew)) {
+                departamentoidOld.getDocumentosList().remove(documentos);
+                departamentoidOld = em.merge(departamentoidOld);
             }
-            if (departamentoIdNew != null && !departamentoIdNew.equals(departamentoIdOld)) {
-                departamentoIdNew.getDocumentosList().add(documentos);
-                departamentoIdNew = em.merge(departamentoIdNew);
+            if (departamentoidNew != null && !departamentoidNew.equals(departamentoidOld)) {
+                departamentoidNew.getDocumentosList().add(documentos);
+                departamentoidNew = em.merge(departamentoidNew);
             }
-            if (expedientePacienteCedulaOld != null && !expedientePacienteCedulaOld.equals(expedientePacienteCedulaNew)) {
-                expedientePacienteCedulaOld.getDocumentosList().remove(documentos);
-                expedientePacienteCedulaOld = em.merge(expedientePacienteCedulaOld);
+            if (expedientePacientecedulaOld != null && !expedientePacientecedulaOld.equals(expedientePacientecedulaNew)) {
+                expedientePacientecedulaOld.getDocumentosList().remove(documentos);
+                expedientePacientecedulaOld = em.merge(expedientePacientecedulaOld);
             }
-            if (expedientePacienteCedulaNew != null && !expedientePacienteCedulaNew.equals(expedientePacienteCedulaOld)) {
-                expedientePacienteCedulaNew.getDocumentosList().add(documentos);
-                expedientePacienteCedulaNew = em.merge(expedientePacienteCedulaNew);
+            if (expedientePacientecedulaNew != null && !expedientePacientecedulaNew.equals(expedientePacientecedulaOld)) {
+                expedientePacientecedulaNew.getDocumentosList().add(documentos);
+                expedientePacientecedulaNew = em.merge(expedientePacientecedulaNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -129,15 +129,15 @@ public class DocumentosJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The documentos with id " + id + " no longer exists.", enfe);
             }
-            Departamento departamentoId = documentos.getDepartamentoId();
-            if (departamentoId != null) {
-                departamentoId.getDocumentosList().remove(documentos);
-                departamentoId = em.merge(departamentoId);
+            Departamento departamentoid = documentos.getDepartamentoid();
+            if (departamentoid != null) {
+                departamentoid.getDocumentosList().remove(documentos);
+                departamentoid = em.merge(departamentoid);
             }
-            Expediente expedientePacienteCedula = documentos.getExpedientePacienteCedula();
-            if (expedientePacienteCedula != null) {
-                expedientePacienteCedula.getDocumentosList().remove(documentos);
-                expedientePacienteCedula = em.merge(expedientePacienteCedula);
+            Expediente expedientePacientecedula = documentos.getExpedientePacientecedula();
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula.getDocumentosList().remove(documentos);
+                expedientePacientecedula = em.merge(expedientePacientecedula);
             }
             em.remove(documentos);
             em.getTransaction().commit();

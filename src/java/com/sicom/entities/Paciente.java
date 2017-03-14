@@ -77,11 +77,10 @@ public class Paciente implements Serializable {
     private String genero;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacientecedula")
     private List<Responsable> responsableList;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "paciente")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "pacientecedula")
     private Expediente expediente;
 
     public Paciente() {
-        expediente = new Expediente();
     }
 
     public Paciente(String cedula) {

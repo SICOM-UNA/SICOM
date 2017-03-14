@@ -124,10 +124,9 @@ public class AntecedentesGinecologia implements Serializable {
     private String informacionAdicional;
     @JoinColumn(name = "Expediente_Paciente_cedula", referencedColumnName = "Paciente_cedula")
     @ManyToOne(optional = false)
-    private Expediente expedientePacienteCedula;
+    private Expediente expedientePacientecedula;
 
     public AntecedentesGinecologia() {
-        expedientePacienteCedula = new Expediente();
     }
 
     public AntecedentesGinecologia(Integer id) {
@@ -355,12 +354,12 @@ public class AntecedentesGinecologia implements Serializable {
         this.informacionAdicional = informacionAdicional;
     }
 
-    public Expediente getExpedientePacienteCedula() {
-        return expedientePacienteCedula;
+    public Expediente getExpedientePacientecedula() {
+        return expedientePacientecedula;
     }
 
-    public void setExpedientePacienteCedula(Expediente expedientePacienteCedula) {
-        this.expedientePacienteCedula = expedientePacienteCedula;
+    public void setExpedientePacientecedula(Expediente expedientePacientecedula) {
+        this.expedientePacientecedula = expedientePacientecedula;
     }
 
     @Override

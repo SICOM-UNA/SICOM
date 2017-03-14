@@ -66,10 +66,9 @@ public class AntecedentesOdontologia implements Serializable {
     private String habitos;
     @JoinColumn(name = "Expediente_Paciente_cedula", referencedColumnName = "Paciente_cedula")
     @ManyToOne(optional = false)
-    private Expediente expedientePacienteCedula;
+    private Expediente expedientePacientecedula;
 
     public AntecedentesOdontologia() {
-        expedientePacienteCedula = new Expediente();
     }
 
     public AntecedentesOdontologia(Integer id) {
@@ -146,12 +145,12 @@ public class AntecedentesOdontologia implements Serializable {
         this.habitos = habitos;
     }
 
-    public Expediente getExpedientePacienteCedula() {
-        return expedientePacienteCedula;
+    public Expediente getExpedientePacientecedula() {
+        return expedientePacientecedula;
     }
 
-    public void setExpedientePacienteCedula(Expediente expedientePacienteCedula) {
-        this.expedientePacienteCedula = expedientePacienteCedula;
+    public void setExpedientePacientecedula(Expediente expedientePacientecedula) {
+        this.expedientePacientecedula = expedientePacientecedula;
     }
 
     @Override
