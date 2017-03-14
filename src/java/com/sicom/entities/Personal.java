@@ -33,18 +33,30 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "personal")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Personal.findAll", query = "SELECT p FROM Personal p"),
-    @NamedQuery(name = "Personal.findByCedula", query = "SELECT p FROM Personal p WHERE p.cedula = :cedula"),
-    @NamedQuery(name = "Personal.findByNombre", query = "SELECT p FROM Personal p WHERE p.nombre = :nombre"),
-    @NamedQuery(name = "Personal.findByPrimerApellido", query = "SELECT p FROM Personal p WHERE p.primerApellido = :primerApellido"),
-    @NamedQuery(name = "Personal.findBySegundoApellido", query = "SELECT p FROM Personal p WHERE p.segundoApellido = :segundoApellido"),
-    @NamedQuery(name = "Personal.findByGenero", query = "SELECT p FROM Personal p WHERE p.genero = :genero"),
-    @NamedQuery(name = "Personal.findByCelular", query = "SELECT p FROM Personal p WHERE p.celular = :celular"),
-    @NamedQuery(name = "Personal.findByTelefono", query = "SELECT p FROM Personal p WHERE p.telefono = :telefono"),
-    @NamedQuery(name = "Personal.findByCargo", query = "SELECT p FROM Personal p WHERE p.cargo = :cargo"),
-    @NamedQuery(name = "Personal.findByCorreo", query = "SELECT p FROM Personal p WHERE p.correo = :correo"),
-    @NamedQuery(name = "Personal.findByNacimiento", query = "SELECT p FROM Personal p WHERE p.nacimiento = :nacimiento"),
-    @NamedQuery(name = "Personal.findByDomicilio", query = "SELECT p FROM Personal p WHERE p.domicilio = :domicilio"),
+    @NamedQuery(name = "Personal.findAll", query = "SELECT p FROM Personal p")
+    ,
+    @NamedQuery(name = "Personal.findByCedula", query = "SELECT p FROM Personal p WHERE p.cedula = :cedula")
+    ,
+    @NamedQuery(name = "Personal.findByNombre", query = "SELECT p FROM Personal p WHERE p.nombre = :nombre")
+    ,
+    @NamedQuery(name = "Personal.findByPrimerApellido", query = "SELECT p FROM Personal p WHERE p.primerApellido = :primerApellido")
+    ,
+    @NamedQuery(name = "Personal.findBySegundoApellido", query = "SELECT p FROM Personal p WHERE p.segundoApellido = :segundoApellido")
+    ,
+    @NamedQuery(name = "Personal.findByGenero", query = "SELECT p FROM Personal p WHERE p.genero = :genero")
+    ,
+    @NamedQuery(name = "Personal.findByCelular", query = "SELECT p FROM Personal p WHERE p.celular = :celular")
+    ,
+    @NamedQuery(name = "Personal.findByTelefono", query = "SELECT p FROM Personal p WHERE p.telefono = :telefono")
+    ,
+    @NamedQuery(name = "Personal.findByCargo", query = "SELECT p FROM Personal p WHERE p.cargo = :cargo")
+    ,
+    @NamedQuery(name = "Personal.findByCorreo", query = "SELECT p FROM Personal p WHERE p.correo = :correo")
+    ,
+    @NamedQuery(name = "Personal.findByNacimiento", query = "SELECT p FROM Personal p WHERE p.nacimiento = :nacimiento")
+    ,
+    @NamedQuery(name = "Personal.findByDomicilio", query = "SELECT p FROM Personal p WHERE p.domicilio = :domicilio")
+    ,
     @NamedQuery(name = "Personal.findByEstadoCivil", query = "SELECT p FROM Personal p WHERE p.estadoCivil = :estadoCivil")})
 public class Personal implements Serializable {
 
@@ -98,7 +110,8 @@ public class Personal implements Serializable {
     public Personal() {
         autorizacionNivel = new Autorizacion();
         departamentoId = new Departamento();
-        loginUsuario = new Login();
+        
+      //  loginUsuario = new Login();
     }
 
     public Personal(String cedula) {
@@ -283,5 +296,5 @@ public class Personal implements Serializable {
     public String toString() {
         return "com.sicom.entities.Personal[ cedula=" + cedula + " ]";
     }
-    
+
 }

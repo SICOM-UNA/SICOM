@@ -7,9 +7,9 @@ import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.Paciente;
 import com.sicom.entities.Responsable;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -21,15 +21,15 @@ import javax.persistence.Persistence;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
-import org.primefaces.event.FlowEvent;
 
 @ManagedBean
 @ViewScoped
 public class PacienteBean {
+
     private Paciente nuevoPaciente, selectedPaciente;
     private static Paciente savedPaciente;
-    private Responsable nuevoResponsable1;
-    private Responsable nuevoResponsable2;
+    private Responsable nuevoResponsable;
+    private List<Responsable> listaResponsable;
     private List<Paciente> listaPacientes;
     private final PacienteJpaController pjc;
     private final ResponsableJpaController rjc;
@@ -39,7 +39,9 @@ public class PacienteBean {
     private boolean skip;
 
     public PacienteBean() {
+
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
+
         nuevoPaciente = new Paciente();
 
         if (savedPaciente == null) {
@@ -49,8 +51,7 @@ public class PacienteBean {
             savedPaciente = null;
         }
 
-        nuevoResponsable1 = new Responsable();
-        nuevoResponsable2 = new Responsable();
+        nuevoResponsable = new Responsable();
         pjc = new PacienteJpaController(emf);
         cjv = new ValorJpaController(emf);
         rjc = new ResponsableJpaController(emf);
@@ -61,35 +62,22 @@ public class PacienteBean {
         listaPacientes = pjc.findPacienteEntities();
     }
 
-    /**
-     * 
-     * @throws Exception 
-     */
+    public String reinit() {
+        nuevoResponsable = new Responsable();
+        return null;
+    }
+
+    //--------------------------------------------------------------------------
+    // AGREGAR PACIENTE
     public void agregar() throws Exception {
         pjc.create(nuevoPaciente);
-    }
 
-    /* Wizard Methods*/
-    public boolean isSkip() {
-        return skip;
-    }
-
-    public void setSkip(boolean skip) {
-        this.skip = skip;
-    }
-
-    public String onFlowProcess(FlowEvent event) {
-        if (skip) {
-            skip = false;
-            return "confirm";
-        } else {
-            return event.getNewStep();
+        if (nuevoResponsable.getCedula() != null) {
+            nuevoResponsable.setPacientecedula(nuevoPaciente);
+            rjc.create(nuevoResponsable);
         }
     }
 
-    /**
-     * Guardar paciente
-     */
     public void save() {
         try {
             agregar();
@@ -121,9 +109,8 @@ public class PacienteBean {
         }
     }
 
-    /**
-     * Información del paciente
-     */
+    //--------------------------------------------------------------------------
+    // INFORMACION DEL PACIENTE
     public void modificaRedirect() {
         try {
 
@@ -160,11 +147,12 @@ public class PacienteBean {
         }
     }
 
-    /**
-     * Historia Clínica del paciente
-     * @param permiso_editar
-     * @param consultorio 
-     */
+    public void cancelarAction() {
+        this.buscaIdBase();
+    }
+
+    //--------------------------------------------------------------------------
+    // HISTORIA CLINICA DE PACIENTE
     public void HistoriaClinica(boolean permiso_editar, int consultorio) {
 
         FacesContext fc = FacesContext.getCurrentInstance();
@@ -192,22 +180,30 @@ public class PacienteBean {
         try {
             ec.redirect(URL);
         } catch (IOException ex) {
-            ex.printStackTrace();
         }
     }
 
+    //--------------------------------------------------------------------------
+    // GENERAL METHODS
     public void buscaIdBase() {
+
         if (selectedPaciente.getCedula() != null) {
+
             String id = selectedPaciente.getCedula();
+
             Paciente p = this.pjc.findPaciente(selectedPaciente.getCedula());
 
             if (p != null) {
+
                 FacesContext fc = FacesContext.getCurrentInstance();
                 ExternalContext ec = fc.getExternalContext();
+
                 String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
+
                 savedPaciente = p;
 
                 try {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("No existe paciente asignado a la identificación: " + id));
                     ec.redirect(URL);
                 } catch (IOException ex) {
 
@@ -219,14 +215,19 @@ public class PacienteBean {
         }
     }
 
+    public Date disablePastDates() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, -43800); //43800 = 120 años
+        return c.getTime();
+    }
+
     public int calculaEdad() {
         if (selectedPaciente.getNacimiento() != null) {
             LocalDate birthdate = new LocalDate(selectedPaciente.getNacimiento());
             LocalDate now = new LocalDate();
             return Years.yearsBetween(birthdate, now).getYears();
-        } else {
-            return 0;
         }
+        return 0;
     }
 
     public Paciente consultarPaciente(String id) {
@@ -244,6 +245,10 @@ public class PacienteBean {
         }
     }
 
+    //--------------------------------------------------------------------------\
+    //  COLLECTOR
+    //--------------------------------------------------------------------------\
+    //  GETTERS & SETTERS
     /**
      * @return the listaPacientes
      */
@@ -289,29 +294,15 @@ public class PacienteBean {
     /**
      * @return the nuevoResponsable1
      */
-    public Responsable getNuevoResponsable1() {
-        return nuevoResponsable1;
+    public Responsable getNuevoResponsable() {
+        return nuevoResponsable;
     }
 
     /**
-     * @param nuevoResponsable1 the nuevoResponsable1 to set
+     * @param nuevoResponsable the nuevoResponsable to set
      */
-    public void setNuevoResponsable1(Responsable nuevoResponsable1) {
-        this.nuevoResponsable1 = nuevoResponsable1;
-    }
-
-    /**
-     * @return the nuevoResponsable2
-     */
-    public Responsable getNuevoResponsable2() {
-        return nuevoResponsable2;
-    }
-
-    /**
-     * @param nuevoResponsable2 the nuevoResponsable2 to set
-     */
-    public void setNuevoResponsable2(Responsable nuevoResponsable2) {
-        this.nuevoResponsable2 = nuevoResponsable2;
+    public void setNuevoResponsable(Responsable nuevoResponsable) {
+        this.nuevoResponsable = nuevoResponsable;
     }
 
     public static Paciente getSavedPaciente() {
@@ -321,4 +312,9 @@ public class PacienteBean {
     public static void setSavedPaciente(Paciente savedPaciente) {
         PacienteBean.savedPaciente = savedPaciente;
     }
+
+    public List<Responsable> getListaResponsables() {
+        return listaResponsable;
+    }
+
 }

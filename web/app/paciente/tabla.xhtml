@@ -19,7 +19,7 @@
                     <p:remoteCommand name="rc" action="#{pacienteBean.init}" autoRun="false" update="tablePacientes"/>
                     
                     <p:dataTable id="tablePacientes" value="#{pacienteBean.listaPacientes}" var="paciente" 
-                        paginator="true" paginatorPosition="bottom" rows="15" rowKey="#{paciente.cedula}"
+                        paginator="true" paginatorPosition="bottom" rows="15" rowKey="#{paciente.id}"
                         selectionMode="single" selection="#{pacienteBean.selectedPaciente}" 
                         resizableColumns="true" lazy="true" filterEvent="enter"
                         paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
@@ -28,14 +28,14 @@
                             <p:outputLabel value="Consultar Pacientes" style="font-size: 1.5em;"/>
                         </f:facet>
                         
-                        <p:column headerText="Identidicacion" filterBy="#{paciente.cedula}" sortBy="#{paciente.cedula}">
-                            <p:outputLabel value="#{paciente.cedula}"/>
+                        <p:column headerText="Identidicacion" filterBy="#{paciente.id}" sortBy="#{paciente.id}">
+                            <p:outputLabel value="#{paciente.id}"/>
                         </p:column>
                         <p:column headerText="Apellidos" filterBy="#{paciente.primerApellido}" sortBy="#{paciente.primerApellido}">
                             <p:outputLabel value="#{paciente.primerApellido} "/>
                         </p:column>
-                        <p:column headerText="Nombre Responsable" filterBy="#{paciente.responsableList.nombre}" sortBy="#{paciente.responsableList.nombre}">
-                            <p:outputLabel value="#{paciente.responsableList.nombre}"/>
+                         <p:column headerText="Nombre Responsable" filterBy="#{paciente.responsableId.nombre}" sortBy="#{paciente.responsableId.nombre}">
+                            <p:outputLabel value="#{paciente.responsableId.nombre}"/>
                         </p:column>
                         
                         <f:facet name ="footer">
