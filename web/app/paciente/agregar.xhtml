@@ -28,7 +28,7 @@
 
                                                     <p:outputLabel value="Tipo Identificación:"/>
                                                     <p:selectOneMenu id="tipoIdSel">
-                                                        <f:selectItems value="{pacienteBean.consultarValoresPorCodigo(8)}" />
+                                                        <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(8)}" />
                                                     </p:selectOneMenu>
 
                                                     <p:outputLabel for="id" value="Identificación:"/>

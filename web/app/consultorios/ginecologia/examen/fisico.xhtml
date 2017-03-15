@@ -10,7 +10,8 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form id="formExamenFisico">
+                <h:form id="formulario">
+                    <p:messages id="msg" autoUpdate="true" closable="true"/>
                     <p:panel header="Consulta">
                         <h:panelGrid columns="2" cellpadding="20">
                             <h:panelGroup>
@@ -92,18 +93,25 @@
                                             <p:outputLabel for="otros" value="Otros:"/>     
                                             <p:inputTextarea id="otros" value="" maxlength="100" rows="3" cols = "46" autoResize="false"/> 
                                         </h:panelGrid>
-                                </p:panel>
-                            </div>
-                            <div class="ui-grid-col-12">
-                                <p:panel header="Imágen">
+                                    </p:panel>
+                                </div>
+                                <div class="ui-grid-col-12">
+                                    <p:panel header="Imágen">
 
-                                </p:panel>
+                                    </p:panel>
+                                    <f:facet name="footer" >
+                                        <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                            <p:commandButton value="Guardar" icon="ui-icon-disk" title="Click para guardar información." update="formulario msg"/>
+                                            <p:commandButton value="Cancelar" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true">
+                                            </p:commandButton> 
+                                        </div>
+                                    </f:facet>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </p:panel>
-            </h:form>
-        </section>
-    </div>
-</ui:define>
+                    </p:panel>
+                </h:form>
+            </section>
+        </div>
+    </ui:define>
 </ui:composition>
