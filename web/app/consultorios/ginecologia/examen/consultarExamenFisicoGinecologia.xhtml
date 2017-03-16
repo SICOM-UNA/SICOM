@@ -15,12 +15,12 @@
                     <p:panel header="Consulta">
                         <h:panelGrid columns="2" cellpadding="20">
                             <h:panelGroup>
-                                <p:outputLabel for="fecha" value="Fecha Actual:" class="descripcion" />
-                                <p:calendar id="fecha" value="#{examenFisicoGinecBean.hoy}" showOn="button" navigator="true"/>
+                                <p:outputLabel value="Fecha del examen: #{examenFisicoGinecBean.examenFisico.fecha}" class="descripcion" />
+                                
                             </h:panelGroup>
                             <h:panelGroup>
-                                <p:outputLabel for="motivo" value="Motivo de Consulta: " class="descripcion" />
-                                <p:inputTextarea id="motivo" value="#{examenFisicoGinecBean.examenFisico.motivoConsulta}" maxlength="118" rows="5" cols = "70" autoResize="false"/> 
+                                <p:outputLabel for="motivo" value="Motivo de Consulta:" class="descripcion" />
+                                <p:inputTextarea id="motivo" value="#{examenFisicoGinecBean.examenFisico.motivoConsulta}" maxlength="118" rows="5" cols = "70" autoResize="false" readonly="true"/> 
                             </h:panelGroup>    
                         </h:panelGrid>
                     </p:panel>
@@ -33,45 +33,37 @@
                                             <h:panelGrid columns="3">
                                                 <h:panelGrid columns="3" cellspacing="3">
                                                     <p:outputLabel for="talla" value="Talla:"/>
-                                                    <p:inputText id="talla" value="#{examenFisicoGinecBean.examenFisico.talla}" maxlength="4" size="5" class="numeric" onkeyup="validar()"/>
+                                                    <p:inputText id="talla" value="#{examenFisicoGinecBean.examenFisico.talla}" maxlength="4" size="5" class="numeric" readonly="true"/>
                                                     <p:outputLabel value="cm"/>
                                                 </h:panelGrid>
                                                 <p:spacer width="30" />
                                                 <h:panelGrid columns="3" cellspacing="3">
                                                     <p:outputLabel for="peso" value="Peso:"/>
-                                                    <p:inputText id="peso" value="#{examenFisicoGinecBean.examenFisico.peso}" maxlength="4" size="5" class="numeric" onkeyup="validar()"/>
+                                                    <p:inputText id="peso" value="#{examenFisicoGinecBean.examenFisico.peso}" maxlength="4" size="5" class="numeric" readonly="true"/>
                                                     <p:outputLabel value="kg"/>
                                                 </h:panelGrid>
                                             </h:panelGrid>
                                             <h:panelGrid columns="3" cellpadding="3">
-                                                <p:outputLabel for="cardio" value="Cardiopulmunar:"/>
-                                                <p:selectOneMenu id="cardio" value="#{examenFisicoGinecBean.examenFisico.cardioPulmonar}" autoWidth="false" >
-                                                    <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                                    <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(9)}"/>
-                                                </p:selectOneMenu>
-                                                <p:inputText value="#{examenFisicoGinecBean.examenFisico.comentarioCardioPulmonar}" size="12"/>
+                                                <p:outputLabel for="cardio" value="Cardiopulmunar: #{examenFisicoGinecBean.examenFisico.cardioPulmonar}"/>
+                                                
+                                                <p:inputText id="cardio" value="#{examenFisicoGinecBean.examenFisico.comentarioCardioPulmonar}" size="12" readonly="true"/>
                                             </h:panelGrid>
                                             <h:panelGrid columns="1">
                                                 <p:outputLabel for="mamas" value="Mamas:"/>
-                                                <p:inputTextarea id="mamas" value="#{examenFisicoGinecBean.examenFisico.mamas}" maxlength="100" rows="3" cols = "46" autoResize="false"/>
+                                                <p:inputTextarea id="mamas" value="#{examenFisicoGinecBean.examenFisico.mamas}" maxlength="100" rows="3" cols = "46" autoResize="false" readonly="true"/>
                                                 <p:outputLabel for="abdomen" value="Abdomen:"/>
-                                                <p:inputTextarea id="abdomen" value="#{examenFisicoGinecBean.examenFisico.abdomen}" maxlength="100" rows="3" cols = "46" autoResize="false"/> 
+                                                <p:inputTextarea id="abdomen" value="#{examenFisicoGinecBean.examenFisico.abdomen}" maxlength="100" rows="3" cols = "46" autoResize="false" readonly="true"/> 
                                             </h:panelGrid>
                                         </h:panelGrid>
                                     </p:panel>
                                 </div>
                                 <div class="ui-grid-col-12">
-                                    <p:panel header="Imágen" id="panelImagen">
+                                    <p:panel header="Imágen">
 
-                                        <p:fileUpload value="#{examenFisicoGinecBean.file}" update="panelImagen" uploadLabel="Elegir imagen" mode="advanced" skinSimple="true" auto="true" fileUploadListener="#{examenFisicoGinecBean.uploadListener}" multiple="false"/>
-                                        <!--<p:fileUpload value="{examenFisicoGinecBean.file}" mode="simple" skinSimple="true" update="panelImagen"/>
-                                        <p:commandButton value="" actionListener="{examenFisicoGinecBean.save()}" ajax="false"/>
-                                        <p:graphicImage value="{examenFisicoGinecBean.imagen}" ></p:graphicImage>-->
-                                        
                                         <ui:fragment rendered="#{examenFisicoGinecBean.file}">
                                                 <img src="data:image/png;base64,#{bean.imageContentsAsBase64}" />
                                         </ui:fragment>
-                                            
+
                                     </p:panel>
                                 </div>
                             </div>
@@ -84,35 +76,29 @@
                                     <p:panel>
                                         <h:panelGrid columns="2" cellpadding="3">
                                             <p:outputLabel for="vulva" value="Vulva:"/>     
-                                            <p:inputText id="vulva" value="#{examenFisicoGinecBean.examenFisico.vulva}" maxlength="25"/>
-                                            <p:outputLabel for="bus" value="Bus:"/>
-                                            <p:selectOneRadio id="bus" layout="grid"  columns="2" value="#{examenFisicoGinecBean.bus}">
-                                                <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(10)}"/>
-                                            </p:selectOneRadio>
+                                            <p:inputText id="vulva" value="#{examenFisicoGinecBean.examenFisico.vulva}" maxlength="25" readonly="true"/>
+                                            <p:outputLabel for="bus" value="Bus: "/>
+                                            <p:inputText id="bus" value="#{examenFisicoGinecBean.examenFisico.bus==true?'Si':'No'}" maxlength="25" readonly="true"/>
                                             <p:outputLabel for="vagina" value="Vagina:"/>
-                                            <p:inputText id="vagina" value="#{examenFisicoGinecBean.examenFisico.vagina}" maxlength="25"/>
+                                            <p:inputText id="vagina" value="#{examenFisicoGinecBean.examenFisico.vagina}" maxlength="25" readonly="true"/>
                                             <p:outputLabel for="cuello" value="Cuello:"/>
-                                            <p:inputText id="cuello" value="#{examenFisicoGinecBean.examenFisico.cuello}" maxlength="25"/>
+                                            <p:inputText id="cuello" value="#{examenFisicoGinecBean.examenFisico.cuello}" maxlength="25" readonly="true"/>
                                             <p:outputLabel for="utero" value="Útero:"/>
-                                            <p:inputText id="utero" value="#{examenFisicoGinecBean.examenFisico.utero}" maxlength="25"/>
+                                            <p:inputText id="utero" value="#{examenFisicoGinecBean.examenFisico.utero}" maxlength="25" readonly="true"/>
                                             <p:outputLabel for="anexos" value="Anexos:"/>
-                                            <p:inputText id="anexos" value="#{examenFisicoGinecBean.examenFisico.anexos}" maxlength="25"/>
+                                            <p:inputText id="anexos" value="#{examenFisicoGinecBean.examenFisico.anexos}" maxlength="25" readonly="true"/>
                                         </h:panelGrid>
                                         <h:panelGrid columns="1">
                                             <p:outputLabel for="otros" value="Otros:"/>     
-                                            <p:inputTextarea id="otros" value="#{examenFisicoGinecBean.examenFisico.otros}" maxlength="100" rows="3" cols = "46" autoResize="false"/> 
+                                            <p:inputTextarea id="otros" value="#{examenFisicoGinecBean.examenFisico.otros}" maxlength="100" rows="3" cols = "46" autoResize="false" readonly="true"/> 
                                         </h:panelGrid>
                                     </p:panel>
                                 </div>
                                 <div class="ui-grid-col-12">
-                                    <p:panel header="Imágen">
-
-                                    </p:panel>
                                     <f:facet name="footer" >
                                         <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                            <p:commandButton value="Guardar" action="#{examenFisicoGinecBean.save()}" icon="ui-icon-disk" title="Click para guardar información." />
-                                            <p:commandButton value="Cancelar" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true">
-                                            </p:commandButton> 
+                                            <p:commandButton value="Volver" action="#{examenFisicoGinecBean.volver_a_informacion}" icon="ui-icon-disk" title="Click para volver." update="formulario msg"/>
+                                            
                                         </div>
                                     </f:facet>
                                 </div>
@@ -120,11 +106,7 @@
                         </div>
                     </p:panel>
                 </h:form>
-                <!--<h:form enctype="multipart/form-data">
-                    <p:fileUpload value="{examenFisicoGinecBean.file}" mode="simple" skinSimple="true"/>
-                    <p:commandButton value="" actionListener="{examenFisicoGinecBean.save()}" ajax="false"/>
-                </h:form>-->
-
+                
 
             </section>
         </div>

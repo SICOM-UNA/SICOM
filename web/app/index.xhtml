@@ -5,14 +5,75 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    
+
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form id="formIndex">
-                    <p:messages id="msg" for="msg" globalOnly="true" closable="true" />
-                    <span style="display: block; margin: 8% 10px; padding: 8% 10px">  </span>
+                <h:form>
+                    <p:growl id="messages" showDetail="true" />
+
+                    <h:panelGrid columnClasses="value">
+                        <h3 style="margin-top: 0">Calendario de Citas</h3>
+                        <p:schedule id="schedule" value="#{citasBean.eventModel}" widgetVar="myschedule" timeZone="GMT-6" locale="es">
+
+                            <p:ajax event="dateSelect" listener="#{citasBean.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                            <p:ajax event="eventSelect" listener="#{citasBean.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                            <p:ajax event="eventMove" listener="#{citasBean.onEventMove}" update="messages" />
+                            <p:ajax event="eventResize" listener="#{citasBean.onEventResize}" update="messages" />
+
+                        </p:schedule>
+
+                    </h:panelGrid>
+
+                    <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
+                        <h:panelGrid id="eventDetails" columns="2">
+                            <p:outputLabel for="title" value="Titulo:" />
+                            <p:inputText id="title" value="#{citasBean.event.title}" required="true" />
+
+                            <p:outputLabel for="from" value="De:" />
+                            <p:calendar id="from" value="#{citasBean.event.startDate}" timeZone="GMT-6" pattern="dd/MM/yyyy HH:mm"/>
+
+                            <p:outputLabel for="to" value="A:" />
+                            <p:calendar id="to" value="#{citasBean.event.endDate}" timeZone="GMT-6" pattern="dd/MM/yyyy HH:mm"/>
+
+                            <p:outputLabel for="allDay" value="Todo el dia:" />
+                            <h:selectBooleanCheckbox id="allDay" value="#{citasBean.event.allDay}" />
+
+                            <p:commandButton type="reset" value="Reiniciar" />
+                            <p:commandButton id="addButton" value="Save" actionListener="#{citasBean.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+                        </h:panelGrid>
+                    </p:dialog>    
                 </h:form>
+
+                <script type="text/javascript">
+                    PrimeFaces.locales['es'] = {
+                        closeText: 'Cerrar',
+                        prevText: 'Anterior',
+                        nextText: 'Siguiente',
+                        currentText: 'Actual',
+                        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                            'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Nobriembre', 'Diciembre'],
+                        monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+                            'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic'],
+                        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
+                        dayNamesShort: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+                        dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+                        weekHeader: 'Hf',
+                        firstDay: 1,
+                        isRTL: false,
+                        showMonthAfterYear: false,
+                        yearSuffix: '',
+                        month: 'Mes',
+                        week: 'Semana',
+                        day: 'Dia',
+                        allDayText: 'Todo el Dia'
+                    };
+                </script>
+                <style type="text/css">
+                    .value {
+                        width: 1000px;
+                    }
+                </style>
             </section>
         </div>
     </ui:define>
