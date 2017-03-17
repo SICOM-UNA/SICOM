@@ -25,19 +25,23 @@
 
                     </h:panelGrid>
 
-                    <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
+                    <p:dialog widgetVar="eventDialog" header="Detalle de la cita" showEffect="clip" hideEffect="clip">
                         <h:panelGrid id="eventDetails" columns="2">
-                            <p:outputLabel for="title" value="Titulo:" />
-                            <p:inputText id="title" value="#{citasBean.event.title}" required="true" />
+                            <p:outputLabel for="title" value="Paciente:" />
+                            <p:inputText id="title" value="#{citasBean.nuevaCita.nombre}" required="true" />
+                            
+                            <p:outputLabel for="motivo" value="Motivo de Cita:" />
+                            <p:inputText id="motivo" value="#{citasBean.nuevaCita.motivo}" required="true" />
+                            
+                            <p:outputLabel for="telefono" value="Telefono:" />
+                            <p:inputMask id="telefono" value="#{citasBean.nuevaCita.telefono}" mask="9999-9999" 
+                                                             required="true" requiredMessage="- Falta el teléfono" placeholder="0000-0000"/>
 
                             <p:outputLabel for="from" value="De:" />
-                            <p:calendar id="from" value="#{citasBean.event.startDate}" timeZone="GMT-6" pattern="dd/MM/yyyy HH:mm"/>
+                            <p:calendar id="from" value="#{citasBean.event.startDate}" timeZone="GMT-6" pattern="dd/MM/yyyy HH:mm" locale="es"/>
 
                             <p:outputLabel for="to" value="A:" />
-                            <p:calendar id="to" value="#{citasBean.event.endDate}" timeZone="GMT-6" pattern="dd/MM/yyyy HH:mm"/>
-
-                            <p:outputLabel for="allDay" value="Todo el dia:" />
-                            <h:selectBooleanCheckbox id="allDay" value="#{citasBean.event.allDay}" />
+                            <p:calendar id="to" value="#{citasBean.event.endDate}" timeZone="GMT-6" pattern="dd/MM/yyyy HH:mm" locale="es"/>
 
                             <p:commandButton type="reset" value="Reiniciar" />
                             <p:commandButton id="addButton" value="Save" actionListener="#{citasBean.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
@@ -50,19 +54,24 @@
                         closeText: 'Cerrar',
                         prevText: 'Anterior',
                         nextText: 'Siguiente',
-                        currentText: 'Actual',
+                        currentText: 'Fecha actual',
                         monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
                             'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Nobriembre', 'Diciembre'],
                         monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
                             'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic'],
                         dayNames: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
                         dayNamesShort: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-                        dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-                        weekHeader: 'Hf',
+                        dayNamesMin: ['D','L','M','I','J','V','S'],
+                        weekHeader: 'Semana',
                         firstDay: 1,
                         isRTL: false,
                         showMonthAfterYear: false,
                         yearSuffix: '',
+                        timeText: 'Tiempo',
+                        hourText: 'Hora',
+                        minuteText: 'Minuto',
+                        secondText: 'Segundo',
+                        ampm: true,
                         month: 'Mes',
                         week: 'Semana',
                         day: 'Dia',
