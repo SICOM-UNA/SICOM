@@ -167,19 +167,6 @@ public class ValorJpaController implements Serializable {
         }
     }
 
-    public int getValorCount() {
-        EntityManager em = getEntityManager();
-        try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Valor> rt = cq.from(Valor.class);
-            cq.select(em.getCriteriaBuilder().count(rt));
-            Query q = em.createQuery(cq);
-            return ((Long) q.getSingleResult()).intValue();
-        } finally {
-            em.close();
-        }
-    }
-
     public List<String> findByCodeId(Integer codigo_id) {
         EntityManager em = getEntityManager();
 
@@ -195,5 +182,18 @@ public class ValorJpaController implements Serializable {
             listaDescripciones.add(aux.getDescripcion());
         }
         return listaDescripciones;
+    }
+    
+    public int getValorCount() {
+        EntityManager em = getEntityManager();
+        try {
+            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            Root<Valor> rt = cq.from(Valor.class);
+            cq.select(em.getCriteriaBuilder().count(rt));
+            Query q = em.createQuery(cq);
+            return ((Long) q.getSingleResult()).intValue();
+        } finally {
+            em.close();
+        }
     }
 }

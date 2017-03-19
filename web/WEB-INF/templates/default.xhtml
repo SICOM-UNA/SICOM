@@ -21,7 +21,6 @@ and open the template in the editor.
     </h:head>
     
     <h:body>
-       
          <ui:insert name="header">
              <h:form>
                 <header>
@@ -39,9 +38,7 @@ and open the template in the editor.
                 </header>
             </h:form>
         </ui:insert>
-        
-        
-        
+
         <ui:insert name="menu">
             <h:form id="formMenu">
                 <div class="menuwrap">
@@ -57,7 +54,16 @@ and open the template in the editor.
                             <p:menuitem value="Agregar" url="/app/personal/agregar" icon="ui-icon-plus"/>
                             <p:menuitem value="Buscar" url="/app/paciente/consultar" icon="ui-icon-search"/>
                         </p:submenu>
-                 
+                        
+                        <p:submenu label="Citas" icon="ui-icon-person">
+                            <p:menuitem value="Agregar" url="/app/citas/citas" icon="ui-icon-plus"/>
+                            <p:menuitem value="Buscar" url="/app/citas/consultar" icon="ui-icon-search"/>
+                        </p:submenu>
+                        
+                        <p:submenu label="Ayuda" icon="ui-icon-help">
+                            <p:menuitem value="Acerca de" url="#" icon="ui-icon-info"/>
+                        </p:submenu>
+                        
                         <f:facet name="options">
                             <p:commandButton value="Salir" action="#{loginBean.cerrarSesion}" icon="ui-icon-power"/>
                         </f:facet>
@@ -65,9 +71,6 @@ and open the template in the editor.
                 </div>
             </h:form>
         </ui:insert>
-       
-            
-            
 
         <ui:insert name="content">
             <div id="content">
@@ -84,23 +87,3 @@ and open the template in the editor.
         </ui:insert>
     </h:body>
 </html>
-
-<!--
-                        <p:submenu label="Reportes" icon="ui-icon-wrench">
-                            <p:menuitem value="Reporte_1" url="#" icon="ui-icon-document"/>
-                            <p:menuitem value="Reporte_2" url="#" icon="ui-icon-document"/>
-                        </p:submenu>
-                        
-                        <p:submenu label="Ayuda" icon="ui-icon-help">
-                            <p:menuitem value="Acerca de" url="#" icon="ui-icon-info"/>
-                        </p:submenu>
-                        -->
-                        
-                        
-                        <!--
-                        <p:submenu label="Citas" icon="ui-icon-calendar">
-                            <p:menuitem value="Agregar" url="/app/citas/agregar" icon="ui-icon-plus"/>
-                            <p:menuitem value="Editar" url="/app/citas/editar" icon="ui-icon-pencil"/>
-                            <p:menuitem value="Buscar" url="/app/citas/consultar" icon="ui-icon-search"/>
-                        </p:submenu>
-                        -->

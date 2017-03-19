@@ -41,11 +41,8 @@ public class LoginJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Personal personal = login.getPersonal();
-            if (personal != null) {
-                personal = em.getReference(personal.getClass(), personal.getCedula());
-                login.setPersonal(personal);
-            }
             em.persist(login);
+            
             if (personal != null) {
                 Login oldLoginusuarioOfPersonal = personal.getLoginUsuario();
                 if (oldLoginusuarioOfPersonal != null) {
@@ -194,5 +191,4 @@ public class LoginJpaController implements Serializable {
             em.close();
         }
     }
-    
 }

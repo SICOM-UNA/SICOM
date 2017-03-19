@@ -31,26 +31,22 @@ public class PersonalBean {
 
     private static Personal savedPersonal;
     private static Login savedUsuario;
-    
-    private Personal nuevoPersonal, selectedPersonal;
+    private Personal nuevoPersonal;
+    private Personal selectedPersonal;
     private List<Personal> listaPersonal;
-    private Login nuevoUsuario, selectedUsuario;
-
+    private Login nuevoUsuario;
+    private Login selectedUsuario;
     private final LoginJpaController ljc;
     private final PersonalJpaController pjc;
-    private final ValorJpaController cjv;
+    private final ValorJpaController vjc;
 
     public PersonalBean() {
-
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
-
         nuevoPersonal = new Personal();
         nuevoUsuario = new Login();
-
         ljc = new LoginJpaController(emf);
         pjc = new PersonalJpaController(emf);
-        cjv = new ValorJpaController(emf);
-        
+        vjc = new ValorJpaController(emf);
         selectedPersonal = (savedPersonal != null)? savedPersonal : new Personal();
         selectedUsuario = (savedUsuario != null)? savedUsuario : new Login();
     }
@@ -60,37 +56,25 @@ public class PersonalBean {
         listaPersonal = pjc.findPersonalEntities();
     }
 
-    /*Formularios*/
-    public void save() {
-        selectedUsuario = ljc.findLogin(nuevoUsuario.getUsuario());
-        selectedPersonal = pjc.findPersonal(nuevoPersonal.getCedula());
-
-        if (selectedPersonal == null && selectedUsuario == null) {
-
-            agregarUsuario_Personal();
-
-            buscaIdBase();
-
-        } else {
-
-            if (selectedPersonal != null) {
-                FacesContext.getCurrentInstance().addMessage("msg", new FacesMessage("Ya se habia agregado el usuario anterioirmente, no podra agregar otro con la misma cédula: ", selectedPersonal.getCedula()));
-            }
-            if (selectedUsuario != null) {
-                FacesContext.getCurrentInstance().addMessage("msg", new FacesMessage("El nombre de Usuario ya esta ocupado por otro usuario por favor cambiarlo. Nombre: ", selectedUsuario.getUsuario()));
-            }
-        }
-    }
-
-    public void agregarUsuario_Personal() {
+    /**
+     * Agregar usuario
+     */
+    public void agregarUsuario() {
         try {
-            ljc.create(nuevoUsuario);
-
-            nuevoPersonal.setAutorizacionNivel(new Autorizacion(1));
-            nuevoPersonal.setDepartamentoId(new Departamento(1));
-            nuevoPersonal.setLoginUsuario(nuevoUsuario);
-            pjc.create(nuevoPersonal);
-
+            Login login = ljc.findLogin(nuevoUsuario.getUsuario());
+            Personal personal = pjc.findPersonal(nuevoUsuario.getPersonal().getCedula());
+            
+            // Valida si el usuario ya existe
+            if(login != null && login.getUsuario().equals(nuevoUsuario.getUsuario())) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El usuario ya existe, por favor digite un nombre de usuario diferente a", login.getUsuario()));
+            // Valida si el personal ya existe
+            } else if(personal != null && personal.getCedula().equals(nuevoUsuario.getPersonal().getCedula())) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El personal ya existe, por favor digite un número de cédula diferente de", personal.getCedula()));
+            } else {
+                // Se agrega el usuario
+                ljc.create(nuevoUsuario);
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Usuario creado exitosamente", nuevoUsuario.getUsuario()));
+            }   
         } catch (Exception ex) {
             Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -101,7 +85,7 @@ public class PersonalBean {
         selectedUsuario = ljc.findLogin(selectedUsuario.getUsuario());
 
         if (selectedUsuario == null) {
-            // setSelectedUsuario(new Login());
+            selectedUsuario = new Login();
         }
     }
 
@@ -128,7 +112,7 @@ public class PersonalBean {
     }
 
     public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return this.cjv.findByCodeId(codigo);
+        return this.vjc.findByCodeId(codigo);
     }
 
     public void buscaIdBase(){
@@ -275,5 +259,4 @@ public class PersonalBean {
     public static void setSavedUsuario(Login savedUsuario) {
         PersonalBean.savedUsuario = savedUsuario;
     }
-    
 }

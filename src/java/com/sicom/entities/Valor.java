@@ -105,5 +105,4 @@ public class Valor implements Serializable {
     public String toString() {
         return "com.sicom.entities.Valor[ valorPK=" + valorPK + " ]";
     }
-    
 }
