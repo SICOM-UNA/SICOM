@@ -4,6 +4,8 @@ import com.sicom.controller.ExamenGinecologiaJpaController;
 import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.ExamenGinecologia;
 import com.sicom.entities.Paciente;
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -148,18 +150,27 @@ public class ExamenFisicoGinecBean {
         
         if (file != null) {
             imageContents=file.getContents();
-//            try {
-//                imagen = new DefaultStreamedContent(new ByteArrayInputStream(file.getContents()));
-//                FacesContext fc = FacesContext.getCurrentInstance();
-//                ExternalContext ec = fc.getExternalContext();
-//                
-//                file.write(ec.getApplicationContextPath()+"/imagenes/"+file.getFileName());
-//                
-//            } catch (Exception ex) {
-//                Logger.getLogger(ExamenFisicoGinecBean.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Imagen Subida","La imagen " + file.getFileName() + " se ha subido.");
-            FacesContext.getCurrentInstance().addMessage(null, message);
+            try {
+                String str = file.getFileName();
+                String ext = str.substring(str.lastIndexOf('.'), str.length()); //obtener la extension
+                String date = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date());
+                FacesContext fc = FacesContext.getCurrentInstance();
+                ExternalContext ec = fc.getExternalContext();
+                String path = ec.getApplicationContextPath();
+                file.write(path+"/imagenes/"+date+ext);
+                
+                //imagen = new DefaultStreamedContent(new ByteArrayInputStream(file.getContents()));
+                //FacesContext fc = FacesContext.getCurrentInstance();
+                //ExternalContext ec = fc.getExternalContext();
+                String sRootPath = new File(date+ext).getAbsolutePath();
+                file.write(sRootPath);
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Imagen Subida","La imagen " + file.getFileName() + " se ha subido.");
+                FacesContext.getCurrentInstance().addMessage(null, message);
+                
+            } catch (Exception ex) {
+                Logger.getLogger(ExamenFisicoGinecBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         }
 
     }
