@@ -6,6 +6,7 @@ import com.sicom.entities.Departamento;
 import javax.persistence.Persistence;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -74,7 +75,6 @@ public class CitasBean implements Serializable {
         listaCitas.add(nuevaCita);
         nuevaCita = new Cita();
         eventModel.addEvent(event);
-        
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cita agregada", "Cita de " + nuevaCita.getNombre() + " agregada correctamente.");
         addMessage(message);
     }
@@ -89,7 +89,19 @@ public class CitasBean implements Serializable {
     }
 
     public void eliminar() {
-
+        try{
+        cjc.destroy(nuevaCita.getId());
+        eventModel.deleteEvent(event);
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cita eliminada", "Cita de " + nuevaCita.getNombre() + " fue eliminada");
+        addMessage(message);
+        nuevaCita=new Cita();
+        selectedCita=null;
+        
+        }
+        catch(Exception ex){
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "La cita no pudo ser eliminada");
+            addMessage(message);
+        }
     }
 
     /**
