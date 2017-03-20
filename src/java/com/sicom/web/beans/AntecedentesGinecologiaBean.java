@@ -6,8 +6,11 @@ import com.sicom.entities.AntecedentesGinecologia;
 import com.sicom.entities.Paciente;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -17,47 +20,49 @@ import javax.persistence.Persistence;
 @ManagedBean
 @ViewScoped
 public class AntecedentesGinecologiaBean {
+
+    @ManagedProperty(value = "#{ValoresBean}")
+    private ValoresBean valor;
+
     private AntecedentesGinecologia antecedentesGinecologia;
-    private List<AntecedentesGinecologia> listaAntecedentes;
     private final AntecedentesGinecologiaJpaController agjc;
     private final ValorJpaController vjc;
     private Paciente paciente;
 
+    /**
+     * Constructor
+     */
     public AntecedentesGinecologiaBean() {
-        paciente = PacienteBean.getSavedPaciente();
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+
         agjc = new AntecedentesGinecologiaJpaController(emf);
         vjc = new ValorJpaController(emf);
 
-        if (paciente != null) {
-            antecedentesGinecologia = new AntecedentesGinecologia();
-            antecedentesGinecologia.setGesta(0);
-            antecedentesGinecologia.setPartos(0);
-            antecedentesGinecologia.setAbortos(0);
-            antecedentesGinecologia.setEctopico(0);
-        } else {
-            FacesContext fc = FacesContext.getCurrentInstance();
-            ExternalContext ec = fc.getExternalContext();
-            String URL = ec.getRequestContextPath() + "/app/paciente/consultar";
+        paciente = (Paciente) ec.getSessionMap().remove("paciente");
+        boolean flag = false;
+
+        try {
+            int codigoExpediente = (int) ec.getSessionMap().remove("codigoExp");
+
+            if (paciente != null) {
+                agjc.findAntecedentesGinecologia(codigoExpediente);
+            } else {
+                flag = true;
+            }
+        } catch (NullPointerException ex) {
+            flag = true;
+        }
+
+        if (flag) {
             try {
+                String URL = ec.getRequestContextPath() + "/app/paciente/consultar#formulario";
                 ec.redirect(URL);
             } catch (IOException ex) {
-                ex.printStackTrace();
+                Logger.getLogger(AntecedentesGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        //AntecedentesGinecologia obj_aux = consultarHistorial(paciente.getId());
-        /*
-        if(obj_aux != null){
-            antecedentesGinecologia = obj_aux;
-        }else{
-            antecedentesGinecologia = new AntecedentesGinecologia();
-        }
-        */
-    }
-
-    public void init() {
-        listaAntecedentes = agjc.findAntecedentesGinecologiaEntities();
     }
 
     public void modificar() throws Exception {
@@ -65,29 +70,26 @@ public class AntecedentesGinecologiaBean {
     }
 
     public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return this.vjc.findByCodeId(codigo);
+        return valor.getValuesByCodeId(codigo);
     }
 
     public void save() {
         try {
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
-            String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
-            PacienteBean.setSavedPaciente(this.paciente);
-            FacesMessage msg = new FacesMessage("Historial Agregado Exitosamente");
-            ec.redirect(URL);         
-        } catch (Exception ex) {
+
+            String URL = ec.getRequestContextPath() + "/app/paciente/informacion#datos";
+            ec.getSessionMap().put("paciente", paciente);
+            
+            ec.redirect(URL);
+        } catch (IOException ex) {
             FacesMessage msg = new FacesMessage("Error, Paciente No Se Pudo Agregar");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
-
-    public List<AntecedentesGinecologia> getListaAntecedentes() {
-        return listaAntecedentes;
-    }
-
-    public void setListaAntecedentes(List<AntecedentesGinecologia> listaAntecedentes) {
-        this.listaAntecedentes = listaAntecedentes;
+    
+    public void cancelarAction(){
+    
     }
 
     public AntecedentesGinecologia getObjAntecedente() {

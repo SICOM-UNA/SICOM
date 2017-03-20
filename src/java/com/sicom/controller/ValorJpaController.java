@@ -183,7 +183,21 @@ public class ValorJpaController implements Serializable {
         }
         return listaDescripciones;
     }
-    
+
+    public int findByValueDescription(String des) {
+        EntityManager em = getEntityManager();
+        TypedQuery consulta = em.createNamedQuery("Valor.findByDescripcion", String.class);
+        consulta.setParameter("descripcion", des);
+        
+        List<Valor> listaValores = consulta.getResultList();
+        
+        if(!listaValores.isEmpty()){
+            return listaValores.get(0).getValorPK().getId();
+        }
+        
+        return -1;        
+    }
+
     public int getValorCount() {
         EntityManager em = getEntityManager();
         try {

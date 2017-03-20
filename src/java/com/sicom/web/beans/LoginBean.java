@@ -1,7 +1,10 @@
 package com.sicom.web.beans;
 
+import com.sicom.controller.DepartamentoJpaController;
 import com.sicom.controller.LoginJpaController;
 import com.sicom.controller.PersonalJpaController;
+import com.sicom.entities.Autorizacion;
+import com.sicom.entities.Departamento;
 import com.sicom.entities.Login;
 import com.sicom.entities.Personal;
 import java.io.IOException;
@@ -54,14 +57,13 @@ public class LoginBean {
         Login nuevo = ljc.findLogin(login.getUsuario());
 
         if (nuevo != null && nuevo.getContrasena().equals(login.getContrasena())) {
+            
+            login = nuevo;
             login.setAutenticado(true);
-            Personal personal = pjc.findPersonal(login.getUsuario());
+            Personal personal = login.getPersonal();
 
             if (personal != null) {
-                personal = new Personal();
                 String dim = ("Masculino".equals(personal.getGenero())) ? "Sr. " : "Sra. ";
-                login.setPersonal(personal);
-                login.getPersonal().setLoginUsuario(login);
                 ec.getFlash().setKeepMessages(true);
                 fc.addMessage("msg", new FacesMessage("Bienvenido " + dim + personal.getNombre().concat(" ") + personal.getPrimerApellido().concat(" ") + personal.getSegundoApellido().concat(".")));
             }
@@ -93,6 +95,16 @@ public class LoginBean {
      */
     public Login getLogin() {
         return login;
+    }
+
+    public String valorAutorizacionPersonal() {
+        Autorizacion au = login.getPersonal().getAutorizacionNivel();
+        return (au == null)? null : au.getDescripcion();
+    }
+
+    public String valorDepartamentoPersonal() {
+        Departamento dpto = login.getPersonal().getDepartamentoId();
+        return (dpto == null)? null : dpto.getNombre();
     }
 
     /**

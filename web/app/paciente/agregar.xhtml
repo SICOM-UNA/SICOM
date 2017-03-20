@@ -60,7 +60,7 @@
                                                                 placeholder="#{now.date}-#{now.month+1}-#{now.year+1900}"/>
 
                                                     <p:outputLabel value="Estado Civil:" for="ec"/>
-                                                    <p:selectOneMenu value="#{pacienteBean.nuevoPaciente.estadoCivil}"  id="ec" requiredMessage="- Falta el estado civil.">
+                                                    <p:selectOneMenu value="#{pacienteBean.nuevoPaciente.estadoCivil}"  id="ec" required="true" requiredMessage="- Falta el estado civil.">
                                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
                                                         <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(2)}"/>
                                                     </p:selectOneMenu>
@@ -69,7 +69,7 @@
                                             <h:panelGrid columns="2" cellspacing="3"> 
 
                                                 <p:outputLabel value="Genero:" for="g"/>
-                                                <p:selectOneMenu id="g" value="#{pacienteBean.nuevoPaciente.genero}" requiredMessage="- Falta el género.">
+                                                <p:selectOneMenu id="g" value="#{pacienteBean.nuevoPaciente.genero}" required="true" requiredMessage="- Falta el género.">
                                                     <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
                                                     <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(1)}"/>
                                                 </p:selectOneMenu>
@@ -101,7 +101,7 @@
 
                                         <f:facet name="footer" >
                                             <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                                <p:commandButton value="Guardar Paciente" icon="ui-icon-plus" action="#{pacienteBean.save()}" title="Click para guardar información." update="formulario msg"/>
+                                                <p:commandButton value="Guardar Paciente" icon="ui-icon-plus" action="#{pacienteBean.agregar()}" title="Click para guardar información." update="formulario msg"/>
                                                 <p:commandButton value="Limpiar Formulario" icon="ui-icon-refresh" title="Click para limpiar formulario."  immediate="true">
                                                     <f:ajax resetValues="true" render="formulario"/>
                                                 </p:commandButton> 
