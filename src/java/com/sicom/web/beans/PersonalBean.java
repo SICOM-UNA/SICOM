@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -26,7 +27,8 @@ import org.joda.time.Years;
 @ManagedBean
 @ViewScoped
 public class PersonalBean {
-
+    @ManagedProperty(value = "#{ValoresBean}")
+    private ValoresBean valoresBean;
     private static Personal savedPersonal;
     private static Login savedUsuario;
     private Personal nuevoPersonal;
@@ -36,7 +38,6 @@ public class PersonalBean {
     private Login selectedUsuario;
     private final LoginJpaController ljc;
     private final PersonalJpaController pjc;
-    private final ValorJpaController vjc;
 
     public PersonalBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
@@ -44,7 +45,6 @@ public class PersonalBean {
         nuevoUsuario = new Login();
         ljc = new LoginJpaController(emf);
         pjc = new PersonalJpaController(emf);
-        vjc = new ValorJpaController(emf);
         selectedPersonal = (savedPersonal != null)? savedPersonal : new Personal();
         selectedUsuario = (savedUsuario != null)? savedUsuario : new Login();
     }
@@ -110,7 +110,7 @@ public class PersonalBean {
     }
 
     public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return this.vjc.findByCodeId(codigo);
+        return valoresBean.getValuesByCodeId(codigo);
     }
 
     public void buscaIdBase(){

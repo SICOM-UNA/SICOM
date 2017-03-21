@@ -23,7 +23,6 @@ public class AntecedentesOdontologiaBean{
     private Paciente paciente;
 
     public AntecedentesOdontologiaBean() {
-        paciente = PacienteBean.getSavedPaciente();
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
         antecedentesOdontologia = new AntecedentesOdontologia();
         controladorOdontologia = new AntecedentesOdontologiaJpaController(emf);
@@ -63,8 +62,7 @@ public class AntecedentesOdontologiaBean{
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
             String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
-            PacienteBean.setSavedPaciente(this.paciente);
-            FacesMessage msg = new FacesMessage("Historial Agregado Exitosamente");
+         FacesMessage msg = new FacesMessage("Historial Agregado Exitosamente");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             ec.redirect(URL);
         } catch (Exception ex) {

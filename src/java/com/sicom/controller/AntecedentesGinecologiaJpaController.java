@@ -16,6 +16,7 @@ import com.sicom.entities.Expediente;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -143,8 +144,9 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
         }
     }
 
-    public AntecedentesGinecologia findAntecedentesGinecologia(Integer id) {
+    public AntecedentesGinecologia findAntecedentesGinecologia(int id) {
         EntityManager em = getEntityManager();
+        
         try {
             return em.find(AntecedentesGinecologia.class, id);
         } finally {
@@ -164,5 +166,5 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }

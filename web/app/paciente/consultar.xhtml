@@ -11,7 +11,7 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form id="formBuscarPaciente">
+                <h:form id="formulario">
 
                     <p:messages id="msg" autoUpdate="true" closable="true" />
                     <p:panel header="Informacion del Paciente" id="INFO">
@@ -46,7 +46,7 @@
                         </div>
                         <f:facet name="footer" >
                             <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                <p:commandButton value="Mostrar Resultados" action="#{pacienteBean.buscaIdBase()}" update="formBuscarPaciente"/>
+                                <p:commandButton value="Mostrar Resultados" action="#{pacienteBean.buscaIdBase()}" update="formulario"/>
                             </div>
                         </f:facet>
                     </p:panel>

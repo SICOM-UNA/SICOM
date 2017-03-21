@@ -9,7 +9,7 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form id="modificaForm">
+                <h:form id="formulario">
                     <p:panel header="Modificación de información">
                         <p:messages id="msg" for="msg" globalOnly="true" closable="true" />
 
@@ -87,8 +87,8 @@
 
                         <f:facet name="footer" >
                             <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                <p:commandButton value="Guardar Cambios" icon="ui-icon-pencil" action="#{pacienteBean.modificarAction()}" title="Click para guardar información." update="modificaForm msg"/>
-                                <p:commandButton value="Cancelar" icon="ui-icon-closethick" action="#{pacienteBean.cancelarAction()}" immediate="true" title="Click para guardar información." update="modificaForm msg"/>
+                                <p:commandButton value="Guardar Cambios" icon="ui-icon-pencil" action="#{pacienteBean.modificarAction()}" title="Click para guardar información." update="formulario msg"/>
+                                <p:commandButton value="Cancelar" icon="ui-icon-closethick" action="#{pacienteBean.cancelarAction()}" immediate="true" title="Click para guardar información." update="formulario msg"/>
                             </div>
                         </f:facet>
                     </p:panel>

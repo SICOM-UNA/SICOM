@@ -404,12 +404,14 @@ public class PersonalJpaController implements Serializable {
 
     public Personal findPersonal(String id) {
         EntityManager em = getEntityManager();
+
         try {
             return em.find(Personal.class, id);
         } finally {
             em.close();
         }
     }
+
 
     public int getPersonalCount() {
         EntityManager em = getEntityManager();
@@ -423,5 +425,5 @@ public class PersonalJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }
