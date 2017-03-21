@@ -57,10 +57,10 @@ public class Personal implements Serializable {
     @Column(name = "nombre")
     private String nombre;
     @Basic(optional = false)
-    @Column(name = "primer_apellido")
+    @Column(name = "primerApellido")
     private String primerApellido;
     @Basic(optional = false)
-    @Column(name = "segundo_apellido")
+    @Column(name = "segundoApellido")
     private String segundoApellido;
     @Column(name = "genero")
     private String genero;
@@ -77,7 +77,7 @@ public class Personal implements Serializable {
     private Date nacimiento;
     @Column(name = "domicilio")
     private String domicilio;
-    @Column(name = "estado_civil")
+    @Column(name = "estadoCivil")
     private String estadoCivil;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalcedula")
     private List<ExamenColposcopia> examenColposcopiaList;

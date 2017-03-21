@@ -47,7 +47,7 @@ public class ExamenOdontologia implements Serializable {
     @Column(name = "fecha")
     @Temporal(TemporalType.DATE)
     private Date fecha;
-    @Column(name = "Motivo_Consulta")
+    @Column(name = "motivoConsulta")
     private String motivoConsulta;
     @Basic(optional = false)
     @Lob
@@ -134,10 +134,13 @@ public class ExamenOdontologia implements Serializable {
         if (!(object instanceof ExamenOdontologia)) {
             return false;
         }
+        
         ExamenOdontologia other = (ExamenOdontologia) object;
+        
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
+        
         return true;
     }
 
@@ -145,5 +148,4 @@ public class ExamenOdontologia implements Serializable {
     public String toString() {
         return "com.sicom.entities.ExamenOdontologia[ id=" + id + " ]";
     }
-    
 }

@@ -54,15 +54,15 @@ public class Paciente implements Serializable {
     @Basic(optional = false)
     @Column(name = "nombre")
     private String nombre;
-    @Column(name = "primer_apellido")
+    @Column(name = "primerApellido")
     private String primerApellido;
-    @Column(name = "segundo_apellido")
+    @Column(name = "segundoApellido")
     private String segundoApellido;
     @Column(name = "telefono")
     private String telefono;
     @Column(name = "celular")
     private String celular;
-    @Column(name = "estado_civil")
+    @Column(name = "estadoCivil")
     private String estadoCivil;
     @Column(name = "nacimiento")
     @Temporal(TemporalType.TIMESTAMP)
@@ -218,10 +218,13 @@ public class Paciente implements Serializable {
         if (!(object instanceof Paciente)) {
             return false;
         }
+        
         Paciente other = (Paciente) object;
+        
         if ((this.cedula == null && other.cedula != null) || (this.cedula != null && !this.cedula.equals(other.cedula))) {
             return false;
         }
+        
         return true;
     }
 
@@ -229,5 +232,4 @@ public class Paciente implements Serializable {
     public String toString() {
         return "com.sicom.entities.Paciente[ cedula=" + cedula + " ]";
     }
-    
 }

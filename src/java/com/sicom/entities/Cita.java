@@ -32,8 +32,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Cita.findAll", query = "SELECT c FROM Cita c"),
     @NamedQuery(name = "Cita.findById", query = "SELECT c FROM Cita c WHERE c.id = :id"),
-    @NamedQuery(name = "Cita.findByFecha_Inicial", query = "SELECT c FROM Cita c WHERE c.fecha_Inicial = :fecha_Inicial"),
-    @NamedQuery(name = "Cita.findByFecha_Final", query = "SELECT c FROM Cita c WHERE c.fecha_Final = :fecha_Final"),
+    @NamedQuery(name = "Cita.findByFecha_Inicial", query = "SELECT c FROM Cita c WHERE c.fechaInicial = :fechaInicial"),
+    @NamedQuery(name = "Cita.findByFecha_Final", query = "SELECT c FROM Cita c WHERE c.fechaFinal = :fechaFinal"),
     @NamedQuery(name = "Cita.findByEstado", query = "SELECT c FROM Cita c WHERE c.estado = :estado"),
     @NamedQuery(name = "Cita.findByMotivo", query = "SELECT c FROM Cita c WHERE c.motivo = :motivo"),
     @NamedQuery(name = "Cita.findByNombre", query = "SELECT c FROM Cita c WHERE c.nombre = :nombre"),
@@ -46,12 +46,12 @@ public class Cita implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Column(name = "fecha_Inicial")
+    @Column(name = "fechaInicial")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fecha_Inicial;
-    @Column(name = "fecha_Final")
+    private Date fechaInicial;
+    @Column(name = "fechaFinal")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fecha_Final;
+    private Date fechaFinal;
     @Column(name = "estado")
     private String estado;
     @Column(name = "motivo")
@@ -79,20 +79,20 @@ public class Cita implements Serializable {
         this.id = id;
     }
 
-    public Date getFecha_Inicial() {
-        return fecha_Inicial;
+    public Date getFechaInicial() {
+        return fechaInicial;
     }
 
-    public void setFecha_Inicial(Date fecha_Inicial) {
-        this.fecha_Inicial = fecha_Inicial;
+    public void setFechaInicial(Date fechaInicial) {
+        this.fechaInicial = fechaInicial;
     }
 
-    public Date getFecha_Final() {
-        return fecha_Final;
+    public Date getFechaFinal() {
+        return fechaFinal;
     }
 
-    public void setFecha_Final(Date fecha_Final) {
-        this.fecha_Final = fecha_Final;
+    public void setFechaFinal(Date fechaFinal) {
+        this.fechaFinal = fechaFinal;
     }
 
     public String getEstado() {
@@ -148,10 +148,13 @@ public class Cita implements Serializable {
         if (!(object instanceof Cita)) {
             return false;
         }
+        
         Cita other = (Cita) object;
+        
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
+        
         return true;
     }
 
@@ -159,5 +162,4 @@ public class Cita implements Serializable {
     public String toString() {
         return "com.sicom.entities.Cita[ id=" + id + " ]";
     }
-    
 }

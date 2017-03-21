@@ -69,7 +69,7 @@ public class ExamenGinecologia implements Serializable {
     @Column(name = "fecha")
     @Temporal(TemporalType.DATE)
     private Date fecha;
-    @Column(name = "Motivo_Consulta")
+    @Column(name = "motivoConsulta")
     private String motivoConsulta;
     @Column(name = "talla")
     private Integer talla;
@@ -374,10 +374,13 @@ public class ExamenGinecologia implements Serializable {
         if (!(object instanceof ExamenGinecologia)) {
             return false;
         }
+        
         ExamenGinecologia other = (ExamenGinecologia) object;
+        
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
+        
         return true;
     }
 
@@ -385,5 +388,4 @@ public class ExamenGinecologia implements Serializable {
     public String toString() {
         return "com.sicom.entities.ExamenGinecologia[ id=" + id + " ]";
     }
-    
 }

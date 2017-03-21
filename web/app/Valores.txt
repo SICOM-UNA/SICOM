@@ -1,16 +1,16 @@
 Valores Por Código (int)
 
-0: Sexo
+1: Género
     - Masculino
     - Femenino
 
-1: Estado Civil
-    - Soltero
-    - Divorciado
-    - Casada
-    - Viudo
+2: Estado Civil
+    - Soltero/a
+    - Divorciado/a
+    - Casada/a
+    - Viudo/a
 
-2: Tipo de Relacion
+3: Tipo de Relación
     - Padre
     - Madre
     - Familiar
@@ -18,29 +18,39 @@ Valores Por Código (int)
     - Amigo/a
     - Otro
 
-3: Referido
+4: Referido
     Custom inputs
 
-4: Ciclo Menstrual en Antecedentes Ginecologicos.
+5: Ciclo Menstrual en antecedentes ginecológicos.
     - Regular
     - Iregular
     - No Presente
 
-5: Planificacion en Antecedente Ginecologia
+6: Planificación en antecedentes ginecológicos
     - GO
     - GI
-    - Condon
+    - Condón
     - Ritmo
     - Coito Interrumpido
     - DIU
     - SPB
-    - Vacectomia
+    - Vacectomía
     - Otro
 
-6: Tipo de Autorizacion
-
-7: Tipo de Sintomas Menopausia
+7: Tipo de síntomas de la menopausia
     - No Presenta
     - Premenopausia
     - Menopausia
-                
+
+8: Tipo de identificación
+    - Nacional
+    - Residencia
+    - Pasaporte
+
+9: Cardiopulmonar
+    - Normal
+    - Anormal
+
+10: Bus
+    - Sí
+    - No

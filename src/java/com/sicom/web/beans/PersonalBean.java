@@ -4,8 +4,6 @@ import com.sicom.controller.LoginJpaController;
 import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.Personal;
 import com.sicom.controller.PersonalJpaController;
-import com.sicom.entities.Autorizacion;
-import com.sicom.entities.Departamento;
 import com.sicom.entities.Login;
 import java.io.IOException;
 import java.util.Calendar;
@@ -59,7 +57,7 @@ public class PersonalBean {
     /**
      * Agregar usuario
      */
-    public void agregarUsuario() {
+    public void agregar() {
         try {
             Login login = ljc.findLogin(nuevoUsuario.getUsuario());
             Personal personal = pjc.findPersonal(nuevoUsuario.getPersonal().getCedula());
@@ -81,7 +79,7 @@ public class PersonalBean {
 
     }
 
-    public void consultarUsuario() {
+    public void consultar() {
         selectedUsuario = ljc.findLogin(selectedUsuario.getUsuario());
 
         if (selectedUsuario == null) {
@@ -107,7 +105,7 @@ public class PersonalBean {
         }
     }
      */
-    public Personal consultarPersonal(String id) {
+    public Personal consultarPersonalPorId(String id) {
         return pjc.findPersonal(id);
     }
 

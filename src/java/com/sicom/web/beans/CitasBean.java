@@ -58,7 +58,7 @@ public class CitasBean implements Serializable {
         listaCitas = cjc.findCitaEntities();
         for (Cita c : listaCitas) {
             
-            eventModel.addEvent(new DefaultScheduleEvent(c.getNombre(), c.getFecha_Inicial(), c.getFecha_Final()));
+            eventModel.addEvent(new DefaultScheduleEvent(c.getNombre(), c.getFechaInicial(), c.getFechaFinal()));
             
         }
 
@@ -66,8 +66,8 @@ public class CitasBean implements Serializable {
 
     public void crear() throws Exception {
         
-        nuevaCita.setFecha_Inicial(event.getStartDate());
-        nuevaCita.setFecha_Final(event.getEndDate());
+        nuevaCita.setFechaInicial(event.getStartDate());
+        nuevaCita.setFechaFinal(event.getEndDate());
         nuevaCita.setNombre(event.getTitle());
         nuevaCita.setDepartamentoid(new Departamento(2, "Ginecología")); //********* Cambiar*************************
 
@@ -80,8 +80,8 @@ public class CitasBean implements Serializable {
     }
     
     public void update() throws Exception{
-        selectedCita.setFecha_Inicial(event.getStartDate());
-        selectedCita.setFecha_Final(event.getEndDate());
+        selectedCita.setFechaInicial(event.getStartDate());
+        selectedCita.setFechaFinal(event.getEndDate());
         selectedCita.setNombre(event.getTitle());
         cjc.edit(selectedCita);
         selectedCita=null;
@@ -249,7 +249,7 @@ public class CitasBean implements Serializable {
     
     public Cita buscarCitaPorFechas(){
         for (Cita c : listaCitas) {
-            if(c.getFecha_Inicial().compareTo(event.getStartDate())==0 && c.getFecha_Final().compareTo(event.getEndDate())==0 )
+            if(c.getFechaInicial().compareTo(event.getStartDate())==0 && c.getFechaFinal().compareTo(event.getEndDate())==0 )
                 return c;
         }
         return null;
