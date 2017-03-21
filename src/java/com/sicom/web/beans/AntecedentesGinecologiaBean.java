@@ -1,16 +1,13 @@
 package com.sicom.web.beans;
 
 import com.sicom.controller.AntecedentesGinecologiaJpaController;
-import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.AntecedentesGinecologia;
 import com.sicom.entities.Paciente;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -21,56 +18,48 @@ import javax.persistence.Persistence;
 @ViewScoped
 public class AntecedentesGinecologiaBean {
 
-    @ManagedProperty(value = "#{ValoresBean}")
-    private ValoresBean valor;
-
     private AntecedentesGinecologia antecedentesGinecologia;
     private final AntecedentesGinecologiaJpaController agjc;
-    private final ValorJpaController vjc;
     private Paciente paciente;
 
     /**
      * Constructor
      */
     public AntecedentesGinecologiaBean() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
 
         agjc = new AntecedentesGinecologiaJpaController(emf);
-        vjc = new ValorJpaController(emf);
-
-        paciente = (Paciente) ec.getSessionMap().remove("paciente");
         boolean flag = false;
 
-        try {
-            int codigoExpediente = (int) ec.getSessionMap().remove("codigoExp");
+        if (validaPersonal()) {
+            paciente = (Paciente) ec.getSessionMap().remove("paciente");
+            Object obj = ec.getSessionMap().remove("codigoExp");
+            int codigoExpediente = (obj != null) ? (int) obj : -1;
 
-            if (paciente != null) {
-                agjc.findAntecedentesGinecologia(codigoExpediente);
+            if (paciente != null && codigoExpediente != -1) {
+                init(ec);
             } else {
                 flag = true;
             }
-        } catch (NullPointerException ex) {
+        } else {
             flag = true;
         }
-
         if (flag) {
-            try {
-                String URL = ec.getRequestContextPath() + "/app/paciente/consultar#formulario";
-                ec.redirect(URL);
-            } catch (IOException ex) {
-                Logger.getLogger(AntecedentesGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            redirect(ec);
         }
+    }
+
+    private void init(ExternalContext ec) {
+
+        Object obj = ec.getSessionMap().get("antecedente");
+        antecedentesGinecologia = (obj != null) ? (AntecedentesGinecologia) obj : new AntecedentesGinecologia();
+
     }
 
     public void modificar() throws Exception {
         agjc.edit(antecedentesGinecologia);
-    }
-
-    public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return valor.getValuesByCodeId(codigo);
     }
 
     public void save() {
@@ -80,16 +69,29 @@ public class AntecedentesGinecologiaBean {
 
             String URL = ec.getRequestContextPath() + "/app/paciente/informacion#datos";
             ec.getSessionMap().put("paciente", paciente);
-            
+
             ec.redirect(URL);
         } catch (IOException ex) {
             FacesMessage msg = new FacesMessage("Error, Paciente No Se Pudo Agregar");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
-    
-    public void cancelarAction(){
-    
+
+    public void cancelarAction() {
+
+    }
+
+    public final boolean validaPersonal() {
+        return true/*(usuario.getAutorizacion() == 1 && usuario.getAutorizacion() == 1)*/;
+    }
+
+    public final void redirect(ExternalContext ec) {
+        try {
+            String URL = ec.getRequestContextPath() + "/app/paciente/consultar#formulario";
+            ec.redirect(URL);
+        } catch (IOException ex) {
+            Logger.getLogger(AntecedentesGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public AntecedentesGinecologia getObjAntecedente() {
@@ -107,4 +109,5 @@ public class AntecedentesGinecologiaBean {
     public void setPaciente(Paciente paciente) {
         this.paciente = paciente;
     }
+
 }
