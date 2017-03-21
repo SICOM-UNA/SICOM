@@ -6,7 +6,6 @@ import com.sicom.entities.Departamento;
 import javax.persistence.Persistence;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,7 +13,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
@@ -39,7 +40,8 @@ public class CitasBean implements Serializable {
     private List<Cita> listaCitas;
     private final CitaJpaController cjc;
     private ScheduleModel eventModel;
-    private String diaElegido;
+    private static Departamento savedDepartamento;
+    private Departamento departamento;
 
     private ScheduleEvent event = new DefaultScheduleEvent();
 
@@ -47,61 +49,123 @@ public class CitasBean implements Serializable {
         cjc = new CitaJpaController(Persistence.createEntityManagerFactory("SICOM_v1PU"));
         nuevaCita = new Cita();
         selectedCita = new Cita();
-        listaCitas = new ArrayList<Cita>();
-        diaElegido="";
-        
+        listaCitas = cjc.findCitaEntities();
+
     }
 
     @PostConstruct
     public void init() {
-        eventModel = new DefaultScheduleModel();
-        listaCitas = cjc.findCitaEntities();
-        for (Cita c : listaCitas) {
-            
-            eventModel.addEvent(new DefaultScheduleEvent(c.getNombre(), c.getFechaInicial(), c.getFechaFinal()));
-            
+        
+        if (savedDepartamento == null) {
+            departamento = new Departamento();
+        } else {
+            departamento = savedDepartamento;
         }
 
-    }
+        eventModel = new DefaultScheduleModel();
+        for (Cita c : this.listaCitas) {
+            if (c.getDepartamentoid().getId() == this.departamento.getId()) {
+                this.eventModel.addEvent(new DefaultScheduleEvent(c.getNombre(), c.getFechaInicial(), c.getFechaFinal()));
+            }
 
-    public void crear() throws Exception {
+        }
+
         
-        nuevaCita.setFechaInicial(event.getStartDate());
-        nuevaCita.setFechaFinal(event.getEndDate());
-        nuevaCita.setNombre(event.getTitle());
-        nuevaCita.setDepartamentoid(new Departamento(2, "Ginecología")); //********* Cambiar*************************
-
-        cjc.create(nuevaCita);
-        listaCitas.add(nuevaCita);
-        nuevaCita = new Cita();
-        eventModel.addEvent(event);
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cita agregada", "Cita de " + nuevaCita.getNombre() + " agregada correctamente.");
-        addMessage(message);
     }
     
-    public void update() throws Exception{
-        selectedCita.setFechaInicial(event.getStartDate());
-        selectedCita.setFechaFinal(event.getEndDate());
-        selectedCita.setNombre(event.getTitle());
-        cjc.edit(selectedCita);
-        selectedCita=null;
-        nuevaCita=new Cita();
-    }
 
     public void eliminar() {
-        try{
-        cjc.destroy(nuevaCita.getId());
-        eventModel.deleteEvent(event);
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cita eliminada", "Cita de " + nuevaCita.getNombre() + " fue eliminada");
-        addMessage(message);
-        nuevaCita=new Cita();
-        selectedCita=null;
-        
-        }
-        catch(Exception ex){
+        try {
+            cjc.destroy(nuevaCita.getId());
+            eventModel.deleteEvent(event);
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cita eliminada", "Cita de " + nuevaCita.getNombre() + " fue eliminada");
+            addMessage(message);
+            nuevaCita = new Cita();
+            selectedCita = null;
+
+        } catch (Exception ex) {
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "La cita no pudo ser eliminada");
             addMessage(message);
         }
+    }
+
+    public void addEvent(ActionEvent actionEvent) {
+        if (event.getId() == null) { //Si se va a agregar un evento nuevo
+            try {
+                nuevaCita.setFechaInicial(event.getStartDate()); //se deben tomar estos atributos del event porque si no la interfaz del calendario no muestra los datos
+                nuevaCita.setFechaFinal(event.getEndDate());
+                nuevaCita.setNombre(event.getTitle());
+
+                //nuevaCita.setDepartamentoid(new Departamento(2, "Ginecología")); //********* Cambiar*************************
+                nuevaCita.setDepartamentoid(departamento);
+                cjc.create(nuevaCita);
+                listaCitas.add(nuevaCita);
+                nuevaCita = new Cita();
+                eventModel.addEvent(event);
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cita agregada", "Cita de " + nuevaCita.getNombre() + " agregada correctamente.");
+                addMessage(message);
+
+            } catch (Exception ex) {
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "La cita de " + nuevaCita.getNombre() + " no se pudo agregar");
+                addMessage(message);
+                System.err.println(ex.getStackTrace());
+            }
+
+        } else { //Al actualizar una cita
+            try {
+                selectedCita.setFechaInicial(event.getStartDate());
+                selectedCita.setFechaFinal(event.getEndDate());
+                selectedCita.setNombre(event.getTitle());
+                cjc.edit(selectedCita);
+                selectedCita = null;
+                nuevaCita = new Cita();
+                eventModel.updateEvent(event);
+            } catch (Exception ex) {
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "La cita de " + nuevaCita.getNombre() + " no se pudo editar");
+                addMessage(message);
+                System.err.println(ex.getStackTrace());
+            }
+
+        }
+
+        event = new DefaultScheduleEvent();
+    }
+
+    public void onEventSelect(SelectEvent selectEvent) {
+        event = (ScheduleEvent) selectEvent.getObject();
+        nuevaCita = buscarCitaPorFechas();
+        selectedCita = nuevaCita;
+
+    }
+
+    public void onDateSelect(SelectEvent selectEvent) {
+        event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
+        selectedCita = null;
+    }
+
+    public void onEventMove(ScheduleEntryMoveEvent event) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cita Movida", event.getDayDelta() + " dias" + " y " + event.getMinuteDelta() + " minutos");
+
+        addMessage(message);
+    }
+
+    public void onEventResize(ScheduleEntryResizeEvent event) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cita Movida", event.getDayDelta() + " dias" + " y " + event.getMinuteDelta() + " minutos");
+
+        addMessage(message);
+    }
+
+    private void addMessage(FacesMessage message) {
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    public Cita buscarCitaPorFechas() {
+        for (Cita c : listaCitas) {
+            if (c.getFechaInicial().compareTo(event.getStartDate()) == 0 && c.getFechaFinal().compareTo(event.getEndDate()) == 0) {
+                return c;
+            }
+        }
+        return null;
     }
 
     /**
@@ -145,10 +209,6 @@ public class CitasBean implements Serializable {
     public void setListaCitas(ArrayList<Cita> listaCitas) {
         this.listaCitas = listaCitas;
     }
-    
-    public String getDiaElegido() {
-        return diaElegido;
-    }
 
     public Date getInitialDate() {
         Calendar calendar = Calendar.getInstance();
@@ -176,82 +236,38 @@ public class CitasBean implements Serializable {
         this.event = event;
     }
 
-    public void addEvent(ActionEvent actionEvent) {
-        if (event.getId() == null) {
-            try {
-                
-                crear();
-            } catch (Exception ex) {
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "La cita de " + nuevaCita.getNombre() + " no se pudo agregar");
-                addMessage(message);
-                System.err.println(ex.getStackTrace());
-            }
+    public Departamento getDepartamento() {
+        return departamento;
+    }
 
-        } else {
-            try{
-                update();
-                eventModel.updateEvent(event);
-            } catch (Exception ex) {
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "La cita de " + nuevaCita.getNombre() + " no se pudo editar");
-                addMessage(message);
-                System.err.println(ex.getStackTrace());
-            }
-            
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
+
+    public static Departamento getSavedDepartamento() {
+        return savedDepartamento;
+    }
+
+    public static void setSavedDepartamento(Departamento savedDepartamento) {
+        CitasBean.savedDepartamento = savedDepartamento;
+    }
+
+    public void redirigir_a_Citas() {
+
+        try {
+
+            FacesContext fc = FacesContext.getCurrentInstance();
+            ExternalContext ec = fc.getExternalContext();
+
+            String URL = ec.getRequestContextPath() + "/app/citas/citas";
+
+            savedDepartamento = this.departamento;
+
+            ec.redirect(URL);
+
+        } catch (Exception ex) {
         }
 
-        event = new DefaultScheduleEvent();
     }
 
-    public void onEventSelect(SelectEvent selectEvent) {
-        event = (ScheduleEvent) selectEvent.getObject();
-        defineDiaText();
-        nuevaCita=buscarCitaPorFechas();
-        selectedCita=nuevaCita;
-        
-    }
-
-    public void onDateSelect(SelectEvent selectEvent) {
-        event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
-        defineDiaText();
-        selectedCita=null;
-        //nuevaCita=new Cita();
-    }
-
-    public void onEventMove(ScheduleEntryMoveEvent event) {
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cita Movida", event.getDayDelta() + " dias" + " y " + event.getMinuteDelta() + " minutos");
-
-        addMessage(message);
-    }
-
-    public void onEventResize(ScheduleEntryResizeEvent event) {
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cita Movida", event.getDayDelta() + " dias" + " y " + event.getMinuteDelta() + " minutos");
-
-        addMessage(message);
-    }
-
-    private void addMessage(FacesMessage message) {
-        FacesContext.getCurrentInstance().addMessage(null, message);
-    }
-    
-    public void defineDiaText(){
-        switch(event.getStartDate().getDay()){
-            case 0:diaElegido="Domingo ";break;
-            case 1:diaElegido="Lunes ";break;
-            case 2:diaElegido="Martes ";break;
-            case 3:diaElegido="Miercoles ";break;
-            case 4:diaElegido="Jueves ";break;
-            case 5:diaElegido="Viernes ";break;
-            case 6:diaElegido="Sabado ";break;
-            
-        }
-        diaElegido=diaElegido.concat(""+event.getStartDate().getDate());
-    }
-    
-    public Cita buscarCitaPorFechas(){
-        for (Cita c : listaCitas) {
-            if(c.getFechaInicial().compareTo(event.getStartDate())==0 && c.getFechaFinal().compareTo(event.getEndDate())==0 )
-                return c;
-        }
-        return null;
-    }
 }

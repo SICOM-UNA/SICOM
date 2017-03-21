@@ -1,11 +1,8 @@
 package com.sicom.web.beans;
 
 import com.sicom.controller.ExamenGinecologiaJpaController;
-import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.ExamenGinecologia;
 import com.sicom.entities.Paciente;
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +17,6 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 @ManagedBean
@@ -31,21 +27,17 @@ public class ExamenFisicoGinecBean {
     private ExamenGinecologia examenFisico;
     private Date hoy;
     private ExamenGinecologiaJpaController ejc;
-    private UploadedFile file;
     private Paciente paciente;
-    private StreamedContent imagen;
     private String bus;
-    private byte[] imageContents;
+    private UploadedFile file;
 
     public ExamenFisicoGinecBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
         ejc = new ExamenGinecologiaJpaController(emf);
-        imagen = null;
         bus = "";
         examenFisico = new ExamenGinecologia();
-        imageContents=null;
+        file=null;
         hoy = new Date();
-        file = null;
     }
 
     public List<String> consultarValoresPorCodigo(Integer codigo) {
@@ -68,13 +60,6 @@ public class ExamenFisicoGinecBean {
         this.examenFisico = examenFisico;
     }
 
-    public UploadedFile getFile() {
-        return file;
-    }
-
-    public void setFile(UploadedFile file) {
-        this.file = file;
-    }
 
     public String getBus() {
         return bus;
@@ -92,34 +77,23 @@ public class ExamenFisicoGinecBean {
         this.paciente = paciente;
     }
 
-    public StreamedContent getImagen() {
-        return imagen;
+    public UploadedFile getFile() {
+        return file;
     }
 
-    public void setImagen(StreamedContent imagen) {
-        this.imagen = imagen;
+    public void setFile(UploadedFile file) {
+        this.file = file;
     }
 
-    public byte[] getImageContents() {
-        return imageContents;
+    public ValoresBean getValoresBean() {
+        return valoresBean;
     }
 
-    public void setImageContents(byte[] imageContents) {
-        this.imageContents = imageContents;
+    public void setValoresBean(ValoresBean valoresBean) {
+        this.valoresBean = valoresBean;
     }
-
-    public void agregar(){
-        try {
-            examenFisico.setBus("Si".equals(bus));
-            examenFisico.setImagenMamas(file.getContents());
-            examenFisico.setExpedientePacientecedula(paciente.getExpediente());
-            ejc.create(examenFisico);
-
-        } catch (Exception ex) {
-            Logger.getLogger(ExamenFisicoGinecBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
+    
+    
     public void modificar(){
         try{
         ejc.edit(examenFisico);
@@ -131,9 +105,18 @@ public class ExamenFisicoGinecBean {
 
     public void save() {
         try {
-            agregar();
+            try {
+            examenFisico.setBus("Si".equals(bus));
+            if(file!=null){
+                examenFisico.setImagenMamas(file.getContents());
+            }
+            examenFisico.setExpedientePacientecedula(paciente.getExpediente());
+            ejc.create(examenFisico);
+
+        } catch (Exception ex) {
+            Logger.getLogger(ExamenFisicoGinecBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
             examenFisico = new ExamenGinecologia();
-            volver_a_informacion();
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Examen Agregado","Examen Agregado Correctamente");
             FacesContext.getCurrentInstance().addMessage(null, message);
 
@@ -148,28 +131,13 @@ public class ExamenFisicoGinecBean {
         file = e.getFile();
         
         if (file != null) {
-            imageContents=file.getContents();
-            try {
-                String str = file.getFileName();
-                String ext = str.substring(str.lastIndexOf('.'), str.length()); //obtener la extension
-                String date = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date());
-                FacesContext fc = FacesContext.getCurrentInstance();
-                ExternalContext ec = fc.getExternalContext();
-                String path = ec.getApplicationContextPath();
-                file.write(path+"/imagenes/"+date+ext);
+//                String str = e.getFile().getFileName();
+//                String ext = str.substring(str.lastIndexOf('.'), str.length()); //obtener la extension
+//                String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
                 
-                //imagen = new DefaultStreamedContent(new ByteArrayInputStream(file.getContents()));
-                //FacesContext fc = FacesContext.getCurrentInstance();
-                //ExternalContext ec = fc.getExternalContext();
-                String sRootPath = new File(date+ext).getAbsolutePath();
-                file.write(sRootPath);
                 FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Imagen Subida","La imagen " + file.getFileName() + " se ha subido.");
                 FacesContext.getCurrentInstance().addMessage(null, message);
                 
-            } catch (Exception ex) {
-                Logger.getLogger(ExamenFisicoGinecBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
         }
 
     }

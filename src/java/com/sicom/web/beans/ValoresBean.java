@@ -60,4 +60,13 @@ public class ValoresBean {
     public List<Autorizacion> getAutorizacionList() {
         return ajc.findAutorizacionEntities();
     }
+
+    public ValoresBean getValoresBean() {
+        return valoresBean;
+    }
+
+    public void setValoresBean(ValoresBean valoresBean) {
+        this.valoresBean = valoresBean;
+    }
+    
 }

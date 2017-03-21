@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/templates/default.xhtml" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <div id="wrapper">
+            <section>
+                <h:form>
+                    <p:growl id="messages" showDetail="true" />
+                    <p:panel header="Elija un departamento: " style="margin-bottom:10px;">
+                        <h:panelGrid columns="2" cellpadding="5">
+                            <p:outputLabel value="Departamento:" class="descripcion" for="departamento"/>
+                            <p:selectOneMenu id="departamento" value="#{citasBean.departamento}" requiredMessage="Falta el departamento" converter="omnifaces.SelectItemsConverter">
+                                <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
+                                <f:selectItems value="#{valoresBean.departamentosList}" var="departamento" itemLabel="#{departamento.nombre}" itemValue="#{departamento}"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                            <f:facet name="footer">
+                                <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                    <p:commandButton value="Ir al Calendario de Citas" icon="ui-icon-plus" action="#{citasBean.redirigir_a_Citas()}"/>
+                                </div>
+                            </f:facet>
+                    </p:panel>
+                </h:form>
+            </section>
+        </div>
+    </ui:define>
+</ui:composition>

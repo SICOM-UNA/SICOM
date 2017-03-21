@@ -47,7 +47,7 @@
                                                 <p:outputLabel for="cardio" value="Cardiopulmunar:"/>
                                                 <p:selectOneMenu id="cardio" value="#{examenFisicoGinecBean.examenFisico.cardioPulmonar}" autoWidth="false" >
                                                     <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                                    <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(9)}"/>
+                                                    <f:selectItems value="#{examenFisicoGinecBean.consultarValoresPorCodigo(9)}"/>
                                                 </p:selectOneMenu>
                                                 <p:inputText value="#{examenFisicoGinecBean.examenFisico.comentarioCardioPulmonar}" size="12"/>
                                             </h:panelGrid>
@@ -87,7 +87,7 @@
                                             <p:inputText id="vulva" value="#{examenFisicoGinecBean.examenFisico.vulva}" maxlength="25"/>
                                             <p:outputLabel for="bus" value="Bus:"/>
                                             <p:selectOneRadio id="bus" layout="grid"  columns="2" value="#{examenFisicoGinecBean.bus}">
-                                                <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(10)}"/>
+                                                <f:selectItems value="#{examenFisicoGinecBean.consultarValoresPorCodigo(10)}"/>
                                             </p:selectOneRadio>
                                             <p:outputLabel for="vagina" value="Vagina:"/>
                                             <p:inputText id="vagina" value="#{examenFisicoGinecBean.examenFisico.vagina}" maxlength="25"/>
