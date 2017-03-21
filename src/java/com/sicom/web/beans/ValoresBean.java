@@ -12,6 +12,7 @@ import com.sicom.controller.DepartamentoJpaController;
 import com.sicom.controller.ValorJpaController;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -23,15 +24,14 @@ import javax.persistence.Persistence;
 @ManagedBean
 @ViewScoped
 public class ValoresBean {
-    
-    private final ValorJpaController vjc;
+    @ManagedProperty(value = "#{ValoresBean}")
+    private ValoresBean valoresBean;
     private final DepartamentoJpaController djc;
     private final AutorizacionJpaController ajc;
     
     public ValoresBean() {
         
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
-        vjc = new ValorJpaController(emf);
         djc = new DepartamentoJpaController(emf);
         ajc = new AutorizacionJpaController(emf);
     }
@@ -42,7 +42,7 @@ public class ValoresBean {
      * @return lista de valores
      */
     public List<String> getValuesByCodeId(Integer codigo) {
-        return vjc.findByCodeId(codigo);
+        return valoresBean.getValuesByCodeId(codigo);
     }
     
     /**

@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -31,7 +32,9 @@ import org.joda.time.Years;
 @ManagedBean
 @ViewScoped
 public class PacienteBean {
-
+    @ManagedProperty(value = "#{ValoresBean}")
+    private ValoresBean valoresBean;
+    
     private Paciente nuevoPaciente;
     private Paciente selectedPaciente;
     private Responsable responsable1;
@@ -40,7 +43,6 @@ public class PacienteBean {
     private List<Paciente> listaPacientes;
     private final PacienteJpaController pjc;
     private final ResponsableJpaController rjc;
-    private final ValorJpaController cjv;
 
     /**
      * Constructor
@@ -52,7 +54,6 @@ public class PacienteBean {
         responsable1 = new Responsable();
         responsable2 = new Responsable();
         pjc = new PacienteJpaController(emf);
-        cjv = new ValorJpaController(emf);
         rjc = new ResponsableJpaController(emf);
 
         FacesContext fc = FacesContext.getCurrentInstance();
@@ -242,7 +243,7 @@ public class PacienteBean {
     }
 
     public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return this.cjv.findByCodeId(codigo);
+        return valoresBean.getValuesByCodeId(codigo);
     }
 
     public void verificaID() {

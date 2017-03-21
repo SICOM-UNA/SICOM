@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -25,11 +26,11 @@ import org.primefaces.model.UploadedFile;
 @ManagedBean
 @ViewScoped
 public class ExamenFisicoGinecBean {
-
+    @ManagedProperty(value = "#{ValoresBean}")
+    private ValoresBean valoresBean;
     private ExamenGinecologia examenFisico;
     private Date hoy;
     private ExamenGinecologiaJpaController ejc;
-    private ValorJpaController vjc;
     private UploadedFile file;
     private Paciente paciente;
     private StreamedContent imagen;
@@ -38,19 +39,17 @@ public class ExamenFisicoGinecBean {
 
     public ExamenFisicoGinecBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
-        vjc = new ValorJpaController(emf);
         ejc = new ExamenGinecologiaJpaController(emf);
         imagen = null;
         bus = "";
         examenFisico = new ExamenGinecologia();
-        paciente = PacienteBean.getSavedPaciente();
         imageContents=null;
         hoy = new Date();
         file = null;
     }
 
     public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return this.vjc.findByCodeId(codigo);
+        return valoresBean.getValuesByCodeId(codigo);
     }
 
     public void setHoy(Date hoy) {
