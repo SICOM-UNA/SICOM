@@ -26,7 +26,9 @@ import org.primefaces.model.UploadedFile;
 @ManagedBean
 @ViewScoped
 public class ExamenFisicoGinecBean {
-   private ExamenGinecologia examenFisico;
+    @ManagedProperty(value = "#{ValoresBean}")
+    private ValoresBean valoresBean;
+    private ExamenGinecologia examenFisico;
     private Date hoy;
     private ExamenGinecologiaJpaController ejc;
     private UploadedFile file;
@@ -41,10 +43,13 @@ public class ExamenFisicoGinecBean {
         imagen = null;
         bus = "";
         examenFisico = new ExamenGinecologia();
-
-        imageContents = null;
+        imageContents=null;
         hoy = new Date();
         file = null;
+    }
+
+    public List<String> consultarValoresPorCodigo(Integer codigo) {
+        return valoresBean.getValuesByCodeId(codigo);
     }
 
     public void setHoy(Date hoy) {
@@ -103,7 +108,7 @@ public class ExamenFisicoGinecBean {
         this.imageContents = imageContents;
     }
 
-    public void agregar() {
+    public void agregar(){
         try {
             examenFisico.setBus("Si".equals(bus));
             examenFisico.setImagenMamas(file.getContents());
@@ -115,10 +120,11 @@ public class ExamenFisicoGinecBean {
         }
     }
 
-    public void modificar() {
-        try {
-            ejc.edit(examenFisico);
-        } catch (Exception ex) {
+    public void modificar(){
+        try{
+        ejc.edit(examenFisico);
+        }
+        catch (Exception ex) {
             Logger.getLogger(ExamenFisicoGinecBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -128,21 +134,21 @@ public class ExamenFisicoGinecBean {
             agregar();
             examenFisico = new ExamenGinecologia();
             volver_a_informacion();
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Examen Agregado", "Examen Agregado Correctamente");
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Examen Agregado","Examen Agregado Correctamente");
             FacesContext.getCurrentInstance().addMessage(null, message);
 
         } catch (Exception ex) {
 
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "Error, examen No Se Pudo Agregar ");
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Error","Error, examen No Se Pudo Agregar ");
             FacesContext.getCurrentInstance().addMessage(null, message);
         }
     }
 
     public void uploadListener(FileUploadEvent e) {
         file = e.getFile();
-
+        
         if (file != null) {
-            imageContents = file.getContents();
+            imageContents=file.getContents();
             try {
                 String str = file.getFileName();
                 String ext = str.substring(str.lastIndexOf('.'), str.length()); //obtener la extension
@@ -150,24 +156,24 @@ public class ExamenFisicoGinecBean {
                 FacesContext fc = FacesContext.getCurrentInstance();
                 ExternalContext ec = fc.getExternalContext();
                 String path = ec.getApplicationContextPath();
-                file.write(path + "/imagenes/" + date + ext);
-
+                file.write(path+"/imagenes/"+date+ext);
+                
                 //imagen = new DefaultStreamedContent(new ByteArrayInputStream(file.getContents()));
                 //FacesContext fc = FacesContext.getCurrentInstance();
                 //ExternalContext ec = fc.getExternalContext();
-                String sRootPath = new File(date + ext).getAbsolutePath();
+                String sRootPath = new File(date+ext).getAbsolutePath();
                 file.write(sRootPath);
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Imagen Subida", "La imagen " + file.getFileName() + " se ha subido.");
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,"Imagen Subida","La imagen " + file.getFileName() + " se ha subido.");
                 FacesContext.getCurrentInstance().addMessage(null, message);
-
+                
             } catch (Exception ex) {
                 Logger.getLogger(ExamenFisicoGinecBean.class.getName()).log(Level.SEVERE, null, ex);
             }
-
+            
         }
 
     }
-
+    
     public String getImageContentsAsBase64() {
         return Base64.getEncoder().encodeToString(file.getContents());
     }

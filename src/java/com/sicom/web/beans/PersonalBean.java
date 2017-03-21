@@ -27,7 +27,8 @@ import org.joda.time.Years;
 @ManagedBean
 @ViewScoped
 public class PersonalBean {
-  
+    @ManagedProperty(value = "#{ValoresBean}")
+    private ValoresBean valoresBean;
     private static Personal savedPersonal;
     private static Login savedUsuario;
     private Personal nuevoPersonal;
@@ -106,6 +107,10 @@ public class PersonalBean {
      */
     public Personal consultarPersonalPorId(String id) {
         return pjc.findPersonal(id);
+    }
+
+    public List<String> consultarValoresPorCodigo(Integer codigo) {
+        return valoresBean.getValuesByCodeId(codigo);
     }
 
     public void buscaIdBase(){

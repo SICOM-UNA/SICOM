@@ -1,7 +1,6 @@
 package com.sicom.web.beans;
 
 import com.sicom.controller.ValorJpaController;
-import java.util.Date;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -11,26 +10,29 @@ import javax.persistence.Persistence;
 
 @ManagedBean
 @ViewScoped
-public class MonitoreoFetalBean {
+public class ColposcopiaBean {
     @ManagedProperty(value = "#{ValoresBean}")
     private ValoresBean valoresBean;
-    private String tipo;
+    
+    private String resultado;
 
-    public MonitoreoFetalBean(){
+    public ColposcopiaBean(){
+        
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
-        tipo = "";
+        resultado = "";
     }
 
     public List<String> consultarValoresPorCodigo(Integer codigo) {
         return valoresBean.getValuesByCodeId(codigo);
     }
 
-    public String getTipo() {
-        return tipo;
+    public String getResultado() {
+        return resultado;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setResultado(String resultado) {
+        this.resultado = resultado;
     }
+    
     
 }

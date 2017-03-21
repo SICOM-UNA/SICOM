@@ -161,6 +161,42 @@ public class PacienteBean {
     }
 
     //--------------------------------------------------------------------------
+    // HISTORIA CLINICA DE PACIENTE
+    public void HistoriaClinica(boolean permiso_editar) {
+
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+        
+        String URL = ec.getRequestContextPath();
+        
+        Personal p = ((Login)ec.getSessionMap().get("login")).getPersonal();
+        int consultorio = p.getDepartamentoId().getId();
+        
+        switch (consultorio) {
+            case 2: // Ginecologia
+                if (permiso_editar) {
+                    URL += "/app/consultorios/ginecologia/antecedentes";
+                } else {
+                    URL += "/app/consultorios/ginecologia/consultarAntecedentes";
+                }
+                break;
+            case 3: // Odontologia
+                if (permiso_editar) {
+                    URL += "/app/consultorios/odontologia/antecedentes";
+                } else {
+                    URL += "/app/consultorios/odontologia/consultarAntecedentes";
+                }
+        }
+        
+        try {
+            ec.redirect(URL);
+        } catch (IOException ex) {
+            Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+
+    //--------------------------------------------------------------------------
     // GENERAL METHODS
     public void buscaIdBase() {
         Paciente p = (selectedPaciente.getCedula() != null) ? selectedPaciente : ((nuevoPaciente.getCedula() != null) ? nuevoPaciente : null);

@@ -11,26 +11,27 @@ import javax.persistence.Persistence;
 
 @ManagedBean
 @ViewScoped
-public class MonitoreoFetalBean {
+public class ExamenGinecologiaBean {
     @ManagedProperty(value = "#{ValoresBean}")
     private ValoresBean valoresBean;
-    private String tipo;
+    private Date hoy;
 
-    public MonitoreoFetalBean(){
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
-        tipo = "";
+    public ExamenGinecologiaBean(){
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");    
+        hoy = new Date();
     }
 
     public List<String> consultarValoresPorCodigo(Integer codigo) {
         return valoresBean.getValuesByCodeId(codigo);
     }
-
-    public String getTipo() {
-        return tipo;
+    
+    public void setHoy(Date hoy) {
+        this.hoy = hoy;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public Date getHoy() {
+        return hoy;
     }
     
 }
+

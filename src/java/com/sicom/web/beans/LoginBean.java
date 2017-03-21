@@ -28,8 +28,8 @@ public class LoginBean {
     private final PersonalJpaController pjc;
 
     public LoginBean() {
-        EntityManagerFactory em = Persistence.createEntityManagerFactory("SICOM_v1PU");
         login = new Login();
+        EntityManagerFactory em = Persistence.createEntityManagerFactory("SICOM_v1PU");
         ljc = new LoginJpaController(em);
         pjc = new PersonalJpaController(em);
     }
@@ -57,15 +57,15 @@ public class LoginBean {
         Login nuevo = ljc.findLogin(login.getUsuario());
 
         if (nuevo != null && nuevo.getContrasena().equals(login.getContrasena())) {
-
+            
             login = nuevo;
             login.setAutenticado(true);
             Personal personal = login.getPersonal();
 
-            if (personal != null && personal.getCedula() != null) {
+            if (personal != null) {
                 String dim = ("Masculino".equals(personal.getGenero())) ? "Sr. " : "Sra. ";
                 ec.getFlash().setKeepMessages(true);
-                fc.addMessage(null, new FacesMessage("Bienvenido " + dim + personal.getNombre().concat(" ") + personal.getPrimerApellido().concat(" ") + personal.getSegundoApellido().concat(".")));
+                fc.addMessage("msg", new FacesMessage("Bienvenido " + dim + personal.getNombre().concat(" ") + personal.getPrimerApellido().concat(" ") + personal.getSegundoApellido().concat(".")));
             }
 
             ec.getSessionMap().put("login", login);
@@ -99,12 +99,12 @@ public class LoginBean {
 
     public String valorAutorizacionPersonal() {
         Autorizacion au = login.getPersonal().getAutorizacionNivel();
-        return (au == null) ? null : au.getDescripcion();
+        return (au == null)? null : au.getDescripcion();
     }
 
     public String valorDepartamentoPersonal() {
         Departamento dpto = login.getPersonal().getDepartamentoId();
-        return (dpto == null) ? null : dpto.getNombre();
+        return (dpto == null)? null : dpto.getNombre();
     }
 
     /**
