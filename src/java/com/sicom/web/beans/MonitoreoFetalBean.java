@@ -12,17 +12,11 @@ import javax.persistence.Persistence;
 @ManagedBean
 @ViewScoped
 public class MonitoreoFetalBean {
-    @ManagedProperty(value = "#{ValoresBean}")
-    private ValoresBean valoresBean;
     private String tipo;
 
     public MonitoreoFetalBean(){
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
         tipo = "";
-    }
-
-    public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return valoresBean.getValuesByCodeId(codigo);
     }
 
     public String getTipo() {

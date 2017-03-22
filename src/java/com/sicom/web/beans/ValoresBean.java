@@ -10,9 +10,9 @@ import com.sicom.entities.Departamento;
 import com.sicom.controller.AutorizacionJpaController;
 import com.sicom.controller.DepartamentoJpaController;
 import com.sicom.controller.ValorJpaController;
+import com.sicom.entities.Valor;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -24,16 +24,16 @@ import javax.persistence.Persistence;
 @ManagedBean
 @ViewScoped
 public class ValoresBean {
-    @ManagedProperty(value = "#{ValoresBean}")
-    private ValoresBean valoresBean;
+    
     private final DepartamentoJpaController djc;
     private final AutorizacionJpaController ajc;
-    
+    private final ValorJpaController vjc;
     public ValoresBean() {
         
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
         djc = new DepartamentoJpaController(emf);
         ajc = new AutorizacionJpaController(emf);
+        vjc = new ValorJpaController(emf);
     }
     
     /**
@@ -41,8 +41,12 @@ public class ValoresBean {
      * @param codigo
      * @return lista de valores
      */
-    public List<String> getValuesByCodeId(Integer codigo) {
-        return valoresBean.getValuesByCodeId(codigo);
+    public List<Valor> getValuesByCodeId(Integer codigo) {
+        return vjc.findByCodeId(codigo);
+    }
+    
+    public List<String> getDescripcionByCodeId(Integer cod){
+        return vjc.findDescriptionByCodeId(cod);
     }
     
     /**
@@ -59,14 +63,5 @@ public class ValoresBean {
      */
     public List<Autorizacion> getAutorizacionList() {
         return ajc.findAutorizacionEntities();
-    }
-
-    public ValoresBean getValoresBean() {
-        return valoresBean;
-    }
-
-    public void setValoresBean(ValoresBean valoresBean) {
-        this.valoresBean = valoresBean;
-    }
-    
+    }    
 }

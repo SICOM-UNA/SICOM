@@ -1,7 +1,6 @@
 package com.sicom.web.beans;
 
 import com.sicom.controller.LoginJpaController;
-import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.Personal;
 import com.sicom.controller.PersonalJpaController;
 import com.sicom.entities.Login;
@@ -14,7 +13,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -27,8 +25,6 @@ import org.joda.time.Years;
 @ManagedBean
 @ViewScoped
 public class PersonalBean {
-    @ManagedProperty(value = "#{ValoresBean}")
-    private ValoresBean valoresBean;
     private static Personal savedPersonal;
     private static Login savedUsuario;
     private Personal nuevoPersonal;
@@ -107,10 +103,6 @@ public class PersonalBean {
      */
     public Personal consultarPersonalPorId(String id) {
         return pjc.findPersonal(id);
-    }
-
-    public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return valoresBean.getValuesByCodeId(codigo);
     }
 
     public void buscaIdBase(){

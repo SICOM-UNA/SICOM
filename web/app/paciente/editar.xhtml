@@ -18,14 +18,7 @@
                                 <h:panelGrid columns="2" cellspacing="3">
 
                                     <p:outputLabel for="id" value="Identificación:"/>
-                                    <h:panelGrid columns="3">
-                                        <p:inputMask id="id" value="#{pacienteBean.selectedPaciente.cedula}" required="true" maxlength="12" size="13" 
-                                                     mask="9-9999-9999" requiredMessage="- Falta la identificación." placeholder="0-0000-0000" />
-                                        <p:tooltip id="toolTipFocus" for="id" showEvent="focus" position="bottom" value="Identificación Nacional: Ej 0-0000-0000."/>
-                                        <p:commandButton icon="ui-icon-search">
-                                            <f:ajax />
-                                        </p:commandButton>   
-                                    </h:panelGrid>         
+                                    <p:inputText id="id" value="#{pacienteBean.selectedPaciente.cedula}"  disabled="true"/>
 
                                     <p:outputLabel for="nom" value="Nombre:" />
                                     <p:inputText  id="nom"  value="#{pacienteBean.selectedPaciente.nombre}" maxlength="45" class = "charWithSpaceToUpperCase"
@@ -46,18 +39,16 @@
                                                 placeholder="#{now.date}-#{now.month+1}-#{now.year+1900}"/>
 
                                     <p:outputLabel value="Estado Civil:" for="ec"/>
-                                    <p:selectOneMenu value="#{pacienteBean.selectedPaciente.estadoCivil}"  id="ec" requiredMessage="- Falta el estado civil.">
-                                        <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                        <f:selectItems value="{pacienteBean.consultarValoresPorCodigo(1)}"/>
+                                    <p:selectOneMenu value="#{pacienteBean.selectedPaciente.estadoCivil}"  id="ec" required="true" requiredMessage="- Falta el estado civil.">
+                                       <f:selectItems value="#{valoresBean.getDescripcionByCodeId(2)}"/>
                                     </p:selectOneMenu>
                                 </h:panelGrid>
                             </h:panelGrid>
                             <h:panelGrid columns="2" cellspacing="3"> 
 
                                 <p:outputLabel value="Genero:" for="g"/>
-                                <p:selectOneMenu id="g" value="#{pacienteBean.selectedPaciente.genero}" requiredMessage="- Falta el género.">
-                                    <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                    <f:selectItems value="{pacienteBean.consultarValoresPorCodigo(0)}"/>
+                                <p:selectOneMenu id="g" value="#{pacienteBean.selectedPaciente.genero}" required="true" requiredMessage="- Falta el género.">
+                                    <f:selectItems value="#{valoresBean.getDescripcionByCodeId(1)}"/>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Teléfono 1:" for="t1"/>
@@ -69,7 +60,7 @@
 
                                 <p:outputLabel value="Correo electrónico:" for="ce"/>
                                 <h:panelGroup>
-                                    <p:tooltip for="ce" showEvent="focus" position="bottom" value="Ejemplo de correo: cento_medico@outlook.com"/>
+                                    <p:tooltip for="ce" showEvent="focus" hideEvent="blur" position="bottom" value="Ejemplo de correo: cento_medico@outlook.com"/>
                                     <p:inputText id="ce" value="#{pacienteBean.selectedPaciente.correo}"  class="correo" onkeyup="validar();"  maxlength="45"
                                                  validatorMessage="- Correo electrónico incorrecto, ej: centro_medico@outlook.com" placeholder="nombre@servidor.com" >
                                         <f:validateRegex pattern="((([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+))|(^\s*$))" />

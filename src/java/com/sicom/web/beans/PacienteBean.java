@@ -32,9 +32,6 @@ import org.joda.time.Years;
 @ManagedBean
 @ViewScoped
 public class PacienteBean {
-    @ManagedProperty(value = "#{ValoresBean}")
-    private ValoresBean valoresBean;
-    
     private Paciente nuevoPaciente;
     private Paciente selectedPaciente;
     private Responsable responsable1;
@@ -240,10 +237,6 @@ public class PacienteBean {
 
     public Paciente consultarPaciente(String id) {
         return pjc.findPaciente(id);
-    }
-
-    public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return valoresBean.getValuesByCodeId(codigo);
     }
 
     public void verificaID() {

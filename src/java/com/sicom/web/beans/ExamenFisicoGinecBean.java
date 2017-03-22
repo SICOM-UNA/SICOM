@@ -22,8 +22,6 @@ import org.primefaces.model.UploadedFile;
 @ManagedBean
 @ViewScoped
 public class ExamenFisicoGinecBean {
-    @ManagedProperty(value = "#{ValoresBean}")
-    private ValoresBean valoresBean;
     private ExamenGinecologia examenFisico;
     private Date hoy;
     private ExamenGinecologiaJpaController ejc;
@@ -38,10 +36,6 @@ public class ExamenFisicoGinecBean {
         examenFisico = new ExamenGinecologia();
         file=null;
         hoy = new Date();
-    }
-
-    public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return valoresBean.getValuesByCodeId(codigo);
     }
 
     public void setHoy(Date hoy) {
@@ -85,13 +79,6 @@ public class ExamenFisicoGinecBean {
         this.file = file;
     }
 
-    public ValoresBean getValoresBean() {
-        return valoresBean;
-    }
-
-    public void setValoresBean(ValoresBean valoresBean) {
-        this.valoresBean = valoresBean;
-    }
     
     
     public void modificar(){

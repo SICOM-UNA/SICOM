@@ -11,8 +11,6 @@ import javax.persistence.Persistence;
 @ManagedBean
 @ViewScoped
 public class ColposcopiaBean {
-    @ManagedProperty(value = "#{ValoresBean}")
-    private ValoresBean valoresBean;
     
     private String resultado;
 
@@ -20,10 +18,6 @@ public class ColposcopiaBean {
         
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
         resultado = "";
-    }
-
-    public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return valoresBean.getValuesByCodeId(codigo);
     }
 
     public String getResultado() {

@@ -21,9 +21,6 @@ import javax.persistence.Persistence;
 @ViewScoped
 public class AntecedentesGinecologiaBean {
 
-    @ManagedProperty(value = "#{ValoresBean}")
-    private ValoresBean valor;
-
     private AntecedentesGinecologia antecedentesGinecologia;
     private final AntecedentesGinecologiaJpaController agjc;
     private final ValorJpaController vjc;
@@ -67,10 +64,6 @@ public class AntecedentesGinecologiaBean {
 
     public void modificar() throws Exception {
         agjc.edit(antecedentesGinecologia);
-    }
-
-    public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return valor.getValuesByCodeId(codigo);
     }
 
     public void save() {

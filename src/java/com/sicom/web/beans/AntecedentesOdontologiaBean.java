@@ -19,14 +19,12 @@ public class AntecedentesOdontologiaBean{
     private AntecedentesOdontologia antecedentesOdontologia;
     private List <AntecedentesOdontologia> listaAntecedentes;
     private final AntecedentesOdontologiaJpaController controladorOdontologia;
-    private final ValorJpaController controladoraValores;    
     private Paciente paciente;
 
     public AntecedentesOdontologiaBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
         antecedentesOdontologia = new AntecedentesOdontologia();
         controladorOdontologia = new AntecedentesOdontologiaJpaController(emf);
-        controladoraValores = new ValorJpaController(emf);
     }
     
     public void init(){
@@ -36,10 +34,6 @@ public class AntecedentesOdontologiaBean{
     public void modificar() throws Exception{
         controladorOdontologia.edit(antecedentesOdontologia);
     }
-    
-    public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return this.controladoraValores.findByCodeId(codigo);
-    } 
    
     public List<AntecedentesOdontologia> getListaAntecedentes(){
         return listaAntecedentes;
