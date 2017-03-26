@@ -3,8 +3,9 @@ package com.sicom.web.beans;
 import com.sicom.controller.PacienteJpaController;
 
 import com.sicom.controller.ResponsableJpaController;
-import com.sicom.controller.ValorJpaController;
 import com.sicom.controller.exceptions.NonexistentEntityException;
+import com.sicom.entities.AntecedentesGinecologia;
+import com.sicom.entities.Expediente;
 import com.sicom.entities.Login;
 import com.sicom.entities.Paciente;
 import com.sicom.entities.Personal;
@@ -19,7 +20,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -32,11 +32,12 @@ import org.joda.time.Years;
 @ManagedBean
 @ViewScoped
 public class PacienteBean {
+
     private Paciente nuevoPaciente;
     private Paciente selectedPaciente;
     private Responsable responsable1;
     private Responsable responsable2;
-    private List<Responsable> listaResponsable;
+    private Responsable selectedResponsable;
     private List<Paciente> listaPacientes;
     private final PacienteJpaController pjc;
     private final ResponsableJpaController rjc;
@@ -48,8 +49,6 @@ public class PacienteBean {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
 
         nuevoPaciente = new Paciente();
-        responsable1 = new Responsable();
-        responsable2 = new Responsable();
         pjc = new PacienteJpaController(emf);
         rjc = new ResponsableJpaController(emf);
 
@@ -59,6 +58,16 @@ public class PacienteBean {
 
         Paciente p = (Paciente) sessionMap.remove("paciente");
         selectedPaciente = (p != null) ? p : new Paciente();
+
+        Responsable aux1 = (Responsable) sessionMap.remove("responsable1");
+        responsable1 = (aux1 != null) ? aux1 : new Responsable();
+
+        Responsable aux2 = (Responsable) sessionMap.remove("responsable2");
+        responsable2 = (aux2 != null) ? aux2 : new Responsable();
+
+        Responsable aux3 = (Responsable) sessionMap.remove("selectedResponsable");
+        selectedResponsable = (aux3 != null) ? aux3 : new Responsable();
+
     }
 
     @PostConstruct
@@ -83,11 +92,9 @@ public class PacienteBean {
                 ExternalContext ec = fc.getExternalContext();
 
                 ec.getFlash().setKeepMessages(true);
-                ec.getSessionMap().put("paciente", nuevoPaciente);
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Paciente agregado exitosamente.", null));
 
-                String URL = ec.getRequestContextPath() + "/app/paciente/informacion#datos";
-                ec.redirect(URL);
+                buscaIdBase();
             }
         } catch (Exception ex) {
             Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -129,6 +136,89 @@ public class PacienteBean {
         }
     }
 
+    public void HistoriaClinica() {
+
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+
+        if (selectedPaciente != null && !selectedPaciente.getCedula().equals("")) {
+
+            String URL = ec.getRequestContextPath();
+            Login log = (Login) ec.getSessionMap().get("login");
+            Personal p = log.getPersonal();
+
+            int consultorio = p.getDepartamentoId().getId();
+            boolean permiso_editar = (p.getAutorizacionNivel().getNivel() < 5);
+
+            String direccion = createUrl(consultorio, permiso_editar);
+
+            if (direccion.equals("")) {
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No posee los permisos para acceder.", null));
+            } else {
+                try {
+                    subirObjetosExternalContext(consultorio, ec);
+                    URL += direccion;
+                    ec.redirect(URL);
+                } catch (IOException ex) {
+                    Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else {
+            try {
+                String URL = ec.getRequestContextPath();
+                URL += "/app/paciente/consultar";
+                ec.redirect(URL);
+            } catch (IOException ex) {
+                Logger.getLogger(ExpedienteBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param consultorio
+     * @param permiso_editar
+     * @return String URL
+     */
+    private String createUrl(int consultorio, boolean permiso_editar) {
+        switch (consultorio) {
+            case 2: // Ginecologia
+                if (permiso_editar) {
+                    return "/app/consultorios/ginecologia/antecedentes";
+                } else {
+                    return "/app/consultorios/ginecologia/consultarAntecedentes";
+                }
+            case 3: // Odontologia
+                if (permiso_editar) {
+                    return "/app/consultorios/odontologia/antecedentes";
+                } else {
+                    return "/app/consultorios/odontologia/consultarAntecedentes";
+                }
+            default:
+                return "";
+        }
+    }
+
+    /**
+     *
+     * @param consultorio
+     * @return Object
+     */
+    private void subirObjetosExternalContext(int consultorio, ExternalContext ec) {
+
+        Expediente e = selectedPaciente.getExpediente();
+
+        switch (consultorio) {
+            case 2:
+                ec.getSessionMap().put("antecedente", e.getAntecedentesGinecologia());
+                break;
+            case 3:
+                ec.getSessionMap().put("antecedente", e.getAntecedentesOdontologia());
+                break;
+        }
+        ec.getSessionMap().put("paciente", selectedPaciente);
+    }
+
     public void modificarAction() {
 
         try {
@@ -157,40 +247,7 @@ public class PacienteBean {
         this.buscaIdBase();
     }
 
-    //--------------------------------------------------------------------------
-    // HISTORIA CLINICA DE PACIENTE
-    public void HistoriaClinica(boolean permiso_editar) {
-
-        FacesContext fc = FacesContext.getCurrentInstance();
-        ExternalContext ec = fc.getExternalContext();
-        
-        String URL = ec.getRequestContextPath();
-        
-        Personal p = ((Login)ec.getSessionMap().get("login")).getPersonal();
-        int consultorio = p.getDepartamentoId().getId();
-        
-        switch (consultorio) {
-            case 2: // Ginecologia
-                if (permiso_editar) {
-                    URL += "/app/consultorios/ginecologia/antecedentes";
-                } else {
-                    URL += "/app/consultorios/ginecologia/consultarAntecedentes";
-                }
-                break;
-            case 3: // Odontologia
-                if (permiso_editar) {
-                    URL += "/app/consultorios/odontologia/antecedentes";
-                } else {
-                    URL += "/app/consultorios/odontologia/consultarAntecedentes";
-                }
-        }
-        
-        try {
-            ec.redirect(URL);
-        } catch (IOException ex) {
-            Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+    public void modificaResposableRedirect(int i) {
     }
 
     //--------------------------------------------------------------------------
@@ -204,11 +261,33 @@ public class PacienteBean {
 
             if (selectedPaciente != null) {
                 try {
+
+                    List<Responsable> lista = selectedPaciente.getResponsableList();
+
+                    if (lista != null) {
+                        switch (lista.size()) {
+                            case 0:
+                                responsable1.setNombre("No Asignado");
+                                responsable2.setNombre("No Asignado");
+                                break;
+                            case 1:
+                                responsable1 = lista.get(0);
+                                responsable2.setNombre("No Asignado");
+                                break;
+                            case 2:
+                                responsable1 = lista.get(0);
+                                responsable2 = lista.get(1);
+                                break;
+                        }
+                    }
+
                     FacesContext fc = FacesContext.getCurrentInstance();
                     ExternalContext ec = fc.getExternalContext();
 
                     String URL = ec.getRequestContextPath() + "/app/paciente/informacion#datos";
                     ec.getSessionMap().put("paciente", selectedPaciente);
+                    ec.getSessionMap().put("responsable1", responsable1);
+                    ec.getSessionMap().put("responsable2", responsable2);
                     ec.redirect(URL);
                 } catch (IOException ex) {
                     Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -290,10 +369,50 @@ public class PacienteBean {
 
     /**
      *
-     * @return List of Responsable
+     * @return Responsable
      */
-    public List<Responsable> getListaResponsables() {
-        return listaResponsable;
+    public Responsable getResponsable1() {
+        return responsable1;
+    }
+
+    /**
+     *
+     * @param responsable1
+     */
+    public void setResponsable1(Responsable responsable1) {
+        this.responsable1 = responsable1;
+    }
+
+    /**
+     *
+     * @return Responsable
+     */
+    public Responsable getResponsable2() {
+        return responsable2;
+    }
+
+    /**
+     *
+     * @param responsable2
+     */
+    public void setResponsable2(Responsable responsable2) {
+        this.responsable2 = responsable2;
+    }
+
+    /**
+     *
+     * @return Responsable
+     */
+    public Responsable getSelectedResponsable() {
+        return selectedResponsable;
+    }
+
+    /**
+     *
+     * @param selectedResponsable
+     */
+    public void setSelectedResponsable(Responsable selectedResponsable) {
+        this.selectedResponsable = selectedResponsable;
     }
 
 }

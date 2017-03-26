@@ -11,6 +11,7 @@ import com.sicom.controller.AutorizacionJpaController;
 import com.sicom.controller.DepartamentoJpaController;
 import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.Valor;
+import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -55,6 +56,15 @@ public class ValoresBean {
      */
     public List<Departamento> getDepartamentosList() {
         return djc.findDepartamentoEntities();
+    }
+    
+    public List<Departamento> getDepartamentoCalendarioList(){
+        List<Departamento> list = djc.findDepartamentoEntities();
+        List<Departamento> aux = new ArrayList<>();
+        aux.add(list.get(1));
+        aux.add(list.get(2));
+        
+        return aux;
     }
     
     /**

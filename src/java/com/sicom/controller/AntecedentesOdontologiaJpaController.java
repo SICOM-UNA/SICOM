@@ -5,6 +5,7 @@
  */
 package com.sicom.controller;
 
+import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.entities.AntecedentesOdontologia;
 import java.io.Serializable;
@@ -13,13 +14,14 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Expediente;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 public class AntecedentesOdontologiaJpaController implements Serializable {
 
@@ -32,7 +34,21 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(AntecedentesOdontologia antecedentesOdontologia) {
+    public void create(AntecedentesOdontologia antecedentesOdontologia) throws IllegalOrphanException {
+        List<String> illegalOrphanMessages = null;
+        Expediente expedientePacientecedulaOrphanCheck = antecedentesOdontologia.getExpedientePacientecedula();
+        if (expedientePacientecedulaOrphanCheck != null) {
+            AntecedentesOdontologia oldAntecedentesOdontologiaOfExpedientePacientecedula = expedientePacientecedulaOrphanCheck.getAntecedentesOdontologia();
+            if (oldAntecedentesOdontologiaOfExpedientePacientecedula != null) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("The Expediente " + expedientePacientecedulaOrphanCheck + " already has an item of type AntecedentesOdontologia whose expedientePacientecedula column cannot be null. Please make another selection for the expedientePacientecedula field.");
+            }
+        }
+        if (illegalOrphanMessages != null) {
+            throw new IllegalOrphanException(illegalOrphanMessages);
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -44,7 +60,7 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
             }
             em.persist(antecedentesOdontologia);
             if (expedientePacientecedula != null) {
-                expedientePacientecedula.getAntecedentesOdontologiaList().add(antecedentesOdontologia);
+                expedientePacientecedula.setAntecedentesOdontologia(antecedentesOdontologia);
                 expedientePacientecedula = em.merge(expedientePacientecedula);
             }
             em.getTransaction().commit();
@@ -55,7 +71,7 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         }
     }
 
-    public void edit(AntecedentesOdontologia antecedentesOdontologia) throws NonexistentEntityException, Exception {
+    public void edit(AntecedentesOdontologia antecedentesOdontologia) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -63,17 +79,30 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
             AntecedentesOdontologia persistentAntecedentesOdontologia = em.find(AntecedentesOdontologia.class, antecedentesOdontologia.getId());
             Expediente expedientePacientecedulaOld = persistentAntecedentesOdontologia.getExpedientePacientecedula();
             Expediente expedientePacientecedulaNew = antecedentesOdontologia.getExpedientePacientecedula();
+            List<String> illegalOrphanMessages = null;
+            if (expedientePacientecedulaNew != null && !expedientePacientecedulaNew.equals(expedientePacientecedulaOld)) {
+                AntecedentesOdontologia oldAntecedentesOdontologiaOfExpedientePacientecedula = expedientePacientecedulaNew.getAntecedentesOdontologia();
+                if (oldAntecedentesOdontologiaOfExpedientePacientecedula != null) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("The Expediente " + expedientePacientecedulaNew + " already has an item of type AntecedentesOdontologia whose expedientePacientecedula column cannot be null. Please make another selection for the expedientePacientecedula field.");
+                }
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
             if (expedientePacientecedulaNew != null) {
                 expedientePacientecedulaNew = em.getReference(expedientePacientecedulaNew.getClass(), expedientePacientecedulaNew.getId());
                 antecedentesOdontologia.setExpedientePacientecedula(expedientePacientecedulaNew);
             }
             antecedentesOdontologia = em.merge(antecedentesOdontologia);
             if (expedientePacientecedulaOld != null && !expedientePacientecedulaOld.equals(expedientePacientecedulaNew)) {
-                expedientePacientecedulaOld.getAntecedentesOdontologiaList().remove(antecedentesOdontologia);
+                expedientePacientecedulaOld.setAntecedentesOdontologia(null);
                 expedientePacientecedulaOld = em.merge(expedientePacientecedulaOld);
             }
             if (expedientePacientecedulaNew != null && !expedientePacientecedulaNew.equals(expedientePacientecedulaOld)) {
-                expedientePacientecedulaNew.getAntecedentesOdontologiaList().add(antecedentesOdontologia);
+                expedientePacientecedulaNew.setAntecedentesOdontologia(antecedentesOdontologia);
                 expedientePacientecedulaNew = em.merge(expedientePacientecedulaNew);
             }
             em.getTransaction().commit();
@@ -107,7 +136,7 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
             }
             Expediente expedientePacientecedula = antecedentesOdontologia.getExpedientePacientecedula();
             if (expedientePacientecedula != null) {
-                expedientePacientecedula.getAntecedentesOdontologiaList().remove(antecedentesOdontologia);
+                expedientePacientecedula.setAntecedentesOdontologia(null);
                 expedientePacientecedula = em.merge(expedientePacientecedula);
             }
             em.remove(antecedentesOdontologia);

@@ -1,16 +1,15 @@
 package com.sicom.web.beans;
 
 import com.sicom.controller.AntecedentesGinecologiaJpaController;
-import com.sicom.controller.ValorJpaController;
+import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.entities.AntecedentesGinecologia;
 import com.sicom.entities.Paciente;
 import java.io.IOException;
-import java.util.List;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -22,9 +21,10 @@ import javax.persistence.Persistence;
 public class AntecedentesGinecologiaBean {
 
     private AntecedentesGinecologia antecedentesGinecologia;
-    private final AntecedentesGinecologiaJpaController agjc;
-    private final ValorJpaController vjc;
+    private final AntecedentesGinecologiaJpaController agc;
+    private Date fecha;
     private Paciente paciente;
+    private Boolean antecedenteNuevo;
 
     /**
      * Constructor
@@ -34,25 +34,19 @@ public class AntecedentesGinecologiaBean {
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
 
-        agjc = new AntecedentesGinecologiaJpaController(emf);
-        vjc = new ValorJpaController(emf);
+        agc = new AntecedentesGinecologiaJpaController(emf);
 
         paciente = (Paciente) ec.getSessionMap().remove("paciente");
-        boolean flag = false;
+        antecedentesGinecologia = (AntecedentesGinecologia) ec.getSessionMap().remove("antecedente");
 
-        try {
-            int codigoExpediente = (int) ec.getSessionMap().remove("codigoExp");
-
-            if (paciente != null) {
-                agjc.findAntecedentesGinecologia(codigoExpediente);
-            } else {
-                flag = true;
+        if (paciente != null) {
+            if (antecedentesGinecologia == null) {
+                antecedentesGinecologia = new AntecedentesGinecologia();
+                antecedenteNuevo = true;
+            }else{
+                antecedenteNuevo = false;
             }
-        } catch (NullPointerException ex) {
-            flag = true;
-        }
-
-        if (flag) {
+        } else {
             try {
                 String URL = ec.getRequestContextPath() + "/app/paciente/consultar#formulario";
                 ec.redirect(URL);
@@ -63,26 +57,52 @@ public class AntecedentesGinecologiaBean {
     }
 
     public void modificar() throws Exception {
-        agjc.edit(antecedentesGinecologia);
+        agc.edit(antecedentesGinecologia);
     }
 
+    
     public void save() {
-        try {
-            FacesContext fc = FacesContext.getCurrentInstance();
-            ExternalContext ec = fc.getExternalContext();
 
-            String URL = ec.getRequestContextPath() + "/app/paciente/informacion#datos";
-            ec.getSessionMap().put("paciente", paciente);
-            
-            ec.redirect(URL);
-        } catch (IOException ex) {
-            FacesMessage msg = new FacesMessage("Error, Paciente No Se Pudo Agregar");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+        if (antecedenteNuevo) {
+            try {
+                antecedentesGinecologia.setFecha(new Date());
+                antecedentesGinecologia.setExpedientePacientecedula(paciente.getExpediente());
+                agc.create(antecedentesGinecologia);
+                
+                FacesContext fc = FacesContext.getCurrentInstance();
+                ExternalContext ec = fc.getExternalContext();
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información agregada exitósamente.", null));
+                String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
+                ec.getRequestMap().put("paciente", paciente);
+                ec.redirect(URL);
+
+            } catch (IllegalOrphanException | IOException ex) {
+                Logger.getLogger(AntecedentesOdontologiaBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                antecedentesGinecologia.setFecha(new Date());
+                antecedentesGinecologia.setExpedientePacientecedula(paciente.getExpediente());
+                agc.edit(antecedentesGinecologia);
+                
+                FacesContext fc = FacesContext.getCurrentInstance();
+                ExternalContext ec = fc.getExternalContext();
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información modificada exitósamente.", null));
+                String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
+                ec.getRequestMap().put("paciente", paciente);
+                ec.redirect(URL);
+
+            } catch (IllegalOrphanException | IOException ex) {
+                Logger.getLogger(AntecedentesOdontologiaBean.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(AntecedentesOdontologiaBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
-    
-    public void cancelarAction(){
-    
+
+
+    public void cancelarAction() {
+
     }
 
     public AntecedentesGinecologia getObjAntecedente() {
@@ -100,4 +120,14 @@ public class AntecedentesGinecologiaBean {
     public void setPaciente(Paciente paciente) {
         this.paciente = paciente;
     }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+    
+    
 }

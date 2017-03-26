@@ -14,9 +14,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,40 +24,40 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 @Entity
 @Table(name = "antecedentesginecologia")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "AntecedentesGinecologia.findAll", query = "SELECT a FROM AntecedentesGinecologia a"),
-    @NamedQuery(name = "AntecedentesGinecologia.findById", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.id = :id"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByFecha", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.fecha = :fecha"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByHerediatarios", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.herediatarios = :herediatarios"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByPatologicos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.patologicos = :patologicos"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByNoPatologicos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.noPatologicos = :noPatologicos"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByQuirurgicos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.quirurgicos = :quirurgicos"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByMenarca", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.menarca = :menarca"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByFur", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.fur = :fur"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByCicloMestrual", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.cicloMestrual = :cicloMestrual"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByComentarioCicloMestrual", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioCicloMestrual = :comentarioCicloMestrual"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByPrs", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.prs = :prs"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByCompanerosSexuales", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.companerosSexuales = :companerosSexuales"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByPlanificacion", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.planificacion = :planificacion"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByComentarioPlanificacion", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioPlanificacion = :comentarioPlanificacion"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByActividadSexual", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.actividadSexual = :actividadSexual"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByUltimoParto", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.ultimoParto = :ultimoParto"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByUltimoPap", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.ultimoPap = :ultimoPap"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByLactanciaMaterna", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.lactanciaMaterna = :lactanciaMaterna"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByComentarioLactancia", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioLactancia = :comentarioLactancia"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByTipoParto", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.tipoParto = :tipoParto"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByMenopausia", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.menopausia = :menopausia"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByGesta", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.gesta = :gesta"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByPartos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.partos = :partos"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByAbortos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.abortos = :abortos"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByEctopico", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.ectopico = :ectopico"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByComentarioGPA", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioGPA = :comentarioGPA"),
-    @NamedQuery(name = "AntecedentesGinecologia.findByInformacionAdicional", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.informacionAdicional = :informacionAdicional")})
+    @NamedQuery(name = "AntecedentesGinecologia.findAll", query = "SELECT a FROM AntecedentesGinecologia a")
+    , @NamedQuery(name = "AntecedentesGinecologia.findById", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.id = :id")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByFecha", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.fecha = :fecha")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByHerediatarios", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.herediatarios = :herediatarios")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByPatologicos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.patologicos = :patologicos")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByNoPatologicos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.noPatologicos = :noPatologicos")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByQuirurgicos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.quirurgicos = :quirurgicos")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByMenarca", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.menarca = :menarca")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByFur", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.fur = :fur")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByCicloMestrual", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.cicloMestrual = :cicloMestrual")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByComentarioCicloMestrual", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioCicloMestrual = :comentarioCicloMestrual")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByPrs", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.prs = :prs")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByCompanerosSexuales", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.companerosSexuales = :companerosSexuales")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByPlanificacion", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.planificacion = :planificacion")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByComentarioPlanificacion", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioPlanificacion = :comentarioPlanificacion")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByActividadSexual", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.actividadSexual = :actividadSexual")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByUltimoParto", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.ultimoParto = :ultimoParto")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByUltimoPap", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.ultimoPap = :ultimoPap")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByLactanciaMaterna", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.lactanciaMaterna = :lactanciaMaterna")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByComentarioLactancia", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioLactancia = :comentarioLactancia")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByTipoParto", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.tipoParto = :tipoParto")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByMenopausia", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.menopausia = :menopausia")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByGesta", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.gesta = :gesta")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByPartos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.partos = :partos")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByAbortos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.abortos = :abortos")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByEctopico", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.ectopico = :ectopico")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByComentarioGPA", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioGPA = :comentarioGPA")
+    , @NamedQuery(name = "AntecedentesGinecologia.findByInformacionAdicional", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.informacionAdicional = :informacionAdicional")})
 public class AntecedentesGinecologia implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -123,7 +123,7 @@ public class AntecedentesGinecologia implements Serializable {
     @Column(name = "informacionAdicional")
     private String informacionAdicional;
     @JoinColumn(name = "Expediente_Paciente_cedula", referencedColumnName = "Paciente_cedula")
-    @ManyToOne(optional = false)
+    @OneToOne(optional = false)
     private Expediente expedientePacientecedula;
 
     public AntecedentesGinecologia() {

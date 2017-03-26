@@ -5,6 +5,7 @@
  */
 package com.sicom.controller;
 
+import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.entities.AntecedentesGinecologia;
 import java.io.Serializable;
@@ -13,14 +14,14 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Expediente;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 public class AntecedentesGinecologiaJpaController implements Serializable {
 
@@ -33,7 +34,21 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(AntecedentesGinecologia antecedentesGinecologia) {
+    public void create(AntecedentesGinecologia antecedentesGinecologia) throws IllegalOrphanException {
+        List<String> illegalOrphanMessages = null;
+        Expediente expedientePacientecedulaOrphanCheck = antecedentesGinecologia.getExpedientePacientecedula();
+        if (expedientePacientecedulaOrphanCheck != null) {
+            AntecedentesGinecologia oldAntecedentesGinecologiaOfExpedientePacientecedula = expedientePacientecedulaOrphanCheck.getAntecedentesGinecologia();
+            if (oldAntecedentesGinecologiaOfExpedientePacientecedula != null) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("The Expediente " + expedientePacientecedulaOrphanCheck + " already has an item of type AntecedentesGinecologia whose expedientePacientecedula column cannot be null. Please make another selection for the expedientePacientecedula field.");
+            }
+        }
+        if (illegalOrphanMessages != null) {
+            throw new IllegalOrphanException(illegalOrphanMessages);
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -45,7 +60,7 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
             }
             em.persist(antecedentesGinecologia);
             if (expedientePacientecedula != null) {
-                expedientePacientecedula.getAntecedentesGinecologiaList().add(antecedentesGinecologia);
+                expedientePacientecedula.setAntecedentesGinecologia(antecedentesGinecologia);
                 expedientePacientecedula = em.merge(expedientePacientecedula);
             }
             em.getTransaction().commit();
@@ -56,7 +71,7 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
         }
     }
 
-    public void edit(AntecedentesGinecologia antecedentesGinecologia) throws NonexistentEntityException, Exception {
+    public void edit(AntecedentesGinecologia antecedentesGinecologia) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -64,17 +79,30 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
             AntecedentesGinecologia persistentAntecedentesGinecologia = em.find(AntecedentesGinecologia.class, antecedentesGinecologia.getId());
             Expediente expedientePacientecedulaOld = persistentAntecedentesGinecologia.getExpedientePacientecedula();
             Expediente expedientePacientecedulaNew = antecedentesGinecologia.getExpedientePacientecedula();
+            List<String> illegalOrphanMessages = null;
+            if (expedientePacientecedulaNew != null && !expedientePacientecedulaNew.equals(expedientePacientecedulaOld)) {
+                AntecedentesGinecologia oldAntecedentesGinecologiaOfExpedientePacientecedula = expedientePacientecedulaNew.getAntecedentesGinecologia();
+                if (oldAntecedentesGinecologiaOfExpedientePacientecedula != null) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("The Expediente " + expedientePacientecedulaNew + " already has an item of type AntecedentesGinecologia whose expedientePacientecedula column cannot be null. Please make another selection for the expedientePacientecedula field.");
+                }
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
             if (expedientePacientecedulaNew != null) {
                 expedientePacientecedulaNew = em.getReference(expedientePacientecedulaNew.getClass(), expedientePacientecedulaNew.getId());
                 antecedentesGinecologia.setExpedientePacientecedula(expedientePacientecedulaNew);
             }
             antecedentesGinecologia = em.merge(antecedentesGinecologia);
             if (expedientePacientecedulaOld != null && !expedientePacientecedulaOld.equals(expedientePacientecedulaNew)) {
-                expedientePacientecedulaOld.getAntecedentesGinecologiaList().remove(antecedentesGinecologia);
+                expedientePacientecedulaOld.setAntecedentesGinecologia(null);
                 expedientePacientecedulaOld = em.merge(expedientePacientecedulaOld);
             }
             if (expedientePacientecedulaNew != null && !expedientePacientecedulaNew.equals(expedientePacientecedulaOld)) {
-                expedientePacientecedulaNew.getAntecedentesGinecologiaList().add(antecedentesGinecologia);
+                expedientePacientecedulaNew.setAntecedentesGinecologia(antecedentesGinecologia);
                 expedientePacientecedulaNew = em.merge(expedientePacientecedulaNew);
             }
             em.getTransaction().commit();
@@ -108,7 +136,7 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
             }
             Expediente expedientePacientecedula = antecedentesGinecologia.getExpedientePacientecedula();
             if (expedientePacientecedula != null) {
-                expedientePacientecedula.getAntecedentesGinecologiaList().remove(antecedentesGinecologia);
+                expedientePacientecedula.setAntecedentesGinecologia(null);
                 expedientePacientecedula = em.merge(expedientePacientecedula);
             }
             em.remove(antecedentesGinecologia);
@@ -144,9 +172,8 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
         }
     }
 
-    public AntecedentesGinecologia findAntecedentesGinecologia(int id) {
+    public AntecedentesGinecologia findAntecedentesGinecologia(Integer id) {
         EntityManager em = getEntityManager();
-        
         try {
             return em.find(AntecedentesGinecologia.class, id);
         } finally {
@@ -166,5 +193,5 @@ public class AntecedentesGinecologiaJpaController implements Serializable {
             em.close();
         }
     }
-
+    
 }

@@ -9,21 +9,21 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form>
+                <h:form id="formulario">
                     <p:growl id="messages" showDetail="true" />
-                    <p:panel header="Elija un departamento: " style="margin-bottom:10px;">
+                    <p:panel header="Seleccione un departamento: " style="margin-bottom:10px;">
                         <h:panelGrid columns="2" cellpadding="5">
                             <p:outputLabel value="Departamento:" class="descripcion" for="departamento"/>
                             <p:selectOneMenu id="departamento" value="#{citasBean.departamento}" requiredMessage="Falta el departamento" converter="omnifaces.SelectItemsConverter">
                                 <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                <f:selectItems value="#{valoresBean.departamentosList}" var="departamento" itemLabel="#{departamento.nombre}" itemValue="#{departamento}"/>
+                                <f:selectItems value="#{valoresBean.departamentoCalendarioList}" var="departamento" itemLabel="#{departamento.nombre}" itemValue="#{departamento}"/>
                             </p:selectOneMenu>
                         </h:panelGrid>
-                            <f:facet name="footer">
-                                <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                    <p:commandButton value="Ir al Calendario de Citas" icon="ui-icon-plus" action="#{citasBean.redirigir_a_Citas()}"/>
-                                </div>
-                            </f:facet>
+                        <f:facet name="footer">
+                            <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                <p:commandButton value="Ir al Calendario" icon="ui-icon-plus" action="#{citasBean.redirigir_a_Citas()}"/>
+                            </div>
+                        </f:facet>
                     </p:panel>
                 </h:form>
             </section>

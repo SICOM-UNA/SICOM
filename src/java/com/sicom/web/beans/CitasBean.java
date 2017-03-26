@@ -3,6 +3,9 @@ package com.sicom.web.beans;
 import com.sicom.controller.CitaJpaController;
 import com.sicom.entities.Cita;
 import com.sicom.entities.Departamento;
+import com.sicom.entities.Login;
+import com.sicom.entities.Personal;
+import java.io.IOException;
 import javax.persistence.Persistence;
 
 import java.io.Serializable;
@@ -10,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -40,39 +45,70 @@ public class CitasBean implements Serializable {
     private List<Cita> listaCitas;
     private final CitaJpaController cjc;
     private ScheduleModel eventModel;
-    private static Departamento savedDepartamento;
     private Departamento departamento;
 
     private ScheduleEvent event = new DefaultScheduleEvent();
 
     public CitasBean() {
         cjc = new CitaJpaController(Persistence.createEntityManagerFactory("SICOM_v1PU"));
+
         nuevaCita = new Cita();
         selectedCita = new Cita();
+
         listaCitas = cjc.findCitaEntities();
 
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+
+        departamento = (Departamento) ec.getSessionMap().remove("departamento");
     }
 
     @PostConstruct
     public void init() {
-        
-        if (savedDepartamento == null) {
-            departamento = new Departamento();
-        } else {
-            departamento = savedDepartamento;
-        }
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
 
-        eventModel = new DefaultScheduleModel();
-        for (Cita c : this.listaCitas) {
-            if (c.getDepartamentoid().getId() == this.departamento.getId()) {
-                this.eventModel.addEvent(new DefaultScheduleEvent(c.getNombre(), c.getFechaInicial(), c.getFechaFinal()));
+        Login login = (Login) ec.getSessionMap().get("login");
+        Personal p = login.getPersonal();
+
+        if (p != null) {
+            int dpto = p.getDepartamentoId().getId();
+
+            if (dpto != 4 && dpto != 1 && departamento == null) {
+                try {
+                    departamento = p.getDepartamentoId();
+                    String URL = ec.getRequestContextPath() + "/app/calendario/citas";
+                    ec.getSessionMap().put("departamento", departamento);
+                    ec.redirect(URL);
+                } catch (IOException ex) {
+                    Logger.getLogger(CitasBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                if (departamento != null) {
+                    eventModel = new DefaultScheduleModel();
+
+                    for (Cita c : this.listaCitas) {
+                        if (c.getDepartamentoid().getId() == this.departamento.getId()) {
+                            this.eventModel.addEvent(new DefaultScheduleEvent(c.getNombre(), c.getFechaInicial(), c.getFechaFinal()));
+                        }
+                    }
+                }
             }
-
         }
-
-        
     }
-    
+
+    public void redirigir_a_Citas() {
+        try {
+            FacesContext fc = FacesContext.getCurrentInstance();
+            ExternalContext ec = fc.getExternalContext();
+
+            String URL = ec.getRequestContextPath() + "/app/calendario/citas";
+            ec.getSessionMap().put("departamento", departamento);
+            ec.redirect(URL);
+        } catch (IOException ex) {
+            Logger.getLogger(CitasBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public void eliminar() {
         try {
@@ -242,32 +278,6 @@ public class CitasBean implements Serializable {
 
     public void setDepartamento(Departamento departamento) {
         this.departamento = departamento;
-    }
-
-    public static Departamento getSavedDepartamento() {
-        return savedDepartamento;
-    }
-
-    public static void setSavedDepartamento(Departamento savedDepartamento) {
-        CitasBean.savedDepartamento = savedDepartamento;
-    }
-
-    public void redirigir_a_Citas() {
-
-        try {
-
-            FacesContext fc = FacesContext.getCurrentInstance();
-            ExternalContext ec = fc.getExternalContext();
-
-            String URL = ec.getRequestContextPath() + "/app/citas/citas";
-
-            savedDepartamento = this.departamento;
-
-            ec.redirect(URL);
-
-        } catch (Exception ex) {
-        }
-
     }
 
 }

@@ -14,9 +14,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,21 +24,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 @Entity
 @Table(name = "antecedentesodontologia")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "AntecedentesOdontologia.findAll", query = "SELECT a FROM AntecedentesOdontologia a"),
-    @NamedQuery(name = "AntecedentesOdontologia.findById", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.id = :id"),
-    @NamedQuery(name = "AntecedentesOdontologia.findByFecha", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.fecha = :fecha"),
-    @NamedQuery(name = "AntecedentesOdontologia.findByPatologicos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.patologicos = :patologicos"),
-    @NamedQuery(name = "AntecedentesOdontologia.findByNoPatologicos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.noPatologicos = :noPatologicos"),
-    @NamedQuery(name = "AntecedentesOdontologia.findByHereditarios", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.hereditarios = :hereditarios"),
-    @NamedQuery(name = "AntecedentesOdontologia.findByAlergias", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.alergias = :alergias"),
-    @NamedQuery(name = "AntecedentesOdontologia.findByQuirurgicos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.quirurgicos = :quirurgicos"),
-    @NamedQuery(name = "AntecedentesOdontologia.findByHabitos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.habitos = :habitos")})
+    @NamedQuery(name = "AntecedentesOdontologia.findAll", query = "SELECT a FROM AntecedentesOdontologia a")
+    , @NamedQuery(name = "AntecedentesOdontologia.findById", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.id = :id")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByFecha", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.fecha = :fecha")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByPatologicos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.patologicos = :patologicos")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByNoPatologicos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.noPatologicos = :noPatologicos")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByHereditarios", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.hereditarios = :hereditarios")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByAlergias", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.alergias = :alergias")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByQuirurgicos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.quirurgicos = :quirurgicos")
+    , @NamedQuery(name = "AntecedentesOdontologia.findByHabitos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.habitos = :habitos")})
 public class AntecedentesOdontologia implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -65,7 +65,7 @@ public class AntecedentesOdontologia implements Serializable {
     @Column(name = "habitos")
     private String habitos;
     @JoinColumn(name = "Expediente_Paciente_cedula", referencedColumnName = "Paciente_cedula")
-    @ManyToOne(optional = false)
+    @OneToOne(optional = false)
     private Expediente expedientePacientecedula;
 
     public AntecedentesOdontologia() {

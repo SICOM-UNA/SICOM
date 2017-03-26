@@ -9,11 +9,8 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-
-
                 <h:form>
                     <p:growl id="messages" showDetail="true" />
-                    
 
                     <h:panelGrid columnClasses="value">
                         <h3 style="margin-top: 0">Calendario de Citas</h3>
@@ -25,8 +22,6 @@
                             <p:ajax event="eventResize" listener="#{citasBean.onEventResize}" update="messages" />
 
                         </p:schedule>
-
-
                     </h:panelGrid>
 
                     <p:dialog widgetVar="eventDialog" header="Detalle de la cita" showEffect="clip" hideEffect="clip">

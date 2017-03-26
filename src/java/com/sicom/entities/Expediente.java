@@ -25,14 +25,14 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author WVQ
+ * @author Pablo
  */
 @Entity
 @Table(name = "expediente")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Expediente.findAll", query = "SELECT e FROM Expediente e"),
-    @NamedQuery(name = "Expediente.findById", query = "SELECT e FROM Expediente e WHERE e.id = :id")})
+    @NamedQuery(name = "Expediente.findAll", query = "SELECT e FROM Expediente e")
+    , @NamedQuery(name = "Expediente.findById", query = "SELECT e FROM Expediente e WHERE e.id = :id")})
 public class Expediente implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,8 +41,8 @@ public class Expediente implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "expedientePacientecedula")
-    private List<AntecedentesGinecologia> antecedentesGinecologiaList;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "expedientePacientecedula")
+    private AntecedentesGinecologia antecedentesGinecologia;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "expedientePacientecedula")
     private List<ExamenColposcopia> examenColposcopiaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "expedientePacientecedula")
@@ -50,8 +50,8 @@ public class Expediente implements Serializable {
     @JoinColumn(name = "Paciente_cedula", referencedColumnName = "cedula")
     @OneToOne(optional = false)
     private Paciente pacientecedula;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "expedientePacientecedula")
-    private List<AntecedentesOdontologia> antecedentesOdontologiaList;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "expedientePacientecedula")
+    private AntecedentesOdontologia antecedentesOdontologia;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "expedientePacientecedula")
     private List<Documentos> documentosList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "expedientePacientecedula")
@@ -72,13 +72,12 @@ public class Expediente implements Serializable {
         this.id = id;
     }
 
-    @XmlTransient
-    public List<AntecedentesGinecologia> getAntecedentesGinecologiaList() {
-        return antecedentesGinecologiaList;
+    public AntecedentesGinecologia getAntecedentesGinecologia() {
+        return antecedentesGinecologia;
     }
 
-    public void setAntecedentesGinecologiaList(List<AntecedentesGinecologia> antecedentesGinecologiaList) {
-        this.antecedentesGinecologiaList = antecedentesGinecologiaList;
+    public void setAntecedentesGinecologia(AntecedentesGinecologia antecedentesGinecologia) {
+        this.antecedentesGinecologia = antecedentesGinecologia;
     }
 
     @XmlTransient
@@ -107,13 +106,12 @@ public class Expediente implements Serializable {
         this.pacientecedula = pacientecedula;
     }
 
-    @XmlTransient
-    public List<AntecedentesOdontologia> getAntecedentesOdontologiaList() {
-        return antecedentesOdontologiaList;
+    public AntecedentesOdontologia getAntecedentesOdontologia() {
+        return antecedentesOdontologia;
     }
 
-    public void setAntecedentesOdontologiaList(List<AntecedentesOdontologia> antecedentesOdontologiaList) {
-        this.antecedentesOdontologiaList = antecedentesOdontologiaList;
+    public void setAntecedentesOdontologia(AntecedentesOdontologia antecedentesOdontologia) {
+        this.antecedentesOdontologia = antecedentesOdontologia;
     }
 
     @XmlTransient
@@ -158,5 +156,5 @@ public class Expediente implements Serializable {
     public String toString() {
         return "com.sicom.entities.Expediente[ id=" + id + " ]";
     }
-    
+
 }

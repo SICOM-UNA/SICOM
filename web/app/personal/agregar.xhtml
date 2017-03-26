@@ -10,11 +10,12 @@
     <ui:define name="content">
         <div id="wrapper" align="center">
             <section>
-                <h:form id="formulario">
+                <h:form id="formPersonal">
                     <p:panel header="Agregar Usuario" id="panel1">
-
-                        <p:messages autoUpdate="true" closable="true" showDetail="true" id="msg"/>
-
+                        <p:messages id="msg" autoUpdate="true" closable="true" showDetail="false"/>
+                        <o:validateAll id="all" message="Todos los campos marcados con (*) son obligatorios"
+                            components="cedula nombre primerApellido segundoApellido fechaNacimiento telefono contrasena contrasena2" />
+                        
                         <div class="ui-grid ui-grid-responsive">
                             <div class="ui-grid-row">
                                 <div class="ui-grid-col-12" align="center">
@@ -24,14 +25,13 @@
                                                 <h:panelGrid columns="2" cellspacing="3">
                                                     <p:outputLabel value="Tipo Identificación:" for="id"/>
                                                     <p:selectOneMenu id="id">
-                                                        <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(8)}" />
+                                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(8)}" />
                                                     </p:selectOneMenu>
 
-                                                    <p:outputLabel for="id" value="Identificación:"/>
+                                                    <p:outputLabel for="cedula" value="Identificación:"/>
                                                     <h:panelGrid columns="3">
                                                         <p:inputMask id="cedula" value="#{personalBean.nuevoUsuario.personal.cedula}" required="true" maxlength="12" size="13" 
-                                                            mask="9-9999-9999" requiredMessage="Falta la identificación" placeholder="0-0000-0000" />
-                                                        <p:tooltip id="toolTipFocus" for="cedula" showEvent="focus" position="bottom" value="Identificación Nacional: Ej 0-0000-0000"/>
+                                                            mask="9-9999-9999" placeholder="0-0000-0000" />
                                                         <p:commandButton icon="ui-icon-search">
                                                             <f:ajax />
                                                         </p:commandButton>   
@@ -39,26 +39,24 @@
 
                                                     <p:outputLabel for="nombre" value="Nombre:" />
                                                     <p:inputText id="nombre" value="#{personalBean.nuevoUsuario.personal.nombre}" maxlength="45" class= "charWithSpaceToUpperCase"
-                                                        onkeyup="validar()" required="true" requiredMessage="Falta el nombre"/>
+                                                        onkeyup="validar()" required="true"/>
 
                                                     <p:outputLabel for="primerApellido" value="Primer apellido:" />
                                                     <p:inputText id="primerApellido" value="#{personalBean.nuevoUsuario.personal.primerApellido}" maxlength="45" class= "charToUpperCase" onkeyup="validar()"
-                                                        required="true" requiredMessage="Falta el primer apellido"/>
+                                                        required="true"/>
 
                                                     <p:outputLabel for="segundoApellido" value="Segundo apellido:" />
                                                     <p:inputText id="segundoApellido" value="#{personalBean.nuevoUsuario.personal.segundoApellido}" maxlength="45" class= "charToUpperCase" onkeyup="validar()"
-                                                        required="true" requiredMessage="Falta el segundo apellido"/>
+                                                        required="true"/>
 
                                                     <p:outputLabel for="fechaNacimiento" value="Fecha Nacimiento:"/>
                                                     <p:calendar id="fechaNacimiento" value="#{personalBean.nuevoUsuario.personal.nacimiento}" pattern="dd-MM-yyyy" mask="true" navigator="true"
-                                                        maxdate="#{now}" mindate="#{personalBean.disablePastDates()}" required="true" 
-                                                        requiredMessage=" - Falta fecha de nacimiento"
-                                                        placeholder="#{now.date}-#{now.month+1}-#{now.year+1900}"/>
+                                                        maxdate="#{now}" required="true" placeholder="#{now.date}-#{now.month+1}-#{now.year+1900}"/>
 
                                                     <p:outputLabel value="Estado Civil:" for="estadoCivil"/>
-                                                    <p:selectOneMenu id="estadoCivil" value="#{personalBean.nuevoUsuario.personal.estadoCivil}" requiredMessage="Falta el estado civil">
+                                                    <p:selectOneMenu id="estadoCivil" value="#{personalBean.nuevoUsuario.personal.estadoCivil}">
                                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                                        <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(2)}"/>
+                                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(2)}"/>
                                                     </p:selectOneMenu>
                                                 </h:panelGrid>
                                             </h:panelGrid>
@@ -68,23 +66,22 @@
                                                 <p:inputText id="cargo" value="#{personalBean.nuevoUsuario.personal.cargo}" maxlength="45" class= "charToUpperCase" onkeyup="validar()"/>
 
                                                 <p:outputLabel value="Género:" for="genero"/>
-                                                <p:selectOneMenu id="genero" value="#{personalBean.nuevoUsuario.personal.genero}" requiredMessage="Falta el género">
+                                                <p:selectOneMenu id="genero" value="#{personalBean.nuevoUsuario.personal.genero}">
                                                     <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                                    <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(1)}"/>
+                                                    <f:selectItems value="#{valoresBean.getDescripcionByCodeId(1)}"/>
                                                 </p:selectOneMenu>
 
-                                                <p:outputLabel value="Teléfono 1:" for="telefono1"/>
-                                                <p:inputMask id="telefono1" value="#{personalBean.nuevoUsuario.personal.telefono}" mask="9999-9999" 
-                                                    required="true" requiredMessage="Falta el teléfono 1" placeholder="0000-0000"/>
+                                                <p:outputLabel value="Teléfono:" for="telefono"/>
+                                                <p:inputMask id="telefono" value="#{personalBean.nuevoUsuario.personal.telefono}" mask="9999-9999" placeholder="0000-0000"/>
 
-                                                <p:outputLabel value="Teléfono 2:" for="telefono2"/>
-                                                <p:inputMask id="telefono2" value="#{personalBean.nuevoUsuario.personal.celular}" mask="9999-9999" placeholder="0000-0000"/>
+                                                <p:outputLabel value="Celular:" for="celular"/>
+                                                <p:inputMask id="celular" value="#{personalBean.nuevoUsuario.personal.celular}" mask="9999-9999" placeholder="0000-0000"/>
 
                                                 <p:outputLabel value="Correo electrónico:" for="email"/>
                                                 <h:panelGroup>
                                                     <p:tooltip for="email" showEvent="focus" position="bottom" value="Ejemplo de correo: cento_medico@outlook.com"/>
                                                     <p:inputText id="email" value="#{personalBean.nuevoUsuario.personal.correo}" class="correo" onkeyup="validar();" maxlength="45"
-                                                            validatorMessage="Formato de correo electrónico incorrecto" placeholder="nombre@dominio.com">
+                                                            validatorMessage="Formato inválido" placeholder="nombre@dominio.com">
                                                         <f:validateRegex pattern="((([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+))|(^\s*$))" />
                                                     </p:inputText>
                                                 </h:panelGroup>
@@ -104,8 +101,7 @@
 
                                         <h:panelGrid columns="2" cellpadding="5">
                                             <p:outputLabel value="Nombre de usuario:" class="descripcion" for="usuario"/>
-                                            <p:inputText id="usuario" value="#{personalBean.nuevoUsuario.usuario}" required="true" maxlength="45" 
-                                                requiredMessage="Falta el nombre de usuario"/>
+                                            <p:inputText id="usuario" value="#{personalBean.nuevoUsuario.usuario}" required="true" maxlength="45"/>
 
                                             <p:outputLabel value="Nueva contraseña:" class="descripcion" for="contrasena"/>
                                             <p:password id="contrasena" value="#{personalBean.nuevoUsuario.contrasena}" required="true" redisplay="false" maxlength="45" 
@@ -122,17 +118,16 @@
                                     <p:panel header="Información de Seguridad">
                                         <h:panelGrid columns="2">
                                             <p:outputLabel value="Departamento:" class="descripcion" for="departamento"/>
-                                            <p:selectOneMenu id="departamento" value="#{personalBean.nuevoUsuario.personal.departamentoId}" requiredMessage="Falta el departamento" converter="omnifaces.SelectItemsConverter">
+                                            <p:selectOneMenu id="departamento" value="#{personalBean.nuevoUsuario.personal.departamentoId}" converter="omnifaces.SelectItemsConverter">
                                                 <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
                                                 <f:selectItems value="#{valoresBean.departamentosList}" var="departamento" itemLabel="#{departamento.nombre}" itemValue="#{departamento}"/>
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Nivel de autorización:" class="descripcion" for="nivelAutorizacion"/>
-                                            <p:selectOneMenu id="nivelAutorizacion" value="#{personalBean.nuevoUsuario.personal.autorizacionNivel}" requiredMessage="Falta la autorización" converter="omnifaces.SelectItemsConverter">
+                                            <p:selectOneMenu id="nivelAutorizacion" value="#{personalBean.nuevoUsuario.personal.autorizacionNivel}" converter="omnifaces.SelectItemsConverter">
                                                 <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
                                                 <f:selectItems value="#{valoresBean.autorizacionList}" var="autorizacion" itemLabel="#{autorizacion.descripcion}" itemValue="#{autorizacion}"/>
                                             </p:selectOneMenu>
-
                                         </h:panelGrid>
                                     </p:panel>    
                                 </div>
@@ -140,14 +135,13 @@
                             
                             <f:facet name="footer">
                                 <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                    <p:commandButton value="Agregar" icon="ui-icon-plus" action="#{personalBean.agregar()}" update="formulario msg"/>
-                                    <p:commandButton value="Limpiar Formulario" immediate="true" icon="ui-icon-refresh">
-                                        <p:ajax resetValues="true" update="formulario" immediate="true"/>
+                                    <p:commandButton value="Agregar" icon="ui-icon-plus" action="#{personalBean.agregar()}" update="formPersonal"/>
+                                    <p:commandButton value="Cancelar" immediate="true" icon="ui-icon-refresh">
+                                        <p:ajax resetValues="true" update="formPersonal" immediate="true"/>
                                     </p:commandButton>
                                 </div>
                             </f:facet>
                         </div>
-
                     </p:panel>
                 </h:form>
             </section>
