@@ -5,21 +5,24 @@
  */
 package com.sicom.controller;
 
+import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.controller.exceptions.PreexistingEntityException;
 import com.sicom.entities.Login;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import com.sicom.entities.Personal;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 public class LoginJpaController implements Serializable {
 
@@ -37,7 +40,18 @@ public class LoginJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Personal personal = login.getPersonal();
             em.persist(login);
+            
+            if (personal != null) {
+                Login oldLoginusuarioOfPersonal = personal.getLoginUsuario();
+                if (oldLoginusuarioOfPersonal != null) {
+                    oldLoginusuarioOfPersonal.setPersonal(null);
+                    oldLoginusuarioOfPersonal = em.merge(oldLoginusuarioOfPersonal);
+                }
+                personal.setLoginUsuario(login);
+                personal = em.merge(personal);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findLogin(login.getUsuario()) != null) {
@@ -51,12 +65,38 @@ public class LoginJpaController implements Serializable {
         }
     }
 
-    public void edit(Login login) throws NonexistentEntityException, Exception {
+    public void edit(Login login) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Login persistentLogin = em.find(Login.class, login.getUsuario());
+            Personal personalOld = persistentLogin.getPersonal();
+            Personal personalNew = login.getPersonal();
+            List<String> illegalOrphanMessages = null;
+            if (personalOld != null && !personalOld.equals(personalNew)) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("You must retain Personal " + personalOld + " since its loginusuario field is not nullable.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            if (personalNew != null) {
+                personalNew = em.getReference(personalNew.getClass(), personalNew.getCedula());
+                login.setPersonal(personalNew);
+            }
             login = em.merge(login);
+            if (personalNew != null && !personalNew.equals(personalOld)) {
+                Login oldLoginusuarioOfPersonal = personalNew.getLoginUsuario();
+                if (oldLoginusuarioOfPersonal != null) {
+                    oldLoginusuarioOfPersonal.setPersonal(null);
+                    oldLoginusuarioOfPersonal = em.merge(oldLoginusuarioOfPersonal);
+                }
+                personalNew.setLoginUsuario(login);
+                personalNew = em.merge(personalNew);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -74,7 +114,7 @@ public class LoginJpaController implements Serializable {
         }
     }
 
-    public void destroy(String id) throws NonexistentEntityException {
+    public void destroy(String id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -85,6 +125,17 @@ public class LoginJpaController implements Serializable {
                 login.getUsuario();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The login with id " + id + " no longer exists.", enfe);
+            }
+            List<String> illegalOrphanMessages = null;
+            Personal personalOrphanCheck = login.getPersonal();
+            if (personalOrphanCheck != null) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Login (" + login + ") cannot be destroyed since the Personal " + personalOrphanCheck + " in its personal field has a non-nullable loginusuario field.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(login);
             em.getTransaction().commit();
@@ -140,5 +191,4 @@ public class LoginJpaController implements Serializable {
             em.close();
         }
     }
-    
 }

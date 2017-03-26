@@ -10,20 +10,22 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form id="formColposcopia">
+                <h:form id="formulario">
+                    <p:messages id="msg" autoUpdate="true" closable="true"/>
                     <p:panel header="Colposcopía">
+
                         <h:panelGroup>
                             <h:panelGrid columns="3" cellpadding="3">
+
                                 <p:outputLabel for="resultado" value="Resultado:" class="descripcion" />
                                 <p:selectOneMenu value="#{colposcopiaBean.resultado}"  id="resultado">
                                     <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                    <f:selectItems value="#{colposcopiaBean.consultarValoresPorCodigo(8)}"/>
+                                    <f:selectItems value="#{colposcopiaBean.consultarValoresPorCodigo(9)}"/>
                                 </p:selectOneMenu>  
                                 <p:inputText value="" size="86"/>
-                                <p:outputLabel for="moco" value="Moco: " class="descripcion"/>
-                                <p:selectBooleanCheckbox id="moco"/>
                             </h:panelGrid>                              
                         </h:panelGroup>
+
                         <div class="ui-grid ui-grid-responsive">
                             <div class="ui-grid-row">
                                 <div class="ui-grid-col-12">
@@ -44,8 +46,16 @@
                                                 <p:inputText id="schillerTxt" size="20"/>  
                                             </h:panelGrid>
                                             <h:panelGrid columns="2">
+                                                <p:outputLabel for="moco" value="Moco: " class="descripcion"/>
+                                                <p:selectOneRadio id="moco" value="">
+                                                    <f:selectItem itemLabel="Si" itemValue="1" />
+                                                    <f:selectItem itemLabel="No" itemValue="0" />
+                                                </p:selectOneRadio>
                                                 <p:outputLabel for="bx" value="BX:  " class="descripcion"/>
-                                                <p:selectBooleanCheckbox id="bx"/>
+                                                <p:selectOneRadio id="bx" value="">
+                                                    <f:selectItem itemLabel="Si" itemValue="1" />
+                                                    <f:selectItem itemLabel="No" itemValue="0" />
+                                                </p:selectOneRadio>
                                                 <p:outputLabel for="otros" value="Otros:" class="descripcion"/>
                                                 <p:inputTextarea id="otros" value="" maxlength="100" rows="3" cols = "46" autoResize="false"/>
                                             </h:panelGrid>
@@ -56,6 +66,13 @@
                                     <p:panel header="Vasos atípicos (Imágen)">
 
                                     </p:panel>
+                                    <f:facet name="footer" >
+                                        <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                            <p:commandButton value="Guardar" icon="ui-icon-disk" title="Click para guardar información." update="formulario msg"/>
+                                            <p:commandButton value="Cancelar" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true">
+                                            </p:commandButton> 
+                                        </div>
+                                    </f:facet>
                                 </div>
                             </div>
                         </div>

@@ -25,15 +25,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 @Entity
 @Table(name = "examenodontologia")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ExamenOdontologia.findAll", query = "SELECT e FROM ExamenOdontologia e")
-    , @NamedQuery(name = "ExamenOdontologia.findById", query = "SELECT e FROM ExamenOdontologia e WHERE e.id = :id")
-    , @NamedQuery(name = "ExamenOdontologia.findByFecha", query = "SELECT e FROM ExamenOdontologia e WHERE e.fecha = :fecha")})
+    @NamedQuery(name = "ExamenOdontologia.findAll", query = "SELECT e FROM ExamenOdontologia e"),
+    @NamedQuery(name = "ExamenOdontologia.findById", query = "SELECT e FROM ExamenOdontologia e WHERE e.id = :id"),
+    @NamedQuery(name = "ExamenOdontologia.findByFecha", query = "SELECT e FROM ExamenOdontologia e WHERE e.fecha = :fecha"),
+    @NamedQuery(name = "ExamenOdontologia.findByMotivoConsulta", query = "SELECT e FROM ExamenOdontologia e WHERE e.motivoConsulta = :motivoConsulta")})
 public class ExamenOdontologia implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,13 +47,15 @@ public class ExamenOdontologia implements Serializable {
     @Column(name = "fecha")
     @Temporal(TemporalType.DATE)
     private Date fecha;
+    @Column(name = "motivoConsulta")
+    private String motivoConsulta;
     @Basic(optional = false)
     @Lob
     @Column(name = "imagen")
     private byte[] imagen;
-    @JoinColumn(name = "Expediente_id", referencedColumnName = "id")
+    @JoinColumn(name = "Expediente_Paciente_cedula", referencedColumnName = "Paciente_cedula")
     @ManyToOne(optional = false)
-    private Expediente expedienteid;
+    private Expediente expedientePacientecedula;
     @JoinColumn(name = "Personal_cedula", referencedColumnName = "cedula")
     @ManyToOne(optional = false)
     private Personal personalcedula;
@@ -86,6 +89,14 @@ public class ExamenOdontologia implements Serializable {
         this.fecha = fecha;
     }
 
+    public String getMotivoConsulta() {
+        return motivoConsulta;
+    }
+
+    public void setMotivoConsulta(String motivoConsulta) {
+        this.motivoConsulta = motivoConsulta;
+    }
+
     public byte[] getImagen() {
         return imagen;
     }
@@ -94,12 +105,12 @@ public class ExamenOdontologia implements Serializable {
         this.imagen = imagen;
     }
 
-    public Expediente getExpedienteid() {
-        return expedienteid;
+    public Expediente getExpedientePacientecedula() {
+        return expedientePacientecedula;
     }
 
-    public void setExpedienteid(Expediente expedienteid) {
-        this.expedienteid = expedienteid;
+    public void setExpedientePacientecedula(Expediente expedientePacientecedula) {
+        this.expedientePacientecedula = expedientePacientecedula;
     }
 
     public Personal getPersonalcedula() {
@@ -123,10 +134,13 @@ public class ExamenOdontologia implements Serializable {
         if (!(object instanceof ExamenOdontologia)) {
             return false;
         }
+        
         ExamenOdontologia other = (ExamenOdontologia) object;
+        
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
+        
         return true;
     }
 
@@ -134,5 +148,4 @@ public class ExamenOdontologia implements Serializable {
     public String toString() {
         return "com.sicom.entities.ExamenOdontologia[ id=" + id + " ]";
     }
-    
 }

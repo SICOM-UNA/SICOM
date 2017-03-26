@@ -1,15 +1,10 @@
 package com.sicom.web.beans;
 
 import com.sicom.controller.LoginJpaController;
-import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.Personal;
 import com.sicom.controller.PersonalJpaController;
-import com.sicom.entities.Autorizacion;
-import com.sicom.entities.Departamento;
+import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.entities.Login;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,42 +12,28 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.Years;
 
 @ManagedBean
 @ViewScoped
 public class PersonalBean {
 
-    private static Personal savedPersonal;
-    private static Login savedUsuario;
-    
-    private Personal nuevoPersonal, selectedPersonal;
+    private Personal nuevoPersonal;
+    private Personal selectedPersonal;
     private List<Personal> listaPersonal;
-    private Login nuevoUsuario, selectedUsuario;
-
+    private Login nuevoUsuario;
+    private Login selectedUsuario;
     private final LoginJpaController ljc;
     private final PersonalJpaController pjc;
-    private final ValorJpaController cjv;
-
+   
     public PersonalBean() {
-
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
-
         nuevoPersonal = new Personal();
         nuevoUsuario = new Login();
-
         ljc = new LoginJpaController(emf);
         pjc = new PersonalJpaController(emf);
-        cjv = new ValorJpaController(emf);
-        
-        selectedPersonal = (savedPersonal != null)? savedPersonal : new Personal();
-        selectedUsuario = (savedUsuario != null)? savedUsuario : new Login();
     }
 
     @PostConstruct
@@ -60,56 +41,40 @@ public class PersonalBean {
         listaPersonal = pjc.findPersonalEntities();
     }
 
-    /*Formularios*/
-    public void save() {
-        selectedUsuario = ljc.findLogin(nuevoUsuario.getUsuario());
-        selectedPersonal = pjc.findPersonal(nuevoPersonal.getCedula());
-
-        if (selectedPersonal == null && selectedUsuario == null) {
-
-            agregarUsuario_Personal();
-
-            buscaIdBase();
-
-        } else {
-
-            if (selectedPersonal != null) {
-                FacesContext.getCurrentInstance().addMessage("msg", new FacesMessage("Ya se habia agregado el usuario anterioirmente, no podra agregar otro con la misma cédula: ", selectedPersonal.getCedula()));
-            }
-            if (selectedUsuario != null) {
-                FacesContext.getCurrentInstance().addMessage("msg", new FacesMessage("El nombre de Usuario ya esta ocupado por otro usuario por favor cambiarlo. Nombre: ", selectedUsuario.getUsuario()));
-            }
-        }
-    }
-
-    public void agregarUsuario_Personal() {
+    /**
+     * Agregar usuario
+     */
+    public void agregar() {
         try {
-            ljc.create(nuevoUsuario);
-
-            nuevoPersonal.setAutorizacionnivel(new Autorizacion(1));
-            nuevoPersonal.setDepartamentoid(new Departamento(1));
-            nuevoPersonal.setLoginusuario(nuevoUsuario);
-            pjc.create(nuevoPersonal);
-
+            Login login = ljc.findLogin(nuevoUsuario.getUsuario());
+            Personal personal = pjc.findPersonal(nuevoUsuario.getPersonal().getCedula());
+            
+            // Valida si el usuario ya existe
+            if(login != null && login.getUsuario().equals(nuevoUsuario.getUsuario())) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El usuario ya existe, por favor digite un nombre de usuario diferente de " + login.getUsuario(), null));
+            // Valida si el personal ya existe
+            } else if(personal != null && personal.getCedula().equals(nuevoUsuario.getPersonal().getCedula())) {
+                FacesContext.getCurrentInstance().addMessage(null
+                        , new FacesMessage(FacesMessage.SEVERITY_WARN, "El personal ya existe, por favor digite un número de cédula diferente de " + personal.getCedula(), null));
+            } else {
+                // Se agrega el usuario
+                ljc.create(nuevoUsuario);
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Usuario creado exitosamente", nuevoUsuario.getUsuario()));
+                nuevoUsuario = new Login();
+            }   
         } catch (Exception ex) {
             Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
-    public void consultarUsuario() {
+    public void consultar() {
         selectedUsuario = ljc.findLogin(selectedUsuario.getUsuario());
 
         if (selectedUsuario == null) {
-            // setSelectedUsuario(new Login());
+            selectedUsuario = new Login();
         }
     }
 
-    public void modificar() throws Exception {
-        pjc.edit(selectedPersonal);
-    }
-
-    /*
     public void modificarUsuario() {
         try {
             ljc.edit(selectedUsuario);
@@ -117,79 +82,16 @@ public class PersonalBean {
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("login", selectedUsuario);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Usuario actualizado exitosamente", selectedUsuario.getUsuario()));
         } catch (NonexistentEntityException ex) {
-            Logger.getLogger(UsuarioBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            Logger.getLogger(UsuarioBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-     */
-    public Personal consultarPersonal(String id) {
+    
+    public Personal consultarPersonalPorId(String id) {
         return pjc.findPersonal(id);
     }
 
-    public List<String> consultarValoresPorCodigo(Integer codigo) {
-        return this.cjv.findByCodeId(codigo);
-    }
-
-    public void buscaIdBase(){
-
-        if (selectedPersonal.getCedula() != null) {
-
-            Personal p = this.pjc.findPersonal(selectedPersonal.getCedula());
-            
-            if (p != null) {
-
-                FacesContext fc = FacesContext.getCurrentInstance();
-                ExternalContext ec = fc.getExternalContext();
-
-                String URL = ec.getRequestContextPath() + "/app/personal/informacion";
-
-                savedPersonal = p;
-                savedUsuario = ljc.findLogin(p.getLoginusuario().getUsuario());
-
-                try {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Personal encontrado exitosamente."));
-                    ec.redirect(URL);
-                } catch (IOException ex) {
-
-                }
-            } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("No existe pesonl asignado a la identificación: " + selectedPersonal.getCedula()));
-            }
-        } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("La cédula no puede ser nula."));
-        }
-    }
-
-//-------------------------------------------------------------------------------------------
-// Otros metodos
-    public Date disablePastDates() {
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE, -43800); //43800 = 120 años
-        return c.getTime();
-    }
-
-    public int calculaEdad() {
-        if (selectedPersonal.getNacimiento() != null) {
-            LocalDate birthdate = new LocalDate(selectedPersonal.getNacimiento());
-            LocalDate now = new LocalDate();
-            return Years.yearsBetween(birthdate, now).getYears();
-        }
-        return 0;
-    }
-
-    public int PersonalNuevoEdad() {
-        if (this.nuevoPersonal != null && this.nuevoPersonal.getNacimiento() != null) {
-            DateTime birthdate = new DateTime(nuevoPersonal.getNacimiento());
-            DateTime now = new DateTime();
-            return Years.yearsBetween(birthdate, now).getYears();
-        } else {
-            return 0;
-        }
-    }
-
-    //----------------------------------------------------------------------------------------------
-    // GETTERS Y SETTERS
     /**
      * @return the listaPersonal
      */
@@ -259,21 +161,4 @@ public class PersonalBean {
     public void setSelectedUsuario(Login selectedUsuario) {
         this.selectedUsuario = selectedUsuario;
     }
-
-    public static Personal getSavedPersonal() {
-        return savedPersonal;
-    }
-
-    public static void setSavedPersonal(Personal savedPersonal) {
-        PersonalBean.savedPersonal = savedPersonal;
-    }
-
-    public static Login getSavedUsuario() {
-        return savedUsuario;
-    }
-
-    public static void setSavedUsuario(Login savedUsuario) {
-        PersonalBean.savedUsuario = savedUsuario;
-    }
-    
 }

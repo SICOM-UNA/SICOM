@@ -24,19 +24,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 @Entity
 @Table(name = "cita")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Cita.findAll", query = "SELECT c FROM Cita c")
-    , @NamedQuery(name = "Cita.findById", query = "SELECT c FROM Cita c WHERE c.id = :id")
-    , @NamedQuery(name = "Cita.findByFecha", query = "SELECT c FROM Cita c WHERE c.fecha = :fecha")
-    , @NamedQuery(name = "Cita.findByEstado", query = "SELECT c FROM Cita c WHERE c.estado = :estado")
-    , @NamedQuery(name = "Cita.findByMotivo", query = "SELECT c FROM Cita c WHERE c.motivo = :motivo")
-    , @NamedQuery(name = "Cita.findByNombre", query = "SELECT c FROM Cita c WHERE c.nombre = :nombre")
-    , @NamedQuery(name = "Cita.findByTelefono", query = "SELECT c FROM Cita c WHERE c.telefono = :telefono")})
+    @NamedQuery(name = "Cita.findAll", query = "SELECT c FROM Cita c"),
+    @NamedQuery(name = "Cita.findById", query = "SELECT c FROM Cita c WHERE c.id = :id"),
+    @NamedQuery(name = "Cita.findByFecha_Inicial", query = "SELECT c FROM Cita c WHERE c.fechaInicial = :fechaInicial"),
+    @NamedQuery(name = "Cita.findByFecha_Final", query = "SELECT c FROM Cita c WHERE c.fechaFinal = :fechaFinal"),
+    @NamedQuery(name = "Cita.findByEstado", query = "SELECT c FROM Cita c WHERE c.estado = :estado"),
+    @NamedQuery(name = "Cita.findByMotivo", query = "SELECT c FROM Cita c WHERE c.motivo = :motivo"),
+    @NamedQuery(name = "Cita.findByNombre", query = "SELECT c FROM Cita c WHERE c.nombre = :nombre"),
+    @NamedQuery(name = "Cita.findByTelefono", query = "SELECT c FROM Cita c WHERE c.telefono = :telefono")})
 public class Cita implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,9 +46,12 @@ public class Cita implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Column(name = "fecha")
+    @Column(name = "fechaInicial")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fecha;
+    private Date fechaInicial;
+    @Column(name = "fechaFinal")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaFinal;
     @Column(name = "estado")
     private String estado;
     @Column(name = "motivo")
@@ -55,7 +59,7 @@ public class Cita implements Serializable {
     @Column(name = "nombre")
     private String nombre;
     @Column(name = "telefono")
-    private Integer telefono;
+    private String telefono;
     @JoinColumn(name = "Departamento_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Departamento departamentoid;
@@ -75,12 +79,20 @@ public class Cita implements Serializable {
         this.id = id;
     }
 
-    public Date getFecha() {
-        return fecha;
+    public Date getFechaInicial() {
+        return fechaInicial;
     }
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
+    public void setFechaInicial(Date fechaInicial) {
+        this.fechaInicial = fechaInicial;
+    }
+
+    public Date getFechaFinal() {
+        return fechaFinal;
+    }
+
+    public void setFechaFinal(Date fechaFinal) {
+        this.fechaFinal = fechaFinal;
     }
 
     public String getEstado() {
@@ -107,11 +119,11 @@ public class Cita implements Serializable {
         this.nombre = nombre;
     }
 
-    public Integer getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(Integer telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
@@ -136,10 +148,13 @@ public class Cita implements Serializable {
         if (!(object instanceof Cita)) {
             return false;
         }
+        
         Cita other = (Cita) object;
+        
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
+        
         return true;
     }
 
@@ -147,5 +162,4 @@ public class Cita implements Serializable {
     public String toString() {
         return "com.sicom.entities.Cita[ id=" + id + " ]";
     }
-    
 }

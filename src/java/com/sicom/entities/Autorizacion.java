@@ -21,15 +21,15 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 @Entity
 @Table(name = "autorizacion")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Autorizacion.findAll", query = "SELECT a FROM Autorizacion a")
-    , @NamedQuery(name = "Autorizacion.findByNivel", query = "SELECT a FROM Autorizacion a WHERE a.nivel = :nivel")
-    , @NamedQuery(name = "Autorizacion.findByDescripcion", query = "SELECT a FROM Autorizacion a WHERE a.descripcion = :descripcion")})
+    @NamedQuery(name = "Autorizacion.findAll", query = "SELECT a FROM Autorizacion a"),
+    @NamedQuery(name = "Autorizacion.findByNivel", query = "SELECT a FROM Autorizacion a WHERE a.nivel = :nivel"),
+    @NamedQuery(name = "Autorizacion.findByDescripcion", query = "SELECT a FROM Autorizacion a WHERE a.descripcion = :descripcion")})
 public class Autorizacion implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,7 +40,7 @@ public class Autorizacion implements Serializable {
     @Basic(optional = false)
     @Column(name = "descripcion")
     private String descripcion;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "autorizacionnivel")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "autorizacionNivel")
     private List<Personal> personalList;
 
     public Autorizacion() {

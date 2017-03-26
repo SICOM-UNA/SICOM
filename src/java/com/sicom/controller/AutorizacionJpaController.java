@@ -22,7 +22,7 @@ import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 public class AutorizacionJpaController implements Serializable {
 
@@ -51,8 +51,8 @@ public class AutorizacionJpaController implements Serializable {
             autorizacion.setPersonalList(attachedPersonalList);
             em.persist(autorizacion);
             for (Personal personalListPersonal : autorizacion.getPersonalList()) {
-                Autorizacion oldAutorizacionnivelOfPersonalListPersonal = personalListPersonal.getAutorizacionnivel();
-                personalListPersonal.setAutorizacionnivel(autorizacion);
+                Autorizacion oldAutorizacionnivelOfPersonalListPersonal = personalListPersonal.getAutorizacionNivel();
+                personalListPersonal.setAutorizacionNivel(autorizacion);
                 personalListPersonal = em.merge(personalListPersonal);
                 if (oldAutorizacionnivelOfPersonalListPersonal != null) {
                     oldAutorizacionnivelOfPersonalListPersonal.getPersonalList().remove(personalListPersonal);
@@ -102,8 +102,8 @@ public class AutorizacionJpaController implements Serializable {
             autorizacion = em.merge(autorizacion);
             for (Personal personalListNewPersonal : personalListNew) {
                 if (!personalListOld.contains(personalListNewPersonal)) {
-                    Autorizacion oldAutorizacionnivelOfPersonalListNewPersonal = personalListNewPersonal.getAutorizacionnivel();
-                    personalListNewPersonal.setAutorizacionnivel(autorizacion);
+                    Autorizacion oldAutorizacionnivelOfPersonalListNewPersonal = personalListNewPersonal.getAutorizacionNivel();
+                    personalListNewPersonal.setAutorizacionNivel(autorizacion);
                     personalListNewPersonal = em.merge(personalListNewPersonal);
                     if (oldAutorizacionnivelOfPersonalListNewPersonal != null && !oldAutorizacionnivelOfPersonalListNewPersonal.equals(autorizacion)) {
                         oldAutorizacionnivelOfPersonalListNewPersonal.getPersonalList().remove(personalListNewPersonal);

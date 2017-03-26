@@ -9,8 +9,16 @@
         <div id="wrapper">
             <section>
                 <h:form>
-                    <p:messages id="msg" autoUpdate="true" closable="true" />
-
+                     <p:panel header="Información del Paciente">
+                        <h:panelGrid columns="6">
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion" value="#{antecedentesOdontologiaBean.paciente.nombre} #{antecedentesGinecologiaBean.paciente.primerApellido} #{antecedentesGinecologiaBean.paciente.segundoApellido}"/>
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion" value="#{antecedentesOdontologiaBean.paciente.cedula}"/>
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion" value="Última edición: #{now}"/>
+                        </h:panelGrid>
+                    </p:panel>
                     <!-- Antecedentes Odontologos -->
                     <p:panel header="Historia Clínica" >
                         <h:panelGrid columns="1">
@@ -42,11 +50,6 @@
                             <h:panelGroup>
                                 <p:outputLabel class="descripcion" value="Hábitos: "/>
                                 <p:inputTextarea value="#{antecedentesOdontologiaBean.objAntecedente.habitos}" cols="118" rows="5" autoResize="false" readonly="true"/>
-                            </h:panelGroup>
-
-                            <h:panelGroup>
-                                <p:outputLabel class="descripcion" value="Motivo de consulta: "/>
-                                <p:inputTextarea value="#{antecedentesOdontologiaBean.objAntecedente.moitvoConsulta}" cols="118" rows="5" autoResize="false" readonly="true"/>
                             </h:panelGroup>
 
                             <h:panelGroup>

@@ -13,13 +13,14 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Expediente;
+import com.sicom.entities.Personal;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 public class ExamenGinecologiaJpaController implements Serializable {
 
@@ -37,15 +38,24 @@ public class ExamenGinecologiaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Expediente expedienteid = examenGinecologia.getExpedienteid();
-            if (expedienteid != null) {
-                expedienteid = em.getReference(expedienteid.getClass(), expedienteid.getId());
-                examenGinecologia.setExpedienteid(expedienteid);
+            Expediente expedientePacientecedula = examenGinecologia.getExpedientePacientecedula();
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula = em.getReference(expedientePacientecedula.getClass(), expedientePacientecedula.getId());
+                examenGinecologia.setExpedientePacientecedula(expedientePacientecedula);
+            }
+            Personal personalcedula = examenGinecologia.getPersonalcedula();
+            if (personalcedula != null) {
+                personalcedula = em.getReference(personalcedula.getClass(), personalcedula.getCedula());
+                examenGinecologia.setPersonalcedula(personalcedula);
             }
             em.persist(examenGinecologia);
-            if (expedienteid != null) {
-                expedienteid.getExamenGinecologiaList().add(examenGinecologia);
-                expedienteid = em.merge(expedienteid);
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula.getExamenGinecologiaList().add(examenGinecologia);
+                expedientePacientecedula = em.merge(expedientePacientecedula);
+            }
+            if (personalcedula != null) {
+                personalcedula.getExamenGinecologiaList().add(examenGinecologia);
+                personalcedula = em.merge(personalcedula);
             }
             em.getTransaction().commit();
         } finally {
@@ -61,20 +71,34 @@ public class ExamenGinecologiaJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             ExamenGinecologia persistentExamenGinecologia = em.find(ExamenGinecologia.class, examenGinecologia.getId());
-            Expediente expedienteidOld = persistentExamenGinecologia.getExpedienteid();
-            Expediente expedienteidNew = examenGinecologia.getExpedienteid();
-            if (expedienteidNew != null) {
-                expedienteidNew = em.getReference(expedienteidNew.getClass(), expedienteidNew.getId());
-                examenGinecologia.setExpedienteid(expedienteidNew);
+            Expediente expedientePacientecedulaOld = persistentExamenGinecologia.getExpedientePacientecedula();
+            Expediente expedientePacientecedulaNew = examenGinecologia.getExpedientePacientecedula();
+            Personal personalcedulaOld = persistentExamenGinecologia.getPersonalcedula();
+            Personal personalcedulaNew = examenGinecologia.getPersonalcedula();
+            if (expedientePacientecedulaNew != null) {
+                expedientePacientecedulaNew = em.getReference(expedientePacientecedulaNew.getClass(), expedientePacientecedulaNew.getId());
+                examenGinecologia.setExpedientePacientecedula(expedientePacientecedulaNew);
+            }
+            if (personalcedulaNew != null) {
+                personalcedulaNew = em.getReference(personalcedulaNew.getClass(), personalcedulaNew.getCedula());
+                examenGinecologia.setPersonalcedula(personalcedulaNew);
             }
             examenGinecologia = em.merge(examenGinecologia);
-            if (expedienteidOld != null && !expedienteidOld.equals(expedienteidNew)) {
-                expedienteidOld.getExamenGinecologiaList().remove(examenGinecologia);
-                expedienteidOld = em.merge(expedienteidOld);
+            if (expedientePacientecedulaOld != null && !expedientePacientecedulaOld.equals(expedientePacientecedulaNew)) {
+                expedientePacientecedulaOld.getExamenGinecologiaList().remove(examenGinecologia);
+                expedientePacientecedulaOld = em.merge(expedientePacientecedulaOld);
             }
-            if (expedienteidNew != null && !expedienteidNew.equals(expedienteidOld)) {
-                expedienteidNew.getExamenGinecologiaList().add(examenGinecologia);
-                expedienteidNew = em.merge(expedienteidNew);
+            if (expedientePacientecedulaNew != null && !expedientePacientecedulaNew.equals(expedientePacientecedulaOld)) {
+                expedientePacientecedulaNew.getExamenGinecologiaList().add(examenGinecologia);
+                expedientePacientecedulaNew = em.merge(expedientePacientecedulaNew);
+            }
+            if (personalcedulaOld != null && !personalcedulaOld.equals(personalcedulaNew)) {
+                personalcedulaOld.getExamenGinecologiaList().remove(examenGinecologia);
+                personalcedulaOld = em.merge(personalcedulaOld);
+            }
+            if (personalcedulaNew != null && !personalcedulaNew.equals(personalcedulaOld)) {
+                personalcedulaNew.getExamenGinecologiaList().add(examenGinecologia);
+                personalcedulaNew = em.merge(personalcedulaNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -105,10 +129,15 @@ public class ExamenGinecologiaJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The examenGinecologia with id " + id + " no longer exists.", enfe);
             }
-            Expediente expedienteid = examenGinecologia.getExpedienteid();
-            if (expedienteid != null) {
-                expedienteid.getExamenGinecologiaList().remove(examenGinecologia);
-                expedienteid = em.merge(expedienteid);
+            Expediente expedientePacientecedula = examenGinecologia.getExpedientePacientecedula();
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula.getExamenGinecologiaList().remove(examenGinecologia);
+                expedientePacientecedula = em.merge(expedientePacientecedula);
+            }
+            Personal personalcedula = examenGinecologia.getPersonalcedula();
+            if (personalcedula != null) {
+                personalcedula.getExamenGinecologiaList().remove(examenGinecologia);
+                personalcedula = em.merge(personalcedula);
             }
             em.remove(examenGinecologia);
             em.getTransaction().commit();

@@ -13,13 +13,14 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Expediente;
+import com.sicom.entities.Personal;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 public class ExamenOdontologiaJpaController implements Serializable {
 
@@ -37,15 +38,24 @@ public class ExamenOdontologiaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Expediente expedienteid = examenOdontologia.getExpedienteid();
-            if (expedienteid != null) {
-                expedienteid = em.getReference(expedienteid.getClass(), expedienteid.getId());
-                examenOdontologia.setExpedienteid(expedienteid);
+            Expediente expedientePacientecedula = examenOdontologia.getExpedientePacientecedula();
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula = em.getReference(expedientePacientecedula.getClass(), expedientePacientecedula.getId());
+                examenOdontologia.setExpedientePacientecedula(expedientePacientecedula);
+            }
+            Personal personalcedula = examenOdontologia.getPersonalcedula();
+            if (personalcedula != null) {
+                personalcedula = em.getReference(personalcedula.getClass(), personalcedula.getCedula());
+                examenOdontologia.setPersonalcedula(personalcedula);
             }
             em.persist(examenOdontologia);
-            if (expedienteid != null) {
-                expedienteid.getExamenOdontologiaList().add(examenOdontologia);
-                expedienteid = em.merge(expedienteid);
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula.getExamenOdontologiaList().add(examenOdontologia);
+                expedientePacientecedula = em.merge(expedientePacientecedula);
+            }
+            if (personalcedula != null) {
+                personalcedula.getExamenOdontologiaList().add(examenOdontologia);
+                personalcedula = em.merge(personalcedula);
             }
             em.getTransaction().commit();
         } finally {
@@ -61,20 +71,34 @@ public class ExamenOdontologiaJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             ExamenOdontologia persistentExamenOdontologia = em.find(ExamenOdontologia.class, examenOdontologia.getId());
-            Expediente expedienteidOld = persistentExamenOdontologia.getExpedienteid();
-            Expediente expedienteidNew = examenOdontologia.getExpedienteid();
-            if (expedienteidNew != null) {
-                expedienteidNew = em.getReference(expedienteidNew.getClass(), expedienteidNew.getId());
-                examenOdontologia.setExpedienteid(expedienteidNew);
+            Expediente expedientePacientecedulaOld = persistentExamenOdontologia.getExpedientePacientecedula();
+            Expediente expedientePacientecedulaNew = examenOdontologia.getExpedientePacientecedula();
+            Personal personalcedulaOld = persistentExamenOdontologia.getPersonalcedula();
+            Personal personalcedulaNew = examenOdontologia.getPersonalcedula();
+            if (expedientePacientecedulaNew != null) {
+                expedientePacientecedulaNew = em.getReference(expedientePacientecedulaNew.getClass(), expedientePacientecedulaNew.getId());
+                examenOdontologia.setExpedientePacientecedula(expedientePacientecedulaNew);
+            }
+            if (personalcedulaNew != null) {
+                personalcedulaNew = em.getReference(personalcedulaNew.getClass(), personalcedulaNew.getCedula());
+                examenOdontologia.setPersonalcedula(personalcedulaNew);
             }
             examenOdontologia = em.merge(examenOdontologia);
-            if (expedienteidOld != null && !expedienteidOld.equals(expedienteidNew)) {
-                expedienteidOld.getExamenOdontologiaList().remove(examenOdontologia);
-                expedienteidOld = em.merge(expedienteidOld);
+            if (expedientePacientecedulaOld != null && !expedientePacientecedulaOld.equals(expedientePacientecedulaNew)) {
+                expedientePacientecedulaOld.getExamenOdontologiaList().remove(examenOdontologia);
+                expedientePacientecedulaOld = em.merge(expedientePacientecedulaOld);
             }
-            if (expedienteidNew != null && !expedienteidNew.equals(expedienteidOld)) {
-                expedienteidNew.getExamenOdontologiaList().add(examenOdontologia);
-                expedienteidNew = em.merge(expedienteidNew);
+            if (expedientePacientecedulaNew != null && !expedientePacientecedulaNew.equals(expedientePacientecedulaOld)) {
+                expedientePacientecedulaNew.getExamenOdontologiaList().add(examenOdontologia);
+                expedientePacientecedulaNew = em.merge(expedientePacientecedulaNew);
+            }
+            if (personalcedulaOld != null && !personalcedulaOld.equals(personalcedulaNew)) {
+                personalcedulaOld.getExamenOdontologiaList().remove(examenOdontologia);
+                personalcedulaOld = em.merge(personalcedulaOld);
+            }
+            if (personalcedulaNew != null && !personalcedulaNew.equals(personalcedulaOld)) {
+                personalcedulaNew.getExamenOdontologiaList().add(examenOdontologia);
+                personalcedulaNew = em.merge(personalcedulaNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -105,10 +129,15 @@ public class ExamenOdontologiaJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The examenOdontologia with id " + id + " no longer exists.", enfe);
             }
-            Expediente expedienteid = examenOdontologia.getExpedienteid();
-            if (expedienteid != null) {
-                expedienteid.getExamenOdontologiaList().remove(examenOdontologia);
-                expedienteid = em.merge(expedienteid);
+            Expediente expedientePacientecedula = examenOdontologia.getExpedientePacientecedula();
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula.getExamenOdontologiaList().remove(examenOdontologia);
+                expedientePacientecedula = em.merge(expedientePacientecedula);
+            }
+            Personal personalcedula = examenOdontologia.getPersonalcedula();
+            if (personalcedula != null) {
+                personalcedula.getExamenOdontologiaList().remove(examenOdontologia);
+                personalcedula = em.merge(personalcedula);
             }
             em.remove(examenOdontologia);
             em.getTransaction().commit();

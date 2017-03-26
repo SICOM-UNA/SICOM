@@ -17,7 +17,7 @@
                             <p:spacer width="50"/>
                             <p:outputLabel class="descripcion" value="#{antecedentesGinecologiaBean.paciente.nombre} #{antecedentesGinecologiaBean.paciente.primerApellido} #{antecedentesGinecologiaBean.paciente.segundoApellido}"/>
                             <p:spacer width="50"/>
-                            <p:outputLabel class="descripcion" value="#{antecedentesGinecologiaBean.paciente.id}"/>
+                            <p:outputLabel class="descripcion" value="#{antecedentesGinecologiaBean.paciente.cedula}"/>
                             <p:spacer width="50"/>
                             <p:outputLabel class="descripcion" value="Última edición: #{now}"/>
                         </h:panelGrid>
@@ -56,12 +56,8 @@
                             </h:panelGroup>
 
                             <h:panelGroup>
-                                <p:outputLabel class="descripcion" value="Motivo de consulta: "/>
-                                <p:inputTextarea value="#{antecedentesOdontologiaBean.objAntecedente.moitvoConsulta}" cols="118" rows="5" maxlength="540"/>
-                            </h:panelGroup>
-
-                            <h:panelGroup>
-                                <p:commandButton value="Guardar datos" action="#{antecedentesOdontologiaBean.save()}" title="Click para guardar información"/>
+                                <p:commandButton value="Guardar Cambios" action="#{antecedentesOdontologiaBean.save()}" title="Click para guardar información"/>
+                                <p:commandButton value="Volver" action="#{antecedentesOdontologiaBean.save()}" title="Click para devolverse a información de paciente."/>
                             </h:panelGroup>
                        
                         </h:panelGrid>

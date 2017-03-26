@@ -6,6 +6,7 @@
 package com.sicom.controller;
 
 import com.sicom.controller.exceptions.NonexistentEntityException;
+import com.sicom.controller.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -13,6 +14,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Codigo;
 import com.sicom.entities.Valor;
+import com.sicom.entities.ValorPK;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -20,7 +24,7 @@ import javax.persistence.TypedQuery;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 public class ValorJpaController implements Serializable {
 
@@ -33,22 +37,31 @@ public class ValorJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Valor valor) {
+    public void create(Valor valor) throws PreexistingEntityException, Exception {
+        if (valor.getValorPK() == null) {
+            valor.setValorPK(new ValorPK());
+        }
+        valor.getValorPK().setCodigoId(valor.getCodigo().getId());
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Codigo codigoId = valor.getCodigoId();
-            if (codigoId != null) {
-                codigoId = em.getReference(codigoId.getClass(), codigoId.getId());
-                valor.setCodigoId(codigoId);
+            Codigo codigo = valor.getCodigo();
+            if (codigo != null) {
+                codigo = em.getReference(codigo.getClass(), codigo.getId());
+                valor.setCodigo(codigo);
             }
             em.persist(valor);
-            if (codigoId != null) {
-                codigoId.getValorList().add(valor);
-                codigoId = em.merge(codigoId);
+            if (codigo != null) {
+                codigo.getValorList().add(valor);
+                codigo = em.merge(codigo);
             }
             em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (findValor(valor.getValorPK()) != null) {
+                throw new PreexistingEntityException("Valor " + valor + " already exists.", ex);
+            }
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -57,31 +70,32 @@ public class ValorJpaController implements Serializable {
     }
 
     public void edit(Valor valor) throws NonexistentEntityException, Exception {
+        valor.getValorPK().setCodigoId(valor.getCodigo().getId());
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Valor persistentValor = em.find(Valor.class, valor.getId());
-            Codigo codigoIdOld = persistentValor.getCodigoId();
-            Codigo codigoIdNew = valor.getCodigoId();
-            if (codigoIdNew != null) {
-                codigoIdNew = em.getReference(codigoIdNew.getClass(), codigoIdNew.getId());
-                valor.setCodigoId(codigoIdNew);
+            Valor persistentValor = em.find(Valor.class, valor.getValorPK());
+            Codigo codigoOld = persistentValor.getCodigo();
+            Codigo codigoNew = valor.getCodigo();
+            if (codigoNew != null) {
+                codigoNew = em.getReference(codigoNew.getClass(), codigoNew.getId());
+                valor.setCodigo(codigoNew);
             }
             valor = em.merge(valor);
-            if (codigoIdOld != null && !codigoIdOld.equals(codigoIdNew)) {
-                codigoIdOld.getValorList().remove(valor);
-                codigoIdOld = em.merge(codigoIdOld);
+            if (codigoOld != null && !codigoOld.equals(codigoNew)) {
+                codigoOld.getValorList().remove(valor);
+                codigoOld = em.merge(codigoOld);
             }
-            if (codigoIdNew != null && !codigoIdNew.equals(codigoIdOld)) {
-                codigoIdNew.getValorList().add(valor);
-                codigoIdNew = em.merge(codigoIdNew);
+            if (codigoNew != null && !codigoNew.equals(codigoOld)) {
+                codigoNew.getValorList().add(valor);
+                codigoNew = em.merge(codigoNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = valor.getId();
+                ValorPK id = valor.getValorPK();
                 if (findValor(id) == null) {
                     throw new NonexistentEntityException("The valor with id " + id + " no longer exists.");
                 }
@@ -94,7 +108,7 @@ public class ValorJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(ValorPK id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -102,14 +116,14 @@ public class ValorJpaController implements Serializable {
             Valor valor;
             try {
                 valor = em.getReference(Valor.class, id);
-                valor.getId();
+                valor.getValorPK();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The valor with id " + id + " no longer exists.", enfe);
             }
-            Codigo codigoId = valor.getCodigoId();
-            if (codigoId != null) {
-                codigoId.getValorList().remove(valor);
-                codigoId = em.merge(codigoId);
+            Codigo codigo = valor.getCodigo();
+            if (codigo != null) {
+                codigo.getValorList().remove(valor);
+                codigo = em.merge(codigo);
             }
             em.remove(valor);
             em.getTransaction().commit();
@@ -144,13 +158,54 @@ public class ValorJpaController implements Serializable {
         }
     }
 
-    public Valor findValor(Integer id) {
+    public Valor findValor(ValorPK id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(Valor.class, id);
         } finally {
             em.close();
         }
+    }
+
+    public List<Valor> findByCodeId(Integer codigo_id) {
+        EntityManager em = getEntityManager();
+
+        TypedQuery consulta = em.createNamedQuery("Valor.findByCodigoId", String.class);
+        consulta.setParameter("codigoId", codigo_id);
+        List<Valor> listaValores = consulta.getResultList();
+        
+        return listaValores;
+    }
+
+    public List<String> findDescriptionByCodeId(Integer codigo_id) {
+        EntityManager em = getEntityManager();
+
+        TypedQuery consulta = em.createNamedQuery("Valor.findByCodigoId", String.class);
+        consulta.setParameter("codigoId", codigo_id);
+        List<Valor> listaValores = consulta.getResultList();
+
+        List<String> listaDescripciones = new ArrayList<>();
+        Iterator<Valor> itr = listaValores.iterator();
+
+        while (itr.hasNext()) {
+            Valor aux = itr.next();
+            listaDescripciones.add(aux.getDescripcion());
+        }
+        return listaDescripciones;
+    }
+
+    public int findByValueDescription(String des) {
+        EntityManager em = getEntityManager();
+        TypedQuery consulta = em.createNamedQuery("Valor.findByDescripcion", String.class);
+        consulta.setParameter("descripcion", des);
+
+        List<Valor> listaValores = consulta.getResultList();
+
+        if (!listaValores.isEmpty()) {
+            return listaValores.get(0).getValorPK().getId();
+        }
+
+        return -1;
     }
 
     public int getValorCount() {
@@ -165,17 +220,4 @@ public class ValorJpaController implements Serializable {
             em.close();
         }
     }
-    
-    public List<String> findByCodeId(Integer codigo_id) {
-        EntityManager em = getEntityManager();
-        
-        TypedQuery consulta = em.createNamedQuery("Valor.findByCodigoId", String.class);
-        consulta.setParameter("codigoId", codigo_id);
-        List<String> listaValores = consulta.getResultList();
-        
-        return listaValores;
-    }
-    
-    
-    
 }

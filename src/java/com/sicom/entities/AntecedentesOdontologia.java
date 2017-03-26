@@ -14,9 +14,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -38,7 +38,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "AntecedentesOdontologia.findByHereditarios", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.hereditarios = :hereditarios")
     , @NamedQuery(name = "AntecedentesOdontologia.findByAlergias", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.alergias = :alergias")
     , @NamedQuery(name = "AntecedentesOdontologia.findByQuirurgicos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.quirurgicos = :quirurgicos")
-    , @NamedQuery(name = "AntecedentesOdontologia.findByMoitvoConsulta", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.moitvoConsulta = :moitvoConsulta")
     , @NamedQuery(name = "AntecedentesOdontologia.findByHabitos", query = "SELECT a FROM AntecedentesOdontologia a WHERE a.habitos = :habitos")})
 public class AntecedentesOdontologia implements Serializable {
 
@@ -63,13 +62,11 @@ public class AntecedentesOdontologia implements Serializable {
     private String alergias;
     @Column(name = "quirurgicos")
     private String quirurgicos;
-    @Column(name = "moitvoConsulta")
-    private String moitvoConsulta;
     @Column(name = "habitos")
     private String habitos;
-    @JoinColumn(name = "Expediente_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private Expediente expedienteid;
+    @JoinColumn(name = "Expediente_Paciente_cedula", referencedColumnName = "Paciente_cedula")
+    @OneToOne(optional = false)
+    private Expediente expedientePacientecedula;
 
     public AntecedentesOdontologia() {
     }
@@ -140,14 +137,6 @@ public class AntecedentesOdontologia implements Serializable {
         this.quirurgicos = quirurgicos;
     }
 
-    public String getMoitvoConsulta() {
-        return moitvoConsulta;
-    }
-
-    public void setMoitvoConsulta(String moitvoConsulta) {
-        this.moitvoConsulta = moitvoConsulta;
-    }
-
     public String getHabitos() {
         return habitos;
     }
@@ -156,12 +145,12 @@ public class AntecedentesOdontologia implements Serializable {
         this.habitos = habitos;
     }
 
-    public Expediente getExpedienteid() {
-        return expedienteid;
+    public Expediente getExpedientePacientecedula() {
+        return expedientePacientecedula;
     }
 
-    public void setExpedienteid(Expediente expedienteid) {
-        this.expedienteid = expedienteid;
+    public void setExpedientePacientecedula(Expediente expedientePacientecedula) {
+        this.expedientePacientecedula = expedientePacientecedula;
     }
 
     @Override

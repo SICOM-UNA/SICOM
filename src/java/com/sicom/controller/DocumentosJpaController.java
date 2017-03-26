@@ -20,7 +20,7 @@ import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 public class DocumentosJpaController implements Serializable {
 
@@ -43,19 +43,19 @@ public class DocumentosJpaController implements Serializable {
                 departamentoid = em.getReference(departamentoid.getClass(), departamentoid.getId());
                 documentos.setDepartamentoid(departamentoid);
             }
-            Expediente expedienteid = documentos.getExpedienteid();
-            if (expedienteid != null) {
-                expedienteid = em.getReference(expedienteid.getClass(), expedienteid.getId());
-                documentos.setExpedienteid(expedienteid);
+            Expediente expedientePacientecedula = documentos.getExpedientePacientecedula();
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula = em.getReference(expedientePacientecedula.getClass(), expedientePacientecedula.getId());
+                documentos.setExpedientePacientecedula(expedientePacientecedula);
             }
             em.persist(documentos);
             if (departamentoid != null) {
                 departamentoid.getDocumentosList().add(documentos);
                 departamentoid = em.merge(departamentoid);
             }
-            if (expedienteid != null) {
-                expedienteid.getDocumentosList().add(documentos);
-                expedienteid = em.merge(expedienteid);
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula.getDocumentosList().add(documentos);
+                expedientePacientecedula = em.merge(expedientePacientecedula);
             }
             em.getTransaction().commit();
         } finally {
@@ -73,15 +73,15 @@ public class DocumentosJpaController implements Serializable {
             Documentos persistentDocumentos = em.find(Documentos.class, documentos.getId());
             Departamento departamentoidOld = persistentDocumentos.getDepartamentoid();
             Departamento departamentoidNew = documentos.getDepartamentoid();
-            Expediente expedienteidOld = persistentDocumentos.getExpedienteid();
-            Expediente expedienteidNew = documentos.getExpedienteid();
+            Expediente expedientePacientecedulaOld = persistentDocumentos.getExpedientePacientecedula();
+            Expediente expedientePacientecedulaNew = documentos.getExpedientePacientecedula();
             if (departamentoidNew != null) {
                 departamentoidNew = em.getReference(departamentoidNew.getClass(), departamentoidNew.getId());
                 documentos.setDepartamentoid(departamentoidNew);
             }
-            if (expedienteidNew != null) {
-                expedienteidNew = em.getReference(expedienteidNew.getClass(), expedienteidNew.getId());
-                documentos.setExpedienteid(expedienteidNew);
+            if (expedientePacientecedulaNew != null) {
+                expedientePacientecedulaNew = em.getReference(expedientePacientecedulaNew.getClass(), expedientePacientecedulaNew.getId());
+                documentos.setExpedientePacientecedula(expedientePacientecedulaNew);
             }
             documentos = em.merge(documentos);
             if (departamentoidOld != null && !departamentoidOld.equals(departamentoidNew)) {
@@ -92,13 +92,13 @@ public class DocumentosJpaController implements Serializable {
                 departamentoidNew.getDocumentosList().add(documentos);
                 departamentoidNew = em.merge(departamentoidNew);
             }
-            if (expedienteidOld != null && !expedienteidOld.equals(expedienteidNew)) {
-                expedienteidOld.getDocumentosList().remove(documentos);
-                expedienteidOld = em.merge(expedienteidOld);
+            if (expedientePacientecedulaOld != null && !expedientePacientecedulaOld.equals(expedientePacientecedulaNew)) {
+                expedientePacientecedulaOld.getDocumentosList().remove(documentos);
+                expedientePacientecedulaOld = em.merge(expedientePacientecedulaOld);
             }
-            if (expedienteidNew != null && !expedienteidNew.equals(expedienteidOld)) {
-                expedienteidNew.getDocumentosList().add(documentos);
-                expedienteidNew = em.merge(expedienteidNew);
+            if (expedientePacientecedulaNew != null && !expedientePacientecedulaNew.equals(expedientePacientecedulaOld)) {
+                expedientePacientecedulaNew.getDocumentosList().add(documentos);
+                expedientePacientecedulaNew = em.merge(expedientePacientecedulaNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -134,10 +134,10 @@ public class DocumentosJpaController implements Serializable {
                 departamentoid.getDocumentosList().remove(documentos);
                 departamentoid = em.merge(departamentoid);
             }
-            Expediente expedienteid = documentos.getExpedienteid();
-            if (expedienteid != null) {
-                expedienteid.getDocumentosList().remove(documentos);
-                expedienteid = em.merge(expedienteid);
+            Expediente expedientePacientecedula = documentos.getExpedientePacientecedula();
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula.getDocumentosList().remove(documentos);
+                expedientePacientecedula = em.merge(expedientePacientecedula);
             }
             em.remove(documentos);
             em.getTransaction().commit();

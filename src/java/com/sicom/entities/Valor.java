@@ -8,63 +8,61 @@ package com.sicom.entities;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 @Entity
 @Table(name = "valor")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Valor.findAll", query = "SELECT v FROM Valor v")
-    , @NamedQuery(name = "Valor.findById", query = "SELECT v FROM Valor v WHERE v.id = :id")
-    , @NamedQuery(name = "Valor.findByDescripcion", query = "SELECT v FROM Valor v WHERE v.descripcion = :descripcion")})
+    @NamedQuery(name = "Valor.findAll", query = "SELECT v FROM Valor v"),
+    @NamedQuery(name = "Valor.findById", query = "SELECT v FROM Valor v WHERE v.valorPK.id = :id"),
+    @NamedQuery(name = "Valor.findByDescripcion", query = "SELECT v FROM Valor v WHERE v.descripcion = :descripcion"),
+    @NamedQuery(name = "Valor.findByCodigoId", query = "SELECT v FROM Valor v WHERE v.valorPK.codigoId = :codigoId")})
 public class Valor implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
+    @EmbeddedId
+    protected ValorPK valorPK;
     @Basic(optional = false)
     @Column(name = "descripcion")
     private String descripcion;
-   
-    @JoinColumn(name = "codigo_id", referencedColumnName = "id")
+    @JoinColumn(name = "codigo_id", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
-    private Codigo codigoId;
+    private Codigo codigo;
 
     public Valor() {
     }
 
-    public Valor(Integer id) {
-        this.id = id;
+    public Valor(ValorPK valorPK) {
+        this.valorPK = valorPK;
     }
 
-    public Valor(Integer id, String descripcion) {
-        this.id = id;
+    public Valor(ValorPK valorPK, String descripcion) {
+        this.valorPK = valorPK;
         this.descripcion = descripcion;
     }
 
-    public Integer getId() {
-        return id;
+    public Valor(int id, int codigoId) {
+        this.valorPK = new ValorPK(id, codigoId);
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public ValorPK getValorPK() {
+        return valorPK;
+    }
+
+    public void setValorPK(ValorPK valorPK) {
+        this.valorPK = valorPK;
     }
 
     public String getDescripcion() {
@@ -75,18 +73,18 @@ public class Valor implements Serializable {
         this.descripcion = descripcion;
     }
 
-    public Codigo getCodigoId() {
-        return codigoId;
+    public Codigo getCodigo() {
+        return codigo;
     }
 
-    public void setCodigoId(Codigo codigoId) {
-        this.codigoId = codigoId;
+    public void setCodigo(Codigo codigo) {
+        this.codigo = codigo;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (valorPK != null ? valorPK.hashCode() : 0);
         return hash;
     }
 
@@ -97,7 +95,7 @@ public class Valor implements Serializable {
             return false;
         }
         Valor other = (Valor) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.valorPK == null && other.valorPK != null) || (this.valorPK != null && !this.valorPK.equals(other.valorPK))) {
             return false;
         }
         return true;
@@ -105,8 +103,6 @@ public class Valor implements Serializable {
 
     @Override
     public String toString() {
-        return "com.sicom.entities.Valor[ id=" + id + " ]";
+        return "com.sicom.entities.Valor[ valorPK=" + valorPK + " ]";
     }
-
-
 }

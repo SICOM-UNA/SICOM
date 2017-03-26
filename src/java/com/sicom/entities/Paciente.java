@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,25 +25,25 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 @Entity
 @Table(name = "paciente")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Paciente.findAll", query = "SELECT p FROM Paciente p")
-    , @NamedQuery(name = "Paciente.findByCedula", query = "SELECT p FROM Paciente p WHERE p.cedula = :cedula")
-    , @NamedQuery(name = "Paciente.findByNombre", query = "SELECT p FROM Paciente p WHERE p.nombre = :nombre")
-    , @NamedQuery(name = "Paciente.findByPrimerApellido", query = "SELECT p FROM Paciente p WHERE p.primerApellido = :primerApellido")
-    , @NamedQuery(name = "Paciente.findBySegundoApellido", query = "SELECT p FROM Paciente p WHERE p.segundoApellido = :segundoApellido")
-    , @NamedQuery(name = "Paciente.findByTelefono", query = "SELECT p FROM Paciente p WHERE p.telefono = :telefono")
-    , @NamedQuery(name = "Paciente.findByCelular", query = "SELECT p FROM Paciente p WHERE p.celular = :celular")
-    , @NamedQuery(name = "Paciente.findByEstadoCivil", query = "SELECT p FROM Paciente p WHERE p.estadoCivil = :estadoCivil")
-    , @NamedQuery(name = "Paciente.findByNacimiento", query = "SELECT p FROM Paciente p WHERE p.nacimiento = :nacimiento")
-    , @NamedQuery(name = "Paciente.findByDomicilio", query = "SELECT p FROM Paciente p WHERE p.domicilio = :domicilio")
-    , @NamedQuery(name = "Paciente.findByOcupacion", query = "SELECT p FROM Paciente p WHERE p.ocupacion = :ocupacion")
-    , @NamedQuery(name = "Paciente.findByCorreo", query = "SELECT p FROM Paciente p WHERE p.correo = :correo")
-    , @NamedQuery(name = "Paciente.findByGenero", query = "SELECT p FROM Paciente p WHERE p.genero = :genero")})
+    @NamedQuery(name = "Paciente.findAll", query = "SELECT p FROM Paciente p"),
+    @NamedQuery(name = "Paciente.findByCedula", query = "SELECT p FROM Paciente p WHERE p.cedula = :cedula"),
+    @NamedQuery(name = "Paciente.findByNombre", query = "SELECT p FROM Paciente p WHERE p.nombre = :nombre"),
+    @NamedQuery(name = "Paciente.findByPrimerApellido", query = "SELECT p FROM Paciente p WHERE p.primerApellido = :primerApellido"),
+    @NamedQuery(name = "Paciente.findBySegundoApellido", query = "SELECT p FROM Paciente p WHERE p.segundoApellido = :segundoApellido"),
+    @NamedQuery(name = "Paciente.findByTelefono", query = "SELECT p FROM Paciente p WHERE p.telefono = :telefono"),
+    @NamedQuery(name = "Paciente.findByCelular", query = "SELECT p FROM Paciente p WHERE p.celular = :celular"),
+    @NamedQuery(name = "Paciente.findByEstadoCivil", query = "SELECT p FROM Paciente p WHERE p.estadoCivil = :estadoCivil"),
+    @NamedQuery(name = "Paciente.findByNacimiento", query = "SELECT p FROM Paciente p WHERE p.nacimiento = :nacimiento"),
+    @NamedQuery(name = "Paciente.findByDomicilio", query = "SELECT p FROM Paciente p WHERE p.domicilio = :domicilio"),
+    @NamedQuery(name = "Paciente.findByOcupacion", query = "SELECT p FROM Paciente p WHERE p.ocupacion = :ocupacion"),
+    @NamedQuery(name = "Paciente.findByCorreo", query = "SELECT p FROM Paciente p WHERE p.correo = :correo"),
+    @NamedQuery(name = "Paciente.findByGenero", query = "SELECT p FROM Paciente p WHERE p.genero = :genero")})
 public class Paciente implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -53,15 +54,15 @@ public class Paciente implements Serializable {
     @Basic(optional = false)
     @Column(name = "nombre")
     private String nombre;
-    @Column(name = "primer_apellido")
+    @Column(name = "primerApellido")
     private String primerApellido;
-    @Column(name = "segundo_apellido")
+    @Column(name = "segundoApellido")
     private String segundoApellido;
     @Column(name = "telefono")
     private String telefono;
     @Column(name = "celular")
     private String celular;
-    @Column(name = "estado_civil")
+    @Column(name = "estadoCivil")
     private String estadoCivil;
     @Column(name = "nacimiento")
     @Temporal(TemporalType.TIMESTAMP)
@@ -76,8 +77,8 @@ public class Paciente implements Serializable {
     private String genero;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacientecedula")
     private List<Responsable> responsableList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacientecedula")
-    private List<Expediente> expedienteList;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "pacientecedula")
+    private Expediente expediente;
 
     public Paciente() {
     }
@@ -196,13 +197,12 @@ public class Paciente implements Serializable {
         this.responsableList = responsableList;
     }
 
-    @XmlTransient
-    public List<Expediente> getExpedienteList() {
-        return expedienteList;
+    public Expediente getExpediente() {
+        return expediente;
     }
 
-    public void setExpedienteList(List<Expediente> expedienteList) {
-        this.expedienteList = expedienteList;
+    public void setExpediente(Expediente expediente) {
+        this.expediente = expediente;
     }
 
     @Override
@@ -218,10 +218,13 @@ public class Paciente implements Serializable {
         if (!(object instanceof Paciente)) {
             return false;
         }
+        
         Paciente other = (Paciente) object;
+        
         if ((this.cedula == null && other.cedula != null) || (this.cedula != null && !this.cedula.equals(other.cedula))) {
             return false;
         }
+        
         return true;
     }
 
@@ -229,5 +232,4 @@ public class Paciente implements Serializable {
     public String toString() {
         return "com.sicom.entities.Paciente[ cedula=" + cedula + " ]";
     }
-    
 }

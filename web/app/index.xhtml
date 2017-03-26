@@ -5,13 +5,13 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
-    
+
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form id="formIndex">
-                    <p:messages id="msg" for="msg" globalOnly="true" closable="true" />
-                    <span style="display: block; margin: 8% 10px; padding: 8% 10px">  </span>
+                <h:form>
+                    <p:growl id="messages" showDetail="true" />
+
                 </h:form>
             </section>
         </div>

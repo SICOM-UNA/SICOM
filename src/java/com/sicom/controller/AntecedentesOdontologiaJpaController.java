@@ -5,6 +5,7 @@
  */
 package com.sicom.controller;
 
+import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.entities.AntecedentesOdontologia;
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Expediente;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -32,20 +34,34 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(AntecedentesOdontologia antecedentesOdontologia) {
+    public void create(AntecedentesOdontologia antecedentesOdontologia) throws IllegalOrphanException {
+        List<String> illegalOrphanMessages = null;
+        Expediente expedientePacientecedulaOrphanCheck = antecedentesOdontologia.getExpedientePacientecedula();
+        if (expedientePacientecedulaOrphanCheck != null) {
+            AntecedentesOdontologia oldAntecedentesOdontologiaOfExpedientePacientecedula = expedientePacientecedulaOrphanCheck.getAntecedentesOdontologia();
+            if (oldAntecedentesOdontologiaOfExpedientePacientecedula != null) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("The Expediente " + expedientePacientecedulaOrphanCheck + " already has an item of type AntecedentesOdontologia whose expedientePacientecedula column cannot be null. Please make another selection for the expedientePacientecedula field.");
+            }
+        }
+        if (illegalOrphanMessages != null) {
+            throw new IllegalOrphanException(illegalOrphanMessages);
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Expediente expedienteid = antecedentesOdontologia.getExpedienteid();
-            if (expedienteid != null) {
-                expedienteid = em.getReference(expedienteid.getClass(), expedienteid.getId());
-                antecedentesOdontologia.setExpedienteid(expedienteid);
+            Expediente expedientePacientecedula = antecedentesOdontologia.getExpedientePacientecedula();
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula = em.getReference(expedientePacientecedula.getClass(), expedientePacientecedula.getId());
+                antecedentesOdontologia.setExpedientePacientecedula(expedientePacientecedula);
             }
             em.persist(antecedentesOdontologia);
-            if (expedienteid != null) {
-                expedienteid.getAntecedentesOdontologiaList().add(antecedentesOdontologia);
-                expedienteid = em.merge(expedienteid);
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula.setAntecedentesOdontologia(antecedentesOdontologia);
+                expedientePacientecedula = em.merge(expedientePacientecedula);
             }
             em.getTransaction().commit();
         } finally {
@@ -55,26 +71,39 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
         }
     }
 
-    public void edit(AntecedentesOdontologia antecedentesOdontologia) throws NonexistentEntityException, Exception {
+    public void edit(AntecedentesOdontologia antecedentesOdontologia) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             AntecedentesOdontologia persistentAntecedentesOdontologia = em.find(AntecedentesOdontologia.class, antecedentesOdontologia.getId());
-            Expediente expedienteidOld = persistentAntecedentesOdontologia.getExpedienteid();
-            Expediente expedienteidNew = antecedentesOdontologia.getExpedienteid();
-            if (expedienteidNew != null) {
-                expedienteidNew = em.getReference(expedienteidNew.getClass(), expedienteidNew.getId());
-                antecedentesOdontologia.setExpedienteid(expedienteidNew);
+            Expediente expedientePacientecedulaOld = persistentAntecedentesOdontologia.getExpedientePacientecedula();
+            Expediente expedientePacientecedulaNew = antecedentesOdontologia.getExpedientePacientecedula();
+            List<String> illegalOrphanMessages = null;
+            if (expedientePacientecedulaNew != null && !expedientePacientecedulaNew.equals(expedientePacientecedulaOld)) {
+                AntecedentesOdontologia oldAntecedentesOdontologiaOfExpedientePacientecedula = expedientePacientecedulaNew.getAntecedentesOdontologia();
+                if (oldAntecedentesOdontologiaOfExpedientePacientecedula != null) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("The Expediente " + expedientePacientecedulaNew + " already has an item of type AntecedentesOdontologia whose expedientePacientecedula column cannot be null. Please make another selection for the expedientePacientecedula field.");
+                }
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            if (expedientePacientecedulaNew != null) {
+                expedientePacientecedulaNew = em.getReference(expedientePacientecedulaNew.getClass(), expedientePacientecedulaNew.getId());
+                antecedentesOdontologia.setExpedientePacientecedula(expedientePacientecedulaNew);
             }
             antecedentesOdontologia = em.merge(antecedentesOdontologia);
-            if (expedienteidOld != null && !expedienteidOld.equals(expedienteidNew)) {
-                expedienteidOld.getAntecedentesOdontologiaList().remove(antecedentesOdontologia);
-                expedienteidOld = em.merge(expedienteidOld);
+            if (expedientePacientecedulaOld != null && !expedientePacientecedulaOld.equals(expedientePacientecedulaNew)) {
+                expedientePacientecedulaOld.setAntecedentesOdontologia(null);
+                expedientePacientecedulaOld = em.merge(expedientePacientecedulaOld);
             }
-            if (expedienteidNew != null && !expedienteidNew.equals(expedienteidOld)) {
-                expedienteidNew.getAntecedentesOdontologiaList().add(antecedentesOdontologia);
-                expedienteidNew = em.merge(expedienteidNew);
+            if (expedientePacientecedulaNew != null && !expedientePacientecedulaNew.equals(expedientePacientecedulaOld)) {
+                expedientePacientecedulaNew.setAntecedentesOdontologia(antecedentesOdontologia);
+                expedientePacientecedulaNew = em.merge(expedientePacientecedulaNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -105,10 +134,10 @@ public class AntecedentesOdontologiaJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The antecedentesOdontologia with id " + id + " no longer exists.", enfe);
             }
-            Expediente expedienteid = antecedentesOdontologia.getExpedienteid();
-            if (expedienteid != null) {
-                expedienteid.getAntecedentesOdontologiaList().remove(antecedentesOdontologia);
-                expedienteid = em.merge(expedienteid);
+            Expediente expedientePacientecedula = antecedentesOdontologia.getExpedientePacientecedula();
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula.setAntecedentesOdontologia(null);
+                expedientePacientecedula = em.merge(expedientePacientecedula);
             }
             em.remove(antecedentesOdontologia);
             em.getTransaction().commit();

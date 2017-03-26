@@ -25,37 +25,38 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 @Entity
 @Table(name = "examenginecologia")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ExamenGinecologia.findAll", query = "SELECT e FROM ExamenGinecologia e")
-    , @NamedQuery(name = "ExamenGinecologia.findById", query = "SELECT e FROM ExamenGinecologia e WHERE e.id = :id")
-    , @NamedQuery(name = "ExamenGinecologia.findByFecha", query = "SELECT e FROM ExamenGinecologia e WHERE e.fecha = :fecha")
-    , @NamedQuery(name = "ExamenGinecologia.findByTalla", query = "SELECT e FROM ExamenGinecologia e WHERE e.talla = :talla")
-    , @NamedQuery(name = "ExamenGinecologia.findByPeso", query = "SELECT e FROM ExamenGinecologia e WHERE e.peso = :peso")
-    , @NamedQuery(name = "ExamenGinecologia.findByPresionArterial", query = "SELECT e FROM ExamenGinecologia e WHERE e.presionArterial = :presionArterial")
-    , @NamedQuery(name = "ExamenGinecologia.findByCardioPulmonar", query = "SELECT e FROM ExamenGinecologia e WHERE e.cardioPulmonar = :cardioPulmonar")
-    , @NamedQuery(name = "ExamenGinecologia.findByComentarioCardioPulmonar", query = "SELECT e FROM ExamenGinecologia e WHERE e.comentarioCardioPulmonar = :comentarioCardioPulmonar")
-    , @NamedQuery(name = "ExamenGinecologia.findByMamas", query = "SELECT e FROM ExamenGinecologia e WHERE e.mamas = :mamas")
-    , @NamedQuery(name = "ExamenGinecologia.findByAbdomen", query = "SELECT e FROM ExamenGinecologia e WHERE e.abdomen = :abdomen")
-    , @NamedQuery(name = "ExamenGinecologia.findByVulva", query = "SELECT e FROM ExamenGinecologia e WHERE e.vulva = :vulva")
-    , @NamedQuery(name = "ExamenGinecologia.findByBus", query = "SELECT e FROM ExamenGinecologia e WHERE e.bus = :bus")
-    , @NamedQuery(name = "ExamenGinecologia.findByComentarioBus", query = "SELECT e FROM ExamenGinecologia e WHERE e.comentarioBus = :comentarioBus")
-    , @NamedQuery(name = "ExamenGinecologia.findByVagina", query = "SELECT e FROM ExamenGinecologia e WHERE e.vagina = :vagina")
-    , @NamedQuery(name = "ExamenGinecologia.findByCuello", query = "SELECT e FROM ExamenGinecologia e WHERE e.cuello = :cuello")
-    , @NamedQuery(name = "ExamenGinecologia.findByUtero", query = "SELECT e FROM ExamenGinecologia e WHERE e.utero = :utero")
-    , @NamedQuery(name = "ExamenGinecologia.findByAnexos", query = "SELECT e FROM ExamenGinecologia e WHERE e.anexos = :anexos")
-    , @NamedQuery(name = "ExamenGinecologia.findByOtros", query = "SELECT e FROM ExamenGinecologia e WHERE e.otros = :otros")
-    , @NamedQuery(name = "ExamenGinecologia.findByAbdomenObstetrico", query = "SELECT e FROM ExamenGinecologia e WHERE e.abdomenObstetrico = :abdomenObstetrico")
-    , @NamedQuery(name = "ExamenGinecologia.findByAu", query = "SELECT e FROM ExamenGinecologia e WHERE e.au = :au")
-    , @NamedQuery(name = "ExamenGinecologia.findByCf", query = "SELECT e FROM ExamenGinecologia e WHERE e.cf = :cf")
-    , @NamedQuery(name = "ExamenGinecologia.findByMf", query = "SELECT e FROM ExamenGinecologia e WHERE e.mf = :mf")
-    , @NamedQuery(name = "ExamenGinecologia.findByTu", query = "SELECT e FROM ExamenGinecologia e WHERE e.tu = :tu")
-    , @NamedQuery(name = "ExamenGinecologia.findByIdx", query = "SELECT e FROM ExamenGinecologia e WHERE e.idx = :idx")
-    , @NamedQuery(name = "ExamenGinecologia.findByTx", query = "SELECT e FROM ExamenGinecologia e WHERE e.tx = :tx")})
+    @NamedQuery(name = "ExamenGinecologia.findAll", query = "SELECT e FROM ExamenGinecologia e"),
+    @NamedQuery(name = "ExamenGinecologia.findById", query = "SELECT e FROM ExamenGinecologia e WHERE e.id = :id"),
+    @NamedQuery(name = "ExamenGinecologia.findByFecha", query = "SELECT e FROM ExamenGinecologia e WHERE e.fecha = :fecha"),
+    @NamedQuery(name = "ExamenGinecologia.findByMotivoConsulta", query = "SELECT e FROM ExamenGinecologia e WHERE e.motivoConsulta = :motivoConsulta"),
+    @NamedQuery(name = "ExamenGinecologia.findByTalla", query = "SELECT e FROM ExamenGinecologia e WHERE e.talla = :talla"),
+    @NamedQuery(name = "ExamenGinecologia.findByPeso", query = "SELECT e FROM ExamenGinecologia e WHERE e.peso = :peso"),
+    @NamedQuery(name = "ExamenGinecologia.findByPresionArterial", query = "SELECT e FROM ExamenGinecologia e WHERE e.presionArterial = :presionArterial"),
+    @NamedQuery(name = "ExamenGinecologia.findByCardioPulmonar", query = "SELECT e FROM ExamenGinecologia e WHERE e.cardioPulmonar = :cardioPulmonar"),
+    @NamedQuery(name = "ExamenGinecologia.findByComentarioCardioPulmonar", query = "SELECT e FROM ExamenGinecologia e WHERE e.comentarioCardioPulmonar = :comentarioCardioPulmonar"),
+    @NamedQuery(name = "ExamenGinecologia.findByMamas", query = "SELECT e FROM ExamenGinecologia e WHERE e.mamas = :mamas"),
+    @NamedQuery(name = "ExamenGinecologia.findByAbdomen", query = "SELECT e FROM ExamenGinecologia e WHERE e.abdomen = :abdomen"),
+    @NamedQuery(name = "ExamenGinecologia.findByVulva", query = "SELECT e FROM ExamenGinecologia e WHERE e.vulva = :vulva"),
+    @NamedQuery(name = "ExamenGinecologia.findByBus", query = "SELECT e FROM ExamenGinecologia e WHERE e.bus = :bus"),
+    @NamedQuery(name = "ExamenGinecologia.findByComentarioBus", query = "SELECT e FROM ExamenGinecologia e WHERE e.comentarioBus = :comentarioBus"),
+    @NamedQuery(name = "ExamenGinecologia.findByVagina", query = "SELECT e FROM ExamenGinecologia e WHERE e.vagina = :vagina"),
+    @NamedQuery(name = "ExamenGinecologia.findByCuello", query = "SELECT e FROM ExamenGinecologia e WHERE e.cuello = :cuello"),
+    @NamedQuery(name = "ExamenGinecologia.findByUtero", query = "SELECT e FROM ExamenGinecologia e WHERE e.utero = :utero"),
+    @NamedQuery(name = "ExamenGinecologia.findByAnexos", query = "SELECT e FROM ExamenGinecologia e WHERE e.anexos = :anexos"),
+    @NamedQuery(name = "ExamenGinecologia.findByOtros", query = "SELECT e FROM ExamenGinecologia e WHERE e.otros = :otros"),
+    @NamedQuery(name = "ExamenGinecologia.findByAbdomenObstetrico", query = "SELECT e FROM ExamenGinecologia e WHERE e.abdomenObstetrico = :abdomenObstetrico"),
+    @NamedQuery(name = "ExamenGinecologia.findByAu", query = "SELECT e FROM ExamenGinecologia e WHERE e.au = :au"),
+    @NamedQuery(name = "ExamenGinecologia.findByCf", query = "SELECT e FROM ExamenGinecologia e WHERE e.cf = :cf"),
+    @NamedQuery(name = "ExamenGinecologia.findByMf", query = "SELECT e FROM ExamenGinecologia e WHERE e.mf = :mf"),
+    @NamedQuery(name = "ExamenGinecologia.findByTu", query = "SELECT e FROM ExamenGinecologia e WHERE e.tu = :tu"),
+    @NamedQuery(name = "ExamenGinecologia.findByIdx", query = "SELECT e FROM ExamenGinecologia e WHERE e.idx = :idx"),
+    @NamedQuery(name = "ExamenGinecologia.findByTx", query = "SELECT e FROM ExamenGinecologia e WHERE e.tx = :tx")})
 public class ExamenGinecologia implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -68,6 +69,8 @@ public class ExamenGinecologia implements Serializable {
     @Column(name = "fecha")
     @Temporal(TemporalType.DATE)
     private Date fecha;
+    @Column(name = "motivoConsulta")
+    private String motivoConsulta;
     @Column(name = "talla")
     private Integer talla;
     @Column(name = "peso")
@@ -115,9 +118,9 @@ public class ExamenGinecologia implements Serializable {
     private String idx;
     @Column(name = "TX")
     private String tx;
-    @JoinColumn(name = "Expediente_id", referencedColumnName = "id")
+    @JoinColumn(name = "Expediente_Paciente_cedula", referencedColumnName = "Paciente_cedula")
     @ManyToOne(optional = false)
-    private Expediente expedienteid;
+    private Expediente expedientePacientecedula;
     @JoinColumn(name = "Personal_cedula", referencedColumnName = "cedula")
     @ManyToOne(optional = false)
     private Personal personalcedula;
@@ -148,6 +151,14 @@ public class ExamenGinecologia implements Serializable {
 
     public void setFecha(Date fecha) {
         this.fecha = fecha;
+    }
+
+    public String getMotivoConsulta() {
+        return motivoConsulta;
+    }
+
+    public void setMotivoConsulta(String motivoConsulta) {
+        this.motivoConsulta = motivoConsulta;
     }
 
     public Integer getTalla() {
@@ -334,12 +345,12 @@ public class ExamenGinecologia implements Serializable {
         this.tx = tx;
     }
 
-    public Expediente getExpedienteid() {
-        return expedienteid;
+    public Expediente getExpedientePacientecedula() {
+        return expedientePacientecedula;
     }
 
-    public void setExpedienteid(Expediente expedienteid) {
-        this.expedienteid = expedienteid;
+    public void setExpedientePacientecedula(Expediente expedientePacientecedula) {
+        this.expedientePacientecedula = expedientePacientecedula;
     }
 
     public Personal getPersonalcedula() {
@@ -363,10 +374,13 @@ public class ExamenGinecologia implements Serializable {
         if (!(object instanceof ExamenGinecologia)) {
             return false;
         }
+        
         ExamenGinecologia other = (ExamenGinecologia) object;
+        
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
+        
         return true;
     }
 
@@ -374,5 +388,4 @@ public class ExamenGinecologia implements Serializable {
     public String toString() {
         return "com.sicom.entities.ExamenGinecologia[ id=" + id + " ]";
     }
-    
 }

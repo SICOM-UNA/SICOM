@@ -10,14 +10,15 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form id="formMonitoreoFetal">
+                <h:form id="formulario">
+                    <p:messages id="msg" autoUpdate="true" closable="true"/>
                     <p:panel header="Monitoreo Fetal">
                         <h:panelGrid columns="2" cellpadding="20">
                             <h:panelGroup>
                                 <p:outputLabel value="Tipo: " for="tipo" class="descripcion"/>
                                 <p:selectOneMenu value="#{monitoreoFetalBean.tipo}"  id="tipo">
                                     <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                    <f:selectItems value="#{monitoreoFetalBean.consultarValoresPorCodigo(7)}"/>
+                                    <f:selectItems value="#{monitoreoFetalBean.consultarValoresPorCodigo(10)}"/>
                                 </p:selectOneMenu>
                             </h:panelGroup>
                             <h:panelGroup>
@@ -25,6 +26,13 @@
                                 <p:inputTextarea id="detalles" value="" maxlength="118" rows="5" cols = "70" autoResize="false"/> 
                             </h:panelGroup>    
                         </h:panelGrid>
+                        <f:facet name="footer" >
+                            <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                <p:commandButton value="Guardar" icon="ui-icon-disk" title="Click para guardar información." update="formulario msg"/>
+                                <p:commandButton value="Cancelar" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true">
+                                </p:commandButton> 
+                            </div>
+                        </f:facet>
                     </p:panel>
                 </h:form>
             </section>

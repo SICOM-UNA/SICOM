@@ -1,7 +1,10 @@
 package com.sicom.web.beans;
 
+import com.sicom.controller.DepartamentoJpaController;
 import com.sicom.controller.LoginJpaController;
 import com.sicom.controller.PersonalJpaController;
+import com.sicom.entities.Autorizacion;
+import com.sicom.entities.Departamento;
 import com.sicom.entities.Login;
 import com.sicom.entities.Personal;
 import java.io.IOException;
@@ -18,36 +21,28 @@ import javax.servlet.RequestDispatcher;
 @ManagedBean
 @ViewScoped
 public class LoginBean {
+
     private Login login;
-    private Personal personal;
-    
     private String originalURL;
-    
     private final LoginJpaController ljc;
     private final PersonalJpaController pjc;
-    
+
     public LoginBean() {
-        
         login = new Login();
-        personal = new Personal();
-        
         EntityManagerFactory em = Persistence.createEntityManagerFactory("SICOM_v1PU");
-        
         ljc = new LoginJpaController(em);
         pjc = new PersonalJpaController(em);
-    
     }
-    
+
     @PostConstruct
     public void init() {
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
-        
         originalURL = (String) externalContext.getRequestMap().get(RequestDispatcher.FORWARD_REQUEST_URI);
 
         if (originalURL == null) {
             originalURL = externalContext.getRequestContextPath() + "/app/index";
-        }else{
+        } else {
             String originalQuery = (String) externalContext.getRequestMap().get(RequestDispatcher.FORWARD_QUERY_STRING);
 
             if (originalQuery != null) {
@@ -57,28 +52,25 @@ public class LoginBean {
     }
 
     public void iniciarSesion(String from) throws IOException {
-        
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
-        
         Login nuevo = ljc.findLogin(login.getUsuario());
-                
-        if(nuevo != null && nuevo.getContrasena().equals(login.getContrasena())) {
-                       
+
+        if (nuevo != null && nuevo.getContrasena().equals(login.getContrasena())) {
+            
+            login = nuevo;
             login.setAutenticado(true);
-            personal = pjc.findPersonal(login.getUsuario());
-            
-            if(personal == null) personal = new Personal();
-            
+            Personal personal = login.getPersonal();
+
+            if (personal != null) {
+                String dim = ("Masculino".equals(personal.getGenero())) ? "Sr. " : "Sra. ";
+                ec.getFlash().setKeepMessages(true);
+                fc.addMessage("msg", new FacesMessage("Bienvenido " + dim + personal.getNombre().concat(" ") + personal.getPrimerApellido().concat(" ") + personal.getSegundoApellido().concat(".")));
+            }
+
             ec.getSessionMap().put("login", login);
-            ec.getSessionMap().put("personal", personal );
-            
-            String dim = ("Masculino".equals(personal.getGenero()))? "Sr. " : "Sra. ";
-            
-            ec.getFlash().setKeepMessages(true);
-            fc.addMessage("msg", new FacesMessage("Bienvenido "+dim+ personal.getNombre().concat(" ")+ personal.getPrimerApellido().concat(" ") + personal.getSegundoApellido().concat(".") ));
-            
-            if(from == null || from.isEmpty()) {
+
+            if (from == null || from.isEmpty()) {
                 ec.redirect(originalURL);
             } else {
                 ec.redirect(from);
@@ -87,7 +79,7 @@ public class LoginBean {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Usuario y/o contraseña incorrectos", getLogin().getUsuario()));
         }
     }
-    
+
     public void cerrarSesion() throws IOException {
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
@@ -95,7 +87,6 @@ public class LoginBean {
         ec.getFlash().setKeepMessages(true);
         ec.invalidateSession();
         ec.redirect(ec.getRequestContextPath() + "/login");
-        
         login = new Login();
     }
 
@@ -104,6 +95,16 @@ public class LoginBean {
      */
     public Login getLogin() {
         return login;
+    }
+
+    public String valorAutorizacionPersonal() {
+        Autorizacion au = login.getPersonal().getAutorizacionNivel();
+        return (au == null)? null : au.getDescripcion();
+    }
+
+    public String valorDepartamentoPersonal() {
+        Departamento dpto = login.getPersonal().getDepartamentoId();
+        return (dpto == null)? null : dpto.getNombre();
     }
 
     /**

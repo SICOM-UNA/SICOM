@@ -9,9 +9,8 @@
 
     <ui:define name="content">
         <div id="wrapper">
-
             <section>
-                <h:form id="formInformacion" >
+                <h:form id="datos" >
 
                     <p:messages id="msg" autoUpdate="true" closable="true" />
 
@@ -38,14 +37,14 @@
 
                                 <p:outputLabel class="infoLabel" value="Género:"/>
                                 <p:inputText value="#{pacienteBean.selectedPaciente.genero}" readonly="true"/>
-                                
+
                                 <p:outputLabel class="infoLabel" value="Teléfono 1:"/>
                                 <p:inputText value="#{pacienteBean.selectedPaciente.telefono}" readonly="true"/>
 
 
                                 <p:outputLabel class="infoLabel" value="Estado Civil:"/>
                                 <p:inputText value="#{pacienteBean.selectedPaciente.estadoCivil}" readonly="true"/>
-                                
+
                                 <p:outputLabel class="infoLabel" value="Teléfono 2:"/>
                                 <p:inputText value="#{pacienteBean.selectedPaciente.celular}" readonly="true"/>
 
@@ -59,7 +58,7 @@
                                 <p:inputTextarea value="#{pacienteBean.selectedPaciente.domicilio}" readonly="true"/>
 
                                 <p:outputLabel/>
-                                <p:commandButton value="Modificar Información" title="Click para modificar información del paciente." update="formInformacion" action="#{pacienteBean.modificaRedirect()}"/>
+                                <p:commandButton value="Modificar Información" title="Click para modificar información del paciente." update="datos" action="#{pacienteBean.modificaRedirect()}"/>
                             </h:panelGrid>
                         </p:tab>
 
@@ -68,37 +67,44 @@
                                 <p:panel header="Responsable 1">
                                     <h:panelGrid columns="2">
                                         <p:outputLabel class="infoLabel" value="Nombre:"/>
-                                        <p:inputText value="{pacienteBean.selectedPaciente.getResponsable(0).nombre}" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.responsable1.nombre}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value="Identificación:"/>
-                                        <p:inputText value="{pacienteBean.selectedPaciente.getResponsable(0).id}" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.responsable1.cedula}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value = "Ocupación:"/>
-                                        <p:inputText value = "{pacienteBean.selectedPaciente.getResponsable(0).ocupacion}" readonly="true"/>
+                                        <p:inputText value = "#{pacienteBean.responsable1.ocupacion}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value="Telefono:"/>
-                                        <p:inputText value="{pacienteBean.selectedPaciente.getResponsable(0).telefono}" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.responsable1.telefono}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value="Tipo de Relacion:"/>
-                                        <p:inputText value="{pacienteBean.selectedPaciente.getResponsable(0).vinculo}" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.responsable1.vinculo}" readonly="true"/>
+
+                                        <p:outputLabel/>
+                                        <p:commandButton value="Modificar Información" title="Click para modificar información del responsable 1." update="datos" action="#{pacienteBean.modificaResposableRedirect(1)}"/>
+
                                     </h:panelGrid>
                                 </p:panel>
                                 <p:panel header="Responsable 2">
                                     <h:panelGrid columns="2">
                                         <p:outputLabel class="infoLabel" value="Nombre:"/>
-                                        <p:inputText value="{pacienteBean.selectedPaciente.getResponsable(1).nombre}" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.responsable2.nombre}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value="Identificación:"/>
-                                        <p:inputText value="{pacienteBean.selectedPaciente.getResponsable(1).id}" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.responsable2.cedula}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value = "Ocupación:"/>
-                                        <p:inputText value = "{pacienteBean.selectedPaciente.getResponsable(1).ocupacion}" readonly="true"/>
+                                        <p:inputText value = "#{pacienteBean.responsable2.ocupacion}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value="Telefono:"/>
-                                        <p:inputText value="{pacienteBean.selectedPaciente.getResponsable(1).telefono}" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.responsable2.telefono}" readonly="true"/>
 
                                         <p:outputLabel class="infoLabel" value="Tipo de Relacion:"/>
-                                        <p:inputText value="{pacienteBean.selectedPaciente.getResponsable(1).vinculo}" readonly="true"/>
+                                        <p:inputText value="#{pacienteBean.responsable2.vinculo}" readonly="true"/>
+                                        
+                                        <p:outputLabel/>
+                                        <p:commandButton value="Modificar Información" title="Click para modificar información del resposable 2." update="datos" action="#{pacienteBean.modificaResposableRedirect(2)}"/>
                                     </h:panelGrid>
                                 </p:panel>
                             </h:panelGrid>
@@ -110,10 +116,7 @@
                                     <div class="ui-grid-col-12">
                                         <p:panel header="Histroria Clínica">
                                             <h:panelGrid columns="4" cellspacing="10">
-                                                <p:commandButton value="Editar Ginecologia" icon="ui-icon-pencil" action="#{pacienteBean.HistoriaClinica(true,0)}"/>
-                                                <p:commandButton value="Observar Ginecologia" icon="ui-icon-search" action="#{pacienteBean.HistoriaClinica(false,0)}"/>
-                                                <p:commandButton value="Editar Odontologia" icon="ui-icon-pencil" action="#{pacienteBean.HistoriaClinica(true,1)}"/>
-                                                <p:commandButton value="Observar Odontologia" icon="ui-icon-search" action="#{pacienteBean.HistoriaClinica(false,1)}"/>
+                                                <p:commandButton value="Información" icon="ui-icon-pencil" action="#{pacienteBean.HistoriaClinica()}" update="datos"/>
                                             </h:panelGrid>
                                         </p:panel>
                                     </div>

@@ -25,15 +25,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 @Entity
 @Table(name = "documentos")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Documentos.findAll", query = "SELECT d FROM Documentos d")
-    , @NamedQuery(name = "Documentos.findById", query = "SELECT d FROM Documentos d WHERE d.id = :id")
-    , @NamedQuery(name = "Documentos.findByFecha", query = "SELECT d FROM Documentos d WHERE d.fecha = :fecha")})
+    @NamedQuery(name = "Documentos.findAll", query = "SELECT d FROM Documentos d"),
+    @NamedQuery(name = "Documentos.findById", query = "SELECT d FROM Documentos d WHERE d.id = :id"),
+    @NamedQuery(name = "Documentos.findByFecha", query = "SELECT d FROM Documentos d WHERE d.fecha = :fecha")})
 public class Documentos implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -53,9 +53,9 @@ public class Documentos implements Serializable {
     @JoinColumn(name = "Departamento_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Departamento departamentoid;
-    @JoinColumn(name = "Expediente_id", referencedColumnName = "id")
+    @JoinColumn(name = "Expediente_Paciente_cedula", referencedColumnName = "Paciente_cedula")
     @ManyToOne(optional = false)
-    private Expediente expedienteid;
+    private Expediente expedientePacientecedula;
 
     public Documentos() {
     }
@@ -102,12 +102,12 @@ public class Documentos implements Serializable {
         this.departamentoid = departamentoid;
     }
 
-    public Expediente getExpedienteid() {
-        return expedienteid;
+    public Expediente getExpedientePacientecedula() {
+        return expedientePacientecedula;
     }
 
-    public void setExpedienteid(Expediente expedienteid) {
-        this.expedienteid = expedienteid;
+    public void setExpedientePacientecedula(Expediente expedientePacientecedula) {
+        this.expedientePacientecedula = expedientePacientecedula;
     }
 
     @Override

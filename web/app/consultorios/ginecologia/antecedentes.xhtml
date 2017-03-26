@@ -19,9 +19,9 @@
                             <p:spacer width="50"/>
                             <p:outputLabel class="descripcion" value="#{antecedentesGinecologiaBean.paciente.nombre} #{antecedentesGinecologiaBean.paciente.primerApellido} #{antecedentesGinecologiaBean.paciente.segundoApellido}"/>
                             <p:spacer width="50"/>
-                            <p:outputLabel class="descripcion" value="#{antecedentesGinecologiaBean.paciente.id}"/>
+                            <p:outputLabel class="descripcion" value="#{antecedentesGinecologiaBean.paciente.cedula}"/>
                             <p:spacer width="50"/>
-                            <p:outputLabel class="descripcion" value="Última edición: #{now}"/>
+                            <p:outputLabel class="descripcion" value="Última edición: #{antecedentesGinecologiaBean.objAntecedente.fecha}"/>
                         </h:panelGrid>
                     </p:panel>
                     <p:panel header="Historia Clínica" id="panel1" >
@@ -58,7 +58,7 @@
                                 <h:panelGrid  columns="2">
                                     <p:selectOneMenu value="#{antecedentesGinecologiaBean.objAntecedente.cicloMestrual}"  id="cicloMenstrual" autoWidth="false" >
                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true"  />
-                                        <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(4)}"/>
+                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(4)}"/>
                                     </p:selectOneMenu>
                                     <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioCicloMestrual}"/>
                                 </h:panelGrid>
@@ -71,7 +71,7 @@
                                 <h:panelGrid columns="2">
                                     <p:selectOneMenu value="#{antecedentesGinecologiaBean.objAntecedente.planificacion}"  id="planificacion" autoWidth="false" >
                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                        <f:selectItems value="#{pacienteBean.consultarValoresPorCodigo(5)}"/>
+                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(5)}"/>
                                     </p:selectOneMenu>
                                     <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioGPA}"/>
                                 </h:panelGrid>
@@ -100,13 +100,7 @@
 
                                 <p:outputLabel value="Menopausia"/>
                                 <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.menopausia}" maxlength="4" size="8" class="numeric"/> 
-
-
-
                             </h:panelGrid>
-
-
-
                             <h:panelGrid columns="2" cellpadding="10">
                                 <h:panelGrid columns="1" cellpadding="5">
                                     <h:panelGrid columns="10" cellpadding="3">

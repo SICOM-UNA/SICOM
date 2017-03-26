@@ -13,13 +13,14 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Expediente;
+import com.sicom.entities.Personal;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 public class ExamenColposcopiaJpaController implements Serializable {
 
@@ -37,15 +38,24 @@ public class ExamenColposcopiaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Expediente expedienteid = examenColposcopia.getExpedienteid();
-            if (expedienteid != null) {
-                expedienteid = em.getReference(expedienteid.getClass(), expedienteid.getId());
-                examenColposcopia.setExpedienteid(expedienteid);
+            Expediente expedientePacientecedula = examenColposcopia.getExpedientePacientecedula();
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula = em.getReference(expedientePacientecedula.getClass(), expedientePacientecedula.getId());
+                examenColposcopia.setExpedientePacientecedula(expedientePacientecedula);
+            }
+            Personal personalcedula = examenColposcopia.getPersonalcedula();
+            if (personalcedula != null) {
+                personalcedula = em.getReference(personalcedula.getClass(), personalcedula.getCedula());
+                examenColposcopia.setPersonalcedula(personalcedula);
             }
             em.persist(examenColposcopia);
-            if (expedienteid != null) {
-                expedienteid.getExamenColposcopiaList().add(examenColposcopia);
-                expedienteid = em.merge(expedienteid);
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula.getExamenColposcopiaList().add(examenColposcopia);
+                expedientePacientecedula = em.merge(expedientePacientecedula);
+            }
+            if (personalcedula != null) {
+                personalcedula.getExamenColposcopiaList().add(examenColposcopia);
+                personalcedula = em.merge(personalcedula);
             }
             em.getTransaction().commit();
         } finally {
@@ -61,20 +71,34 @@ public class ExamenColposcopiaJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             ExamenColposcopia persistentExamenColposcopia = em.find(ExamenColposcopia.class, examenColposcopia.getId());
-            Expediente expedienteidOld = persistentExamenColposcopia.getExpedienteid();
-            Expediente expedienteidNew = examenColposcopia.getExpedienteid();
-            if (expedienteidNew != null) {
-                expedienteidNew = em.getReference(expedienteidNew.getClass(), expedienteidNew.getId());
-                examenColposcopia.setExpedienteid(expedienteidNew);
+            Expediente expedientePacientecedulaOld = persistentExamenColposcopia.getExpedientePacientecedula();
+            Expediente expedientePacientecedulaNew = examenColposcopia.getExpedientePacientecedula();
+            Personal personalcedulaOld = persistentExamenColposcopia.getPersonalcedula();
+            Personal personalcedulaNew = examenColposcopia.getPersonalcedula();
+            if (expedientePacientecedulaNew != null) {
+                expedientePacientecedulaNew = em.getReference(expedientePacientecedulaNew.getClass(), expedientePacientecedulaNew.getId());
+                examenColposcopia.setExpedientePacientecedula(expedientePacientecedulaNew);
+            }
+            if (personalcedulaNew != null) {
+                personalcedulaNew = em.getReference(personalcedulaNew.getClass(), personalcedulaNew.getCedula());
+                examenColposcopia.setPersonalcedula(personalcedulaNew);
             }
             examenColposcopia = em.merge(examenColposcopia);
-            if (expedienteidOld != null && !expedienteidOld.equals(expedienteidNew)) {
-                expedienteidOld.getExamenColposcopiaList().remove(examenColposcopia);
-                expedienteidOld = em.merge(expedienteidOld);
+            if (expedientePacientecedulaOld != null && !expedientePacientecedulaOld.equals(expedientePacientecedulaNew)) {
+                expedientePacientecedulaOld.getExamenColposcopiaList().remove(examenColposcopia);
+                expedientePacientecedulaOld = em.merge(expedientePacientecedulaOld);
             }
-            if (expedienteidNew != null && !expedienteidNew.equals(expedienteidOld)) {
-                expedienteidNew.getExamenColposcopiaList().add(examenColposcopia);
-                expedienteidNew = em.merge(expedienteidNew);
+            if (expedientePacientecedulaNew != null && !expedientePacientecedulaNew.equals(expedientePacientecedulaOld)) {
+                expedientePacientecedulaNew.getExamenColposcopiaList().add(examenColposcopia);
+                expedientePacientecedulaNew = em.merge(expedientePacientecedulaNew);
+            }
+            if (personalcedulaOld != null && !personalcedulaOld.equals(personalcedulaNew)) {
+                personalcedulaOld.getExamenColposcopiaList().remove(examenColposcopia);
+                personalcedulaOld = em.merge(personalcedulaOld);
+            }
+            if (personalcedulaNew != null && !personalcedulaNew.equals(personalcedulaOld)) {
+                personalcedulaNew.getExamenColposcopiaList().add(examenColposcopia);
+                personalcedulaNew = em.merge(personalcedulaNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -105,10 +129,15 @@ public class ExamenColposcopiaJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The examenColposcopia with id " + id + " no longer exists.", enfe);
             }
-            Expediente expedienteid = examenColposcopia.getExpedienteid();
-            if (expedienteid != null) {
-                expedienteid.getExamenColposcopiaList().remove(examenColposcopia);
-                expedienteid = em.merge(expedienteid);
+            Expediente expedientePacientecedula = examenColposcopia.getExpedientePacientecedula();
+            if (expedientePacientecedula != null) {
+                expedientePacientecedula.getExamenColposcopiaList().remove(examenColposcopia);
+                expedientePacientecedula = em.merge(expedientePacientecedula);
+            }
+            Personal personalcedula = examenColposcopia.getPersonalcedula();
+            if (personalcedula != null) {
+                personalcedula.getExamenColposcopiaList().remove(examenColposcopia);
+                personalcedula = em.merge(personalcedula);
             }
             em.remove(examenColposcopia);
             em.getTransaction().commit();

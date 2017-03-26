@@ -23,7 +23,7 @@ import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 public class DepartamentoJpaController implements Serializable {
 
@@ -70,8 +70,8 @@ public class DepartamentoJpaController implements Serializable {
             departamento.setCitaList(attachedCitaList);
             em.persist(departamento);
             for (Personal personalListPersonal : departamento.getPersonalList()) {
-                Departamento oldDepartamentoidOfPersonalListPersonal = personalListPersonal.getDepartamentoid();
-                personalListPersonal.setDepartamentoid(departamento);
+                Departamento oldDepartamentoidOfPersonalListPersonal = personalListPersonal.getDepartamentoId();
+                personalListPersonal.setDepartamentoId(departamento);
                 personalListPersonal = em.merge(personalListPersonal);
                 if (oldDepartamentoidOfPersonalListPersonal != null) {
                     oldDepartamentoidOfPersonalListPersonal.getPersonalList().remove(personalListPersonal);
@@ -168,8 +168,8 @@ public class DepartamentoJpaController implements Serializable {
             departamento = em.merge(departamento);
             for (Personal personalListNewPersonal : personalListNew) {
                 if (!personalListOld.contains(personalListNewPersonal)) {
-                    Departamento oldDepartamentoidOfPersonalListNewPersonal = personalListNewPersonal.getDepartamentoid();
-                    personalListNewPersonal.setDepartamentoid(departamento);
+                    Departamento oldDepartamentoidOfPersonalListNewPersonal = personalListNewPersonal.getDepartamentoId();
+                    personalListNewPersonal.setDepartamentoId(departamento);
                     personalListNewPersonal = em.merge(personalListNewPersonal);
                     if (oldDepartamentoidOfPersonalListNewPersonal != null && !oldDepartamentoidOfPersonalListNewPersonal.equals(departamento)) {
                         oldDepartamentoidOfPersonalListNewPersonal.getPersonalList().remove(personalListNewPersonal);

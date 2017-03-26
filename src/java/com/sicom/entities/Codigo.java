@@ -23,15 +23,15 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 @Entity
 @Table(name = "codigo")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Codigo.findAll", query = "SELECT c FROM Codigo c")
-    , @NamedQuery(name = "Codigo.findById", query = "SELECT c FROM Codigo c WHERE c.id = :id")
-    , @NamedQuery(name = "Codigo.findByTipo", query = "SELECT c FROM Codigo c WHERE c.tipo = :tipo")})
+    @NamedQuery(name = "Codigo.findAll", query = "SELECT c FROM Codigo c"),
+    @NamedQuery(name = "Codigo.findById", query = "SELECT c FROM Codigo c WHERE c.id = :id"),
+    @NamedQuery(name = "Codigo.findByTipo", query = "SELECT c FROM Codigo c WHERE c.tipo = :tipo")})
 public class Codigo implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,7 +43,7 @@ public class Codigo implements Serializable {
     @Basic(optional = false)
     @Column(name = "tipo")
     private String tipo;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "codigoId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "codigo")
     private List<Valor> valorList;
 
     public Codigo() {

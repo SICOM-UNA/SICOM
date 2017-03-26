@@ -22,24 +22,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 @Entity
 @Table(name = "examencolposcopia")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ExamenColposcopia.findAll", query = "SELECT e FROM ExamenColposcopia e")
-    , @NamedQuery(name = "ExamenColposcopia.findById", query = "SELECT e FROM ExamenColposcopia e WHERE e.id = :id")
-    , @NamedQuery(name = "ExamenColposcopia.findByFecha", query = "SELECT e FROM ExamenColposcopia e WHERE e.fecha = :fecha")
-    , @NamedQuery(name = "ExamenColposcopia.findByResultado", query = "SELECT e FROM ExamenColposcopia e WHERE e.resultado = :resultado")
-    , @NamedQuery(name = "ExamenColposcopia.findByResultadoComentario", query = "SELECT e FROM ExamenColposcopia e WHERE e.resultadoComentario = :resultadoComentario")
-    , @NamedQuery(name = "ExamenColposcopia.findByMoco", query = "SELECT e FROM ExamenColposcopia e WHERE e.moco = :moco")
-    , @NamedQuery(name = "ExamenColposcopia.findByAcidoAcetico", query = "SELECT e FROM ExamenColposcopia e WHERE e.acidoAcetico = :acidoAcetico")
-    , @NamedQuery(name = "ExamenColposcopia.findBySchiller", query = "SELECT e FROM ExamenColposcopia e WHERE e.schiller = :schiller")
-    , @NamedQuery(name = "ExamenColposcopia.findByComentarioSchiller", query = "SELECT e FROM ExamenColposcopia e WHERE e.comentarioSchiller = :comentarioSchiller")
-    , @NamedQuery(name = "ExamenColposcopia.findByLx", query = "SELECT e FROM ExamenColposcopia e WHERE e.lx = :lx")
-    , @NamedQuery(name = "ExamenColposcopia.findByOtros", query = "SELECT e FROM ExamenColposcopia e WHERE e.otros = :otros")
-    , @NamedQuery(name = "ExamenColposcopia.findByBx", query = "SELECT e FROM ExamenColposcopia e WHERE e.bx = :bx")})
+    @NamedQuery(name = "ExamenColposcopia.findAll", query = "SELECT e FROM ExamenColposcopia e"),
+    @NamedQuery(name = "ExamenColposcopia.findById", query = "SELECT e FROM ExamenColposcopia e WHERE e.id = :id"),
+    @NamedQuery(name = "ExamenColposcopia.findByFecha", query = "SELECT e FROM ExamenColposcopia e WHERE e.fecha = :fecha"),
+    @NamedQuery(name = "ExamenColposcopia.findByResultado", query = "SELECT e FROM ExamenColposcopia e WHERE e.resultado = :resultado"),
+    @NamedQuery(name = "ExamenColposcopia.findByResultadoComentario", query = "SELECT e FROM ExamenColposcopia e WHERE e.resultadoComentario = :resultadoComentario"),
+    @NamedQuery(name = "ExamenColposcopia.findByMoco", query = "SELECT e FROM ExamenColposcopia e WHERE e.moco = :moco"),
+    @NamedQuery(name = "ExamenColposcopia.findByAcidoAcetico", query = "SELECT e FROM ExamenColposcopia e WHERE e.acidoAcetico = :acidoAcetico"),
+    @NamedQuery(name = "ExamenColposcopia.findBySchiller", query = "SELECT e FROM ExamenColposcopia e WHERE e.schiller = :schiller"),
+    @NamedQuery(name = "ExamenColposcopia.findByComentarioSchiller", query = "SELECT e FROM ExamenColposcopia e WHERE e.comentarioSchiller = :comentarioSchiller"),
+    @NamedQuery(name = "ExamenColposcopia.findByLx", query = "SELECT e FROM ExamenColposcopia e WHERE e.lx = :lx"),
+    @NamedQuery(name = "ExamenColposcopia.findByOtros", query = "SELECT e FROM ExamenColposcopia e WHERE e.otros = :otros"),
+    @NamedQuery(name = "ExamenColposcopia.findByBx", query = "SELECT e FROM ExamenColposcopia e WHERE e.bx = :bx")})
 public class ExamenColposcopia implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -72,9 +72,9 @@ public class ExamenColposcopia implements Serializable {
     private String otros;
     @Column(name = "bx")
     private Boolean bx;
-    @JoinColumn(name = "Expediente_id", referencedColumnName = "id")
+    @JoinColumn(name = "Expediente_Paciente_cedula", referencedColumnName = "Paciente_cedula")
     @ManyToOne(optional = false)
-    private Expediente expedienteid;
+    private Expediente expedientePacientecedula;
     @JoinColumn(name = "Personal_cedula", referencedColumnName = "cedula")
     @ManyToOne(optional = false)
     private Personal personalcedula;
@@ -187,12 +187,12 @@ public class ExamenColposcopia implements Serializable {
         this.bx = bx;
     }
 
-    public Expediente getExpedienteid() {
-        return expedienteid;
+    public Expediente getExpedientePacientecedula() {
+        return expedientePacientecedula;
     }
 
-    public void setExpedienteid(Expediente expedienteid) {
-        this.expedienteid = expedienteid;
+    public void setExpedientePacientecedula(Expediente expedientePacientecedula) {
+        this.expedientePacientecedula = expedientePacientecedula;
     }
 
     public Personal getPersonalcedula() {

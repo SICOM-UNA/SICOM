@@ -19,19 +19,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Pablo
+ * @author WVQ
  */
 @Entity
 @Table(name = "responsable")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Responsable.findAll", query = "SELECT r FROM Responsable r")
-    , @NamedQuery(name = "Responsable.findByCedula", query = "SELECT r FROM Responsable r WHERE r.cedula = :cedula")
-    , @NamedQuery(name = "Responsable.findByNombre", query = "SELECT r FROM Responsable r WHERE r.nombre = :nombre")
-    , @NamedQuery(name = "Responsable.findByTelefono", query = "SELECT r FROM Responsable r WHERE r.telefono = :telefono")
-    , @NamedQuery(name = "Responsable.findByOcupacion", query = "SELECT r FROM Responsable r WHERE r.ocupacion = :ocupacion")
-    , @NamedQuery(name = "Responsable.findByVinculo", query = "SELECT r FROM Responsable r WHERE r.vinculo = :vinculo")
-    , @NamedQuery(name = "Responsable.findByPacienteid", query = "SELECT r FROM Responsable r WHERE r.pacienteid = :pacienteid")})
+    @NamedQuery(name = "Responsable.findAll", query = "SELECT r FROM Responsable r"),
+    @NamedQuery(name = "Responsable.findByCedula", query = "SELECT r FROM Responsable r WHERE r.cedula = :cedula"),
+    @NamedQuery(name = "Responsable.findByNombre", query = "SELECT r FROM Responsable r WHERE r.nombre = :nombre"),
+    @NamedQuery(name = "Responsable.findByTelefono", query = "SELECT r FROM Responsable r WHERE r.telefono = :telefono"),
+    @NamedQuery(name = "Responsable.findByOcupacion", query = "SELECT r FROM Responsable r WHERE r.ocupacion = :ocupacion"),
+    @NamedQuery(name = "Responsable.findByVinculo", query = "SELECT r FROM Responsable r WHERE r.vinculo = :vinculo")})
 public class Responsable implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -47,9 +46,6 @@ public class Responsable implements Serializable {
     private String ocupacion;
     @Column(name = "vinculo")
     private String vinculo;
-    @Basic(optional = false)
-    @Column(name = "Paciente_id")
-    private int pacienteid;
     @JoinColumn(name = "Paciente_cedula", referencedColumnName = "cedula")
     @ManyToOne(optional = false)
     private Paciente pacientecedula;
@@ -59,11 +55,6 @@ public class Responsable implements Serializable {
 
     public Responsable(String cedula) {
         this.cedula = cedula;
-    }
-
-    public Responsable(String cedula, int pacienteid) {
-        this.cedula = cedula;
-        this.pacienteid = pacienteid;
     }
 
     public String getCedula() {
@@ -104,14 +95,6 @@ public class Responsable implements Serializable {
 
     public void setVinculo(String vinculo) {
         this.vinculo = vinculo;
-    }
-
-    public int getPacienteid() {
-        return pacienteid;
-    }
-
-    public void setPacienteid(int pacienteid) {
-        this.pacienteid = pacienteid;
     }
 
     public Paciente getPacientecedula() {
