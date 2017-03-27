@@ -11,6 +11,7 @@ import com.sicom.entities.Paciente;
 import com.sicom.entities.Personal;
 import com.sicom.entities.Responsable;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +32,7 @@ import org.joda.time.Years;
 
 @ManagedBean
 @ViewScoped
-public class PacienteBean {
+public class PacienteBean implements Serializable {
 
     private Paciente nuevoPaciente;
     private Paciente selectedPaciente;

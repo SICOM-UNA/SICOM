@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!-- =========== FULL CONFIGURATION FILE ================================== -->
+
+<faces-config version="2.1"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd">
+
+    <!-- Excepciones -->
+    <factory>
+        <exception-handler-factory>org.omnifaces.exceptionhandler.FullAjaxExceptionHandlerFactory</exception-handler-factory>
+    </factory>
+    <!-- Validación -->
+    <application>
+        <message-bundle>com.sicom.validator.messages_custom</message-bundle>
+    </application>
+    <lifecycle>
+        <phase-listener>org.omnifaces.eventlistener.ResetInputAjaxActionListener</phase-listener>
+    </lifecycle>
+</faces-config>

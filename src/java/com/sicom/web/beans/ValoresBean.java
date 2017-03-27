@@ -11,6 +11,7 @@ import com.sicom.controller.AutorizacionJpaController;
 import com.sicom.controller.DepartamentoJpaController;
 import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.Valor;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
@@ -24,17 +25,25 @@ import javax.persistence.Persistence;
  */
 @ManagedBean
 @ViewScoped
-public class ValoresBean {
+public class ValoresBean implements Serializable {
     
     private final DepartamentoJpaController djc;
     private final AutorizacionJpaController ajc;
     private final ValorJpaController vjc;
+    private String tipoId = null;
+    
     public ValoresBean() {
         
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
         djc = new DepartamentoJpaController(emf);
         ajc = new AutorizacionJpaController(emf);
         vjc = new ValorJpaController(emf);
+    }
+    
+    /**
+     * Asigna el patrón correspondiente para cada tipo de identificación
+     */
+    public void getTipoIdentificacion() {
     }
     
     /**
@@ -74,4 +83,18 @@ public class ValoresBean {
     public List<Autorizacion> getAutorizacionList() {
         return ajc.findAutorizacionEntities();
     }    
+
+    /**
+     * @return the tipoId
+     */
+    public String getTipoId() {
+        return tipoId;
+    }
+
+    /**
+     * @param tipoId the tipoId to set
+     */
+    public void setTipoId(String tipoId) {
+        this.tipoId = tipoId;
+    }
 }
