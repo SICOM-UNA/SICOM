@@ -15,7 +15,7 @@
     <application>
         <message-bundle>com.sicom.validator.messages_custom</message-bundle>
     </application>
-    <lifecycle>
-        <phase-listener>org.omnifaces.eventlistener.ResetInputAjaxActionListener</phase-listener>
-    </lifecycle>
+    <application>
+        <action-listener>org.omnifaces.eventlistener.ResetInputAjaxActionListener</action-listener>
+    </application>
 </faces-config>

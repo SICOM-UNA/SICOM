@@ -30,7 +30,7 @@ public class ValoresBean implements Serializable {
     private final DepartamentoJpaController djc;
     private final AutorizacionJpaController ajc;
     private final ValorJpaController vjc;
-    private String tipoId = null;
+    private String tipoId = "nacional";
     
     public ValoresBean() {
         

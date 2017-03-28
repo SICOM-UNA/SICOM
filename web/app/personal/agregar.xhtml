@@ -26,7 +26,7 @@
                                             <h:panelGrid columns="2">
                                                 <h:panelGrid columns="2" cellspacing="3">
                                                     <p:outputLabel value="Tipo Identificación:" for="tipoId"/>
-                                                    <p:selectOneMenu id="tipoId" value="#{tipoId}">
+                                                    <p:selectOneMenu id="tipoId" value="#{valoresBean.tipoId}">
                                                         <f:selectItems value="#{valoresBean.getDescripcionByCodeId(8)}"/>
                                                         <f:ajax render="panelCedula"/>
                                                     </p:selectOneMenu>
@@ -34,11 +34,11 @@
                                                     <p:outputLabel for="cedula" value="Identificación:"/>
                                                     <h:panelGrid id="panelCedula" columns="3">
                                                         <p:inputMask id="cedula" value="#{personalBean.nuevoUsuario.personal.cedula}" required="true" maxlength="12" size="13" 
-                                                            mask="9-9999-9999" placeholder="0-0000-0000" rendered="#{tipoId.toLowerCase().equals('nacional') || tipoId == null}"/>
+                                                            mask="9-9999-9999" placeholder="0-0000-0000" rendered="#{valoresBean.tipoId.toLowerCase().equals('nacional')}"/>
                                                         <p:inputMask id="residencia" value="#{personalBean.nuevoUsuario.personal.cedula}" required="true" maxlength="12" size="13" 
-                                                            mask="999999999999" placeholder="000000000000" rendered="#{tipoId.toLowerCase().equals('residencia')}"/>
+                                                            mask="999999999999" placeholder="000000000000" rendered="#{valoresBean.tipoId.toLowerCase().equals('residencia')}"/>
                                                         <p:inputText id="pasaporte" value="#{personalBean.nuevoUsuario.personal.cedula}" required="true" maxlength="12" size="13" 
-                                                            rendered="#{tipoId.toLowerCase().equals('pasaporte')}"/>
+                                                            rendered="#{valoresBean.tipoId.toLowerCase().equals('pasaporte')}"/>
                                                         <p:commandButton icon="ui-icon-search">
                                                             <f:ajax />
                                                         </p:commandButton>
@@ -131,13 +131,15 @@
                                     <p:panel header="Información de Seguridad">
                                         <h:panelGrid columns="2">
                                             <p:outputLabel value="Departamento:" class="descripcion" for="departamento"/>
-                                            <p:selectOneMenu id="departamento" value="#{personalBean.nuevoUsuario.personal.departamentoId}" converter="omnifaces.SelectItemsConverter">
+                                            <p:selectOneMenu id="departamento" value="#{personalBean.nuevoUsuario.personal.departamentoId}" required="true"
+                                                converter="omnifaces.SelectItemsConverter">
                                                 <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
                                                 <f:selectItems value="#{valoresBean.departamentosList}" var="departamento" itemLabel="#{departamento.nombre}" itemValue="#{departamento}"/>
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Nivel de autorización:" class="descripcion" for="nivelAutorizacion"/>
-                                            <p:selectOneMenu id="nivelAutorizacion" value="#{personalBean.nuevoUsuario.personal.autorizacionNivel}" converter="omnifaces.SelectItemsConverter">
+                                            <p:selectOneMenu id="nivelAutorizacion" value="#{personalBean.nuevoUsuario.personal.autorizacionNivel}" required="true"
+                                                converter="omnifaces.SelectItemsConverter">
                                                 <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
                                                 <f:selectItems value="#{valoresBean.autorizacionList}" var="autorizacion" itemLabel="#{autorizacion.descripcion}" itemValue="#{autorizacion}"/>
                                             </p:selectOneMenu>
