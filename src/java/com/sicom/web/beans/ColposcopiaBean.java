@@ -1,6 +1,7 @@
 package com.sicom.web.beans;
 
 import com.sicom.controller.ValorJpaController;
+import java.io.Serializable;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -10,7 +11,7 @@ import javax.persistence.Persistence;
 
 @ManagedBean
 @ViewScoped
-public class ColposcopiaBean {
+public class ColposcopiaBean implements Serializable{
     
     private String resultado;
 

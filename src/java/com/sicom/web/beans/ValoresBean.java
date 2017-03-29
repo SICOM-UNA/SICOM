@@ -11,6 +11,7 @@ import com.sicom.controller.AutorizacionJpaController;
 import com.sicom.controller.DepartamentoJpaController;
 import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.Valor;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
@@ -24,7 +25,7 @@ import javax.persistence.Persistence;
  */
 @ManagedBean
 @ViewScoped
-public class ValoresBean {
+public class ValoresBean implements Serializable{
     
     private final DepartamentoJpaController djc;
     private final AutorizacionJpaController ajc;

@@ -5,6 +5,7 @@ import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.entities.AntecedentesGinecologia;
 import com.sicom.entities.Paciente;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +19,7 @@ import javax.persistence.Persistence;
 
 @ManagedBean
 @ViewScoped
-public class AntecedentesGinecologiaBean {
+public class AntecedentesGinecologiaBean implements Serializable{
 
     private AntecedentesGinecologia antecedentesGinecologia;
     private final AntecedentesGinecologiaJpaController agc;
@@ -36,7 +37,7 @@ public class AntecedentesGinecologiaBean {
 
         agc = new AntecedentesGinecologiaJpaController(emf);
 
-        paciente = (Paciente) ec.getSessionMap().remove("paciente");
+        paciente = (Paciente) ec.getSessionMap().get("paciente");
         antecedentesGinecologia = (AntecedentesGinecologia) ec.getSessionMap().remove("antecedente");
 
         if (paciente != null) {

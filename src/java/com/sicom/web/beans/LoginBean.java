@@ -8,6 +8,7 @@ import com.sicom.entities.Departamento;
 import com.sicom.entities.Login;
 import com.sicom.entities.Personal;
 import java.io.IOException;
+import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -20,7 +21,7 @@ import javax.servlet.RequestDispatcher;
 
 @ManagedBean
 @ViewScoped
-public class LoginBean {
+public class LoginBean implements Serializable{
 
     private Login login;
     private String originalURL;

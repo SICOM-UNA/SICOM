@@ -6,6 +6,7 @@ import com.sicom.entities.Login;
 import com.sicom.entities.Paciente;
 import com.sicom.entities.Personal;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -22,7 +23,7 @@ import javax.persistence.Persistence;
  */
 @ManagedBean
 @ViewScoped
-public class ExpedienteBean {
+public class ExpedienteBean implements Serializable{
 
     private Expediente expediente;
     private ExpedienteJpaController ejc;

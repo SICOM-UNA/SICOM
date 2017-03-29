@@ -5,6 +5,7 @@ import com.sicom.entities.Personal;
 import com.sicom.controller.PersonalJpaController;
 import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.entities.Login;
+import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +19,7 @@ import javax.persistence.Persistence;
 
 @ManagedBean
 @ViewScoped
-public class PersonalBean {
+public class PersonalBean implements Serializable{
 
     private Personal nuevoPersonal;
     private Personal selectedPersonal;

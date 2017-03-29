@@ -4,13 +4,13 @@ import com.sicom.controller.PacienteJpaController;
 
 import com.sicom.controller.ResponsableJpaController;
 import com.sicom.controller.exceptions.NonexistentEntityException;
-import com.sicom.entities.AntecedentesGinecologia;
 import com.sicom.entities.Expediente;
 import com.sicom.entities.Login;
 import com.sicom.entities.Paciente;
 import com.sicom.entities.Personal;
 import com.sicom.entities.Responsable;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +31,7 @@ import org.joda.time.Years;
 
 @ManagedBean
 @ViewScoped
-public class PacienteBean {
+public class PacienteBean implements Serializable{
 
     private Paciente nuevoPaciente;
     private Paciente selectedPaciente;
@@ -56,7 +56,7 @@ public class PacienteBean {
         ExternalContext ec = fc.getExternalContext();
         Map<String, Object> sessionMap = ec.getSessionMap();
 
-        Paciente p = (Paciente) sessionMap.remove("paciente");
+        Paciente p = (Paciente) sessionMap.get("paciente");
         selectedPaciente = (p != null) ? p : new Paciente();
 
         Responsable aux1 = (Responsable) sessionMap.remove("responsable1");
@@ -152,7 +152,7 @@ public class PacienteBean {
 
             String direccion = createUrl(consultorio, permiso_editar);
 
-            if (direccion.equals("")) {
+            if (direccion.trim().equals("")) {
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No posee los permisos para acceder.", null));
             } else {
                 try {

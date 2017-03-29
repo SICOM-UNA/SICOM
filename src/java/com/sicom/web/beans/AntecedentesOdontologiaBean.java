@@ -5,6 +5,7 @@ import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.entities.AntecedentesOdontologia;
 import com.sicom.entities.Paciente;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -16,7 +17,7 @@ import javax.persistence.Persistence;
 
 @ManagedBean
 @ViewScoped
-public class AntecedentesOdontologiaBean {
+public class AntecedentesOdontologiaBean implements Serializable{
 
     private AntecedentesOdontologia antecedentesOdontologia;
     private final AntecedentesOdontologiaJpaController aoc;
@@ -28,7 +29,7 @@ public class AntecedentesOdontologiaBean {
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
 
-        paciente = (Paciente) ec.getSessionMap().remove("paciente");
+        paciente = (Paciente) ec.getSessionMap().get("paciente");
         antecedentesOdontologia = (AntecedentesOdontologia) ec.getSessionMap().remove("antecedente");
 
         if (paciente != null) {

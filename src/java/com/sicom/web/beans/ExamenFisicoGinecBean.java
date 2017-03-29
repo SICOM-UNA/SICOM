@@ -3,6 +3,7 @@ package com.sicom.web.beans;
 import com.sicom.controller.ExamenGinecologiaJpaController;
 import com.sicom.entities.ExamenGinecologia;
 import com.sicom.entities.Paciente;
+import java.io.Serializable;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +22,7 @@ import org.primefaces.model.UploadedFile;
 
 @ManagedBean
 @ViewScoped
-public class ExamenFisicoGinecBean {
+public class ExamenFisicoGinecBean implements Serializable{
     private ExamenGinecologia examenFisico;
     private Date hoy;
     private ExamenGinecologiaJpaController ejc;
