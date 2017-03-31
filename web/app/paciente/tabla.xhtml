@@ -18,7 +18,7 @@
                                         
                     <p:remoteCommand name="rc" action="#{pacienteBean.init}" autoRun="false" update="tablePacientes"/>
                     
-                    <p:dataTable id="tablePacientes" value="#{pacienteBean.listaPacientes}" var="paciente" 
+                    <p:dataTable id="tablePacientes" value="#{pacienteBean.listaPaciente}" var="paciente" 
                         paginator="true" paginatorPosition="bottom" rows="15" rowKey="#{paciente.id}"
                         selectionMode="single" selection="#{pacienteBean.selectedPaciente}" 
                         resizableColumns="true" lazy="true" filterEvent="enter"

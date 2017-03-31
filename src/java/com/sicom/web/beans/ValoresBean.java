@@ -41,12 +41,6 @@ public class ValoresBean implements Serializable {
     }
     
     /**
-     * Asigna el patrón correspondiente para cada tipo de identificación
-     */
-    public void getTipoIdentificacion() {
-    }
-    
-    /**
      * Obtiene la lista de valores asociados al código dado
      * @param codigo
      * @return lista de valores

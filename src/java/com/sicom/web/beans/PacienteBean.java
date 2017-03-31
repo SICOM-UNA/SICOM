@@ -1,10 +1,8 @@
 package com.sicom.web.beans;
 
 import com.sicom.controller.PacienteJpaController;
-
 import com.sicom.controller.ResponsableJpaController;
 import com.sicom.controller.exceptions.NonexistentEntityException;
-import com.sicom.entities.AntecedentesGinecologia;
 import com.sicom.entities.Expediente;
 import com.sicom.entities.Login;
 import com.sicom.entities.Paciente;
@@ -12,13 +10,10 @@ import com.sicom.entities.Personal;
 import com.sicom.entities.Responsable;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -36,10 +31,9 @@ public class PacienteBean implements Serializable {
 
     private Paciente nuevoPaciente;
     private Paciente selectedPaciente;
-    private Responsable responsable1;
-    private Responsable responsable2;
-    private Responsable selectedResponsable;
-    private List<Paciente> listaPacientes;
+    private Responsable nuevoResponsable;
+    private List<Paciente> listaPaciente;
+    private List<Responsable> listaResponsable;
     private final PacienteJpaController pjc;
     private final ResponsableJpaController rjc;
 
@@ -48,32 +42,13 @@ public class PacienteBean implements Serializable {
      */
     public PacienteBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
-
         nuevoPaciente = new Paciente();
+        selectedPaciente = new Paciente();
+        nuevoResponsable = new Responsable();
+        listaPaciente = new ArrayList<>();
+        listaResponsable = new ArrayList<>();
         pjc = new PacienteJpaController(emf);
         rjc = new ResponsableJpaController(emf);
-
-        FacesContext fc = FacesContext.getCurrentInstance();
-        ExternalContext ec = fc.getExternalContext();
-        Map<String, Object> sessionMap = ec.getSessionMap();
-
-        Paciente p = (Paciente) sessionMap.remove("paciente");
-        selectedPaciente = (p != null) ? p : new Paciente();
-
-        Responsable aux1 = (Responsable) sessionMap.remove("responsable1");
-        responsable1 = (aux1 != null) ? aux1 : new Responsable();
-
-        Responsable aux2 = (Responsable) sessionMap.remove("responsable2");
-        responsable2 = (aux2 != null) ? aux2 : new Responsable();
-
-        Responsable aux3 = (Responsable) sessionMap.remove("selectedResponsable");
-        selectedResponsable = (aux3 != null) ? aux3 : new Responsable();
-
-    }
-
-    @PostConstruct
-    public void init() {
-        listaPacientes = pjc.findPacienteEntities();
     }
 
     /**
@@ -81,25 +56,32 @@ public class PacienteBean implements Serializable {
      * agregarlo exitosamente.
      */
     public void agregar() {
-        try {
-            Paciente p = pjc.findPaciente(nuevoPaciente.getCedula());
+        try {            
+            Paciente paciente = pjc.findPaciente(nuevoPaciente.getCedula());
 
-            if (p != null) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede agregar, ya existe el paciente con la cédula: ", nuevoPaciente.getCedula()));
+            // Valida si el paciente ya existe
+            if(paciente != null && paciente.getCedula().equals(nuevoPaciente.getCedula())) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El paciente ya existe, por favor digite una identificación diferente de " + paciente.getCedula(), null));
+            } else if(listaResponsable.size() < 1) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe existir al menos un responsable asignado al paciente " + nuevoPaciente.getCedula(), null));
             } else {
+                nuevoPaciente.setResponsableList(listaResponsable);
                 pjc.create(nuevoPaciente);
 
                 FacesContext fc = FacesContext.getCurrentInstance();
                 ExternalContext ec = fc.getExternalContext();
-
                 ec.getFlash().setKeepMessages(true);
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Paciente agregado exitosamente.", null));
-
-                buscaIdBase();
             }
         } catch (Exception ex) {
             Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public String reinit() {
+        nuevoResponsable = new Responsable();
+        
+        return null;
     }
 
     /**
@@ -244,68 +226,6 @@ public class PacienteBean implements Serializable {
         }
     }
 
-    public void cancelarAction() {
-        this.buscaIdBase();
-    }
-
-    public void modificaResposableRedirect(int i) {
-    }
-
-    //--------------------------------------------------------------------------
-    // GENERAL METHODS
-    public void buscaIdBase() {
-        Paciente p = (selectedPaciente.getCedula() != null) ? selectedPaciente : ((nuevoPaciente.getCedula() != null) ? nuevoPaciente : null);
-
-        if (p != null) {
-            String id = selectedPaciente.getCedula();
-            selectedPaciente = this.pjc.findPaciente(p.getCedula());
-
-            if (selectedPaciente != null) {
-                try {
-
-                    List<Responsable> lista = selectedPaciente.getResponsableList();
-
-                    if (lista != null) {
-                        switch (lista.size()) {
-                            case 0:
-                                responsable1.setNombre("No Asignado");
-                                responsable2.setNombre("No Asignado");
-                                break;
-                            case 1:
-                                responsable1 = lista.get(0);
-                                responsable2.setNombre("No Asignado");
-                                break;
-                            case 2:
-                                responsable1 = lista.get(0);
-                                responsable2 = lista.get(1);
-                                break;
-                        }
-                    }
-
-                    FacesContext fc = FacesContext.getCurrentInstance();
-                    ExternalContext ec = fc.getExternalContext();
-
-                    String URL = ec.getRequestContextPath() + "/app/paciente/informacion#datos";
-                    ec.getSessionMap().put("paciente", selectedPaciente);
-                    ec.getSessionMap().put("responsable1", responsable1);
-                    ec.getSessionMap().put("responsable2", responsable2);
-                    ec.redirect(URL);
-                } catch (IOException ex) {
-                    Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No existe paciente asignado a la identificación: ", id));
-            }
-
-        }
-    }
-
-    public Date disablePastDates() {
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE, -43800); //43800 = 120 años
-        return c.getTime();
-    }
-
     public int calculaEdad() {
         if (selectedPaciente.getNacimiento() != null) {
             LocalDate birthdate = new LocalDate(selectedPaciente.getNacimiento());
@@ -319,25 +239,18 @@ public class PacienteBean implements Serializable {
         return pjc.findPaciente(id);
     }
 
-    public void verificaID() {
-        if (nuevoPaciente.getCedula() != null) {
-            selectedPaciente.setCedula(nuevoPaciente.getCedula());
-            this.buscaIdBase();
-        }
+    /**
+     * @return the listaPaciente
+     */
+    public List<Paciente> getListaPaciente() {
+        return listaPaciente;
     }
 
     /**
-     * @return the listaPacientes
+     * @param listaPaciente the listaPaciente to set
      */
-    public List<Paciente> getListaPacientes() {
-        return listaPacientes;
-    }
-
-    /**
-     * @param listaPacientes the listaPacientes to set
-     */
-    public void setListaPacientes(List<Paciente> listaPacientes) {
-        this.listaPacientes = listaPacientes;
+    public void setListaPaciente(List<Paciente> listaPaciente) {
+        this.listaPaciente = listaPaciente;
     }
 
     /**
@@ -369,51 +282,30 @@ public class PacienteBean implements Serializable {
     }
 
     /**
-     *
-     * @return Responsable
+     * @return the nuevoResponsable
      */
-    public Responsable getResponsable1() {
-        return responsable1;
+    public Responsable getNuevoResponsable() {
+        return nuevoResponsable;
     }
 
     /**
-     *
-     * @param responsable1
+     * @param nuevoResponsable the nuevoResponsable to set
      */
-    public void setResponsable1(Responsable responsable1) {
-        this.responsable1 = responsable1;
+    public void setNuevoResponsable(Responsable nuevoResponsable) {
+        this.nuevoResponsable = nuevoResponsable;
     }
 
     /**
-     *
-     * @return Responsable
+     * @return the listaResponsable
      */
-    public Responsable getResponsable2() {
-        return responsable2;
+    public List<Responsable> getListaResponsable() {
+        return listaResponsable;
     }
 
     /**
-     *
-     * @param responsable2
+     * @param listaResponsable the listaResponsable to set
      */
-    public void setResponsable2(Responsable responsable2) {
-        this.responsable2 = responsable2;
+    public void setListaResponsable(List<Responsable> listaResponsable) {
+        this.listaResponsable = listaResponsable;
     }
-
-    /**
-     *
-     * @return Responsable
-     */
-    public Responsable getSelectedResponsable() {
-        return selectedResponsable;
-    }
-
-    /**
-     *
-     * @param selectedResponsable
-     */
-    public void setSelectedResponsable(Responsable selectedResponsable) {
-        this.selectedResponsable = selectedResponsable;
-    }
-
 }

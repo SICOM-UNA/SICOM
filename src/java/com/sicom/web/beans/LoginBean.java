@@ -55,19 +55,15 @@ public class LoginBean {
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
         Login nuevo = ljc.findLogin(login.getUsuario());
-
-        if (nuevo != null && nuevo.getContrasena().equals(login.getContrasena())) {
-            
+        Personal personal = pjc.findPersonalByLoginUsuario(login.getUsuario());
+        
+        if (nuevo != null && nuevo.getPersonal() != null && nuevo.getContrasena().equals(login.getContrasena())) {
             login = nuevo;
             login.setAutenticado(true);
-            Personal personal = login.getPersonal();
-
-            if (personal != null) {
-                String dim = ("Masculino".equals(personal.getGenero())) ? "Sr. " : "Sra. ";
-                ec.getFlash().setKeepMessages(true);
-                fc.addMessage("msg", new FacesMessage("Bienvenido " + dim + personal.getNombre().concat(" ") + personal.getPrimerApellido().concat(" ") + personal.getSegundoApellido().concat(".")));
-            }
-
+            login.setPersonal(personal);
+            String dim = ("Masculino".equals(personal.getGenero())) ? "Sr. " : "Sra. ";
+            ec.getFlash().setKeepMessages(true);
+            fc.addMessage(null, new FacesMessage("Bienvenido " + dim + personal.getNombre().concat(" ") + personal.getPrimerApellido().concat(" ") + personal.getSegundoApellido().concat(".")));
             ec.getSessionMap().put("login", login);
 
             if (from == null || from.isEmpty()) {

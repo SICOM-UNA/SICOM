@@ -10,14 +10,14 @@
     <ui:define name="content">
         <div id="wrapper" align="center">
             <section>
-                <h:form id="formPaciente">
-                    <p:messages id="msg" globalOnly="true" closable="true" showDetail="false"/>
-                    <p:messages for="email" autoUpdate="true" closable="true"/>
-                    
-                    <p:panel header="Agregar Paciente" id="panel">
-                        <div class="ui-grid ui-grid-responsive">
-                            <div class="ui-grid-row">
-                                <div class="ui-grid-col-12">
+                <p:panel header="Agregar Paciente" id="panel">
+                    <div class="ui-grid ui-grid-responsive">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <h:form id="formPaciente">
+                                    <p:messages id="msg" globalOnly="true" closable="true" showDetail="false"/>
+                                    <p:messages for="email" autoUpdate="true" closable="true"/>
+                                    
                                     <p:panel header="Información Personal">
                                         <h:panelGrid columns="2">    
                                             <h:panelGrid columns="2">
@@ -60,8 +60,7 @@
 
                                                     <p:outputLabel for="fechaNacimiento" value="Fecha Nacimiento:"/>
                                                     <p:calendar id="fechaNacimiento" value="#{pacienteBean.nuevoPaciente.nacimiento}" pattern="dd-MM-yyyy" mask="true" navigator="true"
-                                                        maxdate="#{now}" mindate="#{pacienteBean.disablePastDates()}" required="true"
-                                                        placeholder="#{now.date}-#{now.month+1}-#{now.year+1900}"/>
+                                                        maxdate="#{now}" required="true" placeholder="#{now.date}-#{now.month+1}-#{now.year+1900}"/>
 
                                                     <p:outputLabel value="Estado Civil:" for="estadoCivil"/>
                                                     <p:selectOneMenu value="#{pacienteBean.nuevoPaciente.estadoCivil}" id="estadoCivil" required="true">
@@ -70,8 +69,8 @@
                                                     </p:selectOneMenu>
                                                 </h:panelGrid>
                                             </h:panelGrid>
+                                            
                                             <h:panelGrid columns="2" cellspacing="3"> 
-
                                                 <p:outputLabel value="Género:" for="genero"/>
                                                 <p:selectOneMenu id="genero" value="#{pacienteBean.nuevoPaciente.genero}" required="true">
                                                     <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true"/>
@@ -89,7 +88,7 @@
                                                 <h:panelGroup>
                                                     <p:tooltip for="email" showEvent="focus" position="bottom" value="Ejemplo de correo: cento_medico@outlook.com"/>
                                                     <p:inputText id="email" value="#{pacienteBean.nuevoPaciente.correo}" class="correo" onkeyup="validar();" maxlength="45"
-                                                        placeholder="nombre@servidor.com" >
+                                                        placeholder="nombre@servidor.com">
                                                         <f:validator validatorId="emailValidator"/>
                                                     </p:inputText>
                                                 </h:panelGroup>
@@ -102,25 +101,87 @@
                                             </h:panelGrid>
                                         </h:panelGrid>
 
-                                        <f:facet name="footer" >
+                                        <f:facet name="footer">
                                             <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                                <p:commandButton value="Guardar Paciente" icon="ui-icon-plus" action="#{pacienteBean.agregar()}" title="Click para guardar información." update="formPaciente"/>
-                                                <p:commandButton value="Limpiar Formulario" icon="ui-icon-refresh" title="Click para limpiar formPaciente." immediate="true">
+                                                <p:commandButton value="Agregar" icon="ui-icon-plus" action="#{pacienteBean.agregar()}" title="Click para guardar información" update="formPaciente msg"/>
+                                                <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Click para limpiar formulario" immediate="true">
                                                     <f:ajax resetValues="true" render="formPaciente"/>
                                                 </p:commandButton> 
                                             </div>
                                         </f:facet>
                                     </p:panel>
-                                </div>
+                                </h:form>
                             </div>
                         </div>
-                    </p:panel>
-                </h:form>
+                            
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <h:form id="formResponsable">
+                                    <p:messages id="msgs" globalOnly="true" closable="true"/>
+
+                                    <p:panel header="Información Responsables">
+                                        <h:panelGrid columns="1">
+                                            <h:panelGrid columns="6" cellpadding="6">
+                                                <p:outputLabel value="Identificación: " for="cedula"/>
+                                                <p:inputMask id="cedula" value="#{pacienteBean.nuevoResponsable.cedula}" mask="9-9999-9999" required="true"/>
+
+                                                <p:outputLabel value="Nombre: " for="nombre"/>
+                                                <p:inputText id="nombre" value="#{pacienteBean.nuevoResponsable.nombre}" required="true" maxlength="45"/>
+
+                                                <p:outputLabel value="Teléfono: " for="telefono"/>
+                                                <p:inputMask id="telefono" value="#{pacienteBean.nuevoResponsable.telefono}" mask="9999-9999" placeholder="0000-0000" required="true" maxlength="45"/>
+
+                                                <p:outputLabel value="Ocupación: "/>
+                                                <p:inputText value="#{pacienteBean.nuevoResponsable.ocupacion}" maxlength="45"/>
+
+                                                <p:outputLabel value="Vínculo: "/>
+                                                <p:selectOneMenu value="#{pacienteBean.nuevoResponsable.vinculo}">
+                                                    <f:selectItem itemValue="Seleccione uno" noSelectionOption="true"/>
+                                                    <f:selectItems value="#{valoresBean.getDescripcionByCodeId(3)}"/>
+                                                </p:selectOneMenu>
+                                            </h:panelGrid>
+                                            
+                                            <f:facet name="footer">
+                                                <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                                    <p:commandButton icon="ui-icon-plus" value="Agregar" update="formResponsable @parent" action="#{pacienteBean.reinit}">
+                                                        <p:collector value="#{pacienteBean.nuevoResponsable}" addTo="#{pacienteBean.listaResponsable}" unique="true"/>
+                                                    </p:commandButton>
+                                                    <p:commandButton icon="ui-icon-refresh" value="Cancelar" type="reset"/>
+                                                </div>
+                                            </f:facet>
+
+                                            <p:outputPanel id="responsables">
+                                                <p:dataTable value="#{pacienteBean.listaResponsable}" var="responsable" id="responsableTable">
+                                                    <p:column headerText="ID">
+                                                         <h:outputText value="#{responsable.cedula}"/>
+                                                    </p:column>
+
+                                                    <p:column headerText="Nombre">
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Nombre"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{responsable.nombre}"/>
+                                                    </p:column>
+                                                    
+                                                    <p:column headerText="Teléfono">
+                                                         <h:outputText value="#{responsable.telefono}"/>
+                                                    </p:column>
+
+                                                    <p:column width="42">
+                                                        <p:commandButton icon="ui-icon-trash" update=":formResponsable:responsables" process=":formResponsable:responsables">
+                                                            <p:collector value="#{responsable}" removeFrom="#{pacienteBean.listaResponsable}" unique="true"/>
+                                                        </p:commandButton>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </p:outputPanel>
+                                        </h:panelGrid>
+                                    </p:panel>
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+                </p:panel>
             </section>
         </div>
     </ui:define>
 </ui:composition>
-
-
-
-

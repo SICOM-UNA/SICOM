@@ -55,8 +55,7 @@ public class PersonalBean implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El usuario ya existe, por favor digite un nombre de usuario diferente de " + login.getUsuario(), null));
             // Valida si el personal ya existe
             } else if(personal != null && personal.getCedula().equals(nuevoUsuario.getPersonal().getCedula())) {
-                FacesContext.getCurrentInstance().addMessage(null
-                        , new FacesMessage(FacesMessage.SEVERITY_WARN, "El personal ya existe, por favor digite un número de cédula diferente de " + personal.getCedula(), null));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El personal ya existe, por favor digite un número de cédula diferente de " + personal.getCedula(), null));
             } else {
                 // Se agrega el usuario
                 ljc.create(nuevoUsuario);
