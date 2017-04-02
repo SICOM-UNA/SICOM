@@ -103,7 +103,7 @@
 
                                         <f:facet name="footer">
                                             <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                                <p:commandButton value="Agregar" icon="ui-icon-plus" action="#{pacienteBean.agregar()}" title="Click para guardar información" update="formPaciente msg"/>
+                                                <p:commandButton value="Agregar" icon="ui-icon-plus" action="#{pacienteBean.agregar()}" title="Click para guardar información" update="formPaciente msg :formResponsable"/>
                                                 <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Click para limpiar formulario" immediate="true">
                                                     <f:ajax resetValues="true" render="formPaciente"/>
                                                 </p:commandButton> 
@@ -117,16 +117,15 @@
                         <div class="ui-grid-row">
                             <div class="ui-grid-col-12">
                                 <h:form id="formResponsable">
-                                    <p:messages id="msgs" globalOnly="true" closable="true"/>
-
                                     <p:panel header="Información Responsables">
                                         <h:panelGrid columns="1">
                                             <h:panelGrid columns="6" cellpadding="6">
                                                 <p:outputLabel value="Identificación: " for="cedula"/>
-                                                <p:inputMask id="cedula" value="#{pacienteBean.nuevoResponsable.cedula}" mask="9-9999-9999" required="true"/>
+                                                <p:inputText id="cedula" value="#{pacienteBean.nuevoResponsable.cedula}" required="true"/>
 
                                                 <p:outputLabel value="Nombre: " for="nombre"/>
-                                                <p:inputText id="nombre" value="#{pacienteBean.nuevoResponsable.nombre}" required="true" maxlength="45"/>
+                                                <p:inputText id="nombre" value="#{pacienteBean.nuevoResponsable.nombre}" required="true" maxlength="45" class="charWithSpaceToUpperCase"
+                                                    onkeyup="validar()" />
 
                                                 <p:outputLabel value="Teléfono: " for="telefono"/>
                                                 <p:inputMask id="telefono" value="#{pacienteBean.nuevoResponsable.telefono}" mask="9999-9999" placeholder="0000-0000" required="true" maxlength="45"/>
@@ -136,7 +135,7 @@
 
                                                 <p:outputLabel value="Vínculo: "/>
                                                 <p:selectOneMenu value="#{pacienteBean.nuevoResponsable.vinculo}">
-                                                    <f:selectItem itemValue="Seleccione uno" noSelectionOption="true"/>
+                                                    <f:selectItem itemLabel="Seleccione uno" noSelectionOption="true"/>
                                                     <f:selectItems value="#{valoresBean.getDescripcionByCodeId(3)}"/>
                                                 </p:selectOneMenu>
                                             </h:panelGrid>

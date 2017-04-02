@@ -40,7 +40,9 @@ public class PacienteJpaController implements Serializable {
         if (paciente.getResponsableList() == null) {
             paciente.setResponsableList(new ArrayList<Responsable>());
         }
+        
         EntityManager em = null;
+        
         try {
             em = getEntityManager();
             em.getTransaction().begin();
@@ -49,22 +51,9 @@ public class PacienteJpaController implements Serializable {
                 expediente = em.getReference(expediente.getClass(), expediente.getId());
                 paciente.setExpediente(expediente);
             }
-            List<Responsable> attachedResponsableList = new ArrayList<Responsable>();
-            for (Responsable responsableListResponsableToAttach : paciente.getResponsableList()) {
-                responsableListResponsableToAttach = em.getReference(responsableListResponsableToAttach.getClass(), responsableListResponsableToAttach.getCedula());
-                attachedResponsableList.add(responsableListResponsableToAttach);
-            }
-            paciente.setResponsableList(attachedResponsableList);
+
             em.persist(paciente);
-            if (expediente != null) {
-                Paciente oldPacientecedulaOfExpediente = expediente.getPacientecedula();
-                if (oldPacientecedulaOfExpediente != null) {
-                    oldPacientecedulaOfExpediente.setExpediente(null);
-                    oldPacientecedulaOfExpediente = em.merge(oldPacientecedulaOfExpediente);
-                }
-                expediente.setPacientecedula(paciente);
-                expediente = em.merge(expediente);
-            }
+
             for (Responsable responsableListResponsable : paciente.getResponsableList()) {
                 Paciente oldPacientecedulaOfResponsableListResponsable = responsableListResponsable.getPacientecedula();
                 responsableListResponsable.setPacientecedula(paciente);

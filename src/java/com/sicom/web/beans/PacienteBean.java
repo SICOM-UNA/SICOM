@@ -24,6 +24,8 @@ import javax.persistence.Persistence;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
+import org.omnifaces.util.Ajax;
+import org.primefaces.context.RequestContext;
 
 @ManagedBean
 @ViewScoped
@@ -71,7 +73,10 @@ public class PacienteBean implements Serializable {
                 FacesContext fc = FacesContext.getCurrentInstance();
                 ExternalContext ec = fc.getExternalContext();
                 ec.getFlash().setKeepMessages(true);
-                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Paciente agregado exitosamente.", null));
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Paciente creado exitosamente.", null));
+                nuevoPaciente = new Paciente();
+                nuevoResponsable = new Responsable();
+                listaResponsable = new ArrayList<>();
             }
         } catch (Exception ex) {
             Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
