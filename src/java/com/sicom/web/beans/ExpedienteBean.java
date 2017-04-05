@@ -124,10 +124,10 @@ public class ExpedienteBean implements Serializable {
 
         switch (consultorio) {
             case 2:
-                ec.getSessionMap().put("antecedente", e.getAntecedentesGinecologia());
+                ec.getSessionMap().put("antecedenteGinecologia", e.getAntecedentesGinecologia());
                 break;
             case 3:
-                ec.getSessionMap().put("antecedente", e.getAntecedentesOdontologia());
+                ec.getSessionMap().put("antecedenteOdontologia", e.getAntecedentesOdontologia());
                 break;
         }
     }

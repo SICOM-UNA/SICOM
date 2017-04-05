@@ -6,6 +6,7 @@ import com.sicom.entities.AntecedentesOdontologia;
 import com.sicom.entities.Paciente;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -30,7 +31,7 @@ public class AntecedentesOdontologiaBean implements Serializable {
         ExternalContext ec = fc.getExternalContext();
 
         paciente = (Paciente) ec.getSessionMap().get("paciente");
-        antecedentesOdontologia = (AntecedentesOdontologia) ec.getSessionMap().remove("antecedente");
+        antecedentesOdontologia = (AntecedentesOdontologia) ec.getSessionMap().remove("antecedenteOdontologia");
 
         if (paciente != null) {
             if (antecedentesOdontologia == null) {
@@ -56,6 +57,7 @@ public class AntecedentesOdontologiaBean implements Serializable {
 
         if (antecedenteNuevo) {
             try {
+                antecedentesOdontologia.setFecha(new Date());
                 antecedentesOdontologia.setExpedientePacientecedula(paciente.getExpediente());
                 aoc.create(antecedentesOdontologia);
 

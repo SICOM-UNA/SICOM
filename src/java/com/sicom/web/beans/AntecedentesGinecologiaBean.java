@@ -38,7 +38,7 @@ public class AntecedentesGinecologiaBean implements Serializable {
         agc = new AntecedentesGinecologiaJpaController(emf);
 
         paciente = (Paciente) ec.getSessionMap().get("paciente");
-        antecedentesGinecologia = (AntecedentesGinecologia) ec.getSessionMap().remove("antecedente");
+        antecedentesGinecologia = (AntecedentesGinecologia) ec.getSessionMap().remove("antecedenteGinecologia");
 
         if (paciente != null) {
             if (antecedentesGinecologia == null) {
