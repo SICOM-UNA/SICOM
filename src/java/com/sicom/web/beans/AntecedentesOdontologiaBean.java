@@ -17,7 +17,7 @@ import javax.persistence.Persistence;
 
 @ManagedBean
 @ViewScoped
-public class AntecedentesOdontologiaBean implements Serializable{
+public class AntecedentesOdontologiaBean implements Serializable {
 
     private AntecedentesOdontologia antecedentesOdontologia;
     private final AntecedentesOdontologiaJpaController aoc;
@@ -49,24 +49,17 @@ public class AntecedentesOdontologiaBean implements Serializable{
         }
     }
 
-    public AntecedentesOdontologia getObjAntecedente() {
-        return antecedentesOdontologia;
-    }
-
-    public void setObjAntecedente(AntecedentesOdontologia nuevoAntecedente) {
-        this.antecedentesOdontologia = nuevoAntecedente;
-    }
-
     public void save() {
+
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
 
         if (antecedenteNuevo) {
             try {
-                
                 antecedentesOdontologia.setExpedientePacientecedula(paciente.getExpediente());
                 aoc.create(antecedentesOdontologia);
-                
-                FacesContext fc = FacesContext.getCurrentInstance();
-                ExternalContext ec = fc.getExternalContext();
+
+                ec.getFlash().setKeepMessages(true);
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información agregada exitósamente.", null));
                 String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
                 ec.redirect(URL);
@@ -78,9 +71,8 @@ public class AntecedentesOdontologiaBean implements Serializable{
             try {
                 antecedentesOdontologia.setExpedientePacientecedula(paciente.getExpediente());
                 aoc.edit(antecedentesOdontologia);
-                
-                FacesContext fc = FacesContext.getCurrentInstance();
-                ExternalContext ec = fc.getExternalContext();
+
+                ec.getFlash().setKeepMessages(true);
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información modificada exitósamente.", null));
                 String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
                 ec.redirect(URL);
@@ -93,6 +85,17 @@ public class AntecedentesOdontologiaBean implements Serializable{
         }
     }
 
+    public void cancelarAction() {
+        try {
+            FacesContext fc = FacesContext.getCurrentInstance();
+            ExternalContext ec = fc.getExternalContext();
+            String URL = ec.getRequestContextPath() + "/app/paciente/informacion#formulario";
+            ec.redirect(URL);
+        } catch (IOException ex) {
+            Logger.getLogger(AntecedentesGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public Paciente getPaciente() {
         return paciente;
     }
@@ -100,4 +103,13 @@ public class AntecedentesOdontologiaBean implements Serializable{
     public void setPaciente(Paciente paciente) {
         this.paciente = paciente;
     }
+
+    public AntecedentesOdontologia getObjAntecedente() {
+        return antecedentesOdontologia;
+    }
+
+    public void setObjAntecedente(AntecedentesOdontologia nuevoAntecedente) {
+        this.antecedentesOdontologia = nuevoAntecedente;
+    }
+
 }

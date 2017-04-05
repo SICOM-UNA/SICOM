@@ -19,7 +19,7 @@ import javax.persistence.Persistence;
 
 @ManagedBean
 @ViewScoped
-public class AntecedentesGinecologiaBean implements Serializable{
+public class AntecedentesGinecologiaBean implements Serializable {
 
     private AntecedentesGinecologia antecedentesGinecologia;
     private final AntecedentesGinecologiaJpaController agc;
@@ -44,7 +44,7 @@ public class AntecedentesGinecologiaBean implements Serializable{
             if (antecedentesGinecologia == null) {
                 antecedentesGinecologia = new AntecedentesGinecologia();
                 antecedenteNuevo = true;
-            }else{
+            } else {
                 antecedenteNuevo = false;
             }
         } else {
@@ -57,21 +57,17 @@ public class AntecedentesGinecologiaBean implements Serializable{
         }
     }
 
-    public void modificar() throws Exception {
-        agc.edit(antecedentesGinecologia);
-    }
-
-    
     public void save() {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
 
         if (antecedenteNuevo) {
             try {
                 antecedentesGinecologia.setFecha(new Date());
                 antecedentesGinecologia.setExpedientePacientecedula(paciente.getExpediente());
                 agc.create(antecedentesGinecologia);
-                
-                FacesContext fc = FacesContext.getCurrentInstance();
-                ExternalContext ec = fc.getExternalContext();
+
+                ec.getFlash().setKeepMessages(true);
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información agregada exitósamente.", null));
                 String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
                 ec.getRequestMap().put("paciente", paciente);
@@ -85,9 +81,8 @@ public class AntecedentesGinecologiaBean implements Serializable{
                 antecedentesGinecologia.setFecha(new Date());
                 antecedentesGinecologia.setExpedientePacientecedula(paciente.getExpediente());
                 agc.edit(antecedentesGinecologia);
-                
-                FacesContext fc = FacesContext.getCurrentInstance();
-                ExternalContext ec = fc.getExternalContext();
+
+                ec.getFlash().setKeepMessages(true);
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información modificada exitósamente.", null));
                 String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
                 ec.getRequestMap().put("paciente", paciente);
@@ -101,19 +96,37 @@ public class AntecedentesGinecologiaBean implements Serializable{
         }
     }
 
-
     public void cancelarAction() {
-
+        try {
+            FacesContext fc = FacesContext.getCurrentInstance();
+            ExternalContext ec = fc.getExternalContext();
+            String URL = ec.getRequestContextPath() + "/app/paciente/informacion#formulario";
+            ec.redirect(URL);
+        } catch (IOException ex) {
+            Logger.getLogger(AntecedentesGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
+    /**
+     *
+     * @return
+     */
     public AntecedentesGinecologia getObjAntecedente() {
         return antecedentesGinecologia;
     }
 
+    /**
+     *
+     * @param nuevoAntecedente
+     */
     public void setObjAntecedente(AntecedentesGinecologia nuevoAntecedente) {
         this.antecedentesGinecologia = nuevoAntecedente;
     }
 
+    /**
+     *
+     * @return
+     */
     public Paciente getPaciente() {
         return paciente;
     }
@@ -129,6 +142,5 @@ public class AntecedentesGinecologiaBean implements Serializable{
     public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
-    
-    
+
 }

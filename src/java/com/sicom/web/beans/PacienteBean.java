@@ -59,14 +59,15 @@ public class PacienteBean implements Serializable{
         Paciente p = (Paciente) sessionMap.get("paciente");
         selectedPaciente = (p != null) ? p : new Paciente();
 
-        Responsable aux1 = (Responsable) sessionMap.remove("responsable1");
-        responsable1 = (aux1 != null) ? aux1 : new Responsable();
+        Responsable aux; 
+        aux= (Responsable) sessionMap.get("responsable1");
+        responsable1 = (aux != null) ? aux : new Responsable();
 
-        Responsable aux2 = (Responsable) sessionMap.remove("responsable2");
-        responsable2 = (aux2 != null) ? aux2 : new Responsable();
+        aux= (Responsable) sessionMap.get("responsable2");
+        responsable2 = (aux != null) ? aux : new Responsable();
 
-        Responsable aux3 = (Responsable) sessionMap.remove("selectedResponsable");
-        selectedResponsable = (aux3 != null) ? aux3 : new Responsable();
+        aux= (Responsable) sessionMap.remove("selectedResponsable");
+        selectedResponsable = (aux != null) ? aux: new Responsable();
 
     }
 
@@ -134,89 +135,6 @@ public class PacienteBean implements Serializable{
         } catch (IOException ex) {
             Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public void HistoriaClinica() {
-
-        FacesContext fc = FacesContext.getCurrentInstance();
-        ExternalContext ec = fc.getExternalContext();
-
-        if (selectedPaciente != null && !selectedPaciente.getCedula().equals("")) {
-
-            String URL = ec.getRequestContextPath();
-            Login log = (Login) ec.getSessionMap().get("login");
-            Personal p = log.getPersonal();
-
-            int consultorio = p.getDepartamentoId().getId();
-            boolean permiso_editar = (p.getAutorizacionNivel().getNivel() < 5);
-
-            String direccion = createUrl(consultorio, permiso_editar);
-
-            if (direccion.trim().equals("")) {
-                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No posee los permisos para acceder.", null));
-            } else {
-                try {
-                    subirObjetosExternalContext(consultorio, ec);
-                    URL += direccion;
-                    ec.redirect(URL);
-                } catch (IOException ex) {
-                    Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        } else {
-            try {
-                String URL = ec.getRequestContextPath();
-                URL += "/app/paciente/consultar";
-                ec.redirect(URL);
-            } catch (IOException ex) {
-                Logger.getLogger(ExpedienteBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
-    /**
-     *
-     * @param consultorio
-     * @param permiso_editar
-     * @return String URL
-     */
-    private String createUrl(int consultorio, boolean permiso_editar) {
-        switch (consultorio) {
-            case 2: // Ginecologia
-                if (permiso_editar) {
-                    return "/app/consultorios/ginecologia/antecedentes";
-                } else {
-                    return "/app/consultorios/ginecologia/consultarAntecedentes";
-                }
-            case 3: // Odontologia
-                if (permiso_editar) {
-                    return "/app/consultorios/odontologia/antecedentes";
-                } else {
-                    return "/app/consultorios/odontologia/consultarAntecedentes";
-                }
-            default:
-                return "";
-        }
-    }
-
-    /**
-     *
-     * @param consultorio
-     * @return Object
-     */
-    private void subirObjetosExternalContext(int consultorio, ExternalContext ec) {
-
-        Expediente e = selectedPaciente.getExpediente();
-
-        switch (consultorio) {
-            case 2:
-                ec.getSessionMap().put("antecedente", e.getAntecedentesGinecologia());
-                break;
-            case 3:
-                ec.getSessionMap().put("antecedente", e.getAntecedentesOdontologia());
-                break;
-        }
-        ec.getSessionMap().put("paciente", selectedPaciente);
     }
 
     public void modificarAction() {
