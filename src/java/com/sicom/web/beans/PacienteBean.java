@@ -31,7 +31,7 @@ import org.joda.time.Years;
 
 @ManagedBean
 @ViewScoped
-public class PacienteBean implements Serializable{
+public class PacienteBean implements Serializable {
 
     private Paciente nuevoPaciente;
     private Paciente selectedPaciente;
@@ -57,17 +57,30 @@ public class PacienteBean implements Serializable{
         Map<String, Object> sessionMap = ec.getSessionMap();
 
         Paciente p = (Paciente) sessionMap.get("paciente");
-        selectedPaciente = (p != null) ? p : new Paciente();
+        p = (p != null) ? pjc.findPaciente(p.getCedula()) : new Paciente();
 
-        Responsable aux; 
-        aux= (Responsable) sessionMap.get("responsable1");
-        responsable1 = (aux != null) ? aux : new Responsable();
+        int index = p.getResponsableList().size();
 
-        aux= (Responsable) sessionMap.get("responsable2");
-        responsable2 = (aux != null) ? aux : new Responsable();
+        switch (index) {
+            case 0:
+                responsable1 =  responsable2 = new  Responsable();
+                responsable1.setNombre("No definido");
+                responsable2.setNombre("No definido");
+                break;
+            case 1:
+                responsable1 = p.getResponsableList().get(0);
+                responsable2 = new Responsable();
+                responsable2.setNombre("No definido");
+                break;
+            case 2:
+                responsable1 = p.getResponsableList().get(0);
+                responsable2 = p.getResponsableList().get(1);
+                break;
+            
+        }
 
-        aux= (Responsable) sessionMap.remove("selectedResponsable");
-        selectedResponsable = (aux != null) ? aux: new Responsable();
+        Responsable aux = (Responsable) sessionMap.remove("selectedResponsable");
+        selectedResponsable = (aux != null) ? aux : new Responsable();
 
     }
 
@@ -180,32 +193,11 @@ public class PacienteBean implements Serializable{
             if (selectedPaciente != null) {
                 try {
 
-                    List<Responsable> lista = selectedPaciente.getResponsableList();
-
-                    if (lista != null) {
-                        switch (lista.size()) {
-                            case 0:
-                                responsable1.setNombre("No Asignado");
-                                responsable2.setNombre("No Asignado");
-                                break;
-                            case 1:
-                                responsable1 = lista.get(0);
-                                responsable2.setNombre("No Asignado");
-                                break;
-                            case 2:
-                                responsable1 = lista.get(0);
-                                responsable2 = lista.get(1);
-                                break;
-                        }
-                    }
-
                     FacesContext fc = FacesContext.getCurrentInstance();
                     ExternalContext ec = fc.getExternalContext();
 
                     String URL = ec.getRequestContextPath() + "/app/paciente/informacion#datos";
                     ec.getSessionMap().put("paciente", selectedPaciente);
-                    ec.getSessionMap().put("responsable1", responsable1);
-                    ec.getSessionMap().put("responsable2", responsable2);
                     ec.redirect(URL);
                 } catch (IOException ex) {
                     Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);

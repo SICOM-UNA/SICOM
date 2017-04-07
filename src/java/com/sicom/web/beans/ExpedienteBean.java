@@ -1,12 +1,15 @@
 package com.sicom.web.beans;
 
 import com.sicom.controller.ExpedienteJpaController;
+import com.sicom.entities.Codigo;
 import com.sicom.entities.Expediente;
 import com.sicom.entities.Login;
 import com.sicom.entities.Paciente;
 import com.sicom.entities.Personal;
+import com.sicom.entities.Valor;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -19,7 +22,7 @@ import javax.persistence.Persistence;
 
 /**
  *
- * @author WVQ
+ * @author Luis
  */
 @ManagedBean
 @ViewScoped
@@ -28,6 +31,7 @@ public class ExpedienteBean implements Serializable {
     private Expediente expediente;
     private ExpedienteJpaController ejc;
     private Paciente paciente;
+    private Valor examenSelected;
 
     public ExpedienteBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
@@ -66,7 +70,7 @@ public class ExpedienteBean implements Serializable {
 
             String direccion = createUrl(consultorio, permiso_editar);
             subirVerificacion(consultorio, ec);
-            
+
             if (direccion.trim().equals("")) {
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No posee los permisos para acceder.", null));
             } else {
@@ -133,6 +137,10 @@ public class ExpedienteBean implements Serializable {
         }
     }
 
+    public void examenFisico() {
+
+    }
+    
     /**
      *
      * @return
@@ -148,5 +156,15 @@ public class ExpedienteBean implements Serializable {
     public void setExpediente(Expediente expediente) {
         this.expediente = expediente;
     }
+
+    public Valor getExamenSelected() {
+        return examenSelected;
+    }
+
+    public void setExamenSelected(Valor examenSelected) {
+        this.examenSelected = examenSelected;
+    }
+
+    
 
 }
