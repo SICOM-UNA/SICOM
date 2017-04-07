@@ -3,6 +3,7 @@ package com.sicom.web.beans;
 import com.sicom.controller.AntecedentesOdontologiaJpaController;
 import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.entities.AntecedentesOdontologia;
+import com.sicom.entities.Expediente;
 import com.sicom.entities.Paciente;
 import java.io.IOException;
 import java.io.Serializable;
@@ -31,9 +32,13 @@ public class AntecedentesOdontologiaBean implements Serializable {
         ExternalContext ec = fc.getExternalContext();
 
         paciente = (Paciente) ec.getSessionMap().get("paciente");
-        antecedentesOdontologia = (AntecedentesOdontologia) ec.getSessionMap().remove("antecedenteOdontologia");
-
-        if (paciente != null) {
+        Object obj = ec.getSessionMap().remove("validacionOdontologia");
+        boolean permiso= (obj != null);
+        
+        if (paciente != null && permiso) {
+            Expediente e = paciente.getExpediente();
+            antecedentesOdontologia = e.getAntecedentesOdontologia();
+            
             if (antecedentesOdontologia == null) {
                 antecedentesOdontologia = new AntecedentesOdontologia();
                 antecedenteNuevo = true;
@@ -71,6 +76,8 @@ public class AntecedentesOdontologiaBean implements Serializable {
             }
         } else {
             try {
+                
+                antecedentesOdontologia.setFecha(new Date());
                 antecedentesOdontologia.setExpedientePacientecedula(paciente.getExpediente());
                 aoc.edit(antecedentesOdontologia);
 

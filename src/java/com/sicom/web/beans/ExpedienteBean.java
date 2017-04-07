@@ -65,12 +65,13 @@ public class ExpedienteBean implements Serializable {
             boolean permiso_editar = (p.getAutorizacionNivel().getNivel() < 5);
 
             String direccion = createUrl(consultorio, permiso_editar);
-
+            subirVerificacion(consultorio, ec);
+            
             if (direccion.trim().equals("")) {
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No posee los permisos para acceder.", null));
             } else {
                 try {
-                    subirObjetosExternalContext(consultorio, ec);
+                    subirVerificacion(consultorio, ec);
                     URL += direccion;
                     ec.redirect(URL);
                 } catch (IOException ex) {
@@ -118,16 +119,16 @@ public class ExpedienteBean implements Serializable {
      * @param consultorio
      * @return Object
      */
-    private void subirObjetosExternalContext(int consultorio, ExternalContext ec) {
+    private void subirVerificacion(int consultorio, ExternalContext ec) {
 
         Expediente e = paciente.getExpediente();
 
         switch (consultorio) {
             case 2:
-                ec.getSessionMap().put("antecedenteGinecologia", e.getAntecedentesGinecologia());
+                ec.getSessionMap().put("validacionGinecologia", true);
                 break;
             case 3:
-                ec.getSessionMap().put("antecedenteOdontologia", e.getAntecedentesOdontologia());
+                ec.getSessionMap().put("validacionOdontologia", true);
                 break;
         }
     }

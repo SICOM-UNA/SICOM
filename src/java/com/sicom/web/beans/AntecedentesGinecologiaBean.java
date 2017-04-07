@@ -3,6 +3,7 @@ package com.sicom.web.beans;
 import com.sicom.controller.AntecedentesGinecologiaJpaController;
 import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.entities.AntecedentesGinecologia;
+import com.sicom.entities.Expediente;
 import com.sicom.entities.Paciente;
 import java.io.IOException;
 import java.io.Serializable;
@@ -23,7 +24,6 @@ public class AntecedentesGinecologiaBean implements Serializable {
 
     private AntecedentesGinecologia antecedentesGinecologia;
     private final AntecedentesGinecologiaJpaController agc;
-    private Date fecha;
     private Paciente paciente;
     private Boolean antecedenteNuevo;
 
@@ -31,16 +31,18 @@ public class AntecedentesGinecologiaBean implements Serializable {
      * Constructor
      */
     public AntecedentesGinecologiaBean() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
+        agc = new AntecedentesGinecologiaJpaController(Persistence.createEntityManagerFactory("SICOM_v1PU"));
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
 
-        agc = new AntecedentesGinecologiaJpaController(emf);
-
         paciente = (Paciente) ec.getSessionMap().get("paciente");
-        antecedentesGinecologia = (AntecedentesGinecologia) ec.getSessionMap().remove("antecedenteGinecologia");
+        Object obj = ec.getSessionMap().remove("validacionGinecologia");
+        boolean permiso = (obj != null);
 
-        if (paciente != null) {
+        if (paciente != null && permiso) {
+            Expediente e = paciente.getExpediente();
+            antecedentesGinecologia = e.getAntecedentesGinecologia();
+
             if (antecedentesGinecologia == null) {
                 antecedentesGinecologia = new AntecedentesGinecologia();
                 antecedenteNuevo = true;
@@ -133,14 +135,6 @@ public class AntecedentesGinecologiaBean implements Serializable {
 
     public void setPaciente(Paciente paciente) {
         this.paciente = paciente;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
     }
 
 }
