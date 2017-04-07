@@ -130,11 +130,11 @@
                                     <div class="ui-grid-col-4">
                                         <p:panel header="Exámenes">
                                             <h:panelGrid columns="3">
-                                                <p:selectOneMenu id="departamento" value="#{expedienteBean.examenSelected}" converter="omnifaces.SelectItemsConverter">
+                                                <p:selectOneMenu id="departamento" value="#{expedienteBean.selectedExamen}" converter="omnifaces.SelectItemsConverter">
                                                 <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                                <f:selectItems value="#{valoresBean.examenes}" var="examenSelected" itemLabel="#{examenSelected.descripcion}" itemValue="#{examenSelected}"/>
+                                                <f:selectItems value="#{valoresBean.examenes}" var="selectedExamen" itemLabel="#{selectedExamen.descripcion}" itemValue="#{examenSelected}"/>
                                             </p:selectOneMenu>
-                                                <p:commandButton icon="ui-icon-plus"  update="datos"/>
+                                                <p:commandButton icon="ui-icon-plus"  update="datos" action="#{expedienteBean.nuevoExamen}"/>
                                                 <p:commandButton icon="ui-icon-search"  update="datos"/>
                                             </h:panelGrid>
                                         </p:panel>

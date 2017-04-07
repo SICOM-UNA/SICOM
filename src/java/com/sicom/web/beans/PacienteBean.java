@@ -4,10 +4,7 @@ import com.sicom.controller.PacienteJpaController;
 
 import com.sicom.controller.ResponsableJpaController;
 import com.sicom.controller.exceptions.NonexistentEntityException;
-import com.sicom.entities.Expediente;
-import com.sicom.entities.Login;
 import com.sicom.entities.Paciente;
-import com.sicom.entities.Personal;
 import com.sicom.entities.Responsable;
 import java.io.IOException;
 import java.io.Serializable;
@@ -57,13 +54,20 @@ public class PacienteBean implements Serializable {
         Map<String, Object> sessionMap = ec.getSessionMap();
 
         Paciente p = (Paciente) sessionMap.get("paciente");
-        p = (p != null) ? pjc.findPaciente(p.getCedula()) : new Paciente();
+        boolean actualizado = (sessionMap.remove("actualizado") != null);
+                
+        if (p != null && !actualizado) {
+            selectedPaciente = pjc.findPaciente(p.getCedula());
+            sessionMap.remove("paciente", selectedPaciente);
+        } else {
+            selectedPaciente = (p != null)? p : new Paciente();
+        }
 
-        int index = p.getResponsableList().size();
+        int index = (p != null && p.getResponsableList() != null) ? p.getResponsableList().size() : 0;
 
         switch (index) {
             case 0:
-                responsable1 =  responsable2 = new  Responsable();
+                responsable1 = responsable2 = new Responsable();
                 responsable1.setNombre("No definido");
                 responsable2.setNombre("No definido");
                 break;
@@ -76,7 +80,7 @@ public class PacienteBean implements Serializable {
                 responsable1 = p.getResponsableList().get(0);
                 responsable2 = p.getResponsableList().get(1);
                 break;
-            
+
         }
 
         Responsable aux = (Responsable) sessionMap.remove("selectedResponsable");
@@ -101,6 +105,7 @@ public class PacienteBean implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede agregar, ya existe el paciente con la cédula: ", nuevoPaciente.getCedula()));
             } else {
                 pjc.create(nuevoPaciente);
+                selectedPaciente =  nuevoPaciente;
 
                 FacesContext fc = FacesContext.getCurrentInstance();
                 ExternalContext ec = fc.getExternalContext();
@@ -184,10 +189,10 @@ public class PacienteBean implements Serializable {
     //--------------------------------------------------------------------------
     // GENERAL METHODS
     public void buscaIdBase() {
-        Paciente p = (selectedPaciente.getCedula() != null) ? selectedPaciente : ((nuevoPaciente.getCedula() != null) ? nuevoPaciente : null);
+        Paciente p = (selectedPaciente.getCedula() != null) ? selectedPaciente : null;
 
         if (p != null) {
-            String id = selectedPaciente.getCedula();
+            String id = p.getCedula();
             selectedPaciente = this.pjc.findPaciente(p.getCedula());
 
             if (selectedPaciente != null) {
@@ -198,6 +203,7 @@ public class PacienteBean implements Serializable {
 
                     String URL = ec.getRequestContextPath() + "/app/paciente/informacion#datos";
                     ec.getSessionMap().put("paciente", selectedPaciente);
+                    ec.getSessionMap().put("actualizado", true);
                     ec.redirect(URL);
                 } catch (IOException ex) {
                     Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);

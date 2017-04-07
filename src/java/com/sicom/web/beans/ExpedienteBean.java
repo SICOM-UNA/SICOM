@@ -1,7 +1,6 @@
 package com.sicom.web.beans;
 
 import com.sicom.controller.ExpedienteJpaController;
-import com.sicom.entities.Codigo;
 import com.sicom.entities.Expediente;
 import com.sicom.entities.Login;
 import com.sicom.entities.Paciente;
@@ -9,7 +8,6 @@ import com.sicom.entities.Personal;
 import com.sicom.entities.Valor;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -31,7 +29,7 @@ public class ExpedienteBean implements Serializable {
     private Expediente expediente;
     private ExpedienteJpaController ejc;
     private Paciente paciente;
-    private Valor examenSelected;
+    private Valor selectedExamen;
 
     public ExpedienteBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
@@ -137,10 +135,47 @@ public class ExpedienteBean implements Serializable {
         }
     }
 
-    public void examenFisico() {
+    public void nuevoExamen() {
+
+        if (this.selectedExamen != null) {
+
+            FacesContext fc = FacesContext.getCurrentInstance();
+            ExternalContext ec = fc.getExternalContext();
+            
+            String URL = ec.getRequestContextPath();
+            
+            switch (selectedExamen.getValorPK().getId()) {
+                case 36:/*Examen Fisico*/
+                    URL += "/app/consultorios/ginecologia/examen/fisico";
+                    break;
+                case 37:/*Monitoreo Fetal*/
+                    URL += "/app/consultorios/ginecologia/examen/monitoreoFetal";
+                    break;
+                case 38:/*Colposcopia*/
+                    URL += "/app/consultorios/ginecologia/examen/colposcopia";
+                    break;
+                case 39:/*Odontograma*/
+                    
+                    break;
+                default:
+                    URL += "/app/paciente/informacion";                                
+            }
+            
+            try {
+                ec.redirect(URL);
+            } catch (IOException ex) {
+                Logger.getLogger(ExpedienteBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe seleccionar un exámen primero.", null));
+        }
+    }
+
+    public void buscaExamenes() {
 
     }
-    
+
     /**
      *
      * @return
@@ -157,14 +192,12 @@ public class ExpedienteBean implements Serializable {
         this.expediente = expediente;
     }
 
-    public Valor getExamenSelected() {
-        return examenSelected;
+    public void setSelectedExamen(Valor selectedExamen) {
+        this.selectedExamen = selectedExamen;
     }
 
-    public void setExamenSelected(Valor examenSelected) {
-        this.examenSelected = examenSelected;
+    public Valor getSelectedExamen() {
+        return selectedExamen;
     }
-
-    
 
 }
