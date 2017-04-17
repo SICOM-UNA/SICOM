@@ -56,8 +56,6 @@ public class PacienteBean implements Serializable {
             // Valida si el paciente ya existe
             if(paciente != null && paciente.getCedula().equals(nuevoPaciente.getCedula())) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El paciente ya existe, por favor digite una identificación diferente de " + paciente.getCedula(), null));
-            } else if(listaResponsable.size() < 1) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe existir al menos un responsable asignado al paciente " + nuevoPaciente.getCedula(), null));
             } else {
                 nuevoPaciente.setResponsableList(listaResponsable);
                 pjc.create(nuevoPaciente);
@@ -77,15 +75,11 @@ public class PacienteBean implements Serializable {
      */
     public String modificar() {
         try {            
-            if(selectedPaciente.getResponsableList().size() < 1) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe existir al menos un responsable asignado al paciente " + selectedPaciente.getCedula(), null));
-            } else {
-                pjc.edit(selectedPaciente);
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información actualizada exitosamente.", null));
-                selectedPaciente = new Paciente();
-                nuevoResponsable = new Responsable();
-                FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-            }
+            pjc.edit(selectedPaciente);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información actualizada exitosamente.", null));
+            selectedPaciente = new Paciente();
+            nuevoResponsable = new Responsable();
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
         } catch (Exception ex) {
             Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -97,7 +91,6 @@ public class PacienteBean implements Serializable {
         selectedPaciente = pjc.findPaciente(nuevoPaciente.getCedula());
 
         if (selectedPaciente != null) {
-            selectedPaciente.setResponsableList(rjc.findResponsableByCedulaPaciente(selectedPaciente.getCedula()));
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("paciente", selectedPaciente);
             
             return "editar?faces-redirect=true";
@@ -141,7 +134,6 @@ public class PacienteBean implements Serializable {
         Paciente aux = (nuevoPaciente != null) ? nuevoPaciente : selectedPaciente;
 
         if (aux != null && aux.getNacimiento() != null) {
-
             DateTime birthdate = new DateTime(aux.getNacimiento());
             DateTime now = new DateTime();
 

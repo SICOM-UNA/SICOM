@@ -51,7 +51,7 @@ public class PersonalBean implements Serializable {
             Personal personal = pjc.findPersonal(nuevoUsuario.getPersonal().getCedula());
             
             // Valida si el usuario ya existe
-            if(login != null && login.getUsuario().equals(nuevoUsuario.getUsuario())) {
+            if(login != null && login.getUsuario().toLowerCase().equals(nuevoUsuario.getUsuario().toLowerCase())) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El usuario ya existe, por favor digite un nombre de usuario diferente de " + login.getUsuario(), null));
             // Valida si el personal ya existe
             } else if(personal != null && personal.getCedula().equals(nuevoUsuario.getPersonal().getCedula())) {
@@ -66,12 +66,22 @@ public class PersonalBean implements Serializable {
             Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void modificar() {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información actualizada exitosamente.", null));
+    }
 
-    public void consultar() {
-        selectedUsuario = ljc.findLogin(selectedUsuario.getUsuario());
+    public String consultarPersonal() {
+        selectedPersonal = pjc.findPersonal(nuevoPersonal.getCedula());
 
-        if (selectedUsuario == null) {
-            selectedUsuario = new Login();
+        if (selectedPersonal != null) {
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("personal", selectedPersonal);
+            
+            return "editar?faces-redirect=true";
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "El paciente con la identificación " + nuevoPersonal.getCedula() + " no ha sido encontrado", null));
+            
+            return null;
         }
     }
 

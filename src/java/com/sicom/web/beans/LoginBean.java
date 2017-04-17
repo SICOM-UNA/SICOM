@@ -54,7 +54,7 @@ public class LoginBean {
     public void iniciarSesion(String from) throws IOException {
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
-        Login nuevo = ljc.findLogin(login.getUsuario());
+        Login nuevo = ljc.findLogin(login.getUsuario().toLowerCase());
         Personal personal = pjc.findPersonalByLoginUsuario(login.getUsuario());
         
         if (nuevo != null && nuevo.getPersonal() != null && nuevo.getContrasena().equals(login.getContrasena())) {
