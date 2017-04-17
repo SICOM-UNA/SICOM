@@ -31,6 +31,7 @@ public class ValoresBean implements Serializable {
     private final AutorizacionJpaController ajc;
     private final ValorJpaController vjc;
     private String tipoId = "nacional";
+    private String tipoId2 = "nacional";
     
     public ValoresBean() {
         
@@ -90,5 +91,19 @@ public class ValoresBean implements Serializable {
      */
     public void setTipoId(String tipoId) {
         this.tipoId = tipoId;
+    }
+
+    /**
+     * @return the tipoId2
+     */
+    public String getTipoId2() {
+        return tipoId2;
+    }
+
+    /**
+     * @param tipoId2 the tipoId2 to set
+     */
+    public void setTipoId2(String tipoId2) {
+        this.tipoId2 = tipoId2;
     }
 }

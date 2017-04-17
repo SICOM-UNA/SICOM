@@ -11,26 +11,32 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form id="formulario">
-
-                    <p:messages id="msg" autoUpdate="true" closable="true" />
-                    <p:panel header="Informacion del Paciente" id="INFO">
+                <h:form id="formConsultar">
+                    <p:messages id="msg" autoUpdate="true" closable="true"/>
+                    
+                    <p:panel header="Consultar Paciente" id="INFO">
                         <div class="ui-grid ui-grid-responsive">
                             <div class="ui-grid-row">
                                 <div class="ui-grid-col-6" align="center">
-                                    <o:validateOneOrMore message="Debe digitar la cédula" id="oneOrMore" components="id" />
                                     <h:panelGrid columns="2" cellpadding="5">
-                                        <p:outputLabel value="Tipo Identificación:"/>
-                                        <p:selectOneMenu id="tipoIdSel">
-                                            <f:selectItems value="{pacienteBean.consultarValoresPorCodigo(8)}" />
+                                        <p:outputLabel value="Tipo de identificación:" for="tipoId"/>
+                                        <p:selectOneMenu id="tipoId" value="#{valoresBean.tipoId}">
+                                            <f:selectItems value="#{valoresBean.getDescripcionByCodeId(8)}"/>
+                                            <f:ajax render="panelCedula"/>
                                         </p:selectOneMenu>
 
-                                        <p:outputLabel class="descripcion" value="Digite Identificación:" for="id"/>
-                                        <h:panelGroup>
-                                            <p:inputMask id="id" value="#{pacienteBean.selectedPaciente.cedula}" required="true" maxlength="12" size="13" 
-                                                         mask="9-9999-9999" requiredMessage="- Falta la identificación." placeholder="0-0000-0000" />
-                                            <p:tooltip id="toolTipFocus" for="id" showEvent="focus" position="bottom" value="Identificación Nacional: Ej 0-0000-0000."/>
-                                        </h:panelGroup>
+                                        <p:outputLabel for="cedula" value="Identificación:"/>
+                                        <h:panelGrid id="panelCedula" columns="3">
+                                            <p:inputMask id="cedula" value="#{pacienteBean.nuevoPaciente.cedula}" required="true" maxlength="12" 
+                                                mask="9-9999-9999" placeholder="0-0000-0000" rendered="#{valoresBean.tipoId.toLowerCase().equals('nacional')}">
+                                            </p:inputMask>
+                                            <p:inputMask id="residencia" value="#{pacienteBean.nuevoPaciente.cedula}" required="true" maxlength="12" 
+                                                mask="999999999999" placeholder="000000000000" rendered="#{valoresBean.tipoId.toLowerCase().equals('residencia')}">
+                                            </p:inputMask>
+                                            <p:inputText id="pasaporte" value="#{pacienteBean.nuevoPaciente.cedula}" required="true" maxlength="12" 
+                                                rendered="#{valoresBean.tipoId.toLowerCase().equals('pasaporte')}">
+                                            </p:inputText>
+                                        </h:panelGrid>
                                     </h:panelGrid>
 
                                 </div>
@@ -43,12 +49,19 @@
                                     </h:panelGroup>
                                 </div>
                             </div>
-                        </div>
-                        <f:facet name="footer" >
-                            <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                <p:commandButton value="Mostrar Resultados" action="#{pacienteBean.buscaIdBase()}" update="formulario"/>
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3" align="center">
+                                    <f:facet name="footer">
+                                        <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                            <p:commandButton value="Consultar" action="#{pacienteBean.consultarPaciente}" icon="ui-icon ui-icon-search"/>
+                                            <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Click para limpiar formulario" immediate="true">
+                                                <p:resetInput target="formConsultar"/>
+                                            </p:commandButton> 
+                                        </div>
+                                    </f:facet>
+                                </div>
                             </div>
-                        </f:facet>
+                        </div>
                     </p:panel>
                 </h:form>
             </section>

@@ -53,8 +53,7 @@
                                                         required="true"/>
 
                                                     <p:outputLabel for="segundoApellido" value="Segundo apellido:" />
-                                                    <p:inputText id="segundoApellido" value="#{personalBean.nuevoUsuario.personal.segundoApellido}" maxlength="45" class= "charToUpperCase" onkeyup="validar()"
-                                                        required="true"/>
+                                                    <p:inputText id="segundoApellido" value="#{personalBean.nuevoUsuario.personal.segundoApellido}" maxlength="45" class= "charToUpperCase" onkeyup="validar()"/>
 
                                                     <p:outputLabel for="fechaNacimiento" value="Fecha Nacimiento:"/>
                                                     <p:calendar id="fechaNacimiento" value="#{personalBean.nuevoUsuario.personal.nacimiento}" pattern="dd-MM-yyyy" mask="true" navigator="true"

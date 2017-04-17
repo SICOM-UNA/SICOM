@@ -4,89 +4,194 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <ui:define name="content">
-        <div id="wrapper">
+        <div id="wrapper" align="center">
             <section>
-                <h:form id="formulario">
-                    <p:panel header="Modificación de información">
-                        <p:messages id="msg" for="msg" globalOnly="true" closable="true" />
+                <p:panel header="Modificar Paciente" id="panel">
+                    <div class="ui-grid ui-grid-responsive">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <h:form>
+                                    <h:inputHidden value="#{pacienteBean.setSelectedPaciente(paciente)}"/>
+                                </h:form>
+                                <h:form id="formPaciente">
+                                    <p:messages id="msg" globalOnly="true" closable="true" showDetail="false"/>
+                                    <p:messages for="email" autoUpdate="true" closable="true"/>
 
-                        <h:panelGrid columns="2">    
-                            <h:panelGrid columns="2">
-                                <h:panelGrid columns="2" cellspacing="3">
+                                    <p:panel header="Información Personal" id="panelPersonal">
+                                        <h:panelGrid columns="2">
+                                            <h:panelGrid columns="2">
+                                                <h:panelGrid columns="2" cellspacing="3">
+                                                    <p:outputLabel for="cedula" value="Identificación:"/>
+                                                    <p:inputText id="cedula" value="#{pacienteBean.selectedPaciente.cedula}" disabled="true"/>
 
-                                    <p:outputLabel for="id" value="Identificación:"/>
-                                    <p:inputText id="id" value="#{pacienteBean.selectedPaciente.cedula}"  disabled="true"/>
+                                                    <p:outputLabel for="nombre" value="Nombre:"/>
+                                                    <p:inputText id="nombre" value="#{pacienteBean.selectedPaciente.nombre}" maxlength="45" class="charWithSpaceToUpperCase"
+                                                        onkeyup="validar()" required="true"/>
 
-                                    <p:outputLabel for="nom" value="Nombre:" />
-                                    <p:inputText  id="nom"  value="#{pacienteBean.selectedPaciente.nombre}" maxlength="45" class = "charWithSpaceToUpperCase"
-                                                  onkeyup="validar()" required="true" requiredMessage="- Falta el nombre."
-                                                  />
+                                                    <p:outputLabel for="primerApellido" value="Primer apellido:"/>
+                                                    <p:inputText id="primerApellido" value="#{pacienteBean.selectedPaciente.primerApellido}" maxlength="45" class="charToUpperCase" onkeyup="validar()"
+                                                        required="true"/>
 
-                                    <p:outputLabel for="pa" value="Primer apellido:" />
-                                    <p:inputText id="pa"  value="#{pacienteBean.selectedPaciente.primerApellido}" maxlength="45" class = "charToUpperCase" onkeyup="validar()"
-                                                 required="true" requiredMessage="- Falta el primer apellido."/>
+                                                    <p:outputLabel for="segundoApellido" value="Segundo apellido:"/>
+                                                    <p:inputText id="segundoApellido" value="#{pacienteBean.selectedPaciente.segundoApellido}" maxlength="45" class="charToUpperCase" onkeyup="validar()"/>
 
-                                    <p:outputLabel for="sa" value="Segundo apellido:" />
-                                    <p:inputText id="sa" value="#{pacienteBean.selectedPaciente.segundoApellido}"  maxlength="45" class = "charToUpperCase" onkeyup="validar()"
-                                                 required="true" requiredMessage="- Falta el segundo apellido."/>
+                                                    <p:outputLabel for="fechaNacimiento" value="Fecha Nacimiento:"/>
+                                                    <p:calendar id="fechaNacimiento" value="#{pacienteBean.selectedPaciente.nacimiento}" pattern="dd-MM-yyyy" mask="true" navigator="true"
+                                                        maxdate="#{now}" required="true" placeholder="#{now.date}-#{now.month+1}-#{now.year+1900}"/>
 
-                                    <p:outputLabel for="mask" value="Fecha Nacimiento:"/>
-                                    <p:calendar id="mask" value="#{pacienteBean.selectedPaciente.nacimiento}" pattern="dd-MM-yyyy" mask="true" navigator="true"
-                                                maxdate="#{now}" mindate="#{pacienteBean.disablePastDates()}" required="true" requiredMessage=" - Falta fecha de nacimiento."
-                                                placeholder="#{now.date}-#{now.month+1}-#{now.year+1900}"/>
+                                                    <p:outputLabel value="Estado Civil:" for="estadoCivil"/>
+                                                    <p:selectOneMenu value="#{pacienteBean.selectedPaciente.estadoCivil}" id="estadoCivil" required="true">
+                                                        <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true"/>
+                                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(2)}"/>
+                                                    </p:selectOneMenu>
+                                                </h:panelGrid>
+                                            </h:panelGrid>
+                                            
+                                            <h:panelGrid columns="2" cellspacing="3"> 
+                                                <p:outputLabel value="Género:" for="genero"/>
+                                                <p:selectOneMenu id="genero" value="#{pacienteBean.selectedPaciente.genero}" required="true">
+                                                    <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true"/>
+                                                    <f:selectItems value="#{valoresBean.getDescripcionByCodeId(1)}"/>
+                                                </p:selectOneMenu>
 
-                                    <p:outputLabel value="Estado Civil:" for="ec"/>
-                                    <p:selectOneMenu value="#{pacienteBean.selectedPaciente.estadoCivil}"  id="ec" required="true" requiredMessage="- Falta el estado civil.">
-                                       <f:selectItems value="#{valoresBean.getDescripcionByCodeId(2)}"/>
-                                    </p:selectOneMenu>
-                                </h:panelGrid>
-                            </h:panelGrid>
-                            <h:panelGrid columns="2" cellspacing="3"> 
+                                                <p:outputLabel value="Teléfono:" for="telefono"/>
+                                                <p:inputMask id="telefono" value="#{pacienteBean.selectedPaciente.telefono}" mask="9999-9999" 
+                                                    required="true" placeholder="0000-0000"/>
 
-                                <p:outputLabel value="Genero:" for="g"/>
-                                <p:selectOneMenu id="g" value="#{pacienteBean.selectedPaciente.genero}" required="true" requiredMessage="- Falta el género.">
-                                    <f:selectItems value="#{valoresBean.getDescripcionByCodeId(1)}"/>
-                                </p:selectOneMenu>
+                                                <p:outputLabel value="Celular:" for="celular"/>
+                                                <p:inputMask id="celular" value="#{pacienteBean.selectedPaciente.celular}" mask="9999-9999" placeholder="0000-0000"/>
 
-                                <p:outputLabel value="Teléfono 1:" for="t1"/>
-                                <p:inputMask id="t1" value="#{pacienteBean.selectedPaciente.telefono}" mask="9999-9999" 
-                                             required="true" requiredMessage="- Falta el teléfono 1" placeholder="0000-0000"/>
+                                                <p:outputLabel value="Correo electrónico:" for="email"/>
+                                                <h:panelGroup>
+                                                    <p:tooltip for="email" showEvent="focus" position="bottom" value="Ejemplo de correo: cento_medico@outlook.com"/>
+                                                    <p:inputText id="email" value="#{pacienteBean.selectedPaciente.correo}" class="correo" onkeyup="validar();" maxlength="45"
+                                                        placeholder="nombre@servidor.com">
+                                                        <f:validator validatorId="emailValidator"/>
+                                                    </p:inputText>
+                                                </h:panelGroup>
+                                                
+                                                <p:outputLabel value="Ocupación:" for="ocupacion"/>
+                                                <p:inputText id="ocupacion" value="#{pacienteBean.selectedPaciente.ocupacion}" maxlength="45"/>
 
-                                <p:outputLabel value="Teléfono 2:" for="t2"/>
-                                <p:inputMask id="t2" value="#{pacienteBean.selectedPaciente.celular}" mask="9999-9999" placeholder="0000-0000"/>
+                                                <p:outputLabel value="Domicilio:" for="domicilio"/>
+                                                <p:inputTextarea id="domicilio" value="#{pacienteBean.selectedPaciente.domicilio}" maxlength="150" rows="3" cols="18" autoResize="false"/>
+                                            </h:panelGrid>
+                                        </h:panelGrid>
 
-                                <p:outputLabel value="Correo electrónico:" for="ce"/>
-                                <h:panelGroup>
-                                    <p:tooltip for="ce" showEvent="focus" hideEvent="blur" position="bottom" value="Ejemplo de correo: cento_medico@outlook.com"/>
-                                    <p:inputText id="ce" value="#{pacienteBean.selectedPaciente.correo}"  class="correo" onkeyup="validar();"  maxlength="45"
-                                                 validatorMessage="- Correo electrónico incorrecto, ej: centro_medico@outlook.com" placeholder="nombre@servidor.com" >
-                                        <f:validateRegex pattern="((([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+))|(^\s*$))" />
-                                    </p:inputText>
-                                </h:panelGroup>
-
-
-                                <p:outputLabel value = "Ocupación:" for="oc"/>
-                                <p:inputText value = "#{pacienteBean.selectedPaciente.ocupacion}" maxlength="45" id="oc"/>
-
-                                <p:outputLabel value="Domicilio:" for="do"/>
-                                <p:inputTextarea value="#{pacienteBean.selectedPaciente.domicilio}" maxlength="150" rows="3" cols = "18" autoResize="false" id="do"/>
-                            </h:panelGrid>
-                        </h:panelGrid>
-
-                        <f:facet name="footer" >
-                            <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                <p:commandButton value="Guardar Cambios" icon="ui-icon-pencil" action="#{pacienteBean.modificarAction()}" title="Click para guardar información." update="formulario msg"/>
-                                <p:commandButton value="Cancelar" icon="ui-icon-closethick" action="#{pacienteBean.cancelarAction()}" immediate="true" title="Click para guardar información." update="formulario msg"/>
+                                        <f:facet name="footer">
+                                            <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                                <p:commandButton value="Actualizar" icon="ui-icon-plus" action="#{pacienteBean.modificar()}" title="Actualizar datos del paciente" update="formPaciente msg :formResponsable"/>
+                                                <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true">
+                                                    <f:ajax resetValues="true" render="formPaciente"/>
+                                                </p:commandButton> 
+                                            </div>
+                                        </f:facet>
+                                    </p:panel>
+                                </h:form>
                             </div>
-                        </f:facet>
-                    </p:panel>
-                </h:form>
+                        </div>
+                            
+                        <!-- RESPONSABLES -->
+                        
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12">
+                                <h:form id="formResponsable">
+                                    <p:panel header="Información Responsables">
+                                        <h:panelGrid columns="4" cellpadding="6">
+                                            <p:outputLabel value="Tipo de identificación:" for="tipoId"/>
+                                            <p:selectOneMenu id="tipoId" value="#{valoresBean.tipoId2}">
+                                                <f:selectItems value="#{valoresBean.getDescripcionByCodeId(8)}"/>
+                                                <f:ajax render="panelCedula"/>
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel for="cedula" value="Identificación:"/>
+                                            <h:panelGrid id="panelCedula" columns="3">
+                                                <p:inputMask id="cedula" value="#{pacienteBean.nuevoResponsable.cedula}" required="true" maxlength="12" 
+                                                    mask="9-9999-9999" placeholder="0-0000-0000" rendered="#{valoresBean.tipoId2.toLowerCase().equals('nacional')}">
+                                                </p:inputMask>
+                                                <p:inputMask id="residencia" value="#{pacienteBean.nuevoResponsable.cedula}" required="true" maxlength="12" 
+                                                    mask="999999999999" placeholder="000000000000" rendered="#{valoresBean.tipoId2.toLowerCase().equals('residencia')}">
+                                                </p:inputMask>
+                                                <p:inputText id="pasaporte" value="#{pacienteBean.nuevoResponsable.cedula}" required="true" maxlength="12" 
+                                                    rendered="#{valoresBean.tipoId2.toLowerCase().equals('pasaporte')}">
+                                                </p:inputText>
+                                            </h:panelGrid>  
+
+                                            <p:outputLabel value="Nombre completo: " for="nombre"/>
+                                            <p:inputText id="nombre" value="#{pacienteBean.nuevoResponsable.nombre}" required="true" maxlength="45" class="charWithSpaceToUpperCase"
+                                                onkeyup="validar()" />
+
+                                            <p:outputLabel value="Teléfono: " for="telefono"/>
+                                            <p:inputMask id="telefono" value="#{pacienteBean.nuevoResponsable.telefono}" mask="9999-9999" placeholder="0000-0000" required="true" maxlength="45"/>
+
+                                            <p:outputLabel value="Ocupación: " for="ocupacion"/>
+                                            <p:inputText id="ocupacion" value="#{pacienteBean.nuevoResponsable.ocupacion}" maxlength="45"/>
+
+                                            <p:outputLabel value="Vínculo: " for="vinculo"/>
+                                            <p:selectOneMenu id="vinculo" value="#{pacienteBean.nuevoResponsable.vinculo}">
+                                                <f:selectItem itemLabel="Seleccione uno" noSelectionOption="true"/>
+                                                <f:selectItems value="#{valoresBean.getDescripcionByCodeId(3)}"/>
+                                            </p:selectOneMenu>
+                                            
+                                            <p:outputLabel value="#{paciente.cedula}"/>
+                                        </h:panelGrid>
+
+                                        <f:facet name="footer">
+                                            <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                                <p:commandButton icon="ui-icon-plus" value="Agregar" update="formResponsable @parent" action="#{pacienteBean.reinit}" title="Agregar responsable">
+                                                    <f:ajax listener="#{pacienteBean.nuevoResponsable.setPacienteCedula(paciente)}"/>
+                                                    <p:collector value="#{pacienteBean.nuevoResponsable}" addTo="#{pacienteBean.selectedPaciente.responsableList}" unique="true"/>
+                                                </p:commandButton>
+                                                <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true">
+                                                    <f:ajax resetValues="true" render="formResponsable"/>
+                                                </p:commandButton> 
+                                            </div>
+                                        </f:facet>
+
+                                        <p:outputPanel id="responsables">
+                                            <p:dataTable value="#{pacienteBean.selectedPaciente.responsableList}" var="responsable" id="responsableTable">
+                                                <p:column headerText="ID">
+                                                     <h:outputText value="#{responsable.cedula}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Nombre">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="Nombre"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{responsable.nombre}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Teléfono">
+                                                     <h:outputText value="#{responsable.telefono}"/>
+                                                </p:column>
+                                                
+                                                <p:column headerText="Ocupación">
+                                                     <h:outputText value="#{responsable.ocupacion}"/>
+                                                </p:column>
+                                                
+                                                <p:column headerText="Vínculo">
+                                                     <h:outputText value="#{responsable.vinculo}"/>
+                                                </p:column>
+
+                                                <p:column width="42">
+                                                    <p:commandButton icon="ui-icon-trash" update=":formResponsable:responsables" process=":formResponsable:responsables" title="Remover responsable">
+                                                        <p:collector value="#{responsable}" removeFrom="#{pacienteBean.selectedPaciente.responsableList}" unique="true"/>
+                                                    </p:commandButton>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </p:outputPanel>
+                                    </p:panel>
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+                </p:panel>
             </section>
         </div>
     </ui:define>
 </ui:composition>
-
-

@@ -17,9 +17,9 @@
                                 <h:form id="formPaciente">
                                     <p:messages id="msg" globalOnly="true" closable="true" showDetail="false"/>
                                     <p:messages for="email" autoUpdate="true" closable="true"/>
-                                    
-                                    <p:panel header="Información Personal">
-                                        <h:panelGrid columns="2">    
+
+                                    <p:panel header="Información Personal" id="panelPersonal">
+                                        <h:panelGrid columns="2">
                                             <h:panelGrid columns="2">
                                                 <h:panelGrid columns="2" cellspacing="3">
                                                     <p:outputLabel class="descripcion" value="Consultar cédula (TSE)"/>
@@ -27,7 +27,7 @@
                                                         <h:graphicImage class="myicon" value="../../imagenes/search.jpg"/>
                                                     </h:outputLink>
 
-                                                    <p:outputLabel value="Tipo Identificación:" for="tipoId"/>
+                                                    <p:outputLabel value="Tipo de identificación:" for="tipoId"/>
                                                     <p:selectOneMenu id="tipoId" value="#{valoresBean.tipoId}">
                                                         <f:selectItems value="#{valoresBean.getDescripcionByCodeId(8)}"/>
                                                         <f:ajax render="panelCedula"/>
@@ -35,15 +35,18 @@
 
                                                     <p:outputLabel for="cedula" value="Identificación:"/>
                                                     <h:panelGrid id="panelCedula" columns="3">
-                                                        <p:inputMask id="cedula" value="#{pacienteBean.nuevoPaciente.cedula}" required="true" maxlength="12" size="13" 
-                                                            mask="9-9999-9999" placeholder="0-0000-0000" rendered="#{valoresBean.tipoId.toLowerCase().equals('nacional')}"/>
-                                                        <p:inputMask id="residencia" value="#{pacienteBean.nuevoPaciente.cedula}" required="true" maxlength="12" size="13" 
-                                                            mask="999999999999" placeholder="000000000000" rendered="#{valoresBean.tipoId.toLowerCase().equals('residencia')}"/>
-                                                        <p:inputText id="pasaporte" value="#{pacienteBean.nuevoPaciente.cedula}" required="true" maxlength="12" size="13" 
-                                                            rendered="#{valoresBean.tipoId.toLowerCase().equals('pasaporte')}"/>
-                                                        <p:commandButton icon="ui-icon-search">
-                                                            <f:ajax />
-                                                        </p:commandButton>
+                                                        <p:inputMask id="cedula" value="#{pacienteBean.nuevoPaciente.cedula}" required="true" maxlength="12" 
+                                                            mask="9-9999-9999" placeholder="0-0000-0000" rendered="#{valoresBean.tipoId.toLowerCase().equals('nacional')}">
+                                                            <f:ajax event="blur" listener="#{pacienteBean.consultarPacientePorCedula()}"/>
+                                                        </p:inputMask>
+                                                        <p:inputMask id="residencia" value="#{pacienteBean.nuevoPaciente.cedula}" required="true" maxlength="12" 
+                                                            mask="999999999999" placeholder="000000000000" rendered="#{valoresBean.tipoId.toLowerCase().equals('residencia')}">
+                                                            <f:ajax event="blur" listener="#{pacienteBean.consultarPacientePorCedula()}"/>
+                                                        </p:inputMask>
+                                                        <p:inputText id="pasaporte" value="#{pacienteBean.nuevoPaciente.cedula}" required="true" maxlength="12" 
+                                                            rendered="#{valoresBean.tipoId.toLowerCase().equals('pasaporte')}">
+                                                            <f:ajax event="blur" listener="#{pacienteBean.consultarPacientePorCedula()}"/>
+                                                        </p:inputText>
                                                     </h:panelGrid>  
 
                                                     <p:outputLabel for="nombre" value="Nombre:"/>
@@ -55,8 +58,7 @@
                                                         required="true"/>
 
                                                     <p:outputLabel for="segundoApellido" value="Segundo apellido:"/>
-                                                    <p:inputText id="segundoApellido" value="#{pacienteBean.nuevoPaciente.segundoApellido}" maxlength="45" class="charToUpperCase" onkeyup="validar()"
-                                                        required="true"/>
+                                                    <p:inputText id="segundoApellido" value="#{pacienteBean.nuevoPaciente.segundoApellido}" maxlength="45" class="charToUpperCase" onkeyup="validar()"/>
 
                                                     <p:outputLabel for="fechaNacimiento" value="Fecha Nacimiento:"/>
                                                     <p:calendar id="fechaNacimiento" value="#{pacienteBean.nuevoPaciente.nacimiento}" pattern="dd-MM-yyyy" mask="true" navigator="true"
@@ -96,15 +98,15 @@
                                                 <p:outputLabel value="Ocupación:" for="ocupacion"/>
                                                 <p:inputText id="ocupacion" value="#{pacienteBean.nuevoPaciente.ocupacion}" maxlength="45"/>
 
-                                                <p:outputLabel value="Domicilio:" for="do"/>
-                                                <p:inputTextarea value="#{pacienteBean.nuevoPaciente.domicilio}" maxlength="150" rows="3" cols="18" autoResize="false" id="do"/>
+                                                <p:outputLabel value="Domicilio:" for="domicilio"/>
+                                                <p:inputTextarea value="#{pacienteBean.nuevoPaciente.domicilio}" maxlength="150" rows="3" cols="18" autoResize="false" id="domicilio"/>
                                             </h:panelGrid>
                                         </h:panelGrid>
 
                                         <f:facet name="footer">
                                             <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                                <p:commandButton value="Agregar" icon="ui-icon-plus" action="#{pacienteBean.agregar()}" title="Click para guardar información" update="formPaciente msg :formResponsable"/>
-                                                <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Click para limpiar formulario" immediate="true">
+                                                <p:commandButton value="Agregar" icon="ui-icon-plus" action="#{pacienteBean.agregar()}" title="Agregar paciente" update="formPaciente msg :formResponsable"/>
+                                                <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true">
                                                     <f:ajax resetValues="true" render="formPaciente"/>
                                                 </p:commandButton> 
                                             </div>
@@ -114,68 +116,106 @@
                             </div>
                         </div>
                             
+                        <!-- RESPONSABLES -->
+                        
                         <div class="ui-grid-row">
                             <div class="ui-grid-col-12">
                                 <h:form id="formResponsable">
                                     <p:panel header="Información Responsables">
-                                        <h:panelGrid columns="1">
-                                            <h:panelGrid columns="6" cellpadding="6">
-                                                <p:outputLabel value="Identificación: " for="cedula"/>
-                                                <p:inputText id="cedula" value="#{pacienteBean.nuevoResponsable.cedula}" required="true"/>
+                                        <h:panelGrid columns="4" cellpadding="6">
+                                            <p:outputLabel value="Tipo de identificación:" for="tipoId"/>
+                                            <p:selectOneMenu id="tipoId" value="#{valoresBean.tipoId2}">
+                                                <f:selectItems value="#{valoresBean.getDescripcionByCodeId(8)}"/>
+                                                <f:ajax render="panelCedula"/>
+                                            </p:selectOneMenu>
 
-                                                <p:outputLabel value="Nombre: " for="nombre"/>
-                                                <p:inputText id="nombre" value="#{pacienteBean.nuevoResponsable.nombre}" required="true" maxlength="45" class="charWithSpaceToUpperCase"
-                                                    onkeyup="validar()" />
+                                            <p:outputLabel for="cedula" value="Identificación:"/>
+                                            <h:panelGrid id="panelCedula" columns="3">
+                                                <p:inputMask id="cedula" value="#{pacienteBean.nuevoResponsable.cedula}" required="true" maxlength="12" 
+                                                    mask="9-9999-9999" placeholder="0-0000-0000" rendered="#{valoresBean.tipoId2.toLowerCase().equals('nacional')}">
+                                                </p:inputMask>
+                                                <p:inputMask id="residencia" value="#{pacienteBean.nuevoResponsable.cedula}" required="true" maxlength="12" 
+                                                    mask="999999999999" placeholder="000000000000" rendered="#{valoresBean.tipoId2.toLowerCase().equals('residencia')}">
+                                                </p:inputMask>
+                                                <p:inputText id="pasaporte" value="#{pacienteBean.nuevoResponsable.cedula}" required="true" maxlength="12" 
+                                                    rendered="#{valoresBean.tipoId2.toLowerCase().equals('pasaporte')}">
+                                                </p:inputText>
+                                            </h:panelGrid>  
 
-                                                <p:outputLabel value="Teléfono: " for="telefono"/>
-                                                <p:inputMask id="telefono" value="#{pacienteBean.nuevoResponsable.telefono}" mask="9999-9999" placeholder="0000-0000" required="true" maxlength="45"/>
+                                            <p:outputLabel value="Nombre completo: " for="nombre"/>
+                                            <p:inputText id="nombre" value="#{pacienteBean.nuevoResponsable.nombre}" required="true" maxlength="45" class="charWithSpaceToUpperCase"
+                                                onkeyup="validar()" />
 
-                                                <p:outputLabel value="Ocupación: "/>
-                                                <p:inputText value="#{pacienteBean.nuevoResponsable.ocupacion}" maxlength="45"/>
+                                            <p:outputLabel value="Teléfono: " for="telefono"/>
+                                            <p:inputMask id="telefono" value="#{pacienteBean.nuevoResponsable.telefono}" mask="9999-9999" placeholder="0000-0000" required="true" maxlength="45"/>
 
-                                                <p:outputLabel value="Vínculo: "/>
-                                                <p:selectOneMenu value="#{pacienteBean.nuevoResponsable.vinculo}">
-                                                    <f:selectItem itemLabel="Seleccione uno" noSelectionOption="true"/>
-                                                    <f:selectItems value="#{valoresBean.getDescripcionByCodeId(3)}"/>
-                                                </p:selectOneMenu>
-                                            </h:panelGrid>
-                                            
-                                            <f:facet name="footer">
-                                                <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                                    <p:commandButton icon="ui-icon-plus" value="Agregar" update="formResponsable @parent" action="#{pacienteBean.reinit}">
-                                                        <p:collector value="#{pacienteBean.nuevoResponsable}" addTo="#{pacienteBean.listaResponsable}" unique="true"/>
-                                                    </p:commandButton>
-                                                    <p:commandButton icon="ui-icon-refresh" value="Cancelar" type="reset"/>
-                                                </div>
-                                            </f:facet>
+                                            <p:outputLabel value="Ocupación: " for="ocupacion"/>
+                                            <p:inputText id="ocupacion" value="#{pacienteBean.nuevoResponsable.ocupacion}" maxlength="45"/>
 
-                                            <p:outputPanel id="responsables">
-                                                <p:dataTable value="#{pacienteBean.listaResponsable}" var="responsable" id="responsableTable">
-                                                    <p:column headerText="ID">
-                                                         <h:outputText value="#{responsable.cedula}"/>
-                                                    </p:column>
-
-                                                    <p:column headerText="Nombre">
-                                                        <f:facet name="header">
-                                                            <h:outputText value="Nombre"/>
-                                                        </f:facet>
-                                                        <h:outputText value="#{responsable.nombre}"/>
-                                                    </p:column>
-                                                    
-                                                    <p:column headerText="Teléfono">
-                                                         <h:outputText value="#{responsable.telefono}"/>
-                                                    </p:column>
-
-                                                    <p:column width="42">
-                                                        <p:commandButton icon="ui-icon-trash" update=":formResponsable:responsables" process=":formResponsable:responsables">
-                                                            <p:collector value="#{responsable}" removeFrom="#{pacienteBean.listaResponsable}" unique="true"/>
-                                                        </p:commandButton>
-                                                    </p:column>
-                                                </p:dataTable>
-                                            </p:outputPanel>
+                                            <p:outputLabel value="Vínculo: " for="vinculo"/>
+                                            <p:selectOneMenu id="vinculo" value="#{pacienteBean.nuevoResponsable.vinculo}">
+                                                <f:selectItem itemLabel="Seleccione uno" noSelectionOption="true"/>
+                                                <f:selectItems value="#{valoresBean.getDescripcionByCodeId(3)}"/>
+                                            </p:selectOneMenu>
                                         </h:panelGrid>
+
+                                        <f:facet name="footer">
+                                            <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                                <p:commandButton icon="ui-icon-plus" value="Agregar" update="formResponsable @parent" action="#{pacienteBean.reinit}" title="Agregar responsable">
+                                                    <p:collector value="#{pacienteBean.nuevoResponsable}" addTo="#{pacienteBean.listaResponsable}" unique="true"/>
+                                                </p:commandButton>
+                                                <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true">
+                                                    <f:ajax resetValues="true" render="formResponsable"/>
+                                                </p:commandButton> 
+                                            </div>
+                                        </f:facet>
+
+                                        <p:outputPanel id="responsables">
+                                            <p:dataTable value="#{pacienteBean.listaResponsable}" var="responsable" id="responsableTable">
+                                                <p:column headerText="ID">
+                                                     <h:outputText value="#{responsable.cedula}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Nombre">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="Nombre"/>
+                                                    </f:facet>
+                                                    <h:outputText value="#{responsable.nombre}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Teléfono">
+                                                     <h:outputText value="#{responsable.telefono}"/>
+                                                </p:column>
+ 
+                                                <p:column headerText="Ocupación">
+                                                     <h:outputText value="#{responsable.ocupacion}"/>
+                                                </p:column>
+                                                
+                                                <p:column headerText="Vínculo">
+                                                     <h:outputText value="#{responsable.vinculo}"/>
+                                                </p:column>
+
+                                                <p:column width="42">
+                                                    <p:commandButton icon="ui-icon-trash" update=":formResponsable:responsables" process=":formResponsable:responsables" title="Remover responsable">
+                                                        <p:collector value="#{responsable}" removeFrom="#{pacienteBean.listaResponsable}" unique="true"/>
+                                                    </p:commandButton>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </p:outputPanel>
                                     </p:panel>
                                 </h:form>
+                                
+                                <!-- DIALOG DE CONFIRMACIÓN -->
+                                
+                                <p:confirmDialog header="El número de identificación ya existe" message="¿Desea consultar los datos del paciente?"
+                                    widgetVar="existePacienteDialog" closeOnEscape="true" showEffect="fade" hideEffect="fade">
+                                    <h:form id="formExistePaciente">
+                                        <center>
+                                            <p:commandButton value="Consultar" action="editar?faces-redirect=true" icon="ui-icon ui-icon-search"/>
+                                            <p:commandButton value="Cancelar" oncomplete="PF('existePacienteDialog').hide()" icon="ui-icon ui-icon-closethick"/>
+                                        </center>
+                                    </h:form>
+                                </p:confirmDialog>
                             </div>
                         </div>
                     </div>
