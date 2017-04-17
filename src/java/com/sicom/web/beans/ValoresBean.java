@@ -11,6 +11,7 @@ import com.sicom.controller.AutorizacionJpaController;
 import com.sicom.controller.DepartamentoJpaController;
 import com.sicom.controller.ValorJpaController;
 import com.sicom.entities.Valor;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
@@ -24,11 +25,14 @@ import javax.persistence.Persistence;
  */
 @ManagedBean
 @ViewScoped
-public class ValoresBean {
+public class ValoresBean implements Serializable {
     
     private final DepartamentoJpaController djc;
     private final AutorizacionJpaController ajc;
     private final ValorJpaController vjc;
+    private String tipoId = "nacional";
+    private String tipoId2 = "nacional";
+    
     public ValoresBean() {
         
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
@@ -74,4 +78,32 @@ public class ValoresBean {
     public List<Autorizacion> getAutorizacionList() {
         return ajc.findAutorizacionEntities();
     }    
+
+    /**
+     * @return the tipoId
+     */
+    public String getTipoId() {
+        return tipoId;
+    }
+
+    /**
+     * @param tipoId the tipoId to set
+     */
+    public void setTipoId(String tipoId) {
+        this.tipoId = tipoId;
+    }
+
+    /**
+     * @return the tipoId2
+     */
+    public String getTipoId2() {
+        return tipoId2;
+    }
+
+    /**
+     * @param tipoId2 the tipoId2 to set
+     */
+    public void setTipoId2(String tipoId2) {
+        this.tipoId2 = tipoId2;
+    }
 }
