@@ -48,21 +48,22 @@ public class PacienteBean implements Serializable {
         nuevoPaciente = new Paciente();
         pjc = new PacienteJpaController(emf);
         rjc = new ResponsableJpaController(emf);
+    }
 
+    @PostConstruct
+    public void init() {
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
         Map<String, Object> sessionMap = ec.getSessionMap();
 
         Paciente p = (Paciente) sessionMap.get("paciente");
-        boolean actualizado = (sessionMap.remove("actualizado") != null);
-                
-        if (p != null && !actualizado) {
-            selectedPaciente = pjc.findPaciente(p.getCedula());
-            sessionMap.remove("paciente", selectedPaciente);
-        } else {
-            selectedPaciente = (p != null)? p : new Paciente();
-        }
 
+        if (p != null) {
+            selectedPaciente = pjc.findPaciente(p.getCedula());
+            sessionMap.put("paciente", selectedPaciente);
+        } else {
+            selectedPaciente = new Paciente();
+        }
         int index = (p != null && p.getResponsableList() != null) ? p.getResponsableList().size() : 0;
 
         switch (index) {
@@ -85,12 +86,6 @@ public class PacienteBean implements Serializable {
 
         Responsable aux = (Responsable) sessionMap.remove("selectedResponsable");
         selectedResponsable = (aux != null) ? aux : new Responsable();
-
-    }
-
-    @PostConstruct
-    public void init() {
-        listaPacientes = pjc.findPacienteEntities();
     }
 
     /**
@@ -105,7 +100,7 @@ public class PacienteBean implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede agregar, ya existe el paciente con la cédula: ", nuevoPaciente.getCedula()));
             } else {
                 pjc.create(nuevoPaciente);
-                selectedPaciente =  nuevoPaciente;
+                selectedPaciente = nuevoPaciente;
 
                 FacesContext fc = FacesContext.getCurrentInstance();
                 ExternalContext ec = fc.getExternalContext();
@@ -193,8 +188,9 @@ public class PacienteBean implements Serializable {
 
         if (p != null) {
             String id = p.getCedula();
+            selectedPaciente = null;
             selectedPaciente = this.pjc.findPaciente(p.getCedula());
-
+            
             if (selectedPaciente != null) {
                 try {
 
@@ -203,7 +199,6 @@ public class PacienteBean implements Serializable {
 
                     String URL = ec.getRequestContextPath() + "/app/paciente/informacion#datos";
                     ec.getSessionMap().put("paciente", selectedPaciente);
-                    ec.getSessionMap().put("actualizado", true);
                     ec.redirect(URL);
                 } catch (IOException ex) {
                     Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);

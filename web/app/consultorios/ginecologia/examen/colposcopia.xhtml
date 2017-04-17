@@ -13,14 +13,26 @@
                 <h:form id="formulario">
                     <p:messages id="msg" autoUpdate="true" closable="true"/>
                     <p:panel header="Colposcopía">
-
+                        <p:panel header="Información del Paciente">
+                            <h:panelGrid columns="7">
+                                <p:spacer width="50"/>
+                                <p:outputLabel class="descripcion" value="#{colposcopiaBean.paciente.nombre} #{antecedentesGinecologiaBean.paciente.primerApellido} #{antecedentesGinecologiaBean.paciente.segundoApellido}"/>
+                                <p:spacer width="50"/>
+                                <p:outputLabel class="descripcion" value="#{colposcopiaBean.paciente.cedula}"/>
+                                <p:spacer width="50"/>
+                                <p:outputLabel class="descripcion"  value="Última edición:"/>
+                                <p:outputLabel class="descripcion"  value="#{colposcopiaBean.objeto.fecha}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy H:mm:ss"/>
+                                </p:outputLabel>
+                            </h:panelGrid>
+                        </p:panel>
                         <h:panelGroup>
                             <h:panelGrid columns="3" cellpadding="3">
 
                                 <p:outputLabel for="resultado" value="Resultado:" class="descripcion" />
                                 <p:selectOneMenu value="#{colposcopiaBean.resultado}"  id="resultado">
                                     <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                    <f:selectItems value="#{colposcopiaBean.consultarValoresPorCodigo(9)}"/>
+                                    <f:selectItems value="#{valoresBean.getDescripcionByCodeId(9)}"/>
                                 </p:selectOneMenu>  
                                 <p:inputText value="" size="86"/>
                             </h:panelGrid>                              

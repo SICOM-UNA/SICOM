@@ -42,6 +42,12 @@ public class ExpedienteBean implements Serializable {
 
         if (paciente != null) {
             expediente = paciente.getExpediente();
+            
+            if (expediente == null) {
+                expediente = ejc.findExpedienteID(paciente.getCedula());
+                paciente.setExpediente(expediente);
+                ec.getRequestMap().put("paciente", paciente);
+            }
         } else {
             try {
                 String URL = ec.getRequestContextPath() + "/app/paciente/consultar#formulario";
@@ -57,36 +63,25 @@ public class ExpedienteBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
 
-        if (paciente != null && !paciente.getCedula().equals("")) {
+        String URL = ec.getRequestContextPath();
+        Login log = (Login) ec.getSessionMap().get("login");
+        Personal p = log.getPersonal();
 
-            String URL = ec.getRequestContextPath();
-            Login log = (Login) ec.getSessionMap().get("login");
-            Personal p = log.getPersonal();
+        int consultorio = p.getDepartamentoId().getId();
+        boolean permiso_editar = (p.getAutorizacionNivel().getNivel() < 5);
 
-            int consultorio = p.getDepartamentoId().getId();
-            boolean permiso_editar = (p.getAutorizacionNivel().getNivel() < 5);
+        String direccion = createUrl(consultorio, permiso_editar);
+        subirVerificacion(consultorio, ec);
 
-            String direccion = createUrl(consultorio, permiso_editar);
-            subirVerificacion(consultorio, ec);
-
-            if (direccion.trim().equals("")) {
-                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No posee los permisos para acceder.", null));
-            } else {
-                try {
-                    subirVerificacion(consultorio, ec);
-                    URL += direccion;
-                    ec.redirect(URL);
-                } catch (IOException ex) {
-                    Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+        if (direccion.trim().equals("")) {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No posee los permisos para acceder.", null));
         } else {
             try {
-                String URL = ec.getRequestContextPath();
-                URL += "/app/paciente/consultar";
+                subirVerificacion(consultorio, ec);
+                URL += direccion;
                 ec.redirect(URL);
             } catch (IOException ex) {
-                Logger.getLogger(ExpedienteBean.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -141,9 +136,9 @@ public class ExpedienteBean implements Serializable {
 
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
-            
+
             String URL = ec.getRequestContextPath();
-            
+
             switch (selectedExamen.getValorPK().getId()) {
                 case 36:/*Examen Fisico*/
                     URL += "/app/consultorios/ginecologia/examen/fisico";
@@ -155,12 +150,12 @@ public class ExpedienteBean implements Serializable {
                     URL += "/app/consultorios/ginecologia/examen/colposcopia";
                     break;
                 case 39:/*Odontograma*/
-                    
+
                     break;
                 default:
-                    URL += "/app/paciente/informacion";                                
+                    URL += "/app/paciente/informacion";
             }
-            
+
             try {
                 ec.redirect(URL);
             } catch (IOException ex) {
@@ -174,22 +169,6 @@ public class ExpedienteBean implements Serializable {
 
     public void buscaExamenes() {
 
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Expediente getExpediente() {
-        return expediente;
-    }
-
-    /**
-     *
-     * @param expediente
-     */
-    public void setExpediente(Expediente expediente) {
-        this.expediente = expediente;
     }
 
     public void setSelectedExamen(Valor selectedExamen) {

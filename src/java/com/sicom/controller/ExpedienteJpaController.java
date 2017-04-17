@@ -22,8 +22,10 @@ import com.sicom.entities.ExamenOdontologia;
 import com.sicom.entities.Documentos;
 import com.sicom.entities.ExamenGinecologia;
 import com.sicom.entities.Expediente;
+import com.sicom.entities.Valor;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -40,7 +42,6 @@ public class ExpedienteJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    
     public void create(Expediente expediente) throws IllegalOrphanException {
         if (expediente.getExamenColposcopiaList() == null) {
             expediente.setExamenColposcopiaList(new ArrayList<ExamenColposcopia>());
@@ -488,11 +489,22 @@ public class ExpedienteJpaController implements Serializable {
         }
     }
 
+    public Expediente findExpedienteID(String id_paciente) {
+        List<Expediente> list = findExpedienteEntities(true, 0, 0);
+        for (Expediente ex : list) {
+            if (ex.getPacientecedula().getCedula().equals(id_paciente)) {
+                return ex;
+            }
+        }
+        return null;
+    }
+
     public int getExpedienteCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Expediente> rt = cq.from(Expediente.class);
+            Root<Expediente> rt = cq.from(Expediente.class
+            );
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
@@ -500,5 +512,5 @@ public class ExpedienteJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }
