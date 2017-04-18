@@ -7,16 +7,17 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
-        <div id="wrapper">
+        <div id="wrapper" align="center">
             <section>
-                <h:form>
-                    <h:inputHidden value="#{personalBean.setSelectedPersonal(personal)}"/>
-                </h:form>
-                <h:form id="formPersonal">
-                    <p:panel header="Modificar Personal" id="panel1" style="text-align: center;">
+                <p:panel header="Modificar Personal">
+                    <h:form>
+                        <h:inputHidden value="#{personalBean.setSelectedPersonal(personal)}"/>
+                    </h:form>
+                    
+                    <h:form id="formPersonal">
                         <p:messages id="msg" globalOnly="true" closable="true" showDetail="false"/>
                         <p:messages for="email" autoUpdate="true" closable="true"/>
-                        
+
                         <div class="ui-grid ui-grid-responsive">
                             <div class="ui-grid-row">
                                 <div class="ui-grid-col-12" align="center">
@@ -24,21 +25,8 @@
                                         <h:panelGrid columns="2">    
                                             <h:panelGrid columns="2">
                                                 <h:panelGrid columns="2" cellspacing="3">
-                                                    <p:outputLabel value="Tipo Identificación:" for="tipoId"/>
-                                                    <p:selectOneMenu id="tipoId" value="#{valoresBean.tipoId}">
-                                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(8)}"/>
-                                                        <f:ajax render="panelCedula"/>
-                                                    </p:selectOneMenu>
-                                                    
                                                     <p:outputLabel for="cedula" value="Identificación:"/>
-                                                    <h:panelGrid id="panelCedula" columns="3">
-                                                        <p:inputMask id="cedula" value="#{personalBean.selectedPersonal.cedula}" required="true" maxlength="12" size="13" 
-                                                            mask="9-9999-9999" placeholder="0-0000-0000" rendered="#{valoresBean.tipoId.toLowerCase().equals('nacional')}"/>
-                                                        <p:inputMask id="residencia" value="#{personalBean.selectedPersonal.cedula}" required="true" maxlength="12" size="13" 
-                                                            mask="999999999999" placeholder="000000000000" rendered="#{valoresBean.tipoId.toLowerCase().equals('residencia')}"/>
-                                                        <p:inputText id="pasaporte" value="#{personalBean.selectedPersonal.cedula}" required="true" maxlength="12" size="13" 
-                                                            rendered="#{valoresBean.tipoId.toLowerCase().equals('pasaporte')}"/>
-                                                    </h:panelGrid>         
+                                                    <p:inputText id="cedula" value="#{personalBean.selectedPersonal.cedula}" disabled="true"/>
 
                                                     <p:outputLabel for="nombre" value="Nombre:" />
                                                     <p:inputText id="nombre" value="#{personalBean.selectedPersonal.nombre}" maxlength="45" class= "charWithSpaceToUpperCase"
@@ -55,6 +43,9 @@
                                                     <p:calendar id="fechaNacimiento" value="#{personalBean.selectedPersonal.nacimiento}" pattern="dd-MM-yyyy" mask="true" navigator="true"
                                                         maxdate="#{now}" required="true" placeholder="#{now.date}-#{now.month+1}-#{now.year+1900}"/>
 
+                                                    <p:outputLabel value="Cargo:" for="cargo"/>
+                                                    <p:inputText id="cargo" value="#{personalBean.selectedPersonal.cargo}" maxlength="45" class= "charToUpperCase" onkeyup="validar()"/>
+
                                                     <p:outputLabel value="Estado Civil:" for="estadoCivil"/>
                                                     <p:selectOneMenu id="estadoCivil" value="#{personalBean.selectedPersonal.estadoCivil}">
                                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
@@ -62,11 +53,8 @@
                                                     </p:selectOneMenu>
                                                 </h:panelGrid>
                                             </h:panelGrid>
-                                            
-                                            <h:panelGrid columns="2" cellspacing="3">
-                                                <p:outputLabel value="Cargo:" for="cargo"/>
-                                                <p:inputText id="cargo" value="#{personalBean.selectedPersonal.cargo}" maxlength="45" class= "charToUpperCase" onkeyup="validar()"/>
 
+                                            <h:panelGrid columns="2" cellspacing="3">
                                                 <p:outputLabel value="Género:" for="genero"/>
                                                 <p:selectOneMenu id="genero" value="#{personalBean.selectedPersonal.genero}">
                                                     <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
@@ -95,20 +83,38 @@
                                     </p:panel>
                                 </div>
                             </div>
-                            
-                            
-                            
-                            <f:facet name="footer">
-                                <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                    <p:commandButton value="Actualizar" icon="ui-icon-plus" action="#{personalBean.modificar}" update="formPersonal" title="Actualizar personal"/>
-                                    <p:commandButton value="Cancelar" immediate="true" icon="ui-icon-refresh">
-                                        <p:ajax resetValues="true" update="formPersonal" immediate="true"/>
-                                    </p:commandButton>
+
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-12" align="center">
+                                    <p:panel header="Información de Seguridad">
+                                        <h:panelGrid columns="4">
+                                            <p:outputLabel value="Departamento:" for="departamento"/>
+                                            <p:selectOneMenu id="departamento" value="#{personalBean.selectedPersonal.departamentoId}" required="true"
+                                                converter="omnifaces.SelectItemsConverter">
+                                                <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
+                                                <f:selectItems value="#{valoresBean.departamentosList}" var="departamento" itemLabel="#{departamento.nombre}" itemValue="#{departamento}"/>
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel value="Nivel de autorización:" for="nivelAutorizacion"/>
+                                            <p:selectOneMenu id="nivelAutorizacion" value="#{personalBean.selectedPersonal.autorizacionNivel}" required="true" converter="omnifaces.SelectItemsConverter">
+                                                <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
+                                                <f:selectItems value="#{valoresBean.autorizacionList}" var="autorizacion" itemLabel="#{autorizacion.descripcion}" itemValue="#{autorizacion}"/>
+                                            </p:selectOneMenu>
+                                        </h:panelGrid>
+                                    </p:panel>    
                                 </div>
-                            </f:facet>
+                            </div>
                         </div>
-                    </p:panel>
-                </h:form>
+    
+                        <div class="ui-panel-titlebar ui-widget-header" align="center">
+                            <p:commandButton value="Actualizar" icon="ui-icon-plus" action="#{personalBean.modificar}" update="formPersonal" title="Actualizar personal"/>
+                            <p:commandButton value="Cancelar" immediate="true" icon="ui-icon-refresh" title="Borrar datos del formulario">
+                                <p:ajax resetValues="true" update="formPersonal" immediate="true"/>
+                            </p:commandButton>
+                        </div>
+                        
+                    </h:form>
+                </p:panel>
             </section>
         </div>
     </ui:define>

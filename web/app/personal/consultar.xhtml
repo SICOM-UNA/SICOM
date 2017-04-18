@@ -11,10 +11,10 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form id="buscar">
+                <h:form id="formPersonal">
                     <p:messages id="msg" autoUpdate="true" closable="true" />
                     
-                    <p:panel header="Informacion del Usuario" id="INFO">
+                    <p:panel header="Consultar Personal">
                         <div class="ui-grid ui-grid-responsive">
                             <div class="ui-grid-row">
                                 <div class="ui-grid-col-6" align="center">
@@ -42,9 +42,9 @@
                                 <div class="ui-grid-col-3" align="center">
                                     <f:facet name="footer">
                                         <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                            <p:commandButton value="Consultar" action="#{personalBean.consultarPersonal}" icon="ui-icon ui-icon-search"/>
-                                            <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Click para limpiar formulario" immediate="true">
-                                                <p:resetInput target="formConsultar"/>
+                                            <p:commandButton value="Consultar" action="#{personalBean.consultarPersonal}" icon="ui-icon ui-icon-search" title="Buscar personal por número de identificación"/>
+                                            <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true" update="formPersonal">
+                                                <p:resetInput target="formPersonal:panelCedula"/>
                                             </p:commandButton> 
                                         </div>
                                     </f:facet>

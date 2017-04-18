@@ -11,13 +11,14 @@
     <ui:define name="content">
         <div id="wrapper" align="center">
             <section>
-                <p:panel header="Modificar Paciente" id="panel">
+                <p:panel header="Modificar Paciente">
                     <div class="ui-grid ui-grid-responsive">
                         <div class="ui-grid-row">
                             <div class="ui-grid-col-12">
                                 <h:form>
                                     <h:inputHidden value="#{pacienteBean.setSelectedPaciente(paciente)}"/>
                                 </h:form>
+                                
                                 <h:form id="formPaciente">
                                     <p:messages id="msg" globalOnly="true" closable="true" showDetail="false"/>
                                     <p:messages for="email" autoUpdate="true" closable="true"/>
