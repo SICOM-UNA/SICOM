@@ -159,60 +159,7 @@ public class PersonalJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Personal persistentPersonal = em.find(Personal.class, personal.getCedula());
-//            Autorizacion autorizacionnivelOld = persistentPersonal.getAutorizacionNivel();
-//            Autorizacion autorizacionnivelNew = personal.getAutorizacionNivel();
-//            Departamento departamentoidOld = persistentPersonal.getDepartamentoId();
-//            Departamento departamentoidNew = personal.getDepartamentoId();
-//            Login loginusuarioOld = persistentPersonal.getLoginUsuario();
-//            Login loginusuarioNew = personal.getLoginUsuario();
-//
-//            if (autorizacionnivelNew != null) {
-//                autorizacionnivelNew = em.getReference(autorizacionnivelNew.getClass(), autorizacionnivelNew.getNivel());
-//                personal.setAutorizacionNivel(autorizacionnivelNew);
-//            }
-//            
-//            if (departamentoidNew != null) {
-//                departamentoidNew = em.getReference(departamentoidNew.getClass(), departamentoidNew.getId());
-//                personal.setDepartamentoId(departamentoidNew);
-//            }
-//            
-//            if (loginusuarioNew != null) {
-//                loginusuarioNew = em.getReference(loginusuarioNew.getClass(), loginusuarioNew.getUsuario());
-//                personal.setLoginUsuario(loginusuarioNew);
-//            }
-
             personal = em.merge(personal);
-            
-//            if (autorizacionnivelOld != null && !autorizacionnivelOld.equals(autorizacionnivelNew)) {
-//                autorizacionnivelOld.getPersonalList().remove(personal);
-//                autorizacionnivelOld = em.merge(autorizacionnivelOld);
-//            }
-//            
-//            if (autorizacionnivelNew != null && !autorizacionnivelNew.equals(autorizacionnivelOld)) {
-//                autorizacionnivelNew.getPersonalList().add(personal);
-//                autorizacionnivelNew = em.merge(autorizacionnivelNew);
-//            }
-//            
-//            if (departamentoidOld != null && !departamentoidOld.equals(departamentoidNew)) {
-//                departamentoidOld.getPersonalList().remove(personal);
-//                departamentoidOld = em.merge(departamentoidOld);
-//            }
-//            
-//            if (departamentoidNew != null && !departamentoidNew.equals(departamentoidOld)) {
-//                departamentoidNew.getPersonalList().add(personal);
-//                departamentoidNew = em.merge(departamentoidNew);
-//            }
-//            
-//            if (loginusuarioOld != null && !loginusuarioOld.equals(loginusuarioNew)) {
-//                loginusuarioOld.setPersonal(null);
-//                loginusuarioOld = em.merge(loginusuarioOld);
-//            }
-//            
-//            if (loginusuarioNew != null && !loginusuarioNew.equals(loginusuarioOld)) {
-//                loginusuarioNew.setPersonal(personal);
-//                loginusuarioNew = em.merge(loginusuarioNew);
-//            }
 
             em.getTransaction().commit();
         } catch (Exception ex) {

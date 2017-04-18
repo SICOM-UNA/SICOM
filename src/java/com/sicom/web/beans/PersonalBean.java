@@ -84,7 +84,7 @@ public class PersonalBean implements Serializable {
         return null;
     }
 
-    public String consultarPersonal() {
+    public String consultar() {
         selectedPersonal = pjc.findPersonal(nuevoPersonal.getCedula());
 
         if (selectedPersonal != null) {
