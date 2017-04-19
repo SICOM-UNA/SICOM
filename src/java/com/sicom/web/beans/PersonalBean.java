@@ -19,7 +19,7 @@ import javax.persistence.Persistence;
 
 @ManagedBean
 @ViewScoped
-public class PersonalBean implements Serializable{
+public class PersonalBean implements Serializable {
 
     private Personal nuevoPersonal;
     private Personal selectedPersonal;
@@ -51,12 +51,11 @@ public class PersonalBean implements Serializable{
             Personal personal = pjc.findPersonal(nuevoUsuario.getPersonal().getCedula());
             
             // Valida si el usuario ya existe
-            if(login != null && login.getUsuario().equals(nuevoUsuario.getUsuario())) {
+            if(login != null && login.getUsuario().toLowerCase().equals(nuevoUsuario.getUsuario().toLowerCase())) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El usuario ya existe, por favor digite un nombre de usuario diferente de " + login.getUsuario(), null));
             // Valida si el personal ya existe
             } else if(personal != null && personal.getCedula().equals(nuevoUsuario.getPersonal().getCedula())) {
-                FacesContext.getCurrentInstance().addMessage(null
-                        , new FacesMessage(FacesMessage.SEVERITY_WARN, "El personal ya existe, por favor digite un número de cédula diferente de " + personal.getCedula(), null));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El personal ya existe, por favor digite un número de cédula diferente de " + personal.getCedula(), null));
             } else {
                 // Se agrega el usuario
                 ljc.create(nuevoUsuario);
@@ -67,12 +66,35 @@ public class PersonalBean implements Serializable{
             Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public String modificar() {
+        try {
+            pjc.edit(selectedPersonal);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información actualizada exitosamente.", null));
+            selectedPersonal = new Personal();
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+            
+            return "agregar?faces-redirect=true";
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
 
-    public void consultar() {
-        selectedUsuario = ljc.findLogin(selectedUsuario.getUsuario());
+    public String consultar() {
+        selectedPersonal = pjc.findPersonal(nuevoPersonal.getCedula());
 
-        if (selectedUsuario == null) {
-            selectedUsuario = new Login();
+        if (selectedPersonal != null) {
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("personal", selectedPersonal);
+            
+            return "editar?faces-redirect=true";
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El personal con la identificación " + nuevoPersonal.getCedula() + " no ha sido encontrado", null));
+            
+            return "consultar";
         }
     }
 
@@ -162,5 +184,4 @@ public class PersonalBean implements Serializable{
     public void setSelectedUsuario(Login selectedUsuario) {
         this.selectedUsuario = selectedUsuario;
     }
-    
 }
