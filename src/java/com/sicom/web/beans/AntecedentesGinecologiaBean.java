@@ -4,7 +4,6 @@ import com.sicom.controller.AntecedentesGinecologiaJpaController;
 import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.entities.AntecedentesGinecologia;
 import com.sicom.entities.Paciente;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,8 +24,6 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.graphics.xobject.PDJpeg;
-import org.apache.pdfbox.pdmodel.graphics.xobject.PDXObjectImage;
 
 @ManagedBean
 @ViewScoped
@@ -155,7 +152,7 @@ public class AntecedentesGinecologiaBean {
         PDFont pdfFont = PDType1Font.HELVETICA;
         float fontSize = 10;
 
-        List<String> lines = new ArrayList<String>();
+        List<String> lines = new ArrayList<>();
         int lastSpace = -1;
         while (texto.length() > 0) {
             int spaceIndex = texto.indexOf(' ', lastSpace + 1);
@@ -337,17 +334,11 @@ public class AntecedentesGinecologiaBean {
 
             // Inform JSF that response is completed and it thus doesn't have to navigate.
             facesContext.responseComplete();
-
             doc.close();
-
             System.out.println("El Archivo fue guardado en: " + externalContext.getResponseOutputStream());
 
         } catch (IOException e) {
-
             System.out.println(e.getMessage());
-
         }
-
     }
-
 }
