@@ -326,4 +326,7 @@ public class PacienteBean implements Serializable {
         this.selectedResponsable = selectedResponsable;
     }
 
+    public void resetSelectedPaciente(){
+        selectedPaciente = new Paciente();
+    }
 }

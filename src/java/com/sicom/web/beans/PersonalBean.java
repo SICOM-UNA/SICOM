@@ -162,4 +162,5 @@ public class PersonalBean implements Serializable{
     public void setSelectedUsuario(Login selectedUsuario) {
         this.selectedUsuario = selectedUsuario;
     }
+    
 }

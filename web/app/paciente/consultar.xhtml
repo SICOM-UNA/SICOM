@@ -11,45 +11,60 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
+                <h:form>
+                    <h:inputHidden value="#{pacienteBean.resetSelectedPaciente()}"/>
+                </h:form>
+                
                 <h:form id="formulario">
 
                     <p:messages id="msg" autoUpdate="true" closable="true" />
-                    <p:panel header="Informacion del Paciente" id="INFO">
+                          <p:panel header="Consultar Paciente" id="INFO">
                         <div class="ui-grid ui-grid-responsive">
                             <div class="ui-grid-row">
                                 <div class="ui-grid-col-6" align="center">
-                                    <o:validateOneOrMore message="Debe digitar la cédula" id="oneOrMore" components="id" />
                                     <h:panelGrid columns="2" cellpadding="5">
-                                        <p:outputLabel value="Tipo Identificación:"/>
-                                        <p:selectOneMenu id="tipoIdSel">
-                                            <f:selectItems value="{pacienteBean.consultarValoresPorCodigo(8)}" />
+                                        <p:outputLabel value="Tipo de identificación:" for="tipoId"/>
+                                        <p:selectOneMenu id="tipoId" value="#{valoresBean.tipoId}">
+                                            <f:selectItems value="#{valoresBean.getDescripcionByCodeId(8)}"/>
+                                            <f:ajax render="panelCedula"/>
                                         </p:selectOneMenu>
 
-                                        <p:outputLabel class="descripcion" value="Digite Identificación:" for="id"/>
-                                        <h:panelGroup>
-                                            <p:inputMask id="id" value="#{pacienteBean.selectedPaciente.cedula}" required="true" maxlength="12" size="13" 
-                                                         mask="9-9999-9999" requiredMessage="- Falta la identificación." placeholder="0-0000-0000" />
-                                            <p:tooltip id="toolTipFocus" for="id" showEvent="focus" position="bottom" value="Identificación Nacional: Ej 0-0000-0000."/>
-                                        </h:panelGroup>
+                                        <p:outputLabel for="cedula" value="Identificación:"/>
+                                        <h:panelGrid id="panelCedula" columns="3">
+                                            <p:inputMask id="cedula" value="#{pacienteBean.selectedPaciente.cedula}" required="true" maxlength="12" 
+                                                mask="9-9999-9999" placeholder="0-0000-0000" rendered="#{valoresBean.tipoId.toLowerCase().equals('nacional')}">
+                                            </p:inputMask>
+                                            <p:inputMask id="residencia" value="#{pacienteBean.selectedPaciente.cedula}" required="true" maxlength="12" 
+                                                mask="999999999999" placeholder="000000000000" rendered="#{valoresBean.tipoId.toLowerCase().equals('residencia')}">
+                                            </p:inputMask>
+                                            <p:inputText id="pasaporte" value="#{pacienteBean.selectedPaciente.cedula}" required="true" maxlength="12" 
+                                                rendered="#{valoresBean.tipoId.toLowerCase().equals('pasaporte')}">
+                                            </p:inputText>
+                                        </h:panelGrid>
                                     </h:panelGrid>
-
                                 </div>
                                 <div class="ui-grid-col-3" align="center">
                                     <h:panelGroup>
-                                        <p:outputLabel class="descripcion" value="Realizar Consulta Civil (TSE)" />
-                                        <h:outputLink value="http://www.consulta.tse.go.cr/consulta_persona/consulta_nombres.aspx" title="Página del Tribunal Supremo de Elecciones." target="_blank">
+                                        <p:outputLabel class="descripcion" value="Consultar cédula (TSE)" />
+                                        <h:outputLink value="http://www.consulta.tse.go.cr/consulta_persona/consulta_nombres.aspx" title="Sitio Web del Tribunal Supremo de Elecciones" target="_blank">
                                             <h:graphicImage class="myicon" value="../../imagenes/search.jpg"/>
                                         </h:outputLink>
                                     </h:panelGroup>
                                 </div>
                             </div>
-                        </div>
-                        <f:facet name="footer" >
-                            <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                <p:commandButton value="Mostrar Resultados" action="#{pacienteBean.buscaIdBase()}" update="formulario"/>
+                            
+                            <div class="ui-grid-row">
+                                <div class="ui-grid-col-3" align="center">
+                                    <f:facet name="footer">
+                                        <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                            <p:commandButton value="Consultar" action="#{pacienteBean.buscaIdBase()}" icon="ui-icon ui-icon-search" title="Buscar paciente por número de identificación"/>
+                                        </div>
+                                    </f:facet>
+                                </div>
                             </div>
-                        </f:facet>
+                        </div>
                     </p:panel>
+              
                 </h:form>
             </section>
         </div>
