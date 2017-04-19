@@ -67,11 +67,24 @@ public class PersonalBean implements Serializable {
         }
     }
     
-    public void modificar() {
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información actualizada exitosamente.", null));
+    public String modificar() {
+        try {
+            pjc.edit(selectedPersonal);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información actualizada exitosamente.", null));
+            selectedPersonal = new Personal();
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+            
+            return "agregar?faces-redirect=true";
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
     }
 
-    public String consultarPersonal() {
+    public String consultar() {
         selectedPersonal = pjc.findPersonal(nuevoPersonal.getCedula());
 
         if (selectedPersonal != null) {
@@ -79,9 +92,9 @@ public class PersonalBean implements Serializable {
             
             return "editar?faces-redirect=true";
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "El paciente con la identificación " + nuevoPersonal.getCedula() + " no ha sido encontrado", null));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El personal con la identificación " + nuevoPersonal.getCedula() + " no ha sido encontrado", null));
             
-            return null;
+            return "consultar";
         }
     }
 

@@ -11,7 +11,7 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form id="formConsultar">
+                <h:form id="formPaciente">
                     <p:messages id="msg" autoUpdate="true" closable="true"/>
                     
                     <p:panel header="Consultar Paciente" id="INFO">
@@ -41,8 +41,8 @@
                                 </div>
                                 <div class="ui-grid-col-3" align="center">
                                     <h:panelGroup>
-                                        <p:outputLabel class="descripcion" value="Realizar Consulta Civil (TSE)" />
-                                        <h:outputLink value="http://www.consulta.tse.go.cr/consulta_persona/consulta_nombres.aspx" title="Página del Tribunal Supremo de Elecciones." target="_blank">
+                                        <p:outputLabel class="descripcion" value="Consultar cédula (TSE)" />
+                                        <h:outputLink value="http://www.consulta.tse.go.cr/consulta_persona/consulta_nombres.aspx" title="Sitio Web del Tribunal Supremo de Elecciones" target="_blank">
                                             <h:graphicImage class="myicon" value="../../imagenes/search.jpg"/>
                                         </h:outputLink>
                                     </h:panelGroup>
@@ -53,9 +53,9 @@
                                 <div class="ui-grid-col-3" align="center">
                                     <f:facet name="footer">
                                         <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                            <p:commandButton value="Consultar" action="#{pacienteBean.consultarPaciente}" icon="ui-icon ui-icon-search"/>
-                                            <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Click para limpiar formulario" immediate="true">
-                                                <p:resetInput target="formConsultar"/>
+                                            <p:commandButton value="Consultar" action="#{pacienteBean.consultar}" icon="ui-icon ui-icon-search" title="Buscar paciente por número de identificación"/>
+                                            <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true" update="formPaciente">
+                                                <p:resetInput target="formPaciente:panelCedula"/>
                                             </p:commandButton> 
                                         </div>
                                     </f:facet>

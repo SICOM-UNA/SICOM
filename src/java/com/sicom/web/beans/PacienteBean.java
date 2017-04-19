@@ -80,14 +80,16 @@ public class PacienteBean implements Serializable {
             selectedPaciente = new Paciente();
             nuevoResponsable = new Responsable();
             FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+            
+            return "agregar?faces-redirect=true";
         } catch (Exception ex) {
             Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        return "agregar?faces-redirect=true";
+        return null;
     }
     
-    public String consultarPaciente() {
+    public String consultar() {
         selectedPaciente = pjc.findPaciente(nuevoPaciente.getCedula());
 
         if (selectedPaciente != null) {
@@ -95,9 +97,9 @@ public class PacienteBean implements Serializable {
             
             return "editar?faces-redirect=true";
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "El paciente con la identificación " + nuevoPaciente.getCedula() + " no ha sido encontrado", null));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El paciente con la identificación " + nuevoPaciente.getCedula() + " no ha sido encontrado", null));
             
-            return null;
+            return "consultar";
         }
     }
     
