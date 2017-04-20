@@ -75,7 +75,7 @@ public class Paciente implements Serializable {
     private String correo;
     @Column(name = "genero")
     private String genero;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pacientecedula")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "pacienteCedula")
     private List<Responsable> responsableList;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "pacientecedula")
     private Expediente expediente;

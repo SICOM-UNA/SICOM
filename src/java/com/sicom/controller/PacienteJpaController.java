@@ -40,40 +40,20 @@ public class PacienteJpaController implements Serializable {
         if (paciente.getResponsableList() == null) {
             paciente.setResponsableList(new ArrayList<Responsable>());
         }
+        
         EntityManager em = null;
+        
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             Expediente expediente = paciente.getExpediente();
+            
             if (expediente != null) {
                 expediente = em.getReference(expediente.getClass(), expediente.getId());
                 paciente.setExpediente(expediente);
             }
-            List<Responsable> attachedResponsableList = new ArrayList<Responsable>();
-            for (Responsable responsableListResponsableToAttach : paciente.getResponsableList()) {
-                responsableListResponsableToAttach = em.getReference(responsableListResponsableToAttach.getClass(), responsableListResponsableToAttach.getCedula());
-                attachedResponsableList.add(responsableListResponsableToAttach);
-            }
-            paciente.setResponsableList(attachedResponsableList);
+
             em.persist(paciente);
-            if (expediente != null) {
-                Paciente oldPacientecedulaOfExpediente = expediente.getPacientecedula();
-                if (oldPacientecedulaOfExpediente != null) {
-                    oldPacientecedulaOfExpediente.setExpediente(null);
-                    oldPacientecedulaOfExpediente = em.merge(oldPacientecedulaOfExpediente);
-                }
-                expediente.setPacientecedula(paciente);
-                expediente = em.merge(expediente);
-            }
-            for (Responsable responsableListResponsable : paciente.getResponsableList()) {
-                Paciente oldPacientecedulaOfResponsableListResponsable = responsableListResponsable.getPacientecedula();
-                responsableListResponsable.setPacientecedula(paciente);
-                responsableListResponsable = em.merge(responsableListResponsable);
-                if (oldPacientecedulaOfResponsableListResponsable != null) {
-                    oldPacientecedulaOfResponsableListResponsable.getResponsableList().remove(responsableListResponsable);
-                    oldPacientecedulaOfResponsableListResponsable = em.merge(oldPacientecedulaOfResponsableListResponsable);
-                }
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findPaciente(paciente.getCedula()) != null) {
@@ -89,73 +69,41 @@ public class PacienteJpaController implements Serializable {
 
     public void edit(Paciente paciente) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
+        
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             Paciente persistentPaciente = em.find(Paciente.class, paciente.getCedula());
-            Expediente expedienteOld = persistentPaciente.getExpediente();
-            Expediente expedienteNew = paciente.getExpediente();
             List<Responsable> responsableListOld = persistentPaciente.getResponsableList();
             List<Responsable> responsableListNew = paciente.getResponsableList();
-            List<String> illegalOrphanMessages = null;
-            if (expedienteOld != null && !expedienteOld.equals(expedienteNew)) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("You must retain Expediente " + expedienteOld + " since its pacientecedula field is not nullable.");
-            }
-            for (Responsable responsableListOldResponsable : responsableListOld) {
-                if (!responsableListNew.contains(responsableListOldResponsable)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Responsable " + responsableListOldResponsable + " since its pacientecedula field is not nullable.");
-                }
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            if (expedienteNew != null) {
-                expedienteNew = em.getReference(expedienteNew.getClass(), expedienteNew.getId());
-                paciente.setExpediente(expedienteNew);
-            }
-            List<Responsable> attachedResponsableListNew = new ArrayList<Responsable>();
-            for (Responsable responsableListNewResponsableToAttach : responsableListNew) {
-                responsableListNewResponsableToAttach = em.getReference(responsableListNewResponsableToAttach.getClass(), responsableListNewResponsableToAttach.getCedula());
-                attachedResponsableListNew.add(responsableListNewResponsableToAttach);
-            }
-            responsableListNew = attachedResponsableListNew;
             paciente.setResponsableList(responsableListNew);
             paciente = em.merge(paciente);
-            if (expedienteNew != null && !expedienteNew.equals(expedienteOld)) {
-                Paciente oldPacientecedulaOfExpediente = expedienteNew.getPacientecedula();
-                if (oldPacientecedulaOfExpediente != null) {
-                    oldPacientecedulaOfExpediente.setExpediente(null);
-                    oldPacientecedulaOfExpediente = em.merge(oldPacientecedulaOfExpediente);
-                }
-                expedienteNew.setPacientecedula(paciente);
-                expedienteNew = em.merge(expedienteNew);
-            }
-            for (Responsable responsableListNewResponsable : responsableListNew) {
-                if (!responsableListOld.contains(responsableListNewResponsable)) {
-                    Paciente oldPacientecedulaOfResponsableListNewResponsable = responsableListNewResponsable.getPacientecedula();
-                    responsableListNewResponsable.setPacientecedula(paciente);
-                    responsableListNewResponsable = em.merge(responsableListNewResponsable);
-                    if (oldPacientecedulaOfResponsableListNewResponsable != null && !oldPacientecedulaOfResponsableListNewResponsable.equals(paciente)) {
-                        oldPacientecedulaOfResponsableListNewResponsable.getResponsableList().remove(responsableListNewResponsable);
-                        oldPacientecedulaOfResponsableListNewResponsable = em.merge(oldPacientecedulaOfResponsableListNewResponsable);
+
+            for (Responsable responsableListNew1 : responsableListNew) {
+                if (!responsableListOld.contains(responsableListNew1)) {
+                    Paciente oldPaciente = responsableListNew1.getPacienteCedula();
+                    responsableListNew1.setPacienteCedula(paciente);
+                    responsableListNew1 = em.merge(responsableListNew1);
+                    
+                    if (oldPaciente != null && !oldPaciente.equals(paciente)) {
+                        oldPaciente.getResponsableList().remove(responsableListNew1);
+                        oldPaciente = em.merge(oldPaciente);
                     }
                 }
             }
+            
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
+            
             if (msg == null || msg.length() == 0) {
                 String id = paciente.getCedula();
+                
                 if (findPaciente(id) == null) {
                     throw new NonexistentEntityException("The paciente with id " + id + " no longer exists.");
                 }
             }
+            
             throw ex;
         } finally {
             if (em != null) {

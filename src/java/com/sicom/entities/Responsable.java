@@ -48,7 +48,7 @@ public class Responsable implements Serializable {
     private String vinculo;
     @JoinColumn(name = "Paciente_cedula", referencedColumnName = "cedula")
     @ManyToOne(optional = false)
-    private Paciente pacientecedula;
+    private Paciente pacienteCedula;
 
     public Responsable() {
     }
@@ -97,12 +97,12 @@ public class Responsable implements Serializable {
         this.vinculo = vinculo;
     }
 
-    public Paciente getPacientecedula() {
-        return pacientecedula;
+    public Paciente getPacienteCedula() {
+        return pacienteCedula;
     }
 
-    public void setPacientecedula(Paciente pacientecedula) {
-        this.pacientecedula = pacientecedula;
+    public void setPacienteCedula(Paciente pacienteCedula) {
+        this.pacienteCedula = pacienteCedula;
     }
 
     @Override

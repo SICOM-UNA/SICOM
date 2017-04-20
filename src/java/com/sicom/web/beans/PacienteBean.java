@@ -8,6 +8,7 @@ import com.sicom.entities.Paciente;
 import com.sicom.entities.Responsable;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,7 @@ import javax.persistence.Persistence;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
+import org.primefaces.context.RequestContext;
 
 @ManagedBean
 @ViewScoped
@@ -32,8 +34,8 @@ public class PacienteBean implements Serializable {
 
     private Paciente nuevoPaciente;
     private Paciente selectedPaciente;
-    private Responsable responsable1;
-    private Responsable responsable2;
+    private Responsable nuevoResponsable;
+    private List<Responsable> listaResponsable;
     private Responsable selectedResponsable;
     private List<Paciente> listaPacientes;
     private final PacienteJpaController pjc;
@@ -44,8 +46,11 @@ public class PacienteBean implements Serializable {
      */
     public PacienteBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
-
         nuevoPaciente = new Paciente();
+        selectedPaciente = new Paciente();
+        nuevoResponsable = new Responsable();
+        listaResponsable = new ArrayList<>();
+        listaPacientes = new ArrayList<>();
         pjc = new PacienteJpaController(emf);
         rjc = new ResponsableJpaController(emf);
     }
@@ -64,28 +69,6 @@ public class PacienteBean implements Serializable {
         } else {
             selectedPaciente = new Paciente();
         }
-        int index = (p != null && p.getResponsableList() != null) ? p.getResponsableList().size() : 0;
-
-        switch (index) {
-            case 0:
-                responsable1 = responsable2 = new Responsable();
-                responsable1.setNombre("No definido");
-                responsable2.setNombre("No definido");
-                break;
-            case 1:
-                responsable1 = p.getResponsableList().get(0);
-                responsable2 = new Responsable();
-                responsable2.setNombre("No definido");
-                break;
-            case 2:
-                responsable1 = p.getResponsableList().get(0);
-                responsable2 = p.getResponsableList().get(1);
-                break;
-
-        }
-
-        Responsable aux = (Responsable) sessionMap.remove("selectedResponsable");
-        selectedResponsable = (aux != null) ? aux : new Responsable();
     }
 
     /**
@@ -115,6 +98,40 @@ public class PacienteBean implements Serializable {
         }
     }
 
+    /**
+     * Modificar paciente
+     * @return agregar.xhtml
+     */
+    public String modificar() {
+        try {            
+            pjc.edit(selectedPaciente);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información actualizada exitosamente.", null));
+            selectedPaciente = new Paciente();
+            nuevoResponsable = new Responsable();
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+            
+            return "agregar?faces-redirect=true";
+        } catch (Exception ex) {
+            Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+    
+    
+    /**
+     * Consultar paciente por cédula
+     */
+    public void consultarPacientePorCedula() {
+        selectedPaciente = pjc.findPaciente(nuevoPaciente.getCedula());
+
+        if (selectedPaciente != null) {
+            selectedPaciente.setResponsableList(rjc.findResponsableByCedulaPaciente(selectedPaciente.getCedula()));
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("paciente", selectedPaciente);
+            RequestContext.getCurrentInstance().execute("PF('existePacienteDialog').show()");
+        }
+    }
+    
     /**
      *
      * Calcula la edad del paciente ya sea nuevo o selected
@@ -209,6 +226,16 @@ public class PacienteBean implements Serializable {
 
         }
     }
+    
+    /**
+     * Borra la información del responsable actual después de ser ingresado en el collector
+     * @return null
+     */
+    public String reinit() {
+        nuevoResponsable = new Responsable();
+        
+        return null;
+    }
 
     public Date disablePastDates() {
         Calendar c = Calendar.getInstance();
@@ -282,38 +309,6 @@ public class PacienteBean implements Serializable {
      *
      * @return Responsable
      */
-    public Responsable getResponsable1() {
-        return responsable1;
-    }
-
-    /**
-     *
-     * @param responsable1
-     */
-    public void setResponsable1(Responsable responsable1) {
-        this.responsable1 = responsable1;
-    }
-
-    /**
-     *
-     * @return Responsable
-     */
-    public Responsable getResponsable2() {
-        return responsable2;
-    }
-
-    /**
-     *
-     * @param responsable2
-     */
-    public void setResponsable2(Responsable responsable2) {
-        this.responsable2 = responsable2;
-    }
-
-    /**
-     *
-     * @return Responsable
-     */
     public Responsable getSelectedResponsable() {
         return selectedResponsable;
     }
@@ -328,5 +323,33 @@ public class PacienteBean implements Serializable {
 
     public void resetSelectedPaciente(){
         selectedPaciente = new Paciente();
+    }
+
+    /**
+     * @return the nuevoResponsable
+     */
+    public Responsable getNuevoResponsable() {
+        return nuevoResponsable;
+    }
+
+    /**
+     * @param nuevoResponsable the nuevoResponsable to set
+     */
+    public void setNuevoResponsable(Responsable nuevoResponsable) {
+        this.nuevoResponsable = nuevoResponsable;
+    }
+
+    /**
+     * @return the listaResponsable
+     */
+    public List<Responsable> getListaResponsable() {
+        return listaResponsable;
+    }
+
+    /**
+     * @param listaResponsable the listaResponsable to set
+     */
+    public void setListaResponsable(List<Responsable> listaResponsable) {
+        this.listaResponsable = listaResponsable;
     }
 }

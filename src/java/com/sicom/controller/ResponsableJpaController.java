@@ -14,6 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Paciente;
 import com.sicom.entities.Responsable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -38,10 +39,10 @@ public class ResponsableJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Paciente pacientecedula = responsable.getPacientecedula();
+            Paciente pacientecedula = responsable.getPacienteCedula();
             if (pacientecedula != null) {
                 pacientecedula = em.getReference(pacientecedula.getClass(), pacientecedula.getCedula());
-                responsable.setPacientecedula(pacientecedula);
+                responsable.setPacienteCedula(pacientecedula);
             }
             em.persist(responsable);
             if (pacientecedula != null) {
@@ -67,11 +68,11 @@ public class ResponsableJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Responsable persistentResponsable = em.find(Responsable.class, responsable.getCedula());
-            Paciente pacientecedulaOld = persistentResponsable.getPacientecedula();
-            Paciente pacientecedulaNew = responsable.getPacientecedula();
+            Paciente pacientecedulaOld = persistentResponsable.getPacienteCedula();
+            Paciente pacientecedulaNew = responsable.getPacienteCedula();
             if (pacientecedulaNew != null) {
                 pacientecedulaNew = em.getReference(pacientecedulaNew.getClass(), pacientecedulaNew.getCedula());
-                responsable.setPacientecedula(pacientecedulaNew);
+                responsable.setPacienteCedula(pacientecedulaNew);
             }
             responsable = em.merge(responsable);
             if (pacientecedulaOld != null && !pacientecedulaOld.equals(pacientecedulaNew)) {
@@ -111,7 +112,7 @@ public class ResponsableJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The responsable with id " + id + " no longer exists.", enfe);
             }
-            Paciente pacientecedula = responsable.getPacientecedula();
+            Paciente pacientecedula = responsable.getPacienteCedula();
             if (pacientecedula != null) {
                 pacientecedula.getResponsableList().remove(responsable);
                 pacientecedula = em.merge(pacientecedula);
@@ -147,6 +148,22 @@ public class ResponsableJpaController implements Serializable {
         } finally {
             em.close();
         }
+    }
+    
+    
+    public List<Responsable> findResponsableByCedulaPaciente(String cedulaPaciente) {
+        EntityManager em = getEntityManager();
+        List<Responsable> listaResponsables = new ArrayList<>();
+        
+        try {
+            Query query = em.createQuery("select r from Responsable r where r.pacienteCedula.cedula = ?1");
+            query.setParameter( 1, cedulaPaciente);
+            listaResponsables = (List<Responsable>)query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+            
+        return listaResponsables;
     }
 
     public Responsable findResponsable(String id) {

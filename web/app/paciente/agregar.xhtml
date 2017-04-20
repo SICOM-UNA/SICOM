@@ -35,16 +35,16 @@
                                                     <p:outputLabel for="cedula" value="Identificación:"/>
                                                     <h:panelGrid id="panelCedula" columns="3">
                                                         <p:inputMask id="cedula" value="#{pacienteBean.nuevoPaciente.cedula}" required="true" maxlength="12" 
-                                                                     mask="9-9999-9999" placeholder="0-0000-0000" rendered="#{valoresBean.tipoId.toLowerCase().equals('nacional')}">
-                                                            <!--f:ajax event="blur" listener="{pacienteBean.consultarPacientePorCedula()}"/-->
+                                                            mask="9-9999-9999" placeholder="0-0000-0000" rendered="#{valoresBean.tipoId.toLowerCase().equals('nacional')}">
+                                                            <f:ajax event="blur" listener="#{pacienteBean.consultarPacientePorCedula()}"/>
                                                         </p:inputMask>
                                                         <p:inputMask id="residencia" value="#{pacienteBean.nuevoPaciente.cedula}" required="true" maxlength="12" 
-                                                                     mask="999999999999" placeholder="000000000000" rendered="#{valoresBean.tipoId.toLowerCase().equals('residencia')}">
-                                                            <!--f:ajax event="blur" listener="{pacienteBean.consultarPacientePorCedula()}"/-->
+                                                            mask="999999999999" placeholder="000000000000" rendered="#{valoresBean.tipoId.toLowerCase().equals('residencia')}">
+                                                            <f:ajax event="blur" listener="#{pacienteBean.consultarPacientePorCedula()}"/>
                                                         </p:inputMask>
                                                         <p:inputText id="pasaporte" value="#{pacienteBean.nuevoPaciente.cedula}" required="true" maxlength="12" 
-                                                                     rendered="#{valoresBean.tipoId.toLowerCase().equals('pasaporte')}">
-                                                            <!--f:ajax event="blur" listener="{pacienteBean.consultarPacientePorCedula()}"/-->
+                                                            rendered="#{valoresBean.tipoId.toLowerCase().equals('pasaporte')}">
+                                                            <f:ajax event="blur" listener="#{pacienteBean.consultarPacientePorCedula()}"/>
                                                         </p:inputText>
                                                     </h:panelGrid>  
 
@@ -120,6 +120,18 @@
                         </div>
                     </p:panel>
                 </h:form>
+                
+                <!-- DIALOG DE CONFIRMACIÓN -->
+                                
+                <p:confirmDialog header="El número de identificación ya existe" message="¿Desea consultar los datos del paciente?"
+                    widgetVar="existePacienteDialog" closeOnEscape="true" showEffect="fade" hideEffect="fade">
+                    <h:form id="formExistePaciente">
+                        <center>
+                            <p:commandButton value="Consultar" action="editar?faces-redirect=true" icon="ui-icon ui-icon-search"/>
+                            <p:commandButton value="Cancelar" oncomplete="PF('existePacienteDialog').hide()" icon="ui-icon ui-icon-closethick"/>
+                        </center>
+                    </h:form>
+                </p:confirmDialog>
             </section>
         </div>
     </ui:define>

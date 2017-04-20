@@ -5,7 +5,8 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:o="http://omnifaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <ui:define name="content">
         <div id="wrapper">
@@ -63,51 +64,23 @@
                         </p:tab>
 
                         <p:tab title="Responsables">
-                            <h:panelGrid columns="2">
-                                <p:panel header="Responsable 1">
-                                    <h:panelGrid columns="2">
-                                        <p:outputLabel class="infoLabel" value="Nombre:"/>
-                                        <p:inputText value="#{pacienteBean.responsable1.nombre}" readonly="true"/>
+                            <p:dataList value="#{pacienteBean.selectedPaciente.responsableList}" var="responsable" itemType="none">
+                                <p:panel header="#{responsable.nombre}">
+                                    <h:panelGrid columns="2" cellpadding="6">
+                                        <p:outputLabel for="cedula" value="Identificación:"/>
+                                        <p:inputText id="cedula" value="#{responsable.cedula}" readonly="true"/>
 
-                                        <p:outputLabel class="infoLabel" value="Identificación:"/>
-                                        <p:inputText value="#{pacienteBean.responsable1.cedula}" readonly="true"/>
+                                        <p:outputLabel value="Teléfono: " for="telefono"/>
+                                        <p:inputText id="telefono" value="#{responsable.telefono}" readonly="true"/>
 
-                                        <p:outputLabel class="infoLabel" value = "Ocupación:"/>
-                                        <p:inputText value = "#{pacienteBean.responsable1.ocupacion}" readonly="true"/>
+                                        <p:outputLabel value="Ocupación: " for="ocupacion"/>
+                                        <p:inputText id="ocupacion" value="#{responsable.ocupacion}" readonly="true"/>
 
-                                        <p:outputLabel class="infoLabel" value="Telefono:"/>
-                                        <p:inputText value="#{pacienteBean.responsable1.telefono}" readonly="true"/>
-
-                                        <p:outputLabel class="infoLabel" value="Tipo de Relacion:"/>
-                                        <p:inputText value="#{pacienteBean.responsable1.vinculo}" readonly="true"/>
-
-                                        <p:outputLabel/>
-                                        <p:commandButton value="Modificar Información" title="Click para modificar información del responsable 1." update="datos" action="#{pacienteBean.modificaResposableRedirect(1)}"/>
-
+                                        <p:outputLabel value="Vínculo: " for="vinculo"/>
+                                        <p:inputText id="vinculo" value="#{responsable.vinculo}" readonly="true"/>
                                     </h:panelGrid>
                                 </p:panel>
-                                <p:panel header="Responsable 2">
-                                    <h:panelGrid columns="2">
-                                        <p:outputLabel class="infoLabel" value="Nombre:"/>
-                                        <p:inputText value="#{pacienteBean.responsable2.nombre}" readonly="true"/>
-
-                                        <p:outputLabel class="infoLabel" value="Identificación:"/>
-                                        <p:inputText value="#{pacienteBean.responsable2.cedula}" readonly="true"/>
-
-                                        <p:outputLabel class="infoLabel" value = "Ocupación:"/>
-                                        <p:inputText value = "#{pacienteBean.responsable2.ocupacion}" readonly="true"/>
-
-                                        <p:outputLabel class="infoLabel" value="Telefono:"/>
-                                        <p:inputText value="#{pacienteBean.responsable2.telefono}" readonly="true"/>
-
-                                        <p:outputLabel class="infoLabel" value="Tipo de Relacion:"/>
-                                        <p:inputText value="#{pacienteBean.responsable2.vinculo}" readonly="true"/>
-
-                                        <p:outputLabel/>
-                                        <p:commandButton value="Modificar Información" title="Click para modificar información del resposable 2." update="datos" action="#{pacienteBean.modificaResposableRedirect(2)}"/>
-                                    </h:panelGrid>
-                                </p:panel>
-                            </h:panelGrid>
+                            </p:dataList>
                         </p:tab>
 
                         <p:tab title="Expediente">
