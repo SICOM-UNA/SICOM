@@ -149,16 +149,8 @@ public class ResponsableJpaController implements Serializable {
             em.close();
         }
     }
-
-    public Responsable findResponsable(String id) {
-        EntityManager em = getEntityManager();
-        try {
-            return em.find(Responsable.class, id);
-        } finally {
-            em.close();
-        }
-    }
-
+    
+    
     public List<Responsable> findResponsableByCedulaPaciente(String cedulaPaciente) {
         EntityManager em = getEntityManager();
         List<Responsable> listaResponsables = new ArrayList<>();
@@ -173,7 +165,16 @@ public class ResponsableJpaController implements Serializable {
             
         return listaResponsables;
     }
-    
+
+    public Responsable findResponsable(String id) {
+        EntityManager em = getEntityManager();
+        try {
+            return em.find(Responsable.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
     public int getResponsableCount() {
         EntityManager em = getEntityManager();
         try {
@@ -186,4 +187,5 @@ public class ResponsableJpaController implements Serializable {
             em.close();
         }
     }
+    
 }

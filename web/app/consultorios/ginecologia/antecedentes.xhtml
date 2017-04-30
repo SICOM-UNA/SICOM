@@ -15,13 +15,16 @@
 
                     <!-- Antecedentes Ginécologos -->
                     <p:panel header="Información del Paciente">
-                        <h:panelGrid columns="6">
+                        <h:panelGrid columns="7">
                             <p:spacer width="50"/>
                             <p:outputLabel class="descripcion" value="#{antecedentesGinecologiaBean.paciente.nombre} #{antecedentesGinecologiaBean.paciente.primerApellido} #{antecedentesGinecologiaBean.paciente.segundoApellido}"/>
                             <p:spacer width="50"/>
                             <p:outputLabel class="descripcion" value="#{antecedentesGinecologiaBean.paciente.cedula}"/>
                             <p:spacer width="50"/>
-                            <p:outputLabel class="descripcion" value="Última edición: #{antecedentesGinecologiaBean.objAntecedente.fecha}"/>
+                            <p:outputLabel class="descripcion"  value="Última edición:"/>
+                            <p:outputLabel class="descripcion"  value="#{antecedentesGinecologiaBean.objAntecedente.fecha}">
+                                <f:convertDateTime pattern="dd-MM-yyyy H:mm:ss"/>
+                            </p:outputLabel>
                         </h:panelGrid>
                     </p:panel>
                     <p:panel header="Historia Clínica" id="panel1" >
@@ -127,11 +130,23 @@
                                 </h:panelGroup>
                             </h:panelGrid>
 
-                            <h:panelGrid columns="2" cellspacing="20" >
-                                <p:commandButton value="Guardar datos" action="#{antecedentesGinecologiaBean.save()}" title="Click para guardar información"/>
-                                <p:commandButton value="Exámen Físico"  title="Click para guardar y pasar al formulario de Exámen Físico."/>
-                            </h:panelGrid>
                         </h:panelGrid>
+
+                        <f:facet name="footer" >
+                            <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                <p:commandButton value="Guardar datos"  action="#{antecedentesGinecologiaBean.save()}" title="Click para guardar información"/>
+                                <p:commandButton value="Cancelar" action="#{antecedentesGinecologiaBean.cancelarAction()}" title="Click para cancelar"/>
+                                <p:spacer width="25"/>
+                                <p:commandButton value="Exámen Físico"  title="Click para guardar y pasar al formulario de Exámen Físico."/>
+                                <p:commandButton value="Descargar" icon="ui-icon-circle-arrow-s">
+                                    <p:confirm header="Descarga" message="¿Desea descargar la historia clínica?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                </p:confirmDialog>
+                            </div>
+                        </f:facet>
                     </p:panel>    
                 </h:form>
             </section>

@@ -1,5 +1,6 @@
 package com.sicom.web.beans;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -8,7 +9,7 @@ import javax.persistence.Persistence;
 
 @ManagedBean
 @ViewScoped
-public class ExamenGinecologiaBean {
+public class ExamenGinecologiaBean implements Serializable{
     private Date hoy;
 
     public ExamenGinecologiaBean(){

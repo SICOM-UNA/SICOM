@@ -47,22 +47,13 @@ public class PacienteJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Expediente expediente = paciente.getExpediente();
+            
             if (expediente != null) {
                 expediente = em.getReference(expediente.getClass(), expediente.getId());
                 paciente.setExpediente(expediente);
             }
 
             em.persist(paciente);
-
-            for (Responsable responsableListResponsable : paciente.getResponsableList()) {
-                Paciente oldPacientecedulaOfResponsableListResponsable = responsableListResponsable.getPacienteCedula();
-                responsableListResponsable.setPacienteCedula(paciente);
-                responsableListResponsable = em.merge(responsableListResponsable);
-                if (oldPacientecedulaOfResponsableListResponsable != null) {
-                    oldPacientecedulaOfResponsableListResponsable.getResponsableList().remove(responsableListResponsable);
-                    oldPacientecedulaOfResponsableListResponsable = em.merge(oldPacientecedulaOfResponsableListResponsable);
-                }
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findPaciente(paciente.getCedula()) != null) {

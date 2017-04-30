@@ -51,7 +51,6 @@ public class Responsable implements Serializable {
     private Paciente pacienteCedula;
 
     public Responsable() {
-        pacienteCedula = new Paciente();
     }
 
     public Responsable(String cedula) {

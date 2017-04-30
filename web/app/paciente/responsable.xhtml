@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/templates/default.xhtml" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:o="http://omnifaces.org/ui">
+
+    <ui:define name="content">
+        <div id="wrapper" align="center">
+            <section>
+                <h:form id="formulario">
+                    <p:messages autoUpdate="true" closable="true" showDetail="true" id="msg"/>
+
+                    <div class="ui-grid ui-grid-responsive">
+                        <div class="ui-grid-row">
+                            <div class="ui-grid-col-12" align="center">
+                                <p:panel header="Información del Responsable">
+                                    <h:panelGrid columns="2">
+                                        <p:outputLabel for="nombre" value="Nombre:" />
+                                        <p:inputText id="nombre" value="#{personalBean.nuevoUsuario.personal.nombre}" maxlength="45" class= "charWithSpaceToUpperCase"
+                                                     onkeyup="validar()" required="true" requiredMessage="Falta el nombre"/>
+
+                                        <p:outputLabel for="primerApellido" value="Primer apellido:" />
+                                        <p:inputText id="primerApellido" value="#{personalBean.nuevoUsuario.personal.primerApellido}" maxlength="45" class= "charToUpperCase" onkeyup="validar()"
+                                                     required="true" requiredMessage="Falta el primer apellido"/>
+
+                                        <p:outputLabel for="segundoApellido" value="Segundo apellido:" />
+                                        <p:inputText id="segundoApellido" value="#{personalBean.nuevoUsuario.personal.segundoApellido}" maxlength="45" class= "charToUpperCase" onkeyup="validar()"
+                                                     required="true" requiredMessage="Falta el segundo apellido"/>
+                                    </h:panelGrid>
+                                </p:panel>
+                            </div>
+                        </div>
+                    </div>
+                </h:form>
+            </section>
+        </div>
+    </ui:define>
+</ui:composition>

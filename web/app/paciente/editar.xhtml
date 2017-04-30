@@ -13,6 +13,8 @@
             <section>
                 <p:panel header="Modificar Paciente">
                     <div class="ui-grid ui-grid-responsive">
+                        <!-- FORMULARIO PACIENTE -->
+                        
                         <div class="ui-grid-row">
                             <div class="ui-grid-col-12">
                                 <h:form>
@@ -86,7 +88,7 @@
 
                                         <f:facet name="footer">
                                             <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                                <p:commandButton value="Actualizar" icon="ui-icon-plus" action="#{pacienteBean.modificar()}" title="Actualizar datos del paciente" update="formPaciente msg :formResponsable"/>
+                                                <p:commandButton value="Actualizar" icon="ui-icon-plus" action="#{pacienteBean.modificar}" title="Actualizar datos del paciente" update="formPaciente :formResponsable"/>
                                                 <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true">
                                                     <f:ajax resetValues="true" render="formPaciente"/>
                                                 </p:commandButton> 
@@ -96,13 +98,13 @@
                                 </h:form>
                             </div>
                         </div>
-                            
-                        <!-- RESPONSABLES -->
+                        
+                        <!-- FORMULARIO RESPONSABLES -->
                         
                         <div class="ui-grid-row">
                             <div class="ui-grid-col-12">
                                 <h:form id="formResponsable">
-                                    <p:panel header="Información Responsables">
+                                    <p:panel header="Agregar Responsables" toggleable="true">
                                         <h:panelGrid columns="4" cellpadding="6">
                                             <p:outputLabel value="Tipo de identificación:" for="tipoId"/>
                                             <p:selectOneMenu id="tipoId" value="#{valoresBean.tipoId2}">
@@ -139,20 +141,18 @@
                                                 <f:selectItems value="#{valoresBean.getDescripcionByCodeId(3)}"/>
                                             </p:selectOneMenu>
                                             
-                                            <p:outputLabel value="#{paciente.cedula}"/>
+                                            <f:facet name="footer">
+                                                <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                                    <p:commandButton icon="ui-icon-plus" value="Agregar" action="#{pacienteBean.reinit}" title="Agregar responsable" update="formResponsable @parent">
+                                                        <f:ajax listener="#{pacienteBean.nuevoResponsable.setPacienteCedula(pacienteBean.selectedPaciente)}" render="formResponsable"/>
+                                                        <p:collector value="#{pacienteBean.nuevoResponsable}" addTo="#{pacienteBean.selectedPaciente.responsableList}" unique="true"/>
+                                                    </p:commandButton>
+                                                    <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true">
+                                                        <f:ajax resetValues="true" render="formResponsable"/>
+                                                    </p:commandButton> 
+                                                </div>
+                                            </f:facet>
                                         </h:panelGrid>
-
-                                        <f:facet name="footer">
-                                            <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                                <p:commandButton icon="ui-icon-plus" value="Agregar" update="formResponsable @parent" action="#{pacienteBean.reinit}" title="Agregar responsable">
-                                                    <f:ajax listener="#{pacienteBean.nuevoResponsable.setPacienteCedula(paciente)}"/>
-                                                    <p:collector value="#{pacienteBean.nuevoResponsable}" addTo="#{pacienteBean.selectedPaciente.responsableList}" unique="true"/>
-                                                </p:commandButton>
-                                                <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true">
-                                                    <f:ajax resetValues="true" render="formResponsable"/>
-                                                </p:commandButton> 
-                                            </div>
-                                        </f:facet>
 
                                         <p:outputPanel id="responsables">
                                             <p:dataTable value="#{pacienteBean.selectedPaciente.responsableList}" var="responsable" id="responsableTable">

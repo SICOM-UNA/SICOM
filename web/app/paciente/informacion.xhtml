@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/templates/default.xhtml" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content">
+        <div id="wrapper">
+            <section>
+                <h:form id="datos" >
+
+                    <p:messages id="msg" autoUpdate="true" closable="true" />
+
+                    <p:tabView orientation="top">
+                        <p:tab title="Información Personal">
+                            <h:panelGrid columns="4" cellpadding="5" >
+                                <p:outputLabel class="infoLabel" value="Identificación:"/>
+                                <p:inputText  value="#{pacienteBean.selectedPaciente.cedula}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Fecha Nacimiento:"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.nacimiento}" readonly="true">   
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </p:inputText>
+
+                                <p:outputLabel class="infoLabel" value="Nombre:"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.nombre}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Edad:"/>
+                                <p:inputText value="#{pacienteBean.calculaEdad()}" readonly="true"/>   
+
+                                <p:outputLabel class="infoLabel" value="Apellidos:"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.primerApellido} #{pacienteBean.selectedPaciente.segundoApellido}" readonly="true"/>
+
+
+                                <p:outputLabel class="infoLabel" value="Género:"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.genero}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Teléfono 1:"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.telefono}" readonly="true"/>
+
+
+                                <p:outputLabel class="infoLabel" value="Estado Civil:"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.estadoCivil}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Teléfono 2:"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.celular}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Correo electrónico:"/>
+                                <p:inputText value="#{pacienteBean.selectedPaciente.correo}" readonly="true" />
+
+                                <p:outputLabel class="infoLabel" value = "Ocupación:"/>
+                                <p:inputText value = "#{pacienteBean.selectedPaciente.ocupacion}" readonly="true"/>
+
+                                <p:outputLabel class="infoLabel" value="Domicilio:"/>
+                                <p:inputTextarea value="#{pacienteBean.selectedPaciente.domicilio}" readonly="true"/>
+
+                                <p:outputLabel/>
+                                <p:commandButton value="Modificar Información" title="Click para modificar información del paciente." update="datos" action="#{pacienteBean.modificaRedirect()}"/>
+                            </h:panelGrid>
+                        </p:tab>
+
+                        <p:tab title="Responsables">
+                            <p:dataList value="#{pacienteBean.selectedPaciente.responsableList}" var="responsable" itemType="none">
+                                <p:panel header="#{responsable.nombre}">
+                                    <h:panelGrid columns="2" cellpadding="6">
+                                        <p:outputLabel for="cedula" value="Identificación:"/>
+                                        <p:inputText id="cedula" value="#{responsable.cedula}" readonly="true"/>
+
+                                        <p:outputLabel value="Teléfono: " for="telefono"/>
+                                        <p:inputText id="telefono" value="#{responsable.telefono}" readonly="true"/>
+
+                                        <p:outputLabel value="Ocupación: " for="ocupacion"/>
+                                        <p:inputText id="ocupacion" value="#{responsable.ocupacion}" readonly="true"/>
+
+                                        <p:outputLabel value="Vínculo: " for="vinculo"/>
+                                        <p:inputText id="vinculo" value="#{responsable.vinculo}" readonly="true"/>
+                                    </h:panelGrid>
+                                </p:panel>
+                            </p:dataList>
+                        </p:tab>
+
+                        <p:tab title="Expediente">
+                            <div class="ui-grid ui-grid-responsive">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-4">
+                                        <p:panel header="Histroria Clínica">
+                                            <h:panelGrid columns="2">
+                                                <p:commandButton value="Editar" icon="ui-icon-pencil" action="#{expedienteBean.historiaClinica()}" update="datos"/>
+                                                <p:commandButton value="Descargar" icon="ui-icon-circle-arrow-s" action="#{expedienteBean.exportar}" ajax="false">
+                                                    <!--<p:confirm header="Descarga" message="¿Desea descargar la historia clínica?" icon="ui-icon-alert"/>-->
+                                                </p:commandButton>
+                                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                                </p:confirmDialog>
+                                            </h:panelGrid>
+                                        </p:panel>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <p:panel header="Exámenes">
+                                            <h:panelGrid columns="3">
+                                                <p:selectOneMenu id="departamento" value="#{expedienteBean.selectedExamen}" converter="omnifaces.SelectItemsConverter">
+                                                <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
+                                                <f:selectItems value="#{valoresBean.examenes}" var="selectedExamen" itemLabel="#{selectedExamen.descripcion}" itemValue="#{examenSelected}"/>
+                                            </p:selectOneMenu>
+                                                <p:commandButton icon="ui-icon-plus"  update="datos" action="#{expedienteBean.nuevoExamen}"/>
+                                                <p:commandButton icon="ui-icon-search"  update="datos"/>
+                                            </h:panelGrid>
+                                        </p:panel>
+                                    </div>
+                                    <div class="ui-grid-col-4">
+                                        <p:panel header="Importación" >
+
+                                        </p:panel>
+                                    </div>
+                                </div>
+                            </div>
+                        </p:tab>
+                    </p:tabView>
+                </h:form>
+            </section>
+        </div>
+    </ui:define>
+</ui:composition>

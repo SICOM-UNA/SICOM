@@ -1,7 +1,6 @@
 package com.sicom.validator;
 
 import com.sicom.entities.Login;
-import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -17,7 +16,7 @@ import javax.faces.validator.ValidatorException;
 public class PasswordValidator implements Validator {
 
     @Override
-    public void validate(FacesContext context, UIComponent component, Object contrasena) throws ValidatorException {
+    public void validate(FacesContext context, UIComponent componente, Object contrasena) throws ValidatorException {
         String contrasenaActual = ((Login) context.getExternalContext().getSessionMap().get("login")).getContrasena();
         
         if(!contrasena.toString().equals(contrasenaActual)) {

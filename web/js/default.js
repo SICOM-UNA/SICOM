@@ -55,18 +55,11 @@ function validar() {
         }
     });
     
-    $('.charToUpperCase').keyup(function() {
+     $('.charToUpperCase').keyup(function() {
         if (this.value.match(/[^a-zA-Z]/g)) {
             this.value = this.value.replace(/[^a-zA-Z]/g, '');
         }
         this.value = this.value.toString().toUpperCase();
-    });
-    
-    $('.charToLowerCase').keyup(function() {
-        if (this.value.match(/[^a-zA-Z]/g)) {
-            this.value = this.value.replace(/[^a-zA-Z]/g, '');
-        }
-        this.value = this.value.toString().toLowerCase();
     });
     
     $('.charWithSpaceToUpperCase').keyup(function() {
