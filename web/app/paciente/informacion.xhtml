@@ -11,8 +11,7 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form id="datos" >
-
+                <h:form id="formInformacion">
                     <p:messages id="msg" autoUpdate="true" closable="true" />
 
                     <p:tabView orientation="top">
@@ -59,7 +58,7 @@
                                 <p:inputTextarea value="#{pacienteBean.selectedPaciente.domicilio}" readonly="true"/>
 
                                 <p:outputLabel/>
-                                <p:commandButton value="Modificar Información" title="Click para modificar información del paciente." update="datos" action="#{pacienteBean.modificaRedirect()}"/>
+                                <p:commandButton value="Modificar Información" title="Click para modificar información del paciente." update="formInformacion" action="#{pacienteBean.modificaRedirect()}"/>
                             </h:panelGrid>
                         </p:tab>
 
@@ -89,7 +88,7 @@
                                     <div class="ui-grid-col-4">
                                         <p:panel header="Histroria Clínica">
                                             <h:panelGrid columns="2">
-                                                <p:commandButton value="Editar" icon="ui-icon-pencil" action="#{expedienteBean.historiaClinica()}" update="datos"/>
+                                                <p:commandButton value="Editar" icon="ui-icon-pencil" action="#{expedienteBean.historiaClinica()}" update="formInformacion"/>
                                                 <p:commandButton value="Descargar" icon="ui-icon-circle-arrow-s" action="#{expedienteBean.exportar}" ajax="false">
                                                     <!--<p:confirm header="Descarga" message="¿Desea descargar la historia clínica?" icon="ui-icon-alert"/>-->
                                                 </p:commandButton>
@@ -107,8 +106,8 @@
                                                 <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
                                                 <f:selectItems value="#{valoresBean.examenes}" var="selectedExamen" itemLabel="#{selectedExamen.descripcion}" itemValue="#{examenSelected}"/>
                                             </p:selectOneMenu>
-                                                <p:commandButton icon="ui-icon-plus"  update="datos" action="#{expedienteBean.nuevoExamen}"/>
-                                                <p:commandButton icon="ui-icon-search"  update="datos"/>
+                                                <p:commandButton icon="ui-icon-plus"  update="formInformacion" action="#{expedienteBean.nuevoExamen}"/>
+                                                <p:commandButton icon="ui-icon-search"  update="formInformacion"/>
                                             </h:panelGrid>
                                         </p:panel>
                                     </div>
