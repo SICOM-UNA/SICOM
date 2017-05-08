@@ -2,6 +2,7 @@ package com.sicom.web.beans;
 
 import com.sicom.controller.DocumentosJpaController;
 import com.sicom.controller.ExpedienteJpaController;
+import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.entities.AntecedentesGinecologia;
 import com.sicom.entities.AntecedentesOdontologia;
 import com.sicom.entities.Documentos;
@@ -12,6 +13,7 @@ import com.sicom.entities.Personal;
 import com.sicom.entities.Valor;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,15 +58,16 @@ public class ExpedienteBean implements Serializable {
     private ExpedienteJpaController ejc;
     private Paciente paciente;
     private Valor selectedExamen;
-    private StreamedContent archivo=null;
+    private UploadedFile archivo = null;
     private Documentos documento;
+    private List<Documentos> ultimos5Docs = new ArrayList<Documentos>();
+    private List<Documentos> listaDocumentos = new ArrayList<Documentos>();
     private DocumentosJpaController documentosController;
 
     public ExpedienteBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
         ejc = new ExpedienteJpaController(emf);
-        documentosController=new DocumentosJpaController(emf);
-
+        documentosController = new DocumentosJpaController(emf);
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
 
@@ -75,7 +78,7 @@ public class ExpedienteBean implements Serializable {
 
             if (expediente == null) {
                 expediente = ejc.findExpedienteID(paciente.getCedula());
-                
+
                 paciente.setExpediente(expediente);
                 ec.getRequestMap().put("paciente", paciente);
             }
@@ -230,7 +233,7 @@ public class ExpedienteBean implements Serializable {
         int lastSpace = -1;
         while (texto.length() > 0) {
             int spaceIndex = 0;
-            if (texto.indexOf(' ', lastSpace + 1) < texto.indexOf("\n", lastSpace + 1)) {
+            if (texto.indexOf(' ', lastSpace + 1) > texto.indexOf("\n", lastSpace + 1)) {
                 spaceIndex = texto.indexOf(' ', lastSpace + 1);
             } else {
                 spaceIndex = texto.indexOf("\n", lastSpace + 1);
@@ -273,17 +276,19 @@ public class ExpedienteBean implements Serializable {
         ExternalContext ec = fc.getExternalContext();
         Login log = (Login) ec.getSessionMap().get("login");
 
-        
         Personal p = log.getPersonal();
         int consultorio = p.getDepartamentoId().getId();
-        
-        if (consultorio == 2) {
+
+        if (consultorio == 2 && expediente.getAntecedentesGinecologia() != null) {
             AntecedentesGinecologia antecedentesGinecologia = expediente.getAntecedentesGinecologia();
             exportarGinecologia(antecedentesGinecologia);
-        } else if (consultorio == 3) {
+        } else if (consultorio == 3 && expediente.getAntecedentesOdontologia() != null) {
             AntecedentesOdontologia antecedentesOdontologia = expediente.getAntecedentesOdontologia();
+        } else if (consultorio == 1 || consultorio == 4) {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No posee los permisos para acceder a esta opcion.", null));
+        } else {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "El paciente no posee historia clínica.", null));
         }
-        
 
     }
 
@@ -293,7 +298,7 @@ public class ExpedienteBean implements Serializable {
             Date fecha = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             System.out.println("Creando el pdf");
-            String fileName = "Historia_Clinica_" + paciente.getNombre() + ".pdf";
+            String fileName = "Historia_Clinica_" + paciente.getNombre() + "_" + paciente.getPrimerApellido() + ".pdf";
             PDDocument doc = new PDDocument();
             PDPage page = new PDPage();
 
@@ -370,16 +375,22 @@ public class ExpedienteBean implements Serializable {
                 y = textoLargo(antecedentesGinecologia.getPatologicos(), content, page, 220, y);
             }
             y -= 20;
-            nuevaLinea(content, 80, y, 11, "Antecedentes No Patologicos: ");
-            y = textoLargo(antecedentesGinecologia.getNoPatologicos(), content, page, 230, y);
-
+            if (antecedentesGinecologia.getNoPatologicos().equals("")) {
+                nuevaLinea(content, 80, y, 11, "Antecedentes No Patologicos: N/a");
+            } else {
+                nuevaLinea(content, 80, y, 11, "Antecedentes No Patologicos: ");
+                y = textoLargo(antecedentesGinecologia.getNoPatologicos(), content, page, 230, y);
+            }
             y -= 20;
-            nuevaLinea(content, 80, y, 11, "Antecedentes Quirurgicos: ");
-            y = textoLargo(antecedentesGinecologia.getQuirurgicos(), content, page, 220, y);
+            if (antecedentesGinecologia.getQuirurgicos().equals("")) {
+                nuevaLinea(content, 80, y, 11, "Antecedentes Quirurgicos: N/a");
+            } else {
+                nuevaLinea(content, 80, y, 11, "Antecedentes Quirurgicos: ");
+                y = textoLargo(antecedentesGinecologia.getQuirurgicos(), content, page, 220, y);
+            }
             y -= 20;//200
 
             //</editor-fold>
-            
             //<editor-fold defaultstate="collapsed" desc="Resto de la historia clinica">
             if (y < 160) { //verificar si es necesario crear una nueva pagina despues de los antecedentes
                 content.close();
@@ -391,8 +402,17 @@ public class ExpedienteBean implements Serializable {
             }
             content.drawLine(80, y, 440, y);
             y -= 30;
-            nuevaLinea(content, 80, y, 10, "Menarca: " + antecedentesGinecologia.getMenarca());
-            nuevaLinea(content, 160, y, 10, "FUR: " + antecedentesGinecologia.getFur().getYear() + "/" + antecedentesGinecologia.getFur().getMonth());
+            if (antecedentesGinecologia.getMenarca().equals("")) {
+                nuevaLinea(content, 80, y, 10, "Menarca: N/a");
+            } else {
+                nuevaLinea(content, 80, y, 10, "Menarca: " + antecedentesGinecologia.getMenarca());
+            }
+
+            if (antecedentesGinecologia.getFur() != null) {
+                nuevaLinea(content, 160, y, 10, "FUR: " + antecedentesGinecologia.getFur().getYear() + "/" + antecedentesGinecologia.getFur().getMonth());
+            } else {
+                nuevaLinea(content, 160, y, 10, "FUR: N/a");
+            }
             y -= 20;
             if (y < 160) {
                 content.close();
@@ -402,8 +422,14 @@ public class ExpedienteBean implements Serializable {
                 y = 680;
                 nuevaLinea(content, 550, 40, 12, "2");
             }
-            nuevaLinea(content, 80, y, 10, "Ciclo menstrual: " + antecedentesGinecologia.getCicloMestrual() + ", " + antecedentesGinecologia.getComentarioCicloMestrual());
+
+            if (antecedentesGinecologia.getCicloMestrual().equals("") && antecedentesGinecologia.getComentarioCicloMestrual().equals("")) {
+                nuevaLinea(content, 80, y, 10, "Ciclo menstrual: N/a");
+            } else {
+                nuevaLinea(content, 80, y, 10, "Ciclo menstrual: " + antecedentesGinecologia.getCicloMestrual() + " " + antecedentesGinecologia.getComentarioCicloMestrual());
+            }
             y -= 20;
+
             if (y < 160) {
                 content.close();
                 PDPage page2 = new PDPage();
@@ -412,9 +438,20 @@ public class ExpedienteBean implements Serializable {
                 y = 680;
                 nuevaLinea(content, 550, 40, 12, "2");
             }
-            nuevaLinea(content, 80, y, 10, "PRS: " + antecedentesGinecologia.getPrs());
-            nuevaLinea(content, 160, y, 10, "Compañeros Sexuales: " + antecedentesGinecologia.getCompanerosSexuales());
+
+            if (antecedentesGinecologia.getPrs() == null) {
+                nuevaLinea(content, 80, y, 10, "PRS: N/a");
+            } else {
+                nuevaLinea(content, 80, y, 10, "PRS: " + antecedentesGinecologia.getPrs());
+            }
+
+            if (antecedentesGinecologia.getCompanerosSexuales() == null) {
+                nuevaLinea(content, 160, y, 10, "Compañeros Sexuales: N/a");
+            } else {
+                nuevaLinea(content, 160, y, 10, "Compañeros Sexuales: " + antecedentesGinecologia.getCompanerosSexuales());
+            }
             y -= 20;
+
             if (y < 160) {
                 content.close();
                 PDPage page2 = new PDPage();
@@ -423,10 +460,21 @@ public class ExpedienteBean implements Serializable {
                 y = 680;
                 nuevaLinea(content, 550, 40, 12, "2");
             }
-            nuevaLinea(content, 80, y, 10, "Planificacion: " + antecedentesGinecologia.getPlanificacion());
+
+            if (antecedentesGinecologia.getPlanificacion().equals("")) {
+                nuevaLinea(content, 80, y, 10, "Planificacion: N/a");
+            } else {
+                nuevaLinea(content, 80, y, 10, "Planificacion: " + antecedentesGinecologia.getPlanificacion());
+            }
             y -= 20;
-            nuevaLinea(content, 80, y, 10, "Actividad Sexual: " + antecedentesGinecologia.getActividadSexual());
+
+            if (antecedentesGinecologia.getActividadSexual().equals("")) {
+                nuevaLinea(content, 80, y, 10, "Actividad Sexual: N/a");
+            } else {
+                nuevaLinea(content, 80, y, 10, "Actividad Sexual: " + antecedentesGinecologia.getActividadSexual());
+            }
             y -= 20;
+
             if (y < 160) {
                 content.close();
                 PDPage page2 = new PDPage();
@@ -435,8 +483,19 @@ public class ExpedienteBean implements Serializable {
                 y = 680;
                 nuevaLinea(content, 550, 40, 12, "2");
             }
-            nuevaLinea(content, 80, y, 10, "Ultimo Parto: " + antecedentesGinecologia.getUltimoParto().getYear());
-            nuevaLinea(content, 210, y, 10, "Ultimo Pap: " + antecedentesGinecologia.getUltimoPap());
+
+            if (antecedentesGinecologia.getUltimoParto() != null) {
+                nuevaLinea(content, 80, y, 10, "Ultimo Parto: " + antecedentesGinecologia.getUltimoParto().getYear());
+            } else {
+                nuevaLinea(content, 80, y, 10, "Ultimo Parto: N/a");
+            }
+
+            if (antecedentesGinecologia.getUltimoPap().equals("")) {
+                nuevaLinea(content, 210, y, 10, "Ultimo Pap: N/a");
+            } else {
+                nuevaLinea(content, 80, y, 10, "Ultimo Pap: " + antecedentesGinecologia.getUltimoPap());
+            }
+
             y -= 20;
 
             if (antecedentesGinecologia.getComentarioLactancia().equals("")) {
@@ -447,19 +506,54 @@ public class ExpedienteBean implements Serializable {
 
             y -= 20;
 
-            nuevaLinea(content, 80, y, 10, "Tipo de parto: " + antecedentesGinecologia.getTipoParto());
+            if (antecedentesGinecologia.getTipoParto().equals("")) {
+                nuevaLinea(content, 80, y, 10, "Tipo de parto: N/a");
+            } else {
+                nuevaLinea(content, 80, y, 10, "Tipo de parto: " + antecedentesGinecologia.getTipoParto());
+            }
             y -= 20;
-            nuevaLinea(content, 80, y, 10, "Menopausia: " + antecedentesGinecologia.getMenopausia());
-            nuevaLinea(content, 170, y, 10, "Gesta: " + antecedentesGinecologia.getGesta());
-            nuevaLinea(content, 235, y, 10, "Partos: " + antecedentesGinecologia.getPartos());
-            nuevaLinea(content, 310, y, 10, "Abortos: " + antecedentesGinecologia.getAbortos());
-            nuevaLinea(content, 390, y, 10, "ectopico: " + antecedentesGinecologia.getEctopico());
+
+            if (antecedentesGinecologia.getMenopausia() == null) {
+                nuevaLinea(content, 80, y, 10, "Menopausia: N/a");
+            } else {
+                nuevaLinea(content, 80, y, 10, "Menopausia: " + antecedentesGinecologia.getMenopausia());
+            }
+            if (antecedentesGinecologia.getGesta() == null) {
+                nuevaLinea(content, 170, y, 10, "Gesta: N/a");
+            } else {
+                nuevaLinea(content, 170, y, 10, "Gesta: " + antecedentesGinecologia.getGesta());
+            }
+            if (antecedentesGinecologia.getPartos() == null) {
+                nuevaLinea(content, 235, y, 10, "Partos: N/a");
+            } else {
+                nuevaLinea(content, 235, y, 10, "Partos: " + antecedentesGinecologia.getPartos());
+            }
+            if (antecedentesGinecologia.getAbortos() == null) {
+                nuevaLinea(content, 310, y, 10, "Abortos: N/a");
+            } else {
+                nuevaLinea(content, 310, y, 10, "Abortos: " + antecedentesGinecologia.getAbortos());
+            }
+            if (antecedentesGinecologia.getEctopico() == null) {
+                nuevaLinea(content, 390, y, 10, "ectopico: N/a");
+            } else {
+                nuevaLinea(content, 390, y, 10, "ectopico: " + antecedentesGinecologia.getEctopico());
+            }
             y -= 20;
-            nuevaLinea(content, 80, y, 10, "GPA: ");
-            y = textoLargo(antecedentesGinecologia.getComentarioGPA(), content, page, 130, y);
+
+            if (antecedentesGinecologia.getComentarioGPA().equals("")) {
+                nuevaLinea(content, 80, y, 10, "GPA: N/a");
+            } else {
+                nuevaLinea(content, 80, y, 10, "GPA: ");
+                y = textoLargo(antecedentesGinecologia.getComentarioGPA(), content, page, 130, y);
+            }
             y -= 20;
-            nuevaLinea(content, 80, y, 10, "Informacion Adicional:");
-            y = textoLargo(antecedentesGinecologia.getInformacionAdicional(), content, page, 190, y);
+
+            if (antecedentesGinecologia.getInformacionAdicional().equals("")) {
+                nuevaLinea(content, 80, y, 10, "Informacion Adicional: N/a");
+            } else {
+                nuevaLinea(content, 80, y, 10, "Informacion Adicional:");
+                y = textoLargo(antecedentesGinecologia.getInformacionAdicional(), content, page, 190, y);
+            }
             content.close();
             //</editor-fold>
 
@@ -503,7 +597,7 @@ public class ExpedienteBean implements Serializable {
             Date fecha = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             System.out.println("Creando el pdf");
-            String fileName = "Historia_Clinica_" + paciente.getNombre() + ".pdf";
+            String fileName = "Historia_Clinica_" + paciente.getNombre() + "_" + paciente.getPrimerApellido() + ".pdf";
             PDDocument doc = new PDDocument();
             PDPage page = new PDPage();
 
@@ -561,7 +655,6 @@ public class ExpedienteBean implements Serializable {
             nuevaLinea(content, 250, y, 10, "Correo electronico: " + paciente.getCorreo());
 
             //</editor-fold>
-            
             //<editor-fold defaultstate="collapsed" desc="Antecedentes">
             y -= 20;
             content.drawLine(80, y, 440, y);
@@ -582,7 +675,6 @@ public class ExpedienteBean implements Serializable {
             y = textoLargo(antecedentesOdontologia.getQuirurgicos(), content, page, 220, y);
 
             //</editor-fold>
-            
             //<editor-fold defaultstate="collapsed" desc="Resto de la historia clinica">
             if (y < 80) { //verificar si es necesario crear una nueva pagina despues de los antecedentes
                 content.close();
@@ -651,10 +743,108 @@ public class ExpedienteBean implements Serializable {
         }
 
     }
-    
-    
-    public void importar(FileUploadEvent event) {
-       
+
+    public UploadedFile getArchivo() {
+        return archivo;
     }
-    
+
+    public void setArchivo(UploadedFile archivo) {
+        this.archivo = archivo;
+    }
+
+    public List<Documentos> getUltimos5Docs() {
+        int cantidadRegistros = documentosController.getDocumentosCount();
+
+        if (cantidadRegistros > 5) {
+            this.ultimos5Docs = documentosController.findDocumentosEntities(5, (cantidadRegistros - 5));
+        } else {
+            this.ultimos5Docs = documentosController.findDocumentosEntities(5, 0);
+        }
+
+        return ultimos5Docs;
+    }
+
+    public void setUltimos5Docs(List<Documentos> ultimos5Docs) {
+        this.ultimos5Docs = ultimos5Docs;
+    }
+
+    public List<Documentos> getListaDocumentos() {
+        this.listaDocumentos = documentosController.findDocumentosEntities();
+        return listaDocumentos;
+    }
+
+    public void setListaDocumentos(List<Documentos> listaDocumentos) {
+        this.listaDocumentos = listaDocumentos;
+    }
+
+    public void descargarDocumento(Documentos doc) {
+        try {
+            FacesContext fc = FacesContext.getCurrentInstance();
+            ExternalContext ec = fc.getExternalContext();
+
+            ByteArrayOutputStream byteoutput = new ByteArrayOutputStream(doc.getArchivo().length);
+            byteoutput.write(doc.getArchivo(), 0, doc.getArchivo().length);
+
+            ec.responseReset();
+            ec.setResponseContentType("application/pdf");
+            ec.setResponseContentLength(byteoutput.size());
+            ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + doc.getNombre() + "\"");
+
+            OutputStream output = ec.getResponseOutputStream();
+
+            output.write(byteoutput.toByteArray());
+
+            fc.responseComplete();
+        } catch (Exception ex) {
+            Logger.getLogger(ExpedienteBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void eliminarDocumento(Documentos doc) {
+
+        try {
+            documentosController.destroy(doc.getId());
+            FacesMessage message = new FacesMessage("Archivo eliminado.");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        } catch (NonexistentEntityException ex) {
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al eliminar el archivo", null));
+            Logger.getLogger(ExpedienteBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void importar(FileUploadEvent event) {
+        try {
+            documento = new Documentos();
+            UploadedFile archivo = event.getFile();
+
+            byte[] bytes = archivo.getContents();
+            documento.setArchivo(bytes);
+
+            documento.setFecha(new Date());
+            String filename = archivo.getFileName();
+            //String ext = filename.substring(filename.lastIndexOf('.'), filename.length());
+            //String date = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date());
+            documento.setNombre(filename);
+
+            FacesContext fc = FacesContext.getCurrentInstance();
+            ExternalContext ec = fc.getExternalContext();
+            Login log = (Login) ec.getSessionMap().get("login");
+            Personal p = log.getPersonal();
+            documento.setDepartamentoid(p.getDepartamentoId());
+
+            documento.setExpedientePacientecedula(expediente);
+
+            documentosController.create(documento);
+
+            FacesMessage message = new FacesMessage(filename + " se ha subido.");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        } catch (Exception e) {
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al subir el archivo", null));
+        }
+
+    }
+
 }
