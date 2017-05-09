@@ -110,7 +110,7 @@ public class PacienteBean implements Serializable {
             nuevoResponsable = new Responsable();
             FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
             
-            return "agregar?faces-redirect=true";
+            return "informacion?faces-redirect=true";
         } catch (Exception ex) {
             Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -198,8 +198,6 @@ public class PacienteBean implements Serializable {
     public void modificaResposableRedirect(int i) {
     }
 
-    //--------------------------------------------------------------------------
-    // GENERAL METHODS
     public void buscaIdBase() {
         Paciente p = (selectedPaciente.getCedula() != null) ? selectedPaciente : null;
 
@@ -210,10 +208,8 @@ public class PacienteBean implements Serializable {
             
             if (selectedPaciente != null) {
                 try {
-
                     FacesContext fc = FacesContext.getCurrentInstance();
                     ExternalContext ec = fc.getExternalContext();
-
                     String URL = ec.getRequestContextPath() + "/app/paciente/informacion#datos";
                     ec.getSessionMap().put("paciente", selectedPaciente);
                     ec.redirect(URL);
@@ -221,9 +217,8 @@ public class PacienteBean implements Serializable {
                     Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No existe paciente asignado a la identificación: ", id));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El paciente con la identificación " + p.getCedula() + " no ha sido encontrado", null));
             }
-
         }
     }
     
