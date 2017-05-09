@@ -83,12 +83,11 @@ public class Personal implements Serializable {
     private List<ExamenColposcopia> examenColposcopiaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalcedula")
     private List<ExamenOdontologia> examenOdontologiaList;
-    @JoinColumn(name = "Autorizacion_nivel", referencedColumnName = "nivel")
-    @ManyToOne(optional = false)
-    private Autorizacion autorizacionNivel;
     @JoinColumn(name = "Departamento_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Departamento departamentoId;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalCedula")
+    private List<Autorizacion> autorizacionList;
     @JoinColumn(name = "Login_usuario", referencedColumnName = "usuario")
     @OneToOne(optional = false)
     private Login loginUsuario;
@@ -223,14 +222,6 @@ public class Personal implements Serializable {
         this.examenOdontologiaList = examenOdontologiaList;
     }
 
-    public Autorizacion getAutorizacionNivel() {
-        return autorizacionNivel;
-    }
-
-    public void setAutorizacionNivel(Autorizacion autorizacionNivel) {
-        this.autorizacionNivel = autorizacionNivel;
-    }
-
     public Departamento getDepartamentoId() {
         return departamentoId;
     }
@@ -238,7 +229,16 @@ public class Personal implements Serializable {
     public void setDepartamentoId(Departamento departamentoId) {
         this.departamentoId = departamentoId;
     }
+    
+    @XmlTransient
+    public List<Autorizacion> getAutorizacionList() {
+        return autorizacionList;
+    }
 
+    public void setAutorizacionList(List<Autorizacion> autorizacionList) {
+        this.autorizacionList = autorizacionList;
+    }
+    
     public Login getLoginUsuario() {
         return loginUsuario;
     }
@@ -280,5 +280,4 @@ public class Personal implements Serializable {
     public String toString() {
         return "com.sicom.entities.Personal[ cedula=" + cedula + " ]";
     }
-    
 }

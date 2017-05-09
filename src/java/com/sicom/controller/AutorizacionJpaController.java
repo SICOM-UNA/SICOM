@@ -5,7 +5,6 @@
  */
 package com.sicom.controller;
 
-import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.controller.exceptions.PreexistingEntityException;
 import com.sicom.entities.Autorizacion;
@@ -15,7 +14,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Personal;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -36,28 +34,19 @@ public class AutorizacionJpaController implements Serializable {
     }
 
     public void create(Autorizacion autorizacion) throws PreexistingEntityException, Exception {
-        if (autorizacion.getPersonalList() == null) {
-            autorizacion.setPersonalList(new ArrayList<Personal>());
-        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<Personal> attachedPersonalList = new ArrayList<Personal>();
-            for (Personal personalListPersonalToAttach : autorizacion.getPersonalList()) {
-                personalListPersonalToAttach = em.getReference(personalListPersonalToAttach.getClass(), personalListPersonalToAttach.getCedula());
-                attachedPersonalList.add(personalListPersonalToAttach);
+            Personal personalcedula = autorizacion.getPersonalCedula();
+            if (personalcedula != null) {
+                personalcedula = em.getReference(personalcedula.getClass(), personalcedula.getCedula());
+                autorizacion.setPersonalCedula(personalcedula);
             }
-            autorizacion.setPersonalList(attachedPersonalList);
             em.persist(autorizacion);
-            for (Personal personalListPersonal : autorizacion.getPersonalList()) {
-                Autorizacion oldAutorizacionnivelOfPersonalListPersonal = personalListPersonal.getAutorizacionNivel();
-                personalListPersonal.setAutorizacionNivel(autorizacion);
-                personalListPersonal = em.merge(personalListPersonal);
-                if (oldAutorizacionnivelOfPersonalListPersonal != null) {
-                    oldAutorizacionnivelOfPersonalListPersonal.getPersonalList().remove(personalListPersonal);
-                    oldAutorizacionnivelOfPersonalListPersonal = em.merge(oldAutorizacionnivelOfPersonalListPersonal);
-                }
+            if (personalcedula != null) {
+                personalcedula.getAutorizacionList().add(autorizacion);
+                personalcedula = em.merge(personalcedula);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -72,44 +61,26 @@ public class AutorizacionJpaController implements Serializable {
         }
     }
 
-    public void edit(Autorizacion autorizacion) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(Autorizacion autorizacion) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             Autorizacion persistentAutorizacion = em.find(Autorizacion.class, autorizacion.getNivel());
-            List<Personal> personalListOld = persistentAutorizacion.getPersonalList();
-            List<Personal> personalListNew = autorizacion.getPersonalList();
-            List<String> illegalOrphanMessages = null;
-            for (Personal personalListOldPersonal : personalListOld) {
-                if (!personalListNew.contains(personalListOldPersonal)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Personal " + personalListOldPersonal + " since its autorizacionnivel field is not nullable.");
-                }
+            Personal personalcedulaOld = persistentAutorizacion.getPersonalCedula();
+            Personal personalcedulaNew = autorizacion.getPersonalCedula();
+            if (personalcedulaNew != null) {
+                personalcedulaNew = em.getReference(personalcedulaNew.getClass(), personalcedulaNew.getCedula());
+                autorizacion.setPersonalCedula(personalcedulaNew);
             }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            List<Personal> attachedPersonalListNew = new ArrayList<Personal>();
-            for (Personal personalListNewPersonalToAttach : personalListNew) {
-                personalListNewPersonalToAttach = em.getReference(personalListNewPersonalToAttach.getClass(), personalListNewPersonalToAttach.getCedula());
-                attachedPersonalListNew.add(personalListNewPersonalToAttach);
-            }
-            personalListNew = attachedPersonalListNew;
-            autorizacion.setPersonalList(personalListNew);
             autorizacion = em.merge(autorizacion);
-            for (Personal personalListNewPersonal : personalListNew) {
-                if (!personalListOld.contains(personalListNewPersonal)) {
-                    Autorizacion oldAutorizacionnivelOfPersonalListNewPersonal = personalListNewPersonal.getAutorizacionNivel();
-                    personalListNewPersonal.setAutorizacionNivel(autorizacion);
-                    personalListNewPersonal = em.merge(personalListNewPersonal);
-                    if (oldAutorizacionnivelOfPersonalListNewPersonal != null && !oldAutorizacionnivelOfPersonalListNewPersonal.equals(autorizacion)) {
-                        oldAutorizacionnivelOfPersonalListNewPersonal.getPersonalList().remove(personalListNewPersonal);
-                        oldAutorizacionnivelOfPersonalListNewPersonal = em.merge(oldAutorizacionnivelOfPersonalListNewPersonal);
-                    }
-                }
+            if (personalcedulaOld != null && !personalcedulaOld.equals(personalcedulaNew)) {
+                personalcedulaOld.getAutorizacionList().remove(autorizacion);
+                personalcedulaOld = em.merge(personalcedulaOld);
+            }
+            if (personalcedulaNew != null && !personalcedulaNew.equals(personalcedulaOld)) {
+                personalcedulaNew.getAutorizacionList().add(autorizacion);
+                personalcedulaNew = em.merge(personalcedulaNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -128,7 +99,7 @@ public class AutorizacionJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -140,16 +111,10 @@ public class AutorizacionJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The autorizacion with id " + id + " no longer exists.", enfe);
             }
-            List<String> illegalOrphanMessages = null;
-            List<Personal> personalListOrphanCheck = autorizacion.getPersonalList();
-            for (Personal personalListOrphanCheckPersonal : personalListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Autorizacion (" + autorizacion + ") cannot be destroyed since the Personal " + personalListOrphanCheckPersonal + " in its personalList field has a non-nullable autorizacionnivel field.");
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
+            Personal personalcedula = autorizacion.getPersonalCedula();
+            if (personalcedula != null) {
+                personalcedula.getAutorizacionList().remove(autorizacion);
+                personalcedula = em.merge(personalcedula);
             }
             em.remove(autorizacion);
             em.getTransaction().commit();

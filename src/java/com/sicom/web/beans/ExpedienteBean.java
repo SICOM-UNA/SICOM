@@ -99,22 +99,22 @@ public class ExpedienteBean implements Serializable {
         Personal p = log.getPersonal();
 
         int consultorio = p.getDepartamentoId().getId();
-        boolean permiso_editar = (p.getAutorizacionNivel().getNivel() < 5);
+        //boolean permiso_editar = (p.getAutorizacionNivel().getNivel() < 5);
 
-        String direccion = createUrl(consultorio, permiso_editar);
+        //String direccion = createUrl(consultorio, permiso_editar);
         subirVerificacion(consultorio, ec);
 
-        if (direccion.trim().equals("")) {
-            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No posee los permisos para acceder.", null));
-        } else {
-            try {
-                subirVerificacion(consultorio, ec);
-                URL += direccion;
-                ec.redirect(URL);
-            } catch (IOException ex) {
-                Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+//        if (direccion.trim().equals("")) {
+//            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No posee los permisos para acceder.", null));
+//        } else {
+//            try {
+//                subirVerificacion(consultorio, ec);
+//                URL += direccion;
+//                ec.redirect(URL);
+//            } catch (IOException ex) {
+//                Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
     }
 
     /**

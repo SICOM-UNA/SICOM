@@ -13,7 +13,6 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import com.sicom.entities.Autorizacion;
 import com.sicom.entities.Departamento;
 import com.sicom.entities.Login;
 import com.sicom.entities.ExamenColposcopia;
@@ -68,11 +67,6 @@ public class PersonalJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Autorizacion autorizacionnivel = personal.getAutorizacionNivel();
-            if (autorizacionnivel != null) {
-                autorizacionnivel = em.getReference(autorizacionnivel.getClass(), autorizacionnivel.getNivel());
-                personal.setAutorizacionNivel(autorizacionnivel);
-            }
             Departamento departamentoid = personal.getDepartamentoId();
             if (departamentoid != null) {
                 departamentoid = em.getReference(departamentoid.getClass(), departamentoid.getId());
@@ -102,10 +96,7 @@ public class PersonalJpaController implements Serializable {
             }
             personal.setExamenGinecologiaList(attachedExamenGinecologiaList);
             em.persist(personal);
-            if (autorizacionnivel != null) {
-                autorizacionnivel.getPersonalList().add(personal);
-                autorizacionnivel = em.merge(autorizacionnivel);
-            }
+
             if (departamentoid != null) {
                 departamentoid.getPersonalList().add(personal);
                 departamentoid = em.merge(departamentoid);
@@ -160,8 +151,6 @@ public class PersonalJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Personal persistentPersonal = em.find(Personal.class, personal.getCedula());
-            Autorizacion autorizacionnivelOld = persistentPersonal.getAutorizacionNivel();
-            Autorizacion autorizacionnivelNew = personal.getAutorizacionNivel();
             Departamento departamentoidOld = persistentPersonal.getDepartamentoId();
             Departamento departamentoidNew = personal.getDepartamentoId();
             Login loginusuarioOld = persistentPersonal.getLoginUsuario();
@@ -209,10 +198,6 @@ public class PersonalJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (autorizacionnivelNew != null) {
-                autorizacionnivelNew = em.getReference(autorizacionnivelNew.getClass(), autorizacionnivelNew.getNivel());
-                personal.setAutorizacionNivel(autorizacionnivelNew);
-            }
             if (departamentoidNew != null) {
                 departamentoidNew = em.getReference(departamentoidNew.getClass(), departamentoidNew.getId());
                 personal.setDepartamentoId(departamentoidNew);
@@ -243,14 +228,6 @@ public class PersonalJpaController implements Serializable {
             examenGinecologiaListNew = attachedExamenGinecologiaListNew;
             personal.setExamenGinecologiaList(examenGinecologiaListNew);
             personal = em.merge(personal);
-            if (autorizacionnivelOld != null && !autorizacionnivelOld.equals(autorizacionnivelNew)) {
-                autorizacionnivelOld.getPersonalList().remove(personal);
-                autorizacionnivelOld = em.merge(autorizacionnivelOld);
-            }
-            if (autorizacionnivelNew != null && !autorizacionnivelNew.equals(autorizacionnivelOld)) {
-                autorizacionnivelNew.getPersonalList().add(personal);
-                autorizacionnivelNew = em.merge(autorizacionnivelNew);
-            }
             if (departamentoidOld != null && !departamentoidOld.equals(departamentoidNew)) {
                 departamentoidOld.getPersonalList().remove(personal);
                 departamentoidOld = em.merge(departamentoidOld);
@@ -353,11 +330,6 @@ public class PersonalJpaController implements Serializable {
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            Autorizacion autorizacionnivel = personal.getAutorizacionNivel();
-            if (autorizacionnivel != null) {
-                autorizacionnivel.getPersonalList().remove(personal);
-                autorizacionnivel = em.merge(autorizacionnivel);
             }
             Departamento departamentoid = personal.getDepartamentoId();
             if (departamentoid != null) {

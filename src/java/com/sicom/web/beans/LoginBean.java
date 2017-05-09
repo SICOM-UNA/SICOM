@@ -98,16 +98,6 @@ public class LoginBean implements Serializable{
         return login;
     }
 
-    public String valorAutorizacionPersonal() {
-        Autorizacion au = login.getPersonal().getAutorizacionNivel();
-        return (au == null)? null : au.getDescripcion();
-    }
-
-    public String valorDepartamentoPersonal() {
-        Departamento dpto = login.getPersonal().getDepartamentoId();
-        return (dpto == null)? null : dpto.getNombre();
-    }
-
     /**
      * @param login the login to set
      */

@@ -6,18 +6,16 @@
 package com.sicom.entities;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -40,8 +38,9 @@ public class Autorizacion implements Serializable {
     @Basic(optional = false)
     @Column(name = "descripcion")
     private String descripcion;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "autorizacionNivel")
-    private List<Personal> personalList;
+    @JoinColumn(name = "Personal_cedula", referencedColumnName = "cedula")
+    @ManyToOne(optional = false)
+    private Personal personalCedula;
 
     public Autorizacion() {
     }
@@ -71,13 +70,12 @@ public class Autorizacion implements Serializable {
         this.descripcion = descripcion;
     }
 
-    @XmlTransient
-    public List<Personal> getPersonalList() {
-        return personalList;
+    public Personal getPersonalCedula() {
+        return personalCedula;
     }
 
-    public void setPersonalList(List<Personal> personalList) {
-        this.personalList = personalList;
+    public void setPersonalCedula(Personal personalCedula) {
+        this.personalCedula = personalCedula;
     }
 
     @Override

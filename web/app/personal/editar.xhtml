@@ -96,10 +96,9 @@
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Nivel de autorización:" for="nivelAutorizacion"/>
-                                            <p:selectOneMenu id="nivelAutorizacion" value="#{personalBean.selectedPersonal.autorizacionNivel}" required="true" converter="omnifaces.SelectItemsConverter">
-                                                <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                                <f:selectItems value="#{valoresBean.autorizacionList}" var="autorizacion" itemLabel="#{autorizacion.descripcion}" itemValue="#{autorizacion}"/>
-                                            </p:selectOneMenu>
+                                            <p:selectCheckboxMenu id="nivelAutorizacion" label="Selección múltiple" value="#{personalBean.selectedPersonal.autorizacionList}" required="true">
+                                                <f:selectItems value="#{valoresBean.getDescripcionByCodeId(13)}"/>
+                                            </p:selectCheckboxMenu>
                                         </h:panelGrid>
                                     </p:panel>    
                                 </div>
