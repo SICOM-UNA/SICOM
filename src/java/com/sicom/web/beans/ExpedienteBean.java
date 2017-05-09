@@ -402,7 +402,7 @@ public class ExpedienteBean implements Serializable {
             }
             content.drawLine(80, y, 440, y);
             y -= 30;
-            if (antecedentesGinecologia.getMenarca().equals("")) {
+            if (antecedentesGinecologia.getMenarca()==null) {
                 nuevaLinea(content, 80, y, 10, "Menarca: N/a");
             } else {
                 nuevaLinea(content, 80, y, 10, "Menarca: " + antecedentesGinecologia.getMenarca());
