@@ -116,8 +116,8 @@
                                         <p:panel header="Importación" >
                                             <p:fileUpload uploadLabel="Elegir un archivo" mode="advanced" update="listaDocs" invalidSizeMessage="El archivo elegido es muy grande" previewWidth="0" sizeLimit="10485760" label="Subir nuevo Documento" skinSimple="true" auto="true" fileUploadListener="#{expedienteBean.importar}" multiple="false"/>
 
-                                            <h:panelGrid columns="1" width="100%" id="listaDocs">
-                                                <p:dataTable value="#{expedienteBean.ultimos5Docs}" var="documentos">
+                                            <h:panelGrid columns="1" width="100%" >
+                                                <p:dataTable value="#{expedienteBean.ultimos5Docs}" var="documentos" id="listaDocs">
                                                     <p:column headerText="Documento" style="font-size:15px;">
                                                         <h:commandLink  value="#{documentos.nombre}" action="#{expedienteBean.descargarDocumento(documentos)}" style="font-size:15px;" title="Click para descargar"/>
                                                     </p:column>
@@ -127,10 +127,10 @@
                                                         </h:outputText>
                                                     </p:column>
                                                 </p:dataTable>
-                                                <p:commandButton id="botonTodosDocs" value="Ver todos los documentos" type="button"  oncomplete="PF('panelFlotante').show()"/>
+                                                <p:commandButton id="botonTodosDocs" value="Ver todos los documentos" type="button"/>
                                             </h:panelGrid>
 
-                                            <p:overlayPanel id="panelFlotante" for="botonTodosDocs" my="left top" at="center" showCloseIcon="true" hideEffect="fade" dynamic="true" style="width:600px">
+                                            <p:overlayPanel for="botonTodosDocs" my="left top" at="center" showCloseIcon="true" hideEffect="fade" dynamic="true" style="width:600px">
                                                 <p:dataTable value="#{expedienteBean.listaDocumentos}" var="documentos" rows="10" paginator="true" id="tablaPanelFlotante">
                                                     <p:column headerText="Documento" style="font-size:15px;">
                                                         <h:commandLink  value="#{documentos.nombre}" action="#{expedienteBean.descargarDocumento(documentos)}" style="font-size:15px;" title="Click para descargar"/>

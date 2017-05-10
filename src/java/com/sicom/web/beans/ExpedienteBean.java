@@ -493,7 +493,7 @@ public class ExpedienteBean implements Serializable {
             if (antecedentesGinecologia.getUltimoPap().equals("")) {
                 nuevaLinea(content, 210, y, 10, "Ultimo Pap: N/a");
             } else {
-                nuevaLinea(content, 80, y, 10, "Ultimo Pap: " + antecedentesGinecologia.getUltimoPap());
+                nuevaLinea(content, 210, y, 10, "Ultimo Pap: " + antecedentesGinecologia.getUltimoPap());
             }
 
             y -= 20;
@@ -753,13 +753,7 @@ public class ExpedienteBean implements Serializable {
     }
 
     public List<Documentos> getUltimos5Docs() {
-        int cantidadRegistros = documentosController.getDocumentosCount();
-
-        if (cantidadRegistros > 5) {
-            this.ultimos5Docs = documentosController.findDocumentosEntities(5, (cantidadRegistros - 5));
-        } else {
-            this.ultimos5Docs = documentosController.findDocumentosEntities(5, 0);
-        }
+        ultimos5Docs=documentosController.findPrimeros5(expediente.getPacientecedula().getCedula());
 
         return ultimos5Docs;
     }
@@ -769,7 +763,7 @@ public class ExpedienteBean implements Serializable {
     }
 
     public List<Documentos> getListaDocumentos() {
-        this.listaDocumentos = documentosController.findDocumentosEntities();
+        this.listaDocumentos = documentosController.findRDocumentosByCedulaPaciente(expediente.getPacientecedula().getCedula());
         return listaDocumentos;
     }
 
