@@ -14,6 +14,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Personal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -158,6 +159,21 @@ public class AutorizacionJpaController implements Serializable {
         }
     }
 
+    public List<Autorizacion> findAutorizacionByPersonalCedula(String cedula) {
+        EntityManager em = getEntityManager();
+        List<Autorizacion> listaAutorizaciones = new ArrayList<>();
+        
+        try {
+            Query query = em.createQuery("select a from Autorizacion a where a.personalCedula.cedula = ?1");
+            query.setParameter( 1, cedula);
+            listaAutorizaciones = (List<Autorizacion>)query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+            
+        return listaAutorizaciones;
+    }
+    
     public int getAutorizacionCount() {
         EntityManager em = getEntityManager();
         try {

@@ -87,7 +87,7 @@
                             <div class="ui-grid-row">
                                 <div class="ui-grid-col-12" align="center">
                                     <p:panel header="Información de Seguridad">
-                                        <h:panelGrid columns="4">
+                                        <h:panelGrid columns="4" cellpadding="6" cellspacing="5">
                                             <p:outputLabel value="Departamento:" for="departamento"/>
                                             <p:selectOneMenu id="departamento" value="#{personalBean.selectedPersonal.departamentoId}" required="true"
                                                 converter="omnifaces.SelectItemsConverter">
@@ -96,11 +96,12 @@
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Nivel de autorización:" for="nivelAutorizacion"/>
-                                            <p:selectCheckboxMenu id="nivelAutorizacion" label="Selección múltiple" value="#{personalBean.selectedPersonal.autorizacionList}" required="true">
-                                                <f:selectItems value="#{valoresBean.getDescripcionByCodeId(13)}"/>
+                                            <p:selectCheckboxMenu id="nivelAutorizacion" label="Selección múltiple" value="#{personalBean.selectedPersonal.autorizacionList}" required="true"
+                                                converter="omnifaces.SelectItemsConverter" >
+                                                <f:selectItems value="#{valoresBean.autorizacionList}" var="autorizacion" itemLabel="#{autorizacion.descripcion}" itemValue="#{autorizacion}"/>
                                             </p:selectCheckboxMenu>
                                         </h:panelGrid>
-                                    </p:panel>    
+                                    </p:panel>
                                 </div>
                             </div>
                         </div>
@@ -111,7 +112,6 @@
                                 <p:ajax resetValues="true" update="formPersonal" immediate="true"/>
                             </p:commandButton>
                         </div>
-                        
                     </h:form>
                 </p:panel>
             </section>

@@ -123,7 +123,7 @@ public class ExamenGinecologia implements Serializable {
     private Expediente expedientePacientecedula;
     @JoinColumn(name = "Personal_cedula", referencedColumnName = "cedula")
     @ManyToOne(optional = false)
-    private Personal personalcedula;
+    private Personal personalCedula;
 
     public ExamenGinecologia() {
     }
@@ -353,12 +353,12 @@ public class ExamenGinecologia implements Serializable {
         this.expedientePacientecedula = expedientePacientecedula;
     }
 
-    public Personal getPersonalcedula() {
-        return personalcedula;
+    public Personal getPersonalCedula() {
+        return personalCedula;
     }
 
-    public void setPersonalcedula(Personal personalcedula) {
-        this.personalcedula = personalcedula;
+    public void setPersonalCedula(Personal personalCedula) {
+        this.personalCedula = personalCedula;
     }
 
     @Override

@@ -43,10 +43,10 @@ public class ExamenOdontologiaJpaController implements Serializable {
                 expedientePacientecedula = em.getReference(expedientePacientecedula.getClass(), expedientePacientecedula.getId());
                 examenOdontologia.setExpedientePacientecedula(expedientePacientecedula);
             }
-            Personal personalcedula = examenOdontologia.getPersonalcedula();
+            Personal personalcedula = examenOdontologia.getPersonalCedula();
             if (personalcedula != null) {
                 personalcedula = em.getReference(personalcedula.getClass(), personalcedula.getCedula());
-                examenOdontologia.setPersonalcedula(personalcedula);
+                examenOdontologia.setPersonalCedula(personalcedula);
             }
             em.persist(examenOdontologia);
             if (expedientePacientecedula != null) {
@@ -73,15 +73,15 @@ public class ExamenOdontologiaJpaController implements Serializable {
             ExamenOdontologia persistentExamenOdontologia = em.find(ExamenOdontologia.class, examenOdontologia.getId());
             Expediente expedientePacientecedulaOld = persistentExamenOdontologia.getExpedientePacientecedula();
             Expediente expedientePacientecedulaNew = examenOdontologia.getExpedientePacientecedula();
-            Personal personalcedulaOld = persistentExamenOdontologia.getPersonalcedula();
-            Personal personalcedulaNew = examenOdontologia.getPersonalcedula();
+            Personal personalcedulaOld = persistentExamenOdontologia.getPersonalCedula();
+            Personal personalcedulaNew = examenOdontologia.getPersonalCedula();
             if (expedientePacientecedulaNew != null) {
                 expedientePacientecedulaNew = em.getReference(expedientePacientecedulaNew.getClass(), expedientePacientecedulaNew.getId());
                 examenOdontologia.setExpedientePacientecedula(expedientePacientecedulaNew);
             }
             if (personalcedulaNew != null) {
                 personalcedulaNew = em.getReference(personalcedulaNew.getClass(), personalcedulaNew.getCedula());
-                examenOdontologia.setPersonalcedula(personalcedulaNew);
+                examenOdontologia.setPersonalCedula(personalcedulaNew);
             }
             examenOdontologia = em.merge(examenOdontologia);
             if (expedientePacientecedulaOld != null && !expedientePacientecedulaOld.equals(expedientePacientecedulaNew)) {
@@ -134,7 +134,7 @@ public class ExamenOdontologiaJpaController implements Serializable {
                 expedientePacientecedula.getExamenOdontologiaList().remove(examenOdontologia);
                 expedientePacientecedula = em.merge(expedientePacientecedula);
             }
-            Personal personalcedula = examenOdontologia.getPersonalcedula();
+            Personal personalcedula = examenOdontologia.getPersonalCedula();
             if (personalcedula != null) {
                 personalcedula.getExamenOdontologiaList().remove(examenOdontologia);
                 personalcedula = em.merge(personalcedula);

@@ -8,6 +8,7 @@ package com.sicom.controller;
 import com.sicom.controller.exceptions.IllegalOrphanException;
 import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.controller.exceptions.PreexistingEntityException;
+import com.sicom.entities.Autorizacion;
 import com.sicom.entities.Login;
 import java.io.Serializable;
 import javax.persistence.Query;
@@ -37,26 +38,37 @@ public class LoginJpaController implements Serializable {
 
     public void create(Login login) throws PreexistingEntityException, Exception {
         EntityManager em = null;
+        
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             Personal personal = login.getPersonal();
+            
+            for(Autorizacion autorizacion:login.getPersonal().getAutorizacionList()) {
+                autorizacion.setId(null);
+                autorizacion.setPersonalCedula(login.getPersonal());
+            }
+            
             em.persist(login);
             
             if (personal != null) {
                 Login oldLoginusuarioOfPersonal = personal.getLoginUsuario();
+                
                 if (oldLoginusuarioOfPersonal != null) {
                     oldLoginusuarioOfPersonal.setPersonal(null);
                     oldLoginusuarioOfPersonal = em.merge(oldLoginusuarioOfPersonal);
                 }
+                
                 personal.setLoginUsuario(login);
                 personal = em.merge(personal);
             }
+            
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findLogin(login.getUsuario()) != null) {
                 throw new PreexistingEntityException("Login " + login + " already exists.", ex);
             }
+            
             throw ex;
         } finally {
             if (em != null) {

@@ -79,19 +79,19 @@ public class Personal implements Serializable {
     private String domicilio;
     @Column(name = "estadoCivil")
     private String estadoCivil;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalcedula")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalCedula")
     private List<ExamenColposcopia> examenColposcopiaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalcedula")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalCedula")
     private List<ExamenOdontologia> examenOdontologiaList;
     @JoinColumn(name = "Departamento_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Departamento departamentoId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalCedula")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "personalCedula")
     private List<Autorizacion> autorizacionList;
     @JoinColumn(name = "Login_usuario", referencedColumnName = "usuario")
     @OneToOne(optional = false)
     private Login loginUsuario;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalcedula")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalCedula")
     private List<ExamenGinecologia> examenGinecologiaList;
 
     public Personal() {

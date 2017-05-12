@@ -74,7 +74,7 @@ public class PersonalBean implements Serializable {
             selectedPersonal = new Personal();
             FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
             
-            return "agregar?faces-redirect=true";
+            return "consultar?faces-redirect=true";
         } catch (NonexistentEntityException ex) {
             Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {

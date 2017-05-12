@@ -43,10 +43,10 @@ public class ExamenGinecologiaJpaController implements Serializable {
                 expedientePacientecedula = em.getReference(expedientePacientecedula.getClass(), expedientePacientecedula.getId());
                 examenGinecologia.setExpedientePacientecedula(expedientePacientecedula);
             }
-            Personal personalcedula = examenGinecologia.getPersonalcedula();
+            Personal personalcedula = examenGinecologia.getPersonalCedula();
             if (personalcedula != null) {
                 personalcedula = em.getReference(personalcedula.getClass(), personalcedula.getCedula());
-                examenGinecologia.setPersonalcedula(personalcedula);
+                examenGinecologia.setPersonalCedula(personalcedula);
             }
             em.persist(examenGinecologia);
             if (expedientePacientecedula != null) {
@@ -73,15 +73,15 @@ public class ExamenGinecologiaJpaController implements Serializable {
             ExamenGinecologia persistentExamenGinecologia = em.find(ExamenGinecologia.class, examenGinecologia.getId());
             Expediente expedientePacientecedulaOld = persistentExamenGinecologia.getExpedientePacientecedula();
             Expediente expedientePacientecedulaNew = examenGinecologia.getExpedientePacientecedula();
-            Personal personalcedulaOld = persistentExamenGinecologia.getPersonalcedula();
-            Personal personalcedulaNew = examenGinecologia.getPersonalcedula();
+            Personal personalcedulaOld = persistentExamenGinecologia.getPersonalCedula();
+            Personal personalcedulaNew = examenGinecologia.getPersonalCedula();
             if (expedientePacientecedulaNew != null) {
                 expedientePacientecedulaNew = em.getReference(expedientePacientecedulaNew.getClass(), expedientePacientecedulaNew.getId());
                 examenGinecologia.setExpedientePacientecedula(expedientePacientecedulaNew);
             }
             if (personalcedulaNew != null) {
                 personalcedulaNew = em.getReference(personalcedulaNew.getClass(), personalcedulaNew.getCedula());
-                examenGinecologia.setPersonalcedula(personalcedulaNew);
+                examenGinecologia.setPersonalCedula(personalcedulaNew);
             }
             examenGinecologia = em.merge(examenGinecologia);
             if (expedientePacientecedulaOld != null && !expedientePacientecedulaOld.equals(expedientePacientecedulaNew)) {
@@ -134,7 +134,7 @@ public class ExamenGinecologiaJpaController implements Serializable {
                 expedientePacientecedula.getExamenGinecologiaList().remove(examenGinecologia);
                 expedientePacientecedula = em.merge(expedientePacientecedula);
             }
-            Personal personalcedula = examenGinecologia.getPersonalcedula();
+            Personal personalcedula = examenGinecologia.getPersonalCedula();
             if (personalcedula != null) {
                 personalcedula.getExamenGinecologiaList().remove(examenGinecologia);
                 personalcedula = em.merge(personalcedula);

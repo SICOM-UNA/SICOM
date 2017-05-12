@@ -67,6 +67,15 @@ public class ValoresBean implements Serializable {
     public List<Departamento> getDepartamentosList() {
         return djc.findDepartamentoEntities();
     }
+    
+    /**
+     * Obtiene la lista de todos los niveles de autorización
+     *
+     * @return lista de niveles de autorización
+     */
+    public List<Autorizacion> getAutorizacionList() {
+        return ajc.findAutorizacionByPersonalCedula("0-0000-0000");
+    }
 
     public List<Departamento> getDepartamentoCalendarioList() {
         List<Departamento> list = djc.findDepartamentoEntities();
@@ -96,15 +105,6 @@ public class ValoresBean implements Serializable {
             }
         }
         return null;
-    }
-
-    /**
-     * Obtiene la lista de todos los niveles de autorización
-     *
-     * @return lista de niveles de autorización
-     */
-    public List<Autorizacion> getAutorizacionList() {
-        return ajc.findAutorizacionEntities();
     }
 
     /**
