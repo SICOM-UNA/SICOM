@@ -13,15 +13,13 @@
                     <p:growl id="messages" showDetail="true" />
 
                     <h:panelGrid columnClasses="value">
-                        <h3 style="margin-top: 0">Calendario de Citas</h3>
-                        <p:schedule id="schedule" value="#{citasBean.eventModel}" widgetVar="myschedule" timeZone="GMT-6" locale="es" maxTime="20:00:00" minTime="06:00:00" >
-
-                            <p:ajax event="dateSelect" listener="#{citasBean.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-                            <p:ajax event="eventSelect" listener="#{citasBean.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-                            <p:ajax event="eventMove" listener="#{citasBean.onEventMove}" update="messages" />
-                            <p:ajax event="eventResize" listener="#{citasBean.onEventResize}" update="messages" />
-
-                        </p:schedule>
+                        <p:panel header="Calendario">
+                            <p:schedule id="schedule" value="#{citasBean.eventModel}" widgetVar="myschedule" timeZone="GMT-6" locale="es" maxTime="20:00:00" minTime="06:00:00" >
+                                <p:ajax event="dateSelect" listener="#{citasBean.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                                <p:ajax event="eventSelect" listener="#{citasBean.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                                <p:ajax event="eventMove" listener="#{citasBean.onEventMove}" update="messages" />
+                            </p:schedule>
+                        </p:panel>
                     </h:panelGrid>
 
                     <p:dialog widgetVar="eventDialog" header="Detalle de la cita" showEffect="clip" hideEffect="clip">
@@ -35,13 +33,8 @@
                             <p:outputLabel for="telefono" value="Telefono:" />
                             <p:inputMask id="telefono" value="#{citasBean.nuevaCita.telefono}" mask="9999-9999" required="true" requiredMessage="- Falta el teléfono" placeholder="0000-0000"/>
 
-
-
                             <p:outputLabel value="Hora Inicial:" />
                             <p:calendar id="time1" value="#{citasBean.event.startDate}" timeZone="GMT-6" pattern="dd/MM/yyyy HH:mm" minHour="6" maxHour="20"/>
-
-                            <p:outputLabel value="Hora Final:" />
-                            <p:calendar id="time2" value="#{citasBean.event.endDate}" timeZone="GMT-6" pattern="dd/MM/yyyy HH:mm" minHour="6" maxHour="20"/>
 
                             <p:outputLabel for="est" value="Estado:" />
                             <p:outputLabel id="est" value="#{citasBean.nuevaCita.estado}" />

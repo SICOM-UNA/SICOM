@@ -11,6 +11,29 @@
             <section>
                 <h:form>
                     <p:growl id="messages" showDetail="true" />
+                    <p:schedule id="schedule" value="#{citasBean.eventModel}" widgetVar="myschedule" timeZone="GMT-6" locale="es" maxTime="20:00:00" minTime="06:00:00" 
+                                resizable="false" allDaySlot="false" centerHeaderTemplate="prev, title, next" leftHeaderTemplate="today" rightHeaderTemplate="agendaDay" view="agendaDay">
+                        <p:ajax event="eventSelect" listener="#{citasBean.onEventSelect}" update="eventDialog messages" oncomplete="PF('eventDialog').show();"/>
+                    </p:schedule>
+
+                    <p:dialog id="eventDialog" widgetVar="eventDialog" header="Detalle de la cita" showEffect="clip" hideEffect="clip">
+                        <h:panelGrid id="eventDetails" columns="2">
+
+                            <p:outputLabel for="title" value="Nombre:" />
+                            <p:inputText id="title" value="#{citasBean.event.title}" readonly="true" />
+
+                            <p:outputLabel for="telefono" value="Telefono:" />
+                            <p:inputText id="telefono" value="#{citasBean.nuevaCita.telefono}" readonly="true"/>
+
+                            <p:outputLabel for="time1" value="Hora Inicial:" />
+                            <p:inputText id="time1" value="#{citasBean.event.startDate}" readonly="true">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                            </p:inputText>
+
+                            <p:outputLabel for="motivo" value="Motivo de Cita:" />
+                            <p:inputTextarea id="motivo" value="#{citasBean.nuevaCita.motivo}" readonly="true"/>
+                        </h:panelGrid>
+                    </p:dialog> 
 
                 </h:form>
             </section>
