@@ -50,12 +50,12 @@
 
                             <h:panelGroup>
                                 <p:outputLabel class="descripcion" value="Alergias: "/>
-                                <p:inputTextarea value="#{antecedentesOdontologiaBean.objAntecedente.alergias}" cols="118" rows="5" maxlength="540"/>
+                                <p:inputTextarea value="#{antecedentesOdontologiaBean.objAntecedente.alergias}" cols="118" rows="5" maxlength="225"/>
                             </h:panelGroup>
 
                             <h:panelGroup>
                                 <p:outputLabel class="descripcion" value="Hábitos: "/>
-                                <p:inputTextarea value="#{antecedentesOdontologiaBean.objAntecedente.habitos}" cols="118" rows="5" maxlength="540"/>
+                                <p:inputTextarea value="#{antecedentesOdontologiaBean.objAntecedente.habitos}" cols="118" rows="5" maxlength="225"/>
                             </h:panelGroup>
                         </h:panelGrid>
                         <f:facet name="footer" >
@@ -64,7 +64,7 @@
                                 <p:commandButton value="Cancelar" action="#{antecedentesOdontologiaBean.cancelarAction()}" title="Click para cancelar"/>
                                 <p:spacer width="25"/>
                                 <p:commandButton value="Odontograma"  title="Click para guardar y crear un odontograma."/>
-                                <p:commandButton value="Descargar" icon="ui-icon-circle-arrow-s">
+                                <p:commandButton value="Descargar" action="#{expedienteBean.exportar}" icon="ui-icon-circle-arrow-s">
                                     <p:confirm header="Descarga" message="¿Desea descargar la historia clínica?" icon="ui-icon-alert"/>
                                 </p:commandButton>
                                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
