@@ -116,7 +116,7 @@
                                         <p:panel header="Importación" >
                                             <p:fileUpload uploadLabel="Elegir un archivo" mode="advanced" update="listaDocs" invalidSizeMessage="El archivo elegido es muy grande" previewWidth="0" sizeLimit="10485760" label="Subir nuevo Documento" skinSimple="true" auto="true" fileUploadListener="#{expedienteBean.importar}" multiple="false"/>
 
-                                            <h:panelGrid columns="1" width="100%" >
+                                            <h:panelGrid id="panelGridDocs" columns="1" width="100%" >
                                                 <p:dataTable value="#{expedienteBean.ultimos5Docs}" var="documentos" id="listaDocs">
                                                     <p:column headerText="Documento" style="font-size:15px;">
                                                         <h:commandLink  value="#{documentos.nombre}" action="#{expedienteBean.descargarDocumento(documentos)}" style="font-size:15px;" title="Click para descargar"/>
@@ -127,24 +127,8 @@
                                                         </h:outputText>
                                                     </p:column>
                                                 </p:dataTable>
-                                                <p:commandButton id="botonTodosDocs" value="Ver todos los documentos" type="button"/>
+                                                <p:commandButton onclick="PF('dialogDocumentos').show();" value="Ver todos los documentos" type="button"/>
                                             </h:panelGrid>
-
-                                            <p:overlayPanel for="botonTodosDocs" my="left top" at="center" showCloseIcon="true" hideEffect="fade" dynamic="true" style="width:600px">
-                                                <p:dataTable value="#{expedienteBean.listaDocumentos}" var="documentos" rows="10" paginator="true" id="tablaPanelFlotante">
-                                                    <p:column headerText="Documento" style="font-size:15px;">
-                                                        <h:commandLink  value="#{documentos.nombre}" action="#{expedienteBean.descargarDocumento(documentos)}" style="font-size:15px;" title="Click para descargar"/>
-                                                    </p:column>
-                                                    <p:column headerText="Fecha de Subida" style="font-size:15px;" width="22%">
-                                                        <h:outputText value="#{documentos.fecha}" style="font-size:15px;">
-                                                            <f:convertDateTime pattern="dd/MM/yyyy" />
-                                                        </h:outputText>
-                                                    </p:column>
-                                                    <p:column headerText="Eliminar" style="font-size:15px;" width="15%">
-                                                        <p:commandButton  icon="ui-icon-trash" action="#{expedienteBean.eliminarDocumento(documentos)}" title="Click para eliminar" update="tablaPanelFlotante"/>
-                                                    </p:column>
-                                                </p:dataTable>
-                                            </p:overlayPanel>
                                         </p:panel>
                                     </div>
                                 </div>
@@ -152,6 +136,25 @@
                         </p:tab>
                     </p:tabView>
                 </h:form>
+
+                <p:dialog widgetVar="dialogDocumentos" header="Documentos Importados" closeOnEscape="true" hideEffect="fade" dynamic="true" width="600">
+                    <h:form id="formDocumentos">
+                        <p:dataTable value="#{expedienteBean.listaDocumentos}" var="documentos" rows="10" paginator="true" id="tablaDialog">
+                            <p:column headerText="Documento" style="font-size:15px;">
+                                <h:commandLink  value="#{documentos.nombre}" action="#{expedienteBean.descargarDocumento(documentos)}" style="font-size:15px;" title="Click para descargar"/>
+                            </p:column>
+                            <p:column headerText="Fecha de Subida" style="font-size:15px;" width="22%">
+                                <h:outputText value="#{documentos.fecha}" style="font-size:15px;">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Eliminar" style="font-size:15px;" width="15%">
+                                <p:commandButton  icon="ui-icon-trash" action="#{expedienteBean.eliminarDocumento(documentos)}" title="Click para eliminar" update="tablaDialog"/>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:dialog>
+
             </section>
         </div>
     </ui:define>

@@ -198,14 +198,25 @@ public class DocumentosJpaController implements Serializable {
     }
 
     
-    public List<Documentos> findPrimeros5(String cedulaPaciente) {
+    public List<Documentos> findUltimos(String cedulaPaciente) {
         EntityManager em = getEntityManager();
         try {
+            
+            //contar los documentos del paciente
+            Query query2= em.createQuery("select count(r) from Documentos r where r.expedientePacientecedula.pacientecedula.cedula = ?1");
+            query2.setParameter( 1, cedulaPaciente);
+            int count=((Long) query2.getSingleResult()).intValue();
+            
+            
             Query query = em.createQuery("select r from Documentos r where r.expedientePacientecedula.pacientecedula.cedula = ?1");
             query.setParameter( 1, cedulaPaciente);
             if (!false) {
                 query.setMaxResults(5);
-                query.setFirstResult(0);
+                
+                if(count>5)
+                    query.setFirstResult(count-5);
+                else
+                    query.setFirstResult(0);
             }
             return query.getResultList();
         } finally {

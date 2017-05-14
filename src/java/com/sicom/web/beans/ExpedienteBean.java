@@ -753,7 +753,7 @@ public class ExpedienteBean implements Serializable {
     }
 
     public List<Documentos> getUltimos5Docs() {
-        ultimos5Docs=documentosController.findPrimeros5(expediente.getPacientecedula().getCedula());
+        ultimos5Docs=documentosController.findUltimos(paciente.getCedula());
 
         return ultimos5Docs;
     }
