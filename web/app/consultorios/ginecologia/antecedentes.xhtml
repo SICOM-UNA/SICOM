@@ -61,7 +61,7 @@
                                 <h:panelGrid  columns="2">
                                     <p:selectOneMenu value="#{antecedentesGinecologiaBean.objAntecedente.cicloMestrual}"  id="cicloMenstrual" autoWidth="false" >
                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true"  />
-                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(4)}"/>
+                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(5)}"/>
                                     </p:selectOneMenu>
                                     <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioCicloMestrual}" maxlength="40"/>
                                 </h:panelGrid>
@@ -74,7 +74,7 @@
                                 <h:panelGrid columns="2">
                                     <p:selectOneMenu value="#{antecedentesGinecologiaBean.objAntecedente.planificacion}"  id="planificacion" autoWidth="false" >
                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(5)}"/>
+                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(6)}"/>
                                     </p:selectOneMenu>
                                     <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioGPA}" maxlength="40"/>
                                 </h:panelGrid>
@@ -138,7 +138,7 @@
                                 <p:commandButton value="Cancelar" action="#{antecedentesGinecologiaBean.cancelarAction()}" title="Click para cancelar"/>
                                 <p:spacer width="25"/>
                                 <p:commandButton value="Exámen Físico"  title="Click para guardar y pasar al formulario de Exámen Físico."/>
-                                <p:commandButton value="Descargar" icon="ui-icon-circle-arrow-s">
+                                <p:commandButton value="Descargar" action="#{expedienteBean.exportar}" icon="ui-icon-circle-arrow-s">
                                     <p:confirm header="Descarga" message="¿Desea descargar la historia clínica?" icon="ui-icon-alert"/>
                                 </p:commandButton>
                                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">

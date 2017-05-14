@@ -284,6 +284,7 @@ public class ExpedienteBean implements Serializable {
             exportarGinecologia(antecedentesGinecologia);
         } else if (consultorio == 3 && expediente.getAntecedentesOdontologia() != null) {
             AntecedentesOdontologia antecedentesOdontologia = expediente.getAntecedentesOdontologia();
+            exportarOdontologia(antecedentesOdontologia);
         } else if (consultorio == 1 || consultorio == 4) {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No posee los permisos para acceder a esta opcion.", null));
         } else {
@@ -676,7 +677,7 @@ public class ExpedienteBean implements Serializable {
 
             //</editor-fold>
             //<editor-fold defaultstate="collapsed" desc="Resto de la historia clinica">
-            if (y < 80) { //verificar si es necesario crear una nueva pagina despues de los antecedentes
+            if (y < 160) { //verificar si es necesario crear una nueva pagina despues de los antecedentes
                 content.close();
                 PDPage page2 = new PDPage();
                 doc.addPage(page2);
@@ -688,10 +689,9 @@ public class ExpedienteBean implements Serializable {
             y -= 20;
             nuevaLinea(content, 80, y, 11, "Alergias: ");
             y = textoLargo(antecedentesOdontologia.getAlergias(), content, page, 230, y);
-            y -= 20;//200
-            content.drawLine(80, y, 440, y);
+            
 
-            if (y < 80) {
+            if (y < 160) {
                 content.close();
                 PDPage page2 = new PDPage();
                 doc.addPage(page2);
