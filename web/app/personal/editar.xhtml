@@ -39,14 +39,14 @@
                                                     <p:outputLabel for="segundoApellido" value="Segundo apellido:" />
                                                     <p:inputText id="segundoApellido" value="#{personalBean.selectedPersonal.segundoApellido}" maxlength="45" class= "charToUpperCase" onkeyup="validar()"/>
 
-                                                    <p:outputLabel for="fechaNacimiento" value="Fecha Nacimiento:"/>
+                                                    <p:outputLabel for="fechaNacimiento" value="Fecha de nacimiento:"/>
                                                     <p:calendar id="fechaNacimiento" value="#{personalBean.selectedPersonal.nacimiento}" pattern="dd-MM-yyyy" mask="true" navigator="true"
                                                         maxdate="#{now}" required="true" placeholder="#{now.date}-#{now.month+1}-#{now.year+1900}"/>
 
                                                     <p:outputLabel value="Cargo:" for="cargo"/>
                                                     <p:inputText id="cargo" value="#{personalBean.selectedPersonal.cargo}" maxlength="45" class= "charToUpperCase" onkeyup="validar()"/>
 
-                                                    <p:outputLabel value="Estado Civil:" for="estadoCivil"/>
+                                                    <p:outputLabel value="Estado civil:" for="estadoCivil"/>
                                                     <p:selectOneMenu id="estadoCivil" value="#{personalBean.selectedPersonal.estadoCivil}">
                                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
                                                         <f:selectItems value="#{valoresBean.getDescripcionByCodeId(2)}"/>

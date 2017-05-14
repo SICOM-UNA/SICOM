@@ -43,38 +43,51 @@ public class PersonalBean implements Serializable {
     }
 
     /**
-     * Agregar usuario
+     * Agrega un usuario y el personal asociado a este
+     * @return la página a la cual será redireccionado el usuario
      */
-    public void agregar() {
+    public String agregar() {
         try {
+            FacesContext fc = FacesContext.getCurrentInstance();
             Login login = ljc.findLogin(nuevoUsuario.getUsuario());
             Personal personal = pjc.findPersonal(nuevoUsuario.getPersonal().getCedula());
             
             // Valida si el usuario ya existe
             if(login != null && login.getUsuario().toLowerCase().equals(nuevoUsuario.getUsuario().toLowerCase())) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El usuario ya existe, por favor digite un nombre de usuario diferente de " + login.getUsuario(), null));
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El usuario ya existe, por favor digite un nombre de usuario diferente de " + login.getUsuario(), null));
             // Valida si el personal ya existe
             } else if(personal != null && personal.getCedula().equals(nuevoUsuario.getPersonal().getCedula())) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El personal ya existe, por favor digite un número de cédula diferente de " + personal.getCedula(), null));
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El personal ya existe, por favor digite un número de cédula diferente de " + personal.getCedula(), null));
             } else {
                 // Se agrega el usuario
                 ljc.create(nuevoUsuario);
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Usuario creado exitosamente", nuevoUsuario.getUsuario()));
+                fc.getExternalContext().getSessionMap().put("personal", nuevoUsuario.getPersonal());
+                fc.addMessage(null, new FacesMessage("Usuario creado exitosamente", nuevoUsuario.getUsuario()));
+                fc.getExternalContext().getFlash().setKeepMessages(true);
                 nuevoUsuario = new Login();
+                
+                return "informacion?faces-redirect=true";
             }   
         } catch (Exception ex) {
             Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        return "agregar";
     }
     
+    /**
+     * Modificar los datos del personal
+     * @return la página a la cual será redireccionado el usuario
+     */
     public String modificar() {
         try {
+            FacesContext fc = FacesContext.getCurrentInstance();
             pjc.edit(selectedPersonal);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información actualizada exitosamente.", null));
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información actualizada exitosamente.", null));
+            fc.getExternalContext().getFlash().setKeepMessages(true);
             selectedPersonal = new Personal();
-            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
             
-            return "consultar?faces-redirect=true";
+            return "informacion?faces-redirect=true";
         } catch (NonexistentEntityException ex) {
             Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
@@ -84,13 +97,17 @@ public class PersonalBean implements Serializable {
         return null;
     }
 
+    /**
+     * Muestra los datos del personal solicitado por el usuario
+     * @return 
+     */
     public String consultar() {
         selectedPersonal = pjc.findPersonal(nuevoPersonal.getCedula());
 
         if (selectedPersonal != null) {
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("personal", selectedPersonal);
             
-            return "editar?faces-redirect=true";
+            return "informacion?faces-redirect=true";
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El personal con la identificación " + nuevoPersonal.getCedula() + " no ha sido encontrado", null));
             
@@ -98,6 +115,9 @@ public class PersonalBean implements Serializable {
         }
     }
 
+    /**
+     * Modificar los datos del usuario
+     */
     public void modificarUsuario() {
         try {
             ljc.edit(selectedUsuario);
@@ -109,10 +129,6 @@ public class PersonalBean implements Serializable {
         } catch (Exception ex) {
             Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-    
-    public Personal consultarPersonalPorId(String id) {
-        return pjc.findPersonal(id);
     }
 
     /**

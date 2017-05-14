@@ -15,6 +15,7 @@ import com.sicom.entities.Personal;
 import com.sicom.entities.Valor;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -22,6 +23,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import org.joda.time.LocalDate;
+import org.joda.time.Years;
 
 /**
  *
@@ -38,7 +41,6 @@ public class ValoresBean implements Serializable {
     private String tipoId2 = "nacional";
 
     public ValoresBean() {
-
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
         djc = new DepartamentoJpaController(emf);
         ajc = new AutorizacionJpaController(emf);
@@ -54,11 +56,11 @@ public class ValoresBean implements Serializable {
     public List<Valor> getValuesByCodeId(Integer codigo) {
         return vjc.findByCodeId(codigo);
     }
-
+    
     public List<String> getDescripcionByCodeId(Integer cod) {
         return vjc.findDescriptionByCodeId(cod);
     }
-
+    
     /**
      * Obtiene la lista de todos los departamentos
      *
