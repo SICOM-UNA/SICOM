@@ -14,34 +14,32 @@
 
                     <h:panelGrid columnClasses="value">
                         <p:panel header="Calendario">
-                            <p:schedule id="schedule" value="#{citasBean.eventModel}" widgetVar="myschedule" timeZone="GMT-6" locale="es" maxTime="20:00:00" minTime="06:00:00" >
+                            <p:schedule id="schedule" value="#{citasBean.eventModel}" widgetVar="myschedule" timeZone="GMT-6" locale="es" maxTime="21:00:00" minTime="05:00:00" 
+                                        allDaySlot="false" centerHeaderTemplate="prev, title, next" leftHeaderTemplate="today" resizable="false" draggable="false">
                                 <p:ajax event="dateSelect" listener="#{citasBean.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
                                 <p:ajax event="eventSelect" listener="#{citasBean.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-                                <p:ajax event="eventMove" listener="#{citasBean.onEventMove}" update="messages" />
                             </p:schedule>
                         </p:panel>
                     </h:panelGrid>
 
-                    <p:dialog widgetVar="eventDialog" header="Detalle de la cita" showEffect="clip" hideEffect="clip">
+                    <p:dialog widgetVar="eventDialog" header="Detalle de la cita" showEffect="clip" hideEffect="clip" >
                         <h:panelGrid id="eventDetails" columns="2">
-                            <p:outputLabel for="title" value="Nombre:" />
+                            <p:outputLabel for="title" value="Nombre" />
                             <p:inputText id="title" value="#{citasBean.event.title}" required="true" class = "charWithSpaceToUpperCase" onkeyup="validar()" />
 
-                            <p:outputLabel for="motivo" value="Motivo de Cita:" />
-                            <p:inputText id="motivo" value="#{citasBean.nuevaCita.motivo}"/>
-
-                            <p:outputLabel for="telefono" value="Telefono:" />
+                            <p:outputLabel for="telefono" value="Telefono" />
                             <p:inputMask id="telefono" value="#{citasBean.nuevaCita.telefono}" mask="9999-9999" required="true" requiredMessage="- Falta el teléfono" placeholder="0000-0000"/>
 
-                            <p:outputLabel value="Hora Inicial:" />
+                            <p:outputLabel value="Hora Inicial" />
                             <p:calendar id="time1" value="#{citasBean.event.startDate}" timeZone="GMT-6" pattern="dd/MM/yyyy HH:mm" minHour="6" maxHour="20"/>
 
-                            <p:outputLabel for="est" value="Estado:" />
-                            <p:outputLabel id="est" value="#{citasBean.nuevaCita.estado}" />
-
-                            <p:commandButton id="addButton" value="Guardar" actionListener="#{citasBean.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
-                            <p:commandButton id="delete" value="Borrar Cita" actionListener="#{citasBean.eliminar}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
-
+                            <p:outputLabel for="motivo" value="Motivo de Cita" />
+                            <h:panelGrid columns="1">
+                                <p:inputTextarea id="motivo" value="#{citasBean.nuevaCita.motivo}" maxlength="150" rows="6" autoResize="false" counter="counter" counterTemplate="Quedan {0} caracteres"/>
+                                <p:outputLabel id="counter"/>
+                            </h:panelGrid>
+                            <p:commandButton id="addButton" value="Guardar" icon="ui-icon-disk" actionListener="#{citasBean.addEvent}"  oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+                            <p:commandButton id="delete" value="Borrar Cita" icon="ui-icon-trash" actionListener="#{citasBean.eliminar}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" rendered="#{citasBean.validaEliminar()}"/>
                         </h:panelGrid>
                     </p:dialog> 
 

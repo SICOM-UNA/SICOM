@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,7 +41,7 @@ import org.primefaces.model.ScheduleModel;
 @ViewScoped
 public class CitasBean implements Serializable {
 
-    private final int DURACION_CITA_MINUTOS = 30;
+    public final int DURACION_CITA_MINUTOS = 30;
 
     private Cita nuevaCita;
     private Cita selectedCita;
@@ -149,13 +150,12 @@ public class CitasBean implements Serializable {
 
     public void eliminar() {
         try {
+            nuevaCita = (Cita) event.getData();
             cjc.destroy(nuevaCita.getId());
             eventModel.deleteEvent(event);
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cita eliminada", "Cita de " + nuevaCita.getNombre() + " fue eliminada");
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cita eliminada exitosamente",null);
             addMessage(message);
             nuevaCita = new Cita();
-            selectedCita = null;
-
         } catch (Exception ex) {
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "La cita no pudo ser eliminada");
             addMessage(message);
@@ -213,16 +213,9 @@ public class CitasBean implements Serializable {
     }
 
     public void onDateSelect(SelectEvent selectEvent) {
-        event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(),null);
+        event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), null);
         nuevaCita = new Cita();
     }
-
-    public void onEventMove(ScheduleEntryMoveEvent event) {
-               
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cita Movida", event.getDayDelta() + " dias" + " y " + event.getMinuteDelta() + " minutos");
-        addMessage(message);
-    }
-
 
     private void addMessage(FacesMessage message) {
         FacesContext.getCurrentInstance().addMessage(null, message);
@@ -249,6 +242,10 @@ public class CitasBean implements Serializable {
                 this.eventModel.addEvent(dse);
             }
         }
+    }
+
+    public boolean validaEliminar() {
+        return (event.getId() != null);
     }
 
     /**
@@ -326,5 +323,4 @@ public class CitasBean implements Serializable {
     public void setDepartamento(Departamento departamento) {
         this.departamento = departamento;
     }
-
 }
