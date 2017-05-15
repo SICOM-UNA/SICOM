@@ -23,6 +23,9 @@
                             <p:outputLabel class="descripcion"  value="#{examenFisicoGinecBean.examenFisico.fecha}">
                                 <f:convertDateTime pattern="dd-MM-yyyy H:mm:ss"/>
                             </p:outputLabel>
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion" value="Creado por: #{examenFisicoGinecBean.examenFisico.personalcedula.nombre} #{examenFisicoGinecBean.examenFisico.personalcedula.primerApellido} #{examenFisicoGinecBean.examenFisico.personalcedula.segundoApellido}"/>
+
                         </h:panelGrid>
                     </p:panel>
                     <p:panel header="Consulta">
@@ -108,8 +111,7 @@
                                     <f:facet name="footer" >
                                         <div class="ui-panel-titlebar ui-widget-header" align="center">
                                             <p:commandButton value="Guardar" action="#{examenFisicoGinecBean.save()}" icon="ui-icon-disk" title="Click para guardar información." />
-                                            <p:commandButton value="Cancelar" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true">
-                                            </p:commandButton> 
+                                            <p:commandButton value="Cancelar" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true" action="#{examenFisicoGinecBean.volver_a_informacion()}" />
                                         </div>
                                     </f:facet>
                                 </div>
