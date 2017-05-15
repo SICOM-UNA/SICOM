@@ -16,7 +16,7 @@
                 </h:form>
                 
                 <h:form id="formPaciente">
-                    <p:panel header="Consultar Paciente">
+                    <p:panel header="Consultar paciente por cédula">
                         <div class="ui-grid ui-grid-responsive">
                             <div class="ui-grid-row">
                                 <div class="ui-grid-col-6" align="center">
@@ -56,7 +56,7 @@
                                 <div class="ui-grid-col-3" align="center">
                                     <f:facet name="footer">
                                         <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                            <p:commandButton value="Consultar" action="#{pacienteBean.consultar}" icon="ui-icon ui-icon-search" title="Buscar paciente por número de identificación" update="formPaciente"/>
+                                            <p:commandButton value="Consultar" action="#{pacienteBean.consultarPorCedula}" icon="ui-icon ui-icon-search" title="Buscar paciente por número de identificación" update="formPaciente"/>
                                             <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formPaciente" immediate="true" update="formPaciente">
                                                 <p:resetInput target="formPaciente"/>
                                             </p:commandButton> 

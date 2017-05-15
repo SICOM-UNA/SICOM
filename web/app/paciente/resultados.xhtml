@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/templates/default.xhtml" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <div id="wrapper">
+            <section>
+                <h:form>
+                    <h:inputHidden value="#{pacienteBean.setListaPacientes(listaPacientes)}"/>
+                </h:form>
+                
+                <h:form id="formPacientes">
+                    <p:dataTable value="#{pacienteBean.listaPacientes}" var="pacientes" paginator="true" paginatorPosition="bottom" rows="10"
+                        rowsPerPageTemplate="10 25 50" filterEvent="enter" style="text-align: center">
+                        
+                        <p:column headerText="Cédula" sortBy="#{pacientes.cedula}" filterBy="#{pacientes.cedula}" filterMatchMode="contains">
+                            <p:outputLabel value="#{pacientes.cedula}"/>
+                        </p:column>
+
+                        <p:column headerText="Nombre" sortBy="#{pacientes.nombre}" filterMatchMode="contains"
+                            filterBy="#{pacientes.nombre} #{pacientes.primerApellido} #{pacientes.segundoApellido}">
+                            <p:outputLabel value="#{pacientes.nombre} #{pacientes.primerApellido} #{pacientes.segundoApellido}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Teléfono" sortBy="#{pacientes.telefono}" filterBy="#{pacientes.telefono}" filterMatchMode="contains">
+                            <p:outputLabel value="#{pacientes.telefono}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Celular" sortBy="#{pacientes.celular}" filterBy="#{pacientes.celular}" filterMatchMode="contains">
+                            <p:outputLabel value="#{pacientes.celular}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Correo" sortBy="#{pacientes.correo}" filterBy="#{pacientes.correo}" filterMatchMode="contains">
+                            <p:outputLabel value="#{pacientes.correo}"/>
+                        </p:column>
+                        
+                        <p:column style="width:32px; text-align: center;">
+                            <p:commandButton icon="ui-icon-pencil" action="informacion?faces-redirect=true" title="Actualizar datos del paciente" update="formPacientes">
+                               <f:setPropertyActionListener value="#{pacientes}" target="#{paciente}"/>
+                           </p:commandButton>
+                       </p:column>
+                    </p:dataTable>
+                </h:form>
+            </section>
+        </div>
+    </ui:define>
+</ui:composition>

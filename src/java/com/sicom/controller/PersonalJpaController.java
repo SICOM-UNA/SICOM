@@ -307,7 +307,22 @@ public class PersonalJpaController implements Serializable {
             em.close();
         }
     }
-
+    
+    public List<Personal> findPersonalByNombreCompleto(String nombre, String primerApellido, String segundoApellido) {
+        EntityManager em = getEntityManager();
+        List<Personal> listaPersonal = new ArrayList<>();
+        try {
+            Query query = em.createQuery("select p from Personal p where p.nombre like ?1 and p.primerApellido like ?2 and p.segundoApellido like ?3");
+            query.setParameter(1, "%" + nombre.trim() + "%");
+            query.setParameter(2, "%" + primerApellido.trim() + "%");
+            query.setParameter(3, "%" + segundoApellido.trim() + "%");
+            listaPersonal = (List<Personal>)query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+            
+        return listaPersonal;
+    }
 
     public int getPersonalCount() {
         EntityManager em = getEntityManager();

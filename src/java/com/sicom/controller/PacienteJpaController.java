@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Expediente;
 import com.sicom.entities.Paciente;
+import com.sicom.entities.Personal;
 import com.sicom.entities.Responsable;
 import java.util.ArrayList;
 import java.util.List;
@@ -182,6 +183,22 @@ public class PacienteJpaController implements Serializable {
         } finally {
             em.close();
         }
+    }
+    
+    public List<Paciente> findPacienteByNombreCompleto(String nombre, String primerApellido, String segundoApellido) {
+        EntityManager em = getEntityManager();
+        List<Paciente> listaPacientes = new ArrayList<>();
+        try {
+            Query query = em.createQuery("select p from Paciente p where p.nombre like ?1 and p.primerApellido like ?2 and p.segundoApellido like ?3");
+            query.setParameter(1, "%" + nombre.trim() + "%");
+            query.setParameter(2, "%" + primerApellido.trim() + "%");
+            query.setParameter(3, "%" + segundoApellido.trim() + "%");
+            listaPacientes = (List<Paciente>)query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+            
+        return listaPacientes;
     }
 
     public int getPacienteCount() {

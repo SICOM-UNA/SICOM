@@ -47,12 +47,19 @@ and open the template in the editor.
 
                         <p:submenu label="Pacientes" icon="ui-icon-person">
                             <p:menuitem value="Agregar" url="/app/paciente/agregar" icon="ui-icon-plus"/>
-                            <p:menuitem value="Buscar" url="/app/paciente/consultar" icon="ui-icon-search"/>
+                            <p:submenu label="Buscar" icon="ui-icon-search">
+                                <p:menuitem value="Por cédula" url="/app/paciente/consultarPorCedula"/>
+                                <p:menuitem value="Por nombre" url="/app/paciente/consultarPorNombre"/>
+                            </p:submenu>
                         </p:submenu>
          
                         <p:submenu label="Personal" icon="ui-icon-key">
                             <p:menuitem value="Agregar" url="/app/personal/agregar" icon="ui-icon-plus"/>
-                            <p:menuitem value="Buscar" url="/app/personal/consultar" icon="ui-icon-search"/>
+                            <p:submenu label="Buscar" icon="ui-icon-search">
+                                <p:menuitem value="Por cédula" url="/app/personal/consultarPorCedula"/>
+                                <p:menuitem value="Por nombre" url="/app/personal/consultarPorNombre"/>
+                            </p:submenu>
+                            
                         </p:submenu>
                         
                         <p:menuitem value="Citas" url="/app/calendario/seleccion" icon="ui-icon-calendar"/>

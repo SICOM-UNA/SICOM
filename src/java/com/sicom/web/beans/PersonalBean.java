@@ -111,7 +111,25 @@ public class PersonalBean implements Serializable {
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El personal con la identificación " + nuevoPersonal.getCedula() + " no ha sido encontrado", null));
             
-            return "consultar";
+            return "consultarPorCedula";
+        }
+    }
+    
+    /**
+     * Consultar personal por nombre
+     * @return la página a la cual será redireccionado el usuario
+     */
+    public String consultarPersonalPorNombre() {
+        listaPersonal = pjc.findPersonalByNombreCompleto(nuevoPersonal.getNombre(), nuevoPersonal.getPrimerApellido(), nuevoPersonal.getSegundoApellido());
+
+        if (!listaPersonal.isEmpty()) {
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("listaPersonal", listaPersonal);
+            
+            return "resultados";
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No hay resultados que mostrar, por favor intente con otros valores", null));
+            
+            return "consultarPorNombre";
         }
     }
 

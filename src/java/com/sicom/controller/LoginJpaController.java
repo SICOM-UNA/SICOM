@@ -191,6 +191,20 @@ public class LoginJpaController implements Serializable {
         }
     }
 
+    public Personal findPersonalByLoginUsuario(String loginUsuario) {
+        EntityManager em = getEntityManager();
+        Personal personal = new Personal();
+        try {
+            Query query = em.createQuery("select p from Personal p where p.loginUsuario.usuario = ?1");
+            query.setParameter(1, loginUsuario);
+            personal = (Personal)query.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+            
+        return personal;
+    }
+    
     public int getLoginCount() {
         EntityManager em = getEntityManager();
         try {

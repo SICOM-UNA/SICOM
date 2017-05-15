@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="/WEB-INF/templates/default.xhtml" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <div id="wrapper">
+            <section>
+                <h:form>
+                    <h:inputHidden value="#{personalBean.setListaPersonal(listaPersonal)}"/>
+                </h:form>
+                
+                <h:form id="formPersonal">
+                    <p:dataTable value="#{personalBean.listaPersonal}" var="personals" paginator="true" paginatorPosition="bottom" rows="10"
+                        rowsPerPageTemplate="10 25 50" filterEvent="enter" style="text-align: center">
+                        
+                        <p:column headerText="Cédula" sortBy="#{personals.cedula}" filterBy="#{personals.cedula}" filterMatchMode="contains">
+                            <p:outputLabel value="#{personals.cedula}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Nombre" sortBy="#{personals.nombre}" filterMatchMode="contains"
+                            filterBy="#{personals.nombre} #{personals.primerApellido} #{personals.segundoApellido}">
+                            <p:outputLabel value="#{personals.nombre} #{personals.primerApellido} #{personals.segundoApellido}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Teléfono" sortBy="#{personals.telefono}" filterBy="#{personals.telefono}" filterMatchMode="contains">
+                            <p:outputLabel value="#{personals.telefono}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Celular" sortBy="#{personals.celular}" filterBy="#{personals.celular}" filterMatchMode="contains">
+                            <p:outputLabel value="#{personals.celular}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Correo" sortBy="#{personals.correo}" filterBy="#{personals.correo}" filterMatchMode="contains">
+                            <p:outputLabel value="#{personals.correo}"/>
+                        </p:column>
+                        
+                        <p:column style="width:32px; text-align: center;">
+                            <p:commandButton icon="ui-icon-pencil" action="informacion?faces-redirect=true" title="Actualizar datos del personal" update="formPersonal">
+                               <f:setPropertyActionListener value="#{personals}" target="#{personal}"/>
+                           </p:commandButton>
+                       </p:column>
+                    </p:dataTable>
+                </h:form>
+            </section>
+        </div>
+    </ui:define>
+</ui:composition>

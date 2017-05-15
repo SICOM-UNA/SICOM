@@ -3,10 +3,8 @@ package com.sicom.web.beans;
 import com.sicom.controller.PacienteJpaController;
 
 import com.sicom.controller.ResponsableJpaController;
-import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.entities.Paciente;
 import com.sicom.entities.Responsable;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,9 +21,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.Years;
 import org.primefaces.context.RequestContext;
 
 @ManagedBean
@@ -57,11 +52,10 @@ public class PacienteBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
         Map<String, Object> sessionMap = ec.getSessionMap();
+        Paciente paciente = (Paciente)sessionMap.get("paciente");
 
-        Paciente p = (Paciente) sessionMap.get("paciente");
-
-        if (p != null) {
-            selectedPaciente = pjc.findPaciente(p.getCedula());
+        if (paciente != null) {
+            selectedPaciente = pjc.findPaciente(paciente.getCedula());
             sessionMap.put("paciente", selectedPaciente);
         } else {
             selectedPaciente = new Paciente();
@@ -121,7 +115,7 @@ public class PacienteBean implements Serializable {
      * Muestra los datos del paciente solicitado por el usuario
      * @return la página a la cual será redireccionado el usuario
      */
-    public String consultar() {
+    public String consultarPorCedula() {
         selectedPaciente = pjc.findPaciente(nuevoPaciente.getCedula());
 
         if (selectedPaciente != null) {
@@ -131,7 +125,25 @@ public class PacienteBean implements Serializable {
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El paciente con la identificación " + nuevoPaciente.getCedula() + " no ha sido encontrado", null));
             
-            return "consultar";
+            return "consultarPorCedula";
+        }
+    }
+        
+    /**
+     * Consultar paciente por nombre
+     * @return la página a la cual será redireccionado el usuario
+     */
+    public String consultarPacientePorNombre() {
+        listaPacientes = pjc.findPacienteByNombreCompleto(nuevoPaciente.getNombre(), nuevoPaciente.getPrimerApellido(), nuevoPaciente.getSegundoApellido());
+
+        if (!listaPacientes.isEmpty()) {
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("listaPacientes", listaPacientes);
+            
+            return "resultados";
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No hay resultados que mostrar, por favor intente con otros valores", null));
+            
+            return "consultarPorNombre";
         }
     }
     
