@@ -60,7 +60,7 @@ public class ExpedienteBean implements Serializable {
     private Valor selectedExamen;
     private UploadedFile archivo = null;
     private Documentos documento;
-    private List<Documentos> ultimos5Docs = new ArrayList<Documentos>();
+    private List<Documentos> ultimosDocumentoss = new ArrayList<Documentos>();
     private List<Documentos> listaDocumentos = new ArrayList<Documentos>();
     private DocumentosJpaController documentosController;
 
@@ -70,7 +70,6 @@ public class ExpedienteBean implements Serializable {
         documentosController = new DocumentosJpaController(emf);
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
-
         paciente = (Paciente) ec.getSessionMap().get("paciente");
 
         if (paciente != null) {
@@ -78,7 +77,6 @@ public class ExpedienteBean implements Serializable {
 
             if (expediente == null) {
                 expediente = ejc.findExpedienteID(paciente.getCedula());
-
                 paciente.setExpediente(expediente);
                 ec.getRequestMap().put("paciente", paciente);
             }
@@ -93,17 +91,13 @@ public class ExpedienteBean implements Serializable {
     }
 
     public void historiaClinica() {
-
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
-
         String URL = ec.getRequestContextPath();
         Login log = (Login) ec.getSessionMap().get("login");
         Personal p = log.getPersonal();
-
         int consultorio = p.getDepartamentoId().getId();
         boolean permiso_editar = (p.getAutorizacionNivel().getNivel() < 5);
-
         String direccion = createUrl(consultorio, permiso_editar);
         subirVerificacion(consultorio, ec);
 
@@ -151,7 +145,6 @@ public class ExpedienteBean implements Serializable {
      * @return Object
      */
     private void subirVerificacion(int consultorio, ExternalContext ec) {
-
         Expediente e = paciente.getExpediente();
 
         switch (consultorio) {
@@ -165,12 +158,9 @@ public class ExpedienteBean implements Serializable {
     }
 
     public void nuevoExamen() {
-
         if (this.selectedExamen != null) {
-
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
-
             String URL = ec.getRequestContextPath();
 
             switch (selectedExamen.getValorPK().getId()) {
@@ -205,14 +195,6 @@ public class ExpedienteBean implements Serializable {
 
     }
 
-    public void setSelectedExamen(Valor selectedExamen) {
-        this.selectedExamen = selectedExamen;
-    }
-
-    public Valor getSelectedExamen() {
-        return selectedExamen;
-    }
-
     private void nuevaLinea(PDPageContentStream content, int x, int y, int tamañoFuente, String texto) throws IOException {
         content.beginText();
         content.setFont(PDType1Font.HELVETICA, tamañoFuente);
@@ -225,28 +207,32 @@ public class ExpedienteBean implements Serializable {
         PDRectangle mediabox = page.findMediaBox();
         float margin = 52;
         float width = mediabox.getWidth() - 2 * margin;
-
         PDFont pdfFont = PDType1Font.HELVETICA;
         float fontSize = 10;
-
         List<String> lines = new ArrayList<String>();
         int lastSpace = -1;
+        
         while (texto.length() > 0) {
             int spaceIndex = 0;
+            
             if (texto.indexOf(' ', lastSpace + 1) > texto.indexOf("\n", lastSpace + 1)) {
                 spaceIndex = texto.indexOf(' ', lastSpace + 1);
             } else {
                 spaceIndex = texto.indexOf("\n", lastSpace + 1);
             }
+            
             if (spaceIndex < 0) {
                 spaceIndex = texto.length();
             }
+            
             String subString = texto.substring(0, spaceIndex);
             float size = fontSize * pdfFont.getStringWidth(subString) / 500;
+            
             if (size > width) {
                 if (lastSpace < 0) {
                     lastSpace = spaceIndex;
                 }
+                
                 subString = texto.substring(0, lastSpace);
                 lines.add(subString);
                 texto = texto.substring(lastSpace).trim();
@@ -267,15 +253,14 @@ public class ExpedienteBean implements Serializable {
             contentStream.endText();
             startY -= 10;
         }
+        
         return startY;
     }
 
     public void exportar() throws COSVisitorException {
-
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
         Login log = (Login) ec.getSessionMap().get("login");
-
         Personal p = log.getPersonal();
         int consultorio = p.getDepartamentoId().getId();
 
@@ -290,11 +275,9 @@ public class ExpedienteBean implements Serializable {
         } else {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "El paciente no posee historia clínica.", null));
         }
-
     }
 
     public void exportarGinecologia(AntecedentesGinecologia antecedentesGinecologia) {
-
         try {
             Date fecha = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -302,11 +285,8 @@ public class ExpedienteBean implements Serializable {
             String fileName = "Historia_Clinica_" + paciente.getNombre() + "_" + paciente.getPrimerApellido() + ".pdf";
             PDDocument doc = new PDDocument();
             PDPage page = new PDPage();
-
             int y = 720;
-
             doc.addPage(page);
-
             PDPageContentStream content = new PDPageContentStream(doc, page);
 
             //<editor-fold defaultstate="collapsed" desc="Header del pdf">
@@ -583,17 +563,12 @@ public class ExpedienteBean implements Serializable {
 //</editor-fold>
 
             System.out.println("El Archivo fue guardado");
-
         } catch (IOException e) {
-
             System.out.println(e.getMessage());
-
         }
-
     }
 
     public void exportarOdontologia(AntecedentesOdontologia antecedentesOdontologia) {
-
         try {
             Date fecha = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -601,11 +576,8 @@ public class ExpedienteBean implements Serializable {
             String fileName = "Historia_Clinica_" + paciente.getNombre() + "_" + paciente.getPrimerApellido() + ".pdf";
             PDDocument doc = new PDDocument();
             PDPage page = new PDPage();
-
             int y = 720;
-
             doc.addPage(page);
-
             PDPageContentStream content = new PDPageContentStream(doc, page);
 
             //<editor-fold defaultstate="collapsed" desc="Header del pdf">
@@ -760,38 +732,9 @@ public class ExpedienteBean implements Serializable {
             System.out.println("El Archivo fue guardado");
 
         } catch (IOException e) {
-
             System.out.println(e.getMessage());
 
         }
-
-    }
-
-    public UploadedFile getArchivo() {
-        return archivo;
-    }
-
-    public void setArchivo(UploadedFile archivo) {
-        this.archivo = archivo;
-    }
-
-    public List<Documentos> getUltimos5Docs() {
-        ultimos5Docs=documentosController.findUltimos(paciente.getCedula());
-
-        return ultimos5Docs;
-    }
-
-    public void setUltimos5Docs(List<Documentos> ultimos5Docs) {
-        this.ultimos5Docs = ultimos5Docs;
-    }
-
-    public List<Documentos> getListaDocumentos() {
-        this.listaDocumentos = documentosController.findRDocumentosByCedulaPaciente(expediente.getPacientecedula().getCedula());
-        return listaDocumentos;
-    }
-
-    public void setListaDocumentos(List<Documentos> listaDocumentos) {
-        this.listaDocumentos = listaDocumentos;
     }
 
     public void descargarDocumento(Documentos doc) {
@@ -808,7 +751,6 @@ public class ExpedienteBean implements Serializable {
             ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + doc.getNombre() + "\"");
 
             OutputStream output = ec.getResponseOutputStream();
-
             output.write(byteoutput.toByteArray());
 
             fc.responseComplete();
@@ -818,7 +760,6 @@ public class ExpedienteBean implements Serializable {
     }
 
     public void eliminarDocumento(Documentos doc) {
-
         try {
             documentosController.destroy(doc.getId());
             FacesMessage message = new FacesMessage("Archivo eliminado.");
@@ -828,7 +769,6 @@ public class ExpedienteBean implements Serializable {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al eliminar el archivo", null));
             Logger.getLogger(ExpedienteBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     public void importar(FileUploadEvent event) {
@@ -838,7 +778,6 @@ public class ExpedienteBean implements Serializable {
 
             byte[] bytes = archivo.getContents();
             documento.setArchivo(bytes);
-
             documento.setFecha(new Date());
             String filename = archivo.getFileName();
             //String ext = filename.substring(filename.lastIndexOf('.'), filename.length());
@@ -850,9 +789,7 @@ public class ExpedienteBean implements Serializable {
             Login log = (Login) ec.getSessionMap().get("login");
             Personal p = log.getPersonal();
             documento.setDepartamentoid(p.getDepartamentoId());
-
             documento.setExpedientePacientecedula(expediente);
-
             documentosController.create(documento);
 
             FacesMessage message = new FacesMessage(filename + " se ha subido.");
@@ -861,7 +798,41 @@ public class ExpedienteBean implements Serializable {
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al subir el archivo", null));
         }
+    }
+    
+    public List<Documentos> getUltimosDocumentos(Integer maxResults) {
+        ultimosDocumentoss = documentosController.findUltimos(paciente.getCedula(), maxResults);
 
+        return ultimosDocumentoss;
     }
 
+    public void setUltimosDocumentoss(List<Documentos> ultimosDocumentoss) {
+        this.ultimosDocumentoss = ultimosDocumentoss;
+    }
+    
+    public List<Documentos> getListaDocumentos() {
+        this.listaDocumentos = documentosController.findRDocumentosByCedulaPaciente(expediente.getPacientecedula().getCedula());
+        
+        return listaDocumentos;
+    }
+
+    public void setListaDocumentos(List<Documentos> listaDocumentos) {
+        this.listaDocumentos = listaDocumentos;
+    }
+    
+    public UploadedFile getArchivo() {
+        return archivo;
+    }
+
+    public void setArchivo(UploadedFile archivo) {
+        this.archivo = archivo;
+    }
+    
+    public void setSelectedExamen(Valor selectedExamen) {
+        this.selectedExamen = selectedExamen;
+    }
+
+    public Valor getSelectedExamen() {
+        return selectedExamen;
+    }
 }

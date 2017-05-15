@@ -198,7 +198,7 @@ public class DocumentosJpaController implements Serializable {
     }
 
     
-    public List<Documentos> findUltimos(String cedulaPaciente) {
+    public List<Documentos> findUltimos(String cedulaPaciente, Integer maxResults) {
         EntityManager em = getEntityManager();
         try {
             
@@ -209,12 +209,12 @@ public class DocumentosJpaController implements Serializable {
             
             
             Query query = em.createQuery("select r from Documentos r where r.expedientePacientecedula.pacientecedula.cedula = ?1");
-            query.setParameter( 1, cedulaPaciente);
+            query.setParameter(1, cedulaPaciente);
             if (!false) {
-                query.setMaxResults(5);
+                query.setMaxResults(maxResults);
                 
-                if(count>5)
-                    query.setFirstResult(count-5);
+                if(count>maxResults)
+                    query.setFirstResult(count-maxResults);
                 else
                     query.setFirstResult(0);
             }
@@ -223,7 +223,6 @@ public class DocumentosJpaController implements Serializable {
             em.close();
         }
     }
-    
     
     public int getDocumentosCount() {
         EntityManager em = getEntityManager();
