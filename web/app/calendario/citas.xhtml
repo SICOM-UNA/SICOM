@@ -31,7 +31,7 @@
                             <p:inputMask id="telefono" value="#{citasBean.nuevaCita.telefono}" mask="9999-9999" required="true" requiredMessage="- Falta el teléfono" placeholder="0000-0000"/>
 
                             <p:outputLabel value="Hora Inicial" />
-                            <p:calendar id="time1" value="#{citasBean.event.startDate}" timeZone="GMT-6" pattern="dd/MM/yyyy HH:mm" minHour="6" maxHour="20"/>
+                            <p:calendar id="time1" value="#{citasBean.event.startDate}" timeZone="GMT-6" pattern="dd/MM/yyyy HH:mm" minHour="6" maxHour="20" stepMinute="30"/>
 
                             <p:outputLabel for="motivo" value="Motivo de Cita" />
                             <h:panelGrid columns="1">
