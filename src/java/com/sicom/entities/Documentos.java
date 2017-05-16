@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Documentos.findAll", query = "SELECT d FROM Documentos d"),
     @NamedQuery(name = "Documentos.findById", query = "SELECT d FROM Documentos d WHERE d.id = :id"),
+    @NamedQuery(name = "Documentos.findByNombre", query = "SELECT d FROM Documentos d WHERE d.nombre = :nombre"),
     @NamedQuery(name = "Documentos.findByFecha", query = "SELECT d FROM Documentos d WHERE d.fecha = :fecha")})
 public class Documentos implements Serializable {
 
@@ -44,8 +45,11 @@ public class Documentos implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @Lob
+    @Column(name = "archivo")
+    private byte[] archivo;
+    @Basic(optional = false)
     @Column(name = "nombre")
-    private byte[] nombre;
+    private String nombre;
     @Basic(optional = false)
     @Column(name = "fecha")
     @Temporal(TemporalType.DATE)
@@ -64,9 +68,10 @@ public class Documentos implements Serializable {
         this.id = id;
     }
 
-    public Documentos(Integer id, byte[] nombre, Date fecha) {
+    public Documentos(Integer id, byte[] archivo, String nombre, Date fecha) {
         this.id = id;
-        this.nombre = nombre;
+        this.archivo = archivo;
+        this.nombre=nombre;
         this.fecha = fecha;
     }
 
@@ -78,11 +83,19 @@ public class Documentos implements Serializable {
         this.id = id;
     }
 
-    public byte[] getNombre() {
+    public byte[] getArchivo() {
+        return archivo;
+    }
+
+    public void setArchivo(byte[] archivo) {
+        this.archivo = archivo;
+    }
+    
+    public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(byte[] nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 

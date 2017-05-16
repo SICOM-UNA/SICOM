@@ -11,63 +11,65 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form>
-                    <h:inputHidden value="#{pacienteBean.setSelectedPaciente(paciente)}"/>
-                </h:form>
-                
-                <h:form id="formInformacion">
-                    <p:panel header="Datos del paciente">
-                        <p:messages id="msg" autoUpdate="true" closable="true"/>
-                        
-                        <p:tabView orientation="top">
-                            <p:tab title="Información Personal">
-                                <h:panelGrid columns="4" cellpadding="3" cellspacing="3">
-                                    <p:outputLabel value="Identificación: "/>
+                <p:panel header="Datos del paciente">
+                    <p:messages id="msg" autoUpdate="true" closable="true" />
+
+                    <p:tabView id="tabView" orientation="top" activeIndex="2">
+                        <p:tab title="Información Personal">
+                            <h:form id="formPaciente">
+                                <h:panelGrid columns="4" cellpadding="5" >
+                                    <p:outputLabel class="infoLabel" value="Identificación:"/>
                                     <p:inputText  value="#{pacienteBean.selectedPaciente.cedula}" readonly="true"/>
 
-                                    <p:outputLabel value="Fecha Nacimiento: "/>
+                                    <p:outputLabel class="infoLabel" value="Fecha Nacimiento:"/>
                                     <p:inputText value="#{pacienteBean.selectedPaciente.nacimiento}" readonly="true">   
-                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
                                     </p:inputText>
 
-                                    <p:outputLabel value="Nombre: "/>
+                                    <p:outputLabel class="infoLabel" value="Nombre:"/>
                                     <p:inputText value="#{pacienteBean.selectedPaciente.nombre}" readonly="true"/>
 
-                                    <p:outputLabel value="Edad: "/>
-                                    <p:inputText value="#{now.year - pacienteBean.selectedPaciente.nacimiento.year}" readonly="true"/>
+                                    <p:outputLabel class="infoLabel" value="Edad:"/>
+                                    <p:inputText value="#{now.year - pacienteBean.selectedPaciente.nacimiento.year}" readonly="true"/>   
 
-                                    <p:outputLabel value="Apellidos: "/>
+                                    <p:outputLabel class="infoLabel" value="Apellidos:"/>
                                     <p:inputText value="#{pacienteBean.selectedPaciente.primerApellido} #{pacienteBean.selectedPaciente.segundoApellido}" readonly="true"/>
 
 
-                                    <p:outputLabel value="Género: "/>
+                                    <p:outputLabel class="infoLabel" value="Género:"/>
                                     <p:inputText value="#{pacienteBean.selectedPaciente.genero}" readonly="true"/>
 
-                                    <p:outputLabel value="Teléfono: "/>
+                                    <p:outputLabel class="infoLabel" value="Teléfono 1:"/>
                                     <p:inputText value="#{pacienteBean.selectedPaciente.telefono}" readonly="true"/>
 
-                                    <p:outputLabel value="Estado Civil: "/>
+
+                                    <p:outputLabel class="infoLabel" value="Estado Civil:"/>
                                     <p:inputText value="#{pacienteBean.selectedPaciente.estadoCivil}" readonly="true"/>
 
-                                    <p:outputLabel value="Celular: "/>
+                                    <p:outputLabel class="infoLabel" value="Teléfono 2:"/>
                                     <p:inputText value="#{pacienteBean.selectedPaciente.celular}" readonly="true"/>
 
-                                    <p:outputLabel value="Correo electrónico: "/>
+                                    <p:outputLabel class="infoLabel" value="Correo electrónico:"/>
                                     <p:inputText value="#{pacienteBean.selectedPaciente.correo}" readonly="true" />
 
-                                    <p:outputLabel value = "Ocupación: "/>
+                                    <p:outputLabel class="infoLabel" value = "Ocupación:"/>
                                     <p:inputText value = "#{pacienteBean.selectedPaciente.ocupacion}" readonly="true"/>
 
-                                    <p:outputLabel value="Domicilio: "/>
+                                    <p:outputLabel class="infoLabel" value="Domicilio:"/>
                                     <p:inputTextarea value="#{pacienteBean.selectedPaciente.domicilio}" readonly="true"/>
-                                </h:panelGrid>
-                            </p:tab>
 
-                            <p:tab title="Responsables">
+                                    <p:outputLabel/>
+                                    <p:commandButton value="Modificar Información" title="Click para modificar información del paciente" update="formPaciente" action="#{pacienteBean.modificaRedirect()}"/>
+                                </h:panelGrid>
+                            </h:form>
+                        </p:tab>
+
+                        <p:tab title="Responsables">
+                            <h:form id="formResponsables">
                                 <p:dataList value="#{pacienteBean.selectedPaciente.responsableList}" var="responsable" itemType="none">
                                     <p:panel header="#{responsable.nombre}">
-                                        <h:panelGrid columns="2" cellpadding="3" cellspacing="3">
-                                            <p:outputLabel for="cedula" value="Identificación: "/>
+                                        <h:panelGrid columns="2" cellpadding="6">
+                                            <p:outputLabel for="cedula" value="Identificación:"/>
                                             <p:inputText id="cedula" value="#{responsable.cedula}" readonly="true"/>
 
                                             <p:outputLabel value="Teléfono: " for="telefono"/>
@@ -81,15 +83,19 @@
                                         </h:panelGrid>
                                     </p:panel>
                                 </p:dataList>
-                            </p:tab>
+                            </h:form>
+                        </p:tab>
 
-                            <p:tab title="Expediente">
-                                <div class="ui-grid ui-grid-responsive">
-                                    <div class="ui-grid-row">
-                                        <div class="ui-grid-col-4">
-                                            <p:panel header="Histroria Clínica">
+                        <!--    EXPEDIENTE  -->
+
+                        <p:tab title="Expediente" >
+                            <div class="ui-grid ui-grid-responsive">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <h:form id="formHistoriaClinica">
+                                            <p:panel header="Historia Clínica">
                                                 <h:panelGrid columns="2">
-                                                    <p:commandButton value="Editar" icon="ui-icon-pencil" action="#{expedienteBean.historiaClinica()}" update="formInformacion"/>
+                                                    <p:commandButton value="Editar" icon="ui-icon-pencil" action="#{expedienteBean.historiaClinica()}" update="formHistoriaClinica"/>
                                                     <p:commandButton value="Descargar" icon="ui-icon-circle-arrow-s" action="#{expedienteBean.exportar}" ajax="false">
                                                         <!--<p:confirm header="Descarga" message="¿Desea descargar la historia clínica?" icon="ui-icon-alert"/>-->
                                                     </p:commandButton>
@@ -99,33 +105,83 @@
                                                     </p:confirmDialog>
                                                 </h:panelGrid>
                                             </p:panel>
-                                        </div>
-                                        
-                                        <div class="ui-grid-col-4">
+                                        </h:form>
+                                    </div>
+
+                                    <div class="ui-grid-col-6">
+                                        <h:form id="formExamenes">
                                             <p:panel header="Exámenes">
                                                 <h:panelGrid columns="3">
                                                     <p:selectOneMenu id="departamento" value="#{expedienteBean.selectedExamen}" converter="omnifaces.SelectItemsConverter">
-                                                    <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                                    <f:selectItems value="#{valoresBean.examenes}" var="selectedExamen" itemLabel="#{selectedExamen.descripcion}" itemValue="#{examenSelected}"/>
-                                                </p:selectOneMenu>
-                                                    <p:commandButton icon="ui-icon-plus"  update="formInformacion" action="#{expedienteBean.nuevoExamen}"/>
-                                                    <p:commandButton icon="ui-icon-search"  update="formInformacion"/>
+
+                                                        <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
+                                                        <f:selectItems value="#{valoresBean.examenes}" var="selectedExamen" itemLabel="#{selectedExamen.descripcion}" itemValue="#{examenSelected}"/>
+                                                    </p:selectOneMenu>
+                                                    <p:commandButton icon="ui-icon-plus" update="formExamenes" action="#{expedienteBean.nuevoExamen}"/>
+                                                    <p:commandButton icon="ui-icon-search" update="formExamenes"/>
                                                 </h:panelGrid>
                                             </p:panel>
-                                        </div>
-                                        <div class="ui-grid-col-4">
-                                            <p:panel header="Importación" >
-
-                                            </p:panel>
-                                        </div>
+                                        </h:form>
                                     </div>
                                 </div>
-                            </p:tab>
-                        </p:tabView>
-                    </p:panel>
-                    
-                    <p:commandButton value="Actualizar datos" icon="ui-icon-pencil" title="Modificar la información del paciente" update="formInformacion" action="editar?faces-redirect=true"/>
-                </h:form>
+
+                                <!--    IMPORTACIÓN DE DOCUMENTOS   -->
+
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <h:form id="formImportacion">
+                                            <p:panel header="Importación de documentos">
+                                                <p:fileUpload uploadLabel="Elegir un archivo" mode="advanced" fileUploadListener="#{expedienteBean.importar}" 
+                                                    update="formImportacion:tableDocumentos :formDocumentos:tableDialog" invalidSizeMessage="El archivo elegido es muy grande" auto="true" 
+                                                    sizeLimit="10485760" label="Subir documento" skinSimple="true" previewWidth="0" multiple="false"/>
+
+                                                <h:panelGrid columns="1" width="100%" >
+                                                    <p:dataTable id="tableDocumentos" value="#{expedienteBean.getUltimosDocumentos(5)}" var="documentos">
+                                                        <p:column headerText="Documento" style="font-size:15px;">
+                                                            <h:commandLink  value="#{documentos.nombre}" action="#{expedienteBean.descargarDocumento(documentos)}" style="font-size:15px;" title="Click para descargar"/>
+                                                        </p:column>
+
+                                                        <p:column headerText="Fecha de subida" style="font-size:15px;" width="32%">
+                                                            <h:outputText value="#{documentos.fecha}" style="font-size:15px;">
+                                                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                                                            </h:outputText>
+                                                        </p:column>
+                                                    </p:dataTable>
+
+                                                    <p:commandButton onclick="PF('dialogDocumentos').show()" update=":formDocumentos" value="Ver todos los documentos" type="button" style="margin: 15px 0;"/>
+                                                </h:panelGrid>
+                                            </p:panel>
+                                        </h:form>
+                                    </div>
+                                </div>
+                            </div>
+                        </p:tab>
+                    </p:tabView>
+                </p:panel>
+                
+                <p:dialog widgetVar="dialogDocumentos" header="Documentos Importados" closeOnEscape="true" hideEffect="fade" dynamic="true" width="600">
+                    <h:form id="formDocumentos">
+                        <p:dataTable id="tableDialog" value="#{expedienteBean.listaDocumentos}" var="documentos" rows="5" paginator="true" paginatorPosition="bottom">
+                            <p:column headerText="Documento" style="font-size:15px;">
+                                <h:commandLink  value="#{documentos.nombre}" action="#{expedienteBean.descargarDocumento(documentos)}" style="font-size:15px;" title="Click para descargar"/>
+                            </p:column>
+                            
+                            <p:column headerText="Fecha de Subida" style="font-size:15px;" width="22%">
+                                <h:outputText value="#{documentos.fecha}" style="font-size:15px;">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </h:outputText>
+                            </p:column>
+                            
+                            <p:column headerText="Eliminar" style="font-size:15px;" width="15%">
+                                <p:commandButton icon="ui-icon-trash" action="#{expedienteBean.eliminarDocumento(documentos)}" title="Click para eliminar" update="formDocumentos :tabView:formImportacion :msg"/>
+                            </p:column>
+                        </p:dataTable>
+                        
+                        <center>
+                            <p:commandButton value="Cerrar ventana" onclick="PF('dialogDocumentos').hide()" style="margin: 15px;"/>
+                        </center>
+                    </h:form>
+                </p:dialog>
             </section>
         </div>
     </ui:define>

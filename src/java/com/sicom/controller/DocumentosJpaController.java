@@ -14,6 +14,7 @@ import javax.persistence.criteria.Root;
 import com.sicom.entities.Departamento;
 import com.sicom.entities.Documentos;
 import com.sicom.entities.Expediente;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -180,7 +181,49 @@ public class DocumentosJpaController implements Serializable {
             em.close();
         }
     }
+    
+    public List<Documentos> findRDocumentosByCedulaPaciente(String cedulaPaciente) {
+        EntityManager em = getEntityManager();
+        List<Documentos> listaDocumentos = new ArrayList<>();
+        
+        try {
+            Query query = em.createQuery("select r from Documentos r where r.expedientePacientecedula.pacientecedula.cedula = ?1");
+            query.setParameter( 1, cedulaPaciente);
+            listaDocumentos = (List<Documentos>)query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+            
+        return listaDocumentos;
+    }
 
+    
+    public List<Documentos> findUltimos(String cedulaPaciente, Integer maxResults) {
+        EntityManager em = getEntityManager();
+        try {
+            
+            //contar los documentos del paciente
+            Query query2= em.createQuery("select count(r) from Documentos r where r.expedientePacientecedula.pacientecedula.cedula = ?1");
+            query2.setParameter( 1, cedulaPaciente);
+            int count=((Long) query2.getSingleResult()).intValue();
+            
+            
+            Query query = em.createQuery("select r from Documentos r where r.expedientePacientecedula.pacientecedula.cedula = ?1");
+            query.setParameter(1, cedulaPaciente);
+            if (!false) {
+                query.setMaxResults(maxResults);
+                
+                if(count>maxResults)
+                    query.setFirstResult(count-maxResults);
+                else
+                    query.setFirstResult(0);
+            }
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+    
     public int getDocumentosCount() {
         EntityManager em = getEntityManager();
         try {
