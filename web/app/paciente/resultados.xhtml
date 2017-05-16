@@ -39,7 +39,7 @@
                         </p:column>
                         
                         <p:column style="width:32px; text-align: center;">
-                            <p:commandButton icon="ui-icon-pencil" action="informacion?faces-redirect=true" title="Actualizar datos del paciente" update="formPacientes">
+                            <p:commandButton icon="ui-icon-search" action="#{pacienteBean.redireccionarPaciente(pacientes)}" title="Ver los datos del paciente">
                                <f:setPropertyActionListener value="#{pacientes}" target="#{paciente}"/>
                            </p:commandButton>
                        </p:column>

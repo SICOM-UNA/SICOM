@@ -110,6 +110,18 @@ public class PacienteBean implements Serializable {
         
         return null;
     }
+            
+    /**
+     * Redirecciona el paciente seleccionado en los resultados a la página de informacion
+     * @param paciente
+     * @return informacion
+     */
+    public String redireccionarPaciente(Paciente paciente) {
+        selectedPaciente = pjc.findPaciente(paciente.getCedula());
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("paciente", selectedPaciente);
+        
+        return "informacion?faces-redirect=true";
+    }
     
     /**
      * Muestra los datos del paciente solicitado por el usuario
@@ -139,7 +151,7 @@ public class PacienteBean implements Serializable {
         if (!listaPacientes.isEmpty()) {
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("listaPacientes", listaPacientes);
             
-            return "resultados";
+            return "resultados?faces-redirect=true";
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No hay resultados que mostrar, por favor intente con otros valores", null));
             

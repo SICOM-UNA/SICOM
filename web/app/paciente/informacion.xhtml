@@ -11,9 +11,13 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
+                <h:form>
+                    <h:inputHidden value="#{pacienteBean.setSelectedPaciente(paciente)}"/>
+                </h:form>
+                
                 <h:form id="formInformacion">
                     <p:panel header="Datos del paciente">
-                        <p:messages id="msg" autoUpdate="true" closable="true" />
+                        <p:messages id="msg" autoUpdate="true" closable="true"/>
                         
                         <p:tabView orientation="top">
                             <p:tab title="Información Personal">

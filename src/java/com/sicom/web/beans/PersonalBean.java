@@ -96,7 +96,19 @@ public class PersonalBean implements Serializable {
         
         return null;
     }
-
+        
+    /**
+     * Redirecciona el personal seleccionado en los resultados a la página de informacion
+     * @param personal
+     * @return informacion
+     */
+    public String redireccionarPersonal(Personal personal) {
+        selectedPersonal = pjc.findPersonal(personal.getCedula());
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("personal", selectedPersonal);
+            
+        return "informacion?faces-redirect=true";
+    }
+    
     /**
      * Muestra los datos del personal solicitado por el usuario
      * @return 

@@ -39,7 +39,7 @@
                         </p:column>
                         
                         <p:column style="width:32px; text-align: center;">
-                            <p:commandButton icon="ui-icon-pencil" action="informacion?faces-redirect=true" title="Actualizar datos del personal" update="formPersonal">
+                            <p:commandButton icon="ui-icon-search" action="#{personalBean.redireccionarPersonal(personals)}" title="Ver los datos del personal">
                                <f:setPropertyActionListener value="#{personals}" target="#{personal}"/>
                            </p:commandButton>
                        </p:column>
