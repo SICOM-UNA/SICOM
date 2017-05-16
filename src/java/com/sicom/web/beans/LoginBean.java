@@ -1,6 +1,5 @@
 package com.sicom.web.beans;
 
-import com.sicom.controller.DepartamentoJpaController;
 import com.sicom.controller.LoginJpaController;
 import com.sicom.controller.PersonalJpaController;
 import com.sicom.entities.Autorizacion;
@@ -9,6 +8,7 @@ import com.sicom.entities.Login;
 import com.sicom.entities.Personal;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -58,23 +58,22 @@ public class LoginBean implements Serializable{
         Login nuevo = ljc.findLogin(login.getUsuario());
 
         if (nuevo != null && nuevo.getContrasena().equals(login.getContrasena())) {
-            
             login = nuevo;
             login.setAutenticado(true);
             Personal personal = login.getPersonal();
 
             if (personal != null) {
-                String dim = ("Masculino".equals(personal.getGenero())) ? "Sr. " : "Sra. ";
                 ec.getFlash().setKeepMessages(true);
-                fc.addMessage("msg", new FacesMessage("Bienvenido " + dim + personal.getNombre().concat(" ") + personal.getPrimerApellido().concat(" ") + personal.getSegundoApellido().concat(".")));
-            }
+                fc.addMessage("msg", new FacesMessage("Bienvenido " + personal.getNombre()));
+                ec.getSessionMap().put("login", login);
 
-            ec.getSessionMap().put("login", login);
-
-            if (from == null || from.isEmpty()) {
-                ec.redirect(originalURL);
+                if (from == null || from.isEmpty()) {
+                    ec.redirect(originalURL);
+                } else {
+                    ec.redirect(from);
+                }
             } else {
-                ec.redirect(from);
+                fc.addMessage("msg", new FacesMessage(FacesMessage.SEVERITY_ERROR, "El usuario no tiene un Personal asociado, por favor contacte con el administrador del sistema", null));
             }
         } else {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Usuario y/o contraseña incorrectos", getLogin().getUsuario()));
@@ -90,22 +89,56 @@ public class LoginBean implements Serializable{
         ec.redirect(ec.getRequestContextPath() + "/login");
         login = new Login();
     }
+    
+    public Boolean visibleUserInRole(String nivelesAutorizacionPermitidos) {
+        String[] nivelesPermitidos = nivelesAutorizacionPermitidos.split(",");
+        List<Autorizacion> nivelesDelUsuario = ((Login) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("login")).getPersonal().getAutorizacionList();
+        
+        for(String nivel:nivelesPermitidos) {
+            for(Autorizacion autorizacion:nivelesDelUsuario) {
+                if(nivel.toLowerCase().trim().equals(autorizacion.getDescripcion().toLowerCase().trim())) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    public Boolean visibleDepartamento(String departamentosPermitidos) {
+        String[] departamentos = departamentosPermitidos.split(",");
+        Departamento departamentoUsuario = ((Login) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("login")).getPersonal().getDepartamentoId();
+        
+        for(String departamento:departamentos) {
+            if(departamento.toLowerCase().trim().equals(departamentoUsuario.getNombre().toLowerCase().trim())) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
+    /**
+     * Si el usuario no tiene los permisos necesarios es redireccionado a otra página
+     * @throws java.io.IOException
+     */
+    public void redireccionarUsuario() throws IOException {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+        String referrer = ec.getRequestHeaderMap().get("referer");
+
+        if(referrer == null) {
+            ec.redirect(ec.getRequestContextPath() + "/app/index");
+        } else {
+            ec.redirect(referrer);
+        }
+    }
+    
     /**
      * @return the login
      */
     public Login getLogin() {
         return login;
-    }
-
-    public String valorAutorizacionPersonal() {
-        Autorizacion au = login.getPersonal().getAutorizacionNivel();
-        return (au == null)? null : au.getDescripcion();
-    }
-
-    public String valorDepartamentoPersonal() {
-        Departamento dpto = login.getPersonal().getDepartamentoId();
-        return (dpto == null)? null : dpto.getNombre();
     }
 
     /**

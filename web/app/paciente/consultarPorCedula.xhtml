@@ -16,7 +16,7 @@
                 </h:form>
                 
                 <h:form id="formPaciente">
-                    <p:panel header="Consultar Paciente">
+                    <p:panel header="Consultar paciente por cédula">
                         <div class="ui-grid ui-grid-responsive">
                             <div class="ui-grid-row">
                                 <div class="ui-grid-col-6" align="center">
@@ -29,13 +29,13 @@
 
                                         <p:outputLabel for="cedula" value="Identificación:"/>
                                         <h:panelGrid id="panelCedula" columns="3">
-                                            <p:inputMask id="cedula" value="#{pacienteBean.selectedPaciente.cedula}" required="true" maxlength="12" 
+                                            <p:inputMask id="cedula" value="#{pacienteBean.nuevoPaciente.cedula}" required="true" maxlength="12" 
                                                 mask="9-9999-9999" placeholder="0-0000-0000" rendered="#{valoresBean.tipoId.toLowerCase().equals('nacional')}">
                                             </p:inputMask>
-                                            <p:inputMask id="residencia" value="#{pacienteBean.selectedPaciente.cedula}" required="true" maxlength="12" 
+                                            <p:inputMask id="residencia" value="#{pacienteBean.nuevoPaciente.cedula}" required="true" maxlength="12" 
                                                 mask="999999999999" placeholder="000000000000" rendered="#{valoresBean.tipoId.toLowerCase().equals('residencia')}">
                                             </p:inputMask>
-                                            <p:inputText id="pasaporte" value="#{pacienteBean.selectedPaciente.cedula}" required="true" maxlength="12" 
+                                            <p:inputText id="pasaporte" value="#{pacienteBean.nuevoPaciente.cedula}" required="true" maxlength="12" 
                                                 rendered="#{valoresBean.tipoId.toLowerCase().equals('pasaporte')}">
                                             </p:inputText>
                                         </h:panelGrid>
@@ -56,7 +56,7 @@
                                 <div class="ui-grid-col-3" align="center">
                                     <f:facet name="footer">
                                         <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                            <p:commandButton value="Consultar" action="#{pacienteBean.buscaIdBase()}" icon="ui-icon ui-icon-search" title="Buscar paciente por número de identificación" update="formPaciente"/>
+                                            <p:commandButton value="Consultar" action="#{pacienteBean.consultarPorCedula}" icon="ui-icon ui-icon-search" title="Buscar paciente por número de identificación" update="formPaciente"/>
                                             <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formPaciente" immediate="true" update="formPaciente">
                                                 <p:resetInput target="formPaciente"/>
                                             </p:commandButton> 

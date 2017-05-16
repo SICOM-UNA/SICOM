@@ -6,18 +6,18 @@
 package com.sicom.entities;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -28,20 +28,26 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Autorizacion.findAll", query = "SELECT a FROM Autorizacion a"),
+    @NamedQuery(name = "Autorizacion.findById", query = "SELECT a FROM Autorizacion a WHERE a.id = :id"),
     @NamedQuery(name = "Autorizacion.findByNivel", query = "SELECT a FROM Autorizacion a WHERE a.nivel = :nivel"),
     @NamedQuery(name = "Autorizacion.findByDescripcion", query = "SELECT a FROM Autorizacion a WHERE a.descripcion = :descripcion")})
 public class Autorizacion implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUnivel = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
     @Basic(optional = false)
     @Column(name = "nivel")
     private Integer nivel;
     @Basic(optional = false)
     @Column(name = "descripcion")
     private String descripcion;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "autorizacionNivel")
-    private List<Personal> personalList;
+    @JoinColumn(name = "Personal_cedula", referencedColumnName = "cedula")
+    @ManyToOne(optional = false)
+    private Personal personalCedula;
 
     public Autorizacion() {
     }
@@ -50,11 +56,24 @@ public class Autorizacion implements Serializable {
         this.nivel = nivel;
     }
 
-    public Autorizacion(Integer nivel, String descripcion) {
+    public Autorizacion(Integer nivel, String descripcion, Personal personal) {
         this.nivel = nivel;
         this.descripcion = descripcion;
+        this.personalCedula = personal;
     }
 
+    public Autorizacion(int i, String jefe, String string) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    
     public Integer getNivel() {
         return nivel;
     }
@@ -71,19 +90,18 @@ public class Autorizacion implements Serializable {
         this.descripcion = descripcion;
     }
 
-    @XmlTransient
-    public List<Personal> getPersonalList() {
-        return personalList;
+    public Personal getPersonalCedula() {
+        return personalCedula;
     }
 
-    public void setPersonalList(List<Personal> personalList) {
-        this.personalList = personalList;
+    public void setPersonalCedula(Personal personalCedula) {
+        this.personalCedula = personalCedula;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (nivel != null ? nivel.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -93,16 +111,18 @@ public class Autorizacion implements Serializable {
         if (!(object instanceof Autorizacion)) {
             return false;
         }
+        
         Autorizacion other = (Autorizacion) object;
-        if ((this.nivel == null && other.nivel != null) || (this.nivel != null && !this.nivel.equals(other.nivel))) {
+        
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
+        
         return true;
     }
 
     @Override
     public String toString() {
-        return "com.sicom.entities.Autorizacion[ nivel=" + nivel + " ]";
+        return "com.sicom.entities.Autorizacion[ id=" + id + " ]";
     }
-    
 }

@@ -39,14 +39,14 @@
                                                     <p:outputLabel for="segundoApellido" value="Segundo apellido:" />
                                                     <p:inputText id="segundoApellido" value="#{personalBean.selectedPersonal.segundoApellido}" maxlength="45" class= "charToUpperCase" onkeyup="validar()"/>
 
-                                                    <p:outputLabel for="fechaNacimiento" value="Fecha Nacimiento:"/>
+                                                    <p:outputLabel for="fechaNacimiento" value="Fecha de nacimiento:"/>
                                                     <p:calendar id="fechaNacimiento" value="#{personalBean.selectedPersonal.nacimiento}" pattern="dd-MM-yyyy" mask="true" navigator="true"
                                                         maxdate="#{now}" required="true" placeholder="#{now.date}-#{now.month+1}-#{now.year+1900}"/>
 
                                                     <p:outputLabel value="Cargo:" for="cargo"/>
                                                     <p:inputText id="cargo" value="#{personalBean.selectedPersonal.cargo}" maxlength="45" class= "charToUpperCase" onkeyup="validar()"/>
 
-                                                    <p:outputLabel value="Estado Civil:" for="estadoCivil"/>
+                                                    <p:outputLabel value="Estado civil:" for="estadoCivil"/>
                                                     <p:selectOneMenu id="estadoCivil" value="#{personalBean.selectedPersonal.estadoCivil}">
                                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
                                                         <f:selectItems value="#{valoresBean.getDescripcionByCodeId(2)}"/>
@@ -87,7 +87,7 @@
                             <div class="ui-grid-row">
                                 <div class="ui-grid-col-12" align="center">
                                     <p:panel header="Información de Seguridad">
-                                        <h:panelGrid columns="4">
+                                        <h:panelGrid columns="4" cellpadding="6" cellspacing="5">
                                             <p:outputLabel value="Departamento:" for="departamento"/>
                                             <p:selectOneMenu id="departamento" value="#{personalBean.selectedPersonal.departamentoId}" required="true"
                                                 converter="omnifaces.SelectItemsConverter">
@@ -96,12 +96,12 @@
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Nivel de autorización:" for="nivelAutorizacion"/>
-                                            <p:selectOneMenu id="nivelAutorizacion" value="#{personalBean.selectedPersonal.autorizacionNivel}" required="true" converter="omnifaces.SelectItemsConverter">
-                                                <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
+                                            <p:selectCheckboxMenu id="nivelAutorizacion" label="Selección múltiple" value="#{personalBean.selectedPersonal.autorizacionList}" required="true"
+                                                converter="omnifaces.SelectItemsConverter" >
                                                 <f:selectItems value="#{valoresBean.autorizacionList}" var="autorizacion" itemLabel="#{autorizacion.descripcion}" itemValue="#{autorizacion}"/>
-                                            </p:selectOneMenu>
+                                            </p:selectCheckboxMenu>
                                         </h:panelGrid>
-                                    </p:panel>    
+                                    </p:panel>
                                 </div>
                             </div>
                         </div>
@@ -112,7 +112,6 @@
                                 <p:ajax resetValues="true" update="formPersonal" immediate="true"/>
                             </p:commandButton>
                         </div>
-                        
                     </h:form>
                 </p:panel>
             </section>

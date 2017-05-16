@@ -3,10 +3,8 @@ package com.sicom.web.beans;
 import com.sicom.controller.PacienteJpaController;
 
 import com.sicom.controller.ResponsableJpaController;
-import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.entities.Paciente;
 import com.sicom.entities.Responsable;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,9 +21,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.Years;
 import org.primefaces.context.RequestContext;
 
 @ManagedBean
@@ -41,9 +36,6 @@ public class PacienteBean implements Serializable {
     private final PacienteJpaController pjc;
     private final ResponsableJpaController rjc;
 
-    /**
-     * Constructor
-     */
     public PacienteBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
         nuevoPaciente = new Paciente();
@@ -60,11 +52,10 @@ public class PacienteBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
         Map<String, Object> sessionMap = ec.getSessionMap();
+        Paciente paciente = (Paciente)sessionMap.get("paciente");
 
-        Paciente p = (Paciente) sessionMap.get("paciente");
-
-        if (p != null) {
-            selectedPaciente = pjc.findPaciente(p.getCedula());
+        if (paciente != null) {
+            selectedPaciente = pjc.findPaciente(paciente.getCedula());
             sessionMap.put("paciente", selectedPaciente);
         } else {
             selectedPaciente = new Paciente();
@@ -72,43 +63,45 @@ public class PacienteBean implements Serializable {
     }
 
     /**
-     * Agregar Paciente Redirecciona a información del paciente si logra
-     * agregarlo exitosamente.
+     * Agregar paciente
+     * @return la página a la cual será redireccionado el usuario 
      */
-    public void agregar() {
+    public String agregar() {
         try {
+            FacesContext fc = FacesContext.getCurrentInstance();
             Paciente p = pjc.findPaciente(nuevoPaciente.getCedula());
 
             if (p != null) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede agregar, ya existe el paciente con la cédula: ", nuevoPaciente.getCedula()));
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No se puede agregar, ya existe el paciente con la cédula: ", nuevoPaciente.getCedula()));
             } else {
+                nuevoPaciente.setResponsableList(listaResponsable);
                 pjc.create(nuevoPaciente);
-                selectedPaciente = nuevoPaciente;
-
-                FacesContext fc = FacesContext.getCurrentInstance();
-                ExternalContext ec = fc.getExternalContext();
-
-                ec.getFlash().setKeepMessages(true);
+                fc.getExternalContext().getSessionMap().put("paciente", nuevoPaciente);
+                fc.getExternalContext().getFlash().setKeepMessages(true);
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Paciente agregado exitosamente.", null));
-
-                buscaIdBase();
+                nuevoPaciente = new Paciente();
+                
+                return "informacion?faces-redirect=true";
             }
         } catch (Exception ex) {
             Logger.getLogger(PersonalBean.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        return "agregar";
     }
 
     /**
      * Modificar paciente
-     * @return agregar.xhtml
+     * @return la página a la cual será redireccionado el usuario
      */
     public String modificar() {
-        try {            
+        try {
+            FacesContext fc = FacesContext.getCurrentInstance();
             pjc.edit(selectedPaciente);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información actualizada exitosamente.", null));
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información actualizada exitosamente.", null));
+            fc.getExternalContext().getFlash().setKeepMessages(true);
             selectedPaciente = new Paciente();
             nuevoResponsable = new Responsable();
-            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
             
             return "informacion?faces-redirect=true";
         } catch (Exception ex) {
@@ -117,7 +110,54 @@ public class PacienteBean implements Serializable {
         
         return null;
     }
+            
+    /**
+     * Redirecciona el paciente seleccionado en los resultados a la página de informacion
+     * @param paciente
+     * @return informacion
+     */
+    public String redireccionarPaciente(Paciente paciente) {
+        selectedPaciente = pjc.findPaciente(paciente.getCedula());
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("paciente", selectedPaciente);
+        
+        return "informacion?faces-redirect=true";
+    }
     
+    /**
+     * Muestra los datos del paciente solicitado por el usuario
+     * @return la página a la cual será redireccionado el usuario
+     */
+    public String consultarPorCedula() {
+        selectedPaciente = pjc.findPaciente(nuevoPaciente.getCedula());
+
+        if (selectedPaciente != null) {
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("paciente", selectedPaciente);
+            
+            return "informacion?faces-redirect=true";
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El paciente con la identificación " + nuevoPaciente.getCedula() + " no ha sido encontrado", null));
+            
+            return "consultarPorCedula";
+        }
+    }
+        
+    /**
+     * Consultar paciente por nombre
+     * @return la página a la cual será redireccionado el usuario
+     */
+    public String consultarPacientePorNombre() {
+        listaPacientes = pjc.findPacienteByNombreCompleto(nuevoPaciente.getNombre(), nuevoPaciente.getPrimerApellido(), nuevoPaciente.getSegundoApellido());
+
+        if (!listaPacientes.isEmpty()) {
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("listaPacientes", listaPacientes);
+            
+            return "resultados?faces-redirect=true";
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No hay resultados que mostrar, por favor intente con otros valores", null));
+            
+            return "consultarPorNombre";
+        }
+    }
     
     /**
      * Consultar paciente por cédula
@@ -129,96 +169,6 @@ public class PacienteBean implements Serializable {
             selectedPaciente.setResponsableList(rjc.findResponsableByCedulaPaciente(selectedPaciente.getCedula()));
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("paciente", selectedPaciente);
             RequestContext.getCurrentInstance().execute("PF('existePacienteDialog').show()");
-        }
-    }
-    
-    /**
-     *
-     * Calcula la edad del paciente ya sea nuevo o selected
-     *
-     * @return edad
-     */
-    public int PacienteNuevoEdad() {
-        Paciente aux = (nuevoPaciente != null) ? nuevoPaciente : selectedPaciente;
-
-        if (aux != null && aux.getNacimiento() != null) {
-
-            DateTime birthdate = new DateTime(aux.getNacimiento());
-            DateTime now = new DateTime();
-
-            return Years.yearsBetween(birthdate, now).getYears();
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Redireccion al form modificar
-     */
-    public void modificaRedirect() {
-        try {
-            FacesContext fc = FacesContext.getCurrentInstance();
-            ExternalContext ec = fc.getExternalContext();
-            String URL = ec.getRequestContextPath() + "/app/paciente/editar#formulario";
-            ec.getSessionMap().put("paciente", selectedPaciente);
-            ec.redirect(URL);
-        } catch (IOException ex) {
-            Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void modificarAction() {
-
-        try {
-            pjc.edit(selectedPaciente);
-
-            FacesContext fc = FacesContext.getCurrentInstance();
-            ExternalContext ec = fc.getExternalContext();
-
-            ec.getFlash().setKeepMessages(true);
-            ec.getSessionMap().put("paciente", selectedPaciente);
-            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Paciente modificado exitosamente.", null));
-
-            String URL = ec.getRequestContextPath() + "/app/paciente/informacion#datos";
-
-            ec.redirect(URL);
-        } catch (IOException ex) {
-            Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void cancelarAction() {
-        this.buscaIdBase();
-    }
-
-    public void modificaResposableRedirect(int i) {
-    }
-
-    public void buscaIdBase() {
-        Paciente p = (selectedPaciente.getCedula() != null) ? selectedPaciente : null;
-
-        if (p != null) {
-            String id = p.getCedula();
-            selectedPaciente = null;
-            selectedPaciente = this.pjc.findPaciente(p.getCedula());
-            
-            if (selectedPaciente != null) {
-                try {
-                    FacesContext fc = FacesContext.getCurrentInstance();
-                    ExternalContext ec = fc.getExternalContext();
-                    String URL = ec.getRequestContextPath() + "/app/paciente/informacion#datos";
-                    ec.getSessionMap().put("paciente", selectedPaciente);
-                    ec.redirect(URL);
-                } catch (IOException ex) {
-                    Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "El paciente con la identificación " + p.getCedula() + " no ha sido encontrado", null));
-            }
         }
     }
     
@@ -236,26 +186,6 @@ public class PacienteBean implements Serializable {
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DATE, -43800); //43800 = 120 años
         return c.getTime();
-    }
-
-    public int calculaEdad() {
-        if (selectedPaciente.getNacimiento() != null) {
-            LocalDate birthdate = new LocalDate(selectedPaciente.getNacimiento());
-            LocalDate now = new LocalDate();
-            return Years.yearsBetween(birthdate, now).getYears();
-        }
-        return 0;
-    }
-
-    public Paciente consultarPaciente(String id) {
-        return pjc.findPaciente(id);
-    }
-
-    public void verificaID() {
-        if (nuevoPaciente.getCedula() != null) {
-            selectedPaciente.setCedula(nuevoPaciente.getCedula());
-            this.buscaIdBase();
-        }
     }
 
     /**

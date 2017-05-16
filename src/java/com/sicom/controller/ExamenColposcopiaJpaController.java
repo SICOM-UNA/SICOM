@@ -43,10 +43,10 @@ public class ExamenColposcopiaJpaController implements Serializable {
                 expedientePacientecedula = em.getReference(expedientePacientecedula.getClass(), expedientePacientecedula.getId());
                 examenColposcopia.setExpedientePacientecedula(expedientePacientecedula);
             }
-            Personal personalcedula = examenColposcopia.getPersonalcedula();
+            Personal personalcedula = examenColposcopia.getPersonalCedula();
             if (personalcedula != null) {
                 personalcedula = em.getReference(personalcedula.getClass(), personalcedula.getCedula());
-                examenColposcopia.setPersonalcedula(personalcedula);
+                examenColposcopia.setPersonalCedula(personalcedula);
             }
             em.persist(examenColposcopia);
             if (expedientePacientecedula != null) {
@@ -73,15 +73,15 @@ public class ExamenColposcopiaJpaController implements Serializable {
             ExamenColposcopia persistentExamenColposcopia = em.find(ExamenColposcopia.class, examenColposcopia.getId());
             Expediente expedientePacientecedulaOld = persistentExamenColposcopia.getExpedientePacientecedula();
             Expediente expedientePacientecedulaNew = examenColposcopia.getExpedientePacientecedula();
-            Personal personalcedulaOld = persistentExamenColposcopia.getPersonalcedula();
-            Personal personalcedulaNew = examenColposcopia.getPersonalcedula();
+            Personal personalcedulaOld = persistentExamenColposcopia.getPersonalCedula();
+            Personal personalcedulaNew = examenColposcopia.getPersonalCedula();
             if (expedientePacientecedulaNew != null) {
                 expedientePacientecedulaNew = em.getReference(expedientePacientecedulaNew.getClass(), expedientePacientecedulaNew.getId());
                 examenColposcopia.setExpedientePacientecedula(expedientePacientecedulaNew);
             }
             if (personalcedulaNew != null) {
                 personalcedulaNew = em.getReference(personalcedulaNew.getClass(), personalcedulaNew.getCedula());
-                examenColposcopia.setPersonalcedula(personalcedulaNew);
+                examenColposcopia.setPersonalCedula(personalcedulaNew);
             }
             examenColposcopia = em.merge(examenColposcopia);
             if (expedientePacientecedulaOld != null && !expedientePacientecedulaOld.equals(expedientePacientecedulaNew)) {
@@ -134,7 +134,7 @@ public class ExamenColposcopiaJpaController implements Serializable {
                 expedientePacientecedula.getExamenColposcopiaList().remove(examenColposcopia);
                 expedientePacientecedula = em.merge(expedientePacientecedula);
             }
-            Personal personalcedula = examenColposcopia.getPersonalcedula();
+            Personal personalcedula = examenColposcopia.getPersonalCedula();
             if (personalcedula != null) {
                 personalcedula.getExamenColposcopiaList().remove(examenColposcopia);
                 personalcedula = em.merge(personalcedula);

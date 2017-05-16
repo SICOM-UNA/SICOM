@@ -31,7 +31,7 @@ footer {
 section { clear: both; }
 
 #logo {
-    padding: 0em;
+    padding-bottom: .5em;
     float: left;
 }
 
@@ -44,90 +44,6 @@ section { clear: both; }
     width: 30em;
     height: 4em;
 }
-
-/*#menuwrap	{
-    width: 100%;  Spans the width of the page 
-    height: 3.5em; 
-    margin-top: 8em;  Ensures there is no space between sides of the screen and the menu 
-    margin-bottom: -4.6em;  Ensures there is no space between sides of the screen and the menu 
-    z-index: 99;  Makes sure that your menu remains on top of other page elements 
-    position: relative;
-    background-color: #366b82;
-}
-
-.menunavbar	{
-    height: 50px;
-    padding: 0;
-    margin: 0;
-    position: absolute;  Ensures that the menu doesn’t affect other elements 
-    border-right: 1px solid #54879d; 
-}
-
-.menunavbar li 	{
-    height: auto;
-    width: 150px;   Each menu item is 150px wide 
-    float: left;   This lines up the menu items horizontally 
-    text-align: center;   All text is placed in the center of the box 
-    list-style: none;   Removes the default styling (bullets) for the list 
-    font: 1em 'Abel', sans-serif;
-    font-weight: bold;
-    padding: 0;
-    margin: 0;
-    background-color: #366b82;
-}
-
-.menunavbar a	{							
-    padding: 18px 0;   Adds a padding on the top and bottom so the text appears centered vertically 
-    border-left: 1px solid #54879d;  Creates a border in a slightly lighter shade of blue than the background.  Combined with the right border, this creates a nice effect. 
-    border-right: 1px solid #1f5065;  Creates a border in a slightly darker shade of blue than the background.  Combined with the left border, this creates a nice effect. 
-    text-decoration: none;   Removes the default hyperlink styling. 
-    color: white;  Text color is white 
-    display: block;
-}
-
-.menunavbar li:hover {background-color: #54879d;} 
-
-.menunavbar li ul 	{
-    display: none;   Hides the drop-down menu 
-    height: auto;									
-    margin: 0;  Aligns drop-down box underneath the menu item 
-    padding: 0;  Aligns drop-down box underneath the menu item 			
-}				
-
-.menunavbar li:hover ul 	{
-    display: block;  Displays the drop-down box when the menu item is hovered over 
-}
-
-.menunavbar li ul li {background-color: #54879d;} 
-
-menunavbar li ul li a 	{
-                border-left: 1px solid #1f5065; 
-                border-right: 1px solid #1f5065; 
-                border-top: 1px solid #74a3b7; 
-                border-bottom: 1px solid #1f5065; 
-                }
-                                
-.menunavbar li ul li a:hover	{background-color: #366b82;}*/
-
-/*.menu { 
-    text-align: center; 
-}
-
-ul.menu {
-    padding: 0;
-    display: block;
-}
-
-ul.menu li {
-    width: 30%;
-    margin: 1.5em 0;
-    list-style: none;
-    display: inline-block;
-}
-
-ul.menu li img { 
-    width: 150px; 
-}*/
 
 .logout:hover { 
     background-position: -32px 0; 
@@ -273,4 +189,8 @@ input:disabled {
 .ui-button.ui-widget.ui-state-default.ui-button-text-only.ui-state-hover, 
 .ui-button.ui-widget.ui-state-default.ui-button-text-only.ui-state-active { 
     background: #01babe; 
+}
+
+.ui-datalist-content.ui-widget-content {
+    border: none;
 }
