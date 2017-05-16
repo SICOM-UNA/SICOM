@@ -6,17 +6,16 @@ import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.entities.AntecedentesGinecologia;
 import com.sicom.entities.AntecedentesOdontologia;
 import com.sicom.entities.Documentos;
+import com.sicom.entities.ExamenGinecologia;
+import com.sicom.entities.ExamenOdontologia;
 import com.sicom.entities.Expediente;
+import com.sicom.entities.InterfazExamen;
 import com.sicom.entities.Login;
 import com.sicom.entities.Paciente;
 import com.sicom.entities.Personal;
 import com.sicom.entities.Valor;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -42,8 +41,6 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.joda.time.DateTime;
 import org.joda.time.Years;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 /**
@@ -63,6 +60,9 @@ public class ExpedienteBean implements Serializable {
     private List<Documentos> ultimos5Docs = new ArrayList<Documentos>();
     private List<Documentos> listaDocumentos = new ArrayList<Documentos>();
     private DocumentosJpaController documentosController;
+
+    List<InterfazExamen> resultado, listaFiltrada;
+    InterfazExamen dato;
 
     public ExpedienteBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
@@ -402,7 +402,7 @@ public class ExpedienteBean implements Serializable {
             }
             content.drawLine(80, y, 440, y);
             y -= 30;
-            if (antecedentesGinecologia.getMenarca()==null) {
+            if (antecedentesGinecologia.getMenarca() == null) {
                 nuevaLinea(content, 80, y, 10, "Menarca: N/a");
             } else {
                 nuevaLinea(content, 80, y, 10, "Menarca: " + antecedentesGinecologia.getMenarca());
@@ -845,6 +845,106 @@ public class ExpedienteBean implements Serializable {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al subir el archivo", null));
         }
 
+    }
+
+    public List<InterfazExamen> creaInterfazExamenes() {
+        resultado = new ArrayList<>();
+
+        List<ExamenGinecologia> examenGinecologiaList = expediente.getExamenGinecologiaList();
+
+        int i = 0;
+
+        for (ExamenGinecologia eg : examenGinecologiaList) {
+            resultado.add(new InterfazExamen(eg, i++));
+        }
+
+        List<ExamenOdontologia> examenOdontologiaList = expediente.getExamenOdontologiaList();
+        for (ExamenOdontologia eo : examenOdontologiaList) {
+            resultado.add(new InterfazExamen(eo, i++));
+        }
+        /*
+        List<ExamenColposcopia> examenColposcopiaList = expediente.getExamenColposcopiaList();
+        for (ExamenColposcopia ec : examenColposcopiaList) {
+            resultado.add(new InterfazExamen(ec));
+         }
+         */
+        return resultado;
+    }
+
+    public List<InterfazExamen> getResultado() {
+        return resultado;
+    }
+
+    public void setResultado(List<InterfazExamen> resultado) {
+        this.resultado = resultado;
+    }
+
+    public List<InterfazExamen> getListaFiltrada() {
+        return listaFiltrada;
+    }
+
+    public void setListaFiltrada(List<InterfazExamen> listaFiltrada) {
+        this.listaFiltrada = listaFiltrada;
+    }
+
+    public String[] getExamenesPorDepartamento() {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+        Login log = (Login) ec.getSessionMap().get("login");
+
+        Personal p = log.getPersonal();
+        int consultorio = p.getDepartamentoId().getId();
+
+        String[] listaGine = {"Físico", "Colposcopía", "Monitoreo Fetal"};
+        String[] listaOdonto = {"Odontograma"};
+
+        switch (consultorio) {
+            case 2:
+                return listaGine;
+            case 3:
+                return listaOdonto;
+            default:
+                return null;
+        }
+    }
+
+    public void redireccionExamenes() {
+        if (dato != null) {
+
+            FacesContext fc = FacesContext.getCurrentInstance();
+            ExternalContext ec = fc.getExternalContext();
+            String URL = ec.getRequestContextPath();
+
+            switch (dato.getTipoExamen()) {
+                case "Físico":/*Examen Fisico*/
+                    URL += "/app/consultorios/ginecologia/examen/fisico";
+                    break;
+                case "Monitoreo Fetal":/*Monitoreo Fetal*/
+                    URL += "/app/consultorios/ginecologia/examen/monitoreoFetal";
+                    break;
+                case "Colposcopía":/*Colposcopia*/
+                    URL += "/app/consultorios/ginecologia/examen/colposcopia";
+                    break;
+                case "Odontograma":/*Odontograma*/
+
+                    break;
+            }
+
+            try {
+                ec.getSessionMap().put("examen", dato.getExamen());
+                ec.redirect(URL);
+            } catch (IOException ex) {
+                Logger.getLogger(ExpedienteBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public InterfazExamen getDato() {
+        return dato;
+    }
+
+    public void setDato(InterfazExamen dato) {
+        this.dato = dato;
     }
 
 }

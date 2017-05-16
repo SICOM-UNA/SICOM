@@ -28,17 +28,22 @@ public class ExamenFisicoGinecBean implements Serializable {
 
     public ExamenFisicoGinecBean() {
         ejc = new ExamenGinecologiaJpaController(Persistence.createEntityManagerFactory("SICOM_v1PU"));
-        examenFisico = new ExamenGinecologia();
 
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         paciente = (Paciente) ec.getSessionMap().get("paciente");
-        examenFisico.setPersonalcedula(((Login) ec.getSessionMap().get("login")).getPersonal());
-
-        if (paciente == null) {
-            try {
-                ec.redirect(ec.getRequestContextPath().concat("/app/paciente/consultar"));
-            } catch (IOException ex) {
-                Logger.getLogger(ExamenFisicoGinecBean.class.getName()).log(Level.SEVERE, null, ex);
+        examenFisico = (ExamenGinecologia) ec.getSessionMap().remove("examen");
+        
+        if (examenFisico == null) {
+            
+            examenFisico = new ExamenGinecologia();
+            examenFisico.setPersonalcedula(((Login) ec.getSessionMap().get("login")).getPersonal());
+            
+            if (paciente == null) {
+                try {
+                    ec.redirect(ec.getRequestContextPath().concat("/app/paciente/consultar"));
+                } catch (IOException ex) {
+                    Logger.getLogger(ExamenFisicoGinecBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
@@ -51,12 +56,12 @@ public class ExamenFisicoGinecBean implements Serializable {
 
             if (examenFisico.getId() == null) {
                 ejc.create(examenFisico);
-                message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Examen Físico agregado exitosamente.",null);
+                message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Examen Físico agregado exitosamente.", null);
             } else {
                 ejc.edit(examenFisico);
-                message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Examen Físico modificado exitosamente.",null);
+                message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Examen Físico modificado exitosamente.", null);
             }
-            
+
             ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
             ec.getFlash().setKeepMessages(true);
             FacesContext.getCurrentInstance().addMessage(null, message);
