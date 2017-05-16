@@ -3,6 +3,7 @@ package com.sicom.web.beans;
 import com.sicom.controller.LoginJpaController;
 import com.sicom.controller.PersonalJpaController;
 import com.sicom.entities.Autorizacion;
+import com.sicom.entities.Departamento;
 import com.sicom.entities.Login;
 import com.sicom.entities.Personal;
 import java.io.IOException;
@@ -98,6 +99,19 @@ public class LoginBean implements Serializable{
                 if(nivel.toLowerCase().trim().equals(autorizacion.getDescripcion().toLowerCase().trim())) {
                     return true;
                 }
+            }
+        }
+        
+        return false;
+    }
+    
+    public Boolean visibleDepartamento(String departamentosPermitidos) {
+        String[] departamentos = departamentosPermitidos.split(",");
+        Departamento departamentoUsuario = ((Login) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("login")).getPersonal().getDepartamentoId();
+        
+        for(String departamento:departamentos) {
+            if(departamento.toLowerCase().trim().equals(departamentoUsuario.getNombre().toLowerCase().trim())) {
+                return true;
             }
         }
         

@@ -22,10 +22,8 @@ import com.sicom.entities.ExamenOdontologia;
 import com.sicom.entities.Documentos;
 import com.sicom.entities.ExamenGinecologia;
 import com.sicom.entities.Expediente;
-import com.sicom.entities.Valor;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
 
 /**
  *
@@ -512,5 +510,4 @@ public class ExpedienteJpaController implements Serializable {
             em.close();
         }
     }
-
 }
