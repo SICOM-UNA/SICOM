@@ -108,9 +108,50 @@
                                                     <f:selectItems value="#{valoresBean.examenes}" var="selectedExamen" itemLabel="#{selectedExamen.descripcion}" itemValue="#{examenSelected}"/>
                                                 </p:selectOneMenu>
                                                 <p:commandButton icon="ui-icon-plus"  update="formInformacion" action="#{expedienteBean.nuevoExamen}"/>
-                                                <p:commandButton icon="ui-icon-search"  update="formInformacion"/>
+                                                <p:commandButton icon="ui-icon-search"  update="formInformacion" oncomplete="PF('dataTableDialog').show();"/>
                                             </h:panelGrid>
                                         </p:panel>
+
+                                        <p:dialog widgetVar="dataTableDialog" header="Lista de Examenes" showEffect="clip" hideEffect="clip" width="1000"  modal="true">
+                                            <p:dataTable var="dato" value="#{expedienteBean.creaInterfazExamenes()}" widgetVar="dataTable" rows="10" paginator="true"
+                                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                         rowsPerPageTemplate="5,10,15" filteredValue="#{expedienteBean.listaFiltrada}" 
+                                                         id="singleDT" selectionMode="single" selection="#{expedienteBean.dato}" 
+                                                         emptyMessage="No existen exámenes con ese criterio." rowKey="#{dato.id}" resizableColumns="true"> 
+                                                <f:facet name="header">
+                                                    <p:outputPanel>
+                                                        <h:outputText value="Buscar en todas las columnas:" />
+                                                        <p:inputText id="globalFilter" onkeyup="PF('dataTable').filter()" style="width:150px" placeholder="Digite palabra clave."/>
+                                                    </p:outputPanel>
+                                                </f:facet>
+                                                <p:column filterBy="#{dato.tipoExamen}" headerText="Tipo de Exámen" footerText="contains" filterMatchMode="contains">
+                                                    <f:facet name="filter">
+                                                        <p:selectOneMenu onchange="PF('dataTable').filter()" >
+                                                            <f:selectItem itemLabel="Seleccione:" itemValue="#{null}" noSelectionOption="true" />
+                                                            <f:selectItems value="#{expedienteBean.examenesPorDepartamento}" />
+                                                        </p:selectOneMenu>
+                                                    </f:facet>
+                                                    <h:outputText value="#{dato.tipoExamen}" />
+                                                </p:column>
+
+                                                <p:column headerText="Fecha Modificación" sortBy="#{dato.fechaModificacion}" >
+                                                    <h:outputText value="#{dato.fechaModificacion}">
+                                                        <f:convertDateTime pattern="dd-MM-yyyy" />
+                                                    </h:outputText>
+                                                </p:column>
+
+
+                                                <p:column filterBy="#{dato.hechoPor}" headerText="Realizado por:" footerText="contiene" filterMatchMode="contains">
+                                                    <h:outputText value="#{dato.hechoPor}" />
+                                                </p:column>
+
+                                                <f:facet name="footer">
+                                                    <p:commandButton icon="ui-icon-search" value="Editar" action="#{expedienteBean.redireccionExamenes}" />
+                                                </f:facet>
+                                            </p:dataTable>
+                                        </p:dialog>
+
+
                                     </div>
                                     <div class="ui-grid-col-4">
                                         <p:panel header="Importación" >
