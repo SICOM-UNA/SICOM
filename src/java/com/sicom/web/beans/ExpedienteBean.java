@@ -6,7 +6,10 @@ import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.entities.AntecedentesGinecologia;
 import com.sicom.entities.AntecedentesOdontologia;
 import com.sicom.entities.Documentos;
+import com.sicom.entities.ExamenGinecologia;
+import com.sicom.entities.ExamenOdontologia;
 import com.sicom.entities.Expediente;
+import com.sicom.entities.InterfazExamen;
 import com.sicom.entities.Login;
 import com.sicom.entities.Paciente;
 import com.sicom.entities.Personal;
@@ -57,6 +60,9 @@ public class ExpedienteBean implements Serializable {
     private List<Documentos> ultimosDocumentoss = new ArrayList<Documentos>();
     private List<Documentos> listaDocumentos = new ArrayList<Documentos>();
     private DocumentosJpaController documentosController;
+
+    List<InterfazExamen> resultado, listaFiltrada;
+    InterfazExamen dato;
 
     public ExpedienteBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
@@ -208,7 +214,7 @@ public class ExpedienteBean implements Serializable {
         
         while (texto.length() > 0) {
             int spaceIndex = 0;
-            
+          
             if (texto.indexOf(' ', lastSpace + 1) > texto.indexOf("\n", lastSpace + 1)) {
                 spaceIndex = texto.indexOf(' ', lastSpace + 1);
             } else {
@@ -282,13 +288,11 @@ public class ExpedienteBean implements Serializable {
             int y = 720;
             doc.addPage(page);
             PDPageContentStream content = new PDPageContentStream(doc, page);
-
             //<editor-fold defaultstate="collapsed" desc="Header del pdf">
             //PDXObjectImage image = new PDJpeg(doc, new FileInputStream("/imagenes/icono.png"));
             //content.drawImage(image, 450, 650);
             nuevaLinea(content, 550, 40, 12, "1");
             nuevaLinea(content, 80, y, 10, "Fecha:" + dateFormat.format(fecha));
-
             nuevaLinea(content, 280, y, 10, "Centro Medico Navas");
             y -= 10;
             nuevaLinea(content, 305, y, 10, "La sabana");
@@ -296,13 +300,11 @@ public class ExpedienteBean implements Serializable {
             nuevaLinea(content, 282, y, 10, "Telefono: 2233-1010");
             y -= 10;
             nuevaLinea(content, 250, y, 10, "Dra. Maria del Pilar Navas Aparicio");
-
             y -= 60;
             nuevaLinea(content, 80, y, 12, "Historia Clinica: " + paciente.getNombre() + " " + paciente.getPrimerApellido() + " " + paciente.getSegundoApellido());
             y -= 15;
             nuevaLinea(content, 80, y, 10, "Ultima modificacion: " + dateFormat.format(antecedentesGinecologia.getFecha()));
-//</editor-fold>
-
+            //</editor-fold>
             //<editor-fold defaultstate="collapsed" desc="Datos personales">
             y -= 10;
             content.drawLine(80, y, 440, y);
@@ -316,7 +318,6 @@ public class ExpedienteBean implements Serializable {
 
             DateTime birthdate = new DateTime(paciente.getNacimiento());
             DateTime now = new DateTime();
-
             nuevaLinea(content, 80, y, 10, "Edad: " + (Years.yearsBetween(birthdate, now).getYears()));
             nuevaLinea(content, 150, y, 10, "Sexo: " + paciente.getGenero());
             nuevaLinea(content, 240, y, 10, "Ocupacion: " + paciente.getOcupacion());
@@ -330,7 +331,6 @@ public class ExpedienteBean implements Serializable {
             nuevaLinea(content, 250, y, 10, "Correo electronico: " + paciente.getCorreo());
             y -= 20;
             //</editor-fold>
-
             //<editor-fold defaultstate="collapsed" desc="Antecedentes">
             content.drawLine(80, y, 440, y);
             y -= 25;
@@ -481,13 +481,6 @@ public class ExpedienteBean implements Serializable {
 
             y -= 20;
 
-            if (antecedentesGinecologia.getTipoParto().equals("")) {
-                nuevaLinea(content, 80, y, 10, "Tipo de parto: N/a");
-            } else {
-                nuevaLinea(content, 80, y, 10, "Tipo de parto: " + antecedentesGinecologia.getTipoParto());
-            }
-            y -= 20;
-
             if (antecedentesGinecologia.getMenopausia() == null) {
                 nuevaLinea(content, 80, y, 10, "Menopausia: N/a");
             } else {
@@ -536,27 +529,21 @@ public class ExpedienteBean implements Serializable {
             try {
                 FacesContext fc = FacesContext.getCurrentInstance();
                 ExternalContext ec = fc.getExternalContext();
-
                 ByteArrayOutputStream byteoutput = new ByteArrayOutputStream();
                 doc.save(byteoutput);
                 doc.close();
-
                 ec.responseReset();
                 ec.setResponseContentType("application/pdf");
                 ec.setResponseContentLength(byteoutput.size());
                 ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-
                 OutputStream output = ec.getResponseOutputStream();
-
                 output.write(byteoutput.toByteArray());
-
                 fc.responseComplete();
             } catch (Exception ex) {
                 Logger.getLogger(ExpedienteBean.class.getName()).log(Level.SEVERE, null, ex);
             }
-//</editor-fold>
-//</editor-fold>
-
+            //</editor-fold>
+            //</editor-fold>
             System.out.println("El Archivo fue guardado");
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -593,8 +580,7 @@ public class ExpedienteBean implements Serializable {
             nuevaLinea(content, 80, y, 12, "Historia Clinica: " + paciente.getNombre() + " " + paciente.getPrimerApellido() + " " + paciente.getSegundoApellido());
             y -= 15;
             nuevaLinea(content, 80, y, 10, "Ultima modificacion: " + dateFormat.format(antecedentesOdontologia.getFecha()));
-//</editor-fold>
-
+            //</editor-fold>
             //<editor-fold defaultstate="collapsed" desc="Datos personales">
             y -= 10;
             content.drawLine(80, y, 440, y);
@@ -608,7 +594,6 @@ public class ExpedienteBean implements Serializable {
 
             DateTime birthdate = new DateTime(paciente.getNacimiento());
             DateTime now = new DateTime();
-
             nuevaLinea(content, 80, y, 10, "Edad: " + (Years.yearsBetween(birthdate, now).getYears()));
             nuevaLinea(content, 150, y, 10, "Sexo: " + paciente.getGenero());
             nuevaLinea(content, 240, y, 10, "Ocupacion: " + paciente.getOcupacion());
@@ -677,7 +662,6 @@ public class ExpedienteBean implements Serializable {
             }
             y -= 20;
             
-
             if (y < 160) {
                 content.close();
                 PDPage page2 = new PDPage();
@@ -695,41 +679,32 @@ public class ExpedienteBean implements Serializable {
             }
             y -= 20;
             content.drawLine(80, y, 440, y);
-
             content.close();
 
-//</editor-fold>
-////////////////////////////////////////////FALTA INSERTAR IMAGEN DE ODONTOGRAMA////////////////////////////////////////////
+            //</editor-fold>
+            ////////////////////////////////////////////FALTA INSERTAR IMAGEN DE ODONTOGRAMA////////////////////////////////////////////
             //<editor-fold defaultstate="collapsed" desc="guardando el archivo">
             try {
                 FacesContext fc = FacesContext.getCurrentInstance();
                 ExternalContext ec = fc.getExternalContext();
-
                 ByteArrayOutputStream byteoutput = new ByteArrayOutputStream();
                 doc.save(byteoutput);
                 doc.close();
-
                 ec.responseReset();
                 ec.setResponseContentType("application/pdf");
                 ec.setResponseContentLength(byteoutput.size());
                 ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-
                 OutputStream output = ec.getResponseOutputStream();
-
                 output.write(byteoutput.toByteArray());
-
                 fc.responseComplete();
             } catch (Exception ex) {
                 Logger.getLogger(ExpedienteBean.class.getName()).log(Level.SEVERE, null, ex);
             }
-//</editor-fold>
-//</editor-fold>
-
+            //</editor-fold>
+            //</editor-fold>
             System.out.println("El Archivo fue guardado");
-
         } catch (IOException e) {
             System.out.println(e.getMessage());
-
         }
     }
 
@@ -737,18 +712,14 @@ public class ExpedienteBean implements Serializable {
         try {
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
-
             ByteArrayOutputStream byteoutput = new ByteArrayOutputStream(doc.getArchivo().length);
             byteoutput.write(doc.getArchivo(), 0, doc.getArchivo().length);
-
             ec.responseReset();
             ec.setResponseContentType("application/pdf");
             ec.setResponseContentLength(byteoutput.size());
             ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + doc.getNombre() + "\"");
-
             OutputStream output = ec.getResponseOutputStream();
             output.write(byteoutput.toByteArray());
-
             fc.responseComplete();
         } catch (Exception ex) {
             Logger.getLogger(ExpedienteBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -772,7 +743,6 @@ public class ExpedienteBean implements Serializable {
         try {
             documento = new Documentos();
             UploadedFile archivo = event.getFile();
-
             byte[] bytes = archivo.getContents();
             documento.setArchivo(bytes);
             documento.setFecha(new Date());
@@ -780,7 +750,6 @@ public class ExpedienteBean implements Serializable {
             //String ext = filename.substring(filename.lastIndexOf('.'), filename.length());
             //String date = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date());
             documento.setNombre(filename);
-
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
             Login log = (Login) ec.getSessionMap().get("login");
@@ -788,7 +757,6 @@ public class ExpedienteBean implements Serializable {
             documento.setDepartamentoid(p.getDepartamentoId());
             documento.setExpedientePacientecedula(expediente);
             documentosController.create(documento);
-
             FacesMessage message = new FacesMessage(filename + " se ha subido.");
             FacesContext.getCurrentInstance().addMessage(null, message);
         } catch (Exception e) {
@@ -809,14 +777,14 @@ public class ExpedienteBean implements Serializable {
     
     public List<Documentos> getListaDocumentos() {
         this.listaDocumentos = documentosController.findRDocumentosByCedulaPaciente(expediente.getPacientecedula().getCedula());
-        
+      
         return listaDocumentos;
     }
-
+  
     public void setListaDocumentos(List<Documentos> listaDocumentos) {
         this.listaDocumentos = listaDocumentos;
     }
-    
+
     public UploadedFile getArchivo() {
         return archivo;
     }
@@ -824,7 +792,7 @@ public class ExpedienteBean implements Serializable {
     public void setArchivo(UploadedFile archivo) {
         this.archivo = archivo;
     }
-    
+
     public void setSelectedExamen(Valor selectedExamen) {
         this.selectedExamen = selectedExamen;
     }
@@ -832,4 +800,105 @@ public class ExpedienteBean implements Serializable {
     public Valor getSelectedExamen() {
         return selectedExamen;
     }
+
+    public List<InterfazExamen> creaInterfazExamenes() {
+        resultado = new ArrayList<>();
+
+        List<ExamenGinecologia> examenGinecologiaList = expediente.getExamenGinecologiaList();
+
+        int i = 0;
+
+        for (ExamenGinecologia eg : examenGinecologiaList) {
+            resultado.add(new InterfazExamen(eg, i++));
+        }
+
+        List<ExamenOdontologia> examenOdontologiaList = expediente.getExamenOdontologiaList();
+        for (ExamenOdontologia eo : examenOdontologiaList) {
+            resultado.add(new InterfazExamen(eo, i++));
+        }
+        /*
+        List<ExamenColposcopia> examenColposcopiaList = expediente.getExamenColposcopiaList();
+        for (ExamenColposcopia ec : examenColposcopiaList) {
+            resultado.add(new InterfazExamen(ec));
+         }
+         */
+        return resultado;
+    }
+
+    public List<InterfazExamen> getResultado() {
+        return resultado;
+    }
+
+    public void setResultado(List<InterfazExamen> resultado) {
+        this.resultado = resultado;
+    }
+
+    public List<InterfazExamen> getListaFiltrada() {
+        return listaFiltrada;
+    }
+
+    public void setListaFiltrada(List<InterfazExamen> listaFiltrada) {
+        this.listaFiltrada = listaFiltrada;
+    }
+
+    public String[] getExamenesPorDepartamento() {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+        Login log = (Login) ec.getSessionMap().get("login");
+
+        Personal p = log.getPersonal();
+        int consultorio = p.getDepartamentoId().getId();
+
+        String[] listaGine = {"Físico", "Colposcopía", "Monitoreo Fetal"};
+        String[] listaOdonto = {"Odontograma"};
+
+        switch (consultorio) {
+            case 2:
+                return listaGine;
+            case 3:
+                return listaOdonto;
+            default:
+                return null;
+        }
+    }
+
+    public void redireccionExamenes() {
+        if (dato != null) {
+
+            FacesContext fc = FacesContext.getCurrentInstance();
+            ExternalContext ec = fc.getExternalContext();
+            String URL = ec.getRequestContextPath();
+
+            switch (dato.getTipoExamen()) {
+                case "Físico":/*Examen Fisico*/
+                    URL += "/app/consultorios/ginecologia/examen/fisico";
+                    break;
+                case "Monitoreo Fetal":/*Monitoreo Fetal*/
+                    URL += "/app/consultorios/ginecologia/examen/monitoreoFetal";
+                    break;
+                case "Colposcopía":/*Colposcopia*/
+                    URL += "/app/consultorios/ginecologia/examen/colposcopia";
+                    break;
+                case "Odontograma":/*Odontograma*/
+
+                    break;
+            }
+
+            try {
+                ec.getSessionMap().put("examen", dato.getExamen());
+                ec.redirect(URL);
+            } catch (IOException ex) {
+                Logger.getLogger(ExpedienteBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public InterfazExamen getDato() {
+        return dato;
+    }
+
+    public void setDato(InterfazExamen dato) {
+        this.dato = dato;
+    }
+
 }

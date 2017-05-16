@@ -61,7 +61,7 @@
                                 <h:panelGrid  columns="2">
                                     <p:selectOneMenu value="#{antecedentesGinecologiaBean.objAntecedente.cicloMestrual}"  id="cicloMenstrual" autoWidth="false" >
                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true"  />
-                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(4)}"/>
+                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(5)}"/>
                                     </p:selectOneMenu>
                                     <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioCicloMestrual}"/>
                                 </h:panelGrid>
@@ -74,7 +74,7 @@
                                 <h:panelGrid columns="2">
                                     <p:selectOneMenu value="#{antecedentesGinecologiaBean.objAntecedente.planificacion}"  id="planificacion" autoWidth="false" >
                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(5)}"/>
+                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(6)}"/>
                                     </p:selectOneMenu>
                                     <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioGPA}"/>
                                 </h:panelGrid>
@@ -95,11 +95,6 @@
                                     <p:selectBooleanCheckbox value="#{antecedentesGinecologiaBean.objAntecedente.lactanciaMaterna}" />
                                     <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioLactancia}" size="10" onkeyup="validar()"/> 
                                 </h:panelGrid>
-
-
-                                <p:outputLabel value="Tipo de Parto" for="parto"/>
-                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.tipoParto}" maxlength="10" size="8"  id="parto"/>
-
 
                                 <p:outputLabel value="Menopausia"/>
                                 <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.menopausia}" maxlength="4" size="8" class="numeric"/> 
