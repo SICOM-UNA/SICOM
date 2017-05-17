@@ -4,7 +4,6 @@ import com.sicom.controller.ExamenGinecologiaJpaController;
 import com.sicom.entities.ExamenGinecologia;
 import com.sicom.entities.Login;
 import com.sicom.entities.Paciente;
-import com.sicom.entities.Personal;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
@@ -19,30 +18,28 @@ import javax.persistence.Persistence;
 
 @ManagedBean
 @ViewScoped
-public class ExamenFisicoGinecBean implements Serializable {
+public class ExamenFisicoGinecologiaBean implements Serializable {
 
     private ExamenGinecologia examenFisico;
     private Date hoy;
     private ExamenGinecologiaJpaController ejc;
     private Paciente paciente;
 
-    public ExamenFisicoGinecBean() {
+    public ExamenFisicoGinecologiaBean() {
         ejc = new ExamenGinecologiaJpaController(Persistence.createEntityManagerFactory("SICOM_v1PU"));
-
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         paciente = (Paciente) ec.getSessionMap().get("paciente");
         examenFisico = (ExamenGinecologia) ec.getSessionMap().remove("examen");
         
         if (examenFisico == null) {
-            
             examenFisico = new ExamenGinecologia();
-            examenFisico.setPersonalcedula(((Login) ec.getSessionMap().get("login")).getPersonal());
+            examenFisico.setPersonalCedula(((Login) ec.getSessionMap().get("login")).getPersonal());
             
             if (paciente == null) {
                 try {
                     ec.redirect(ec.getRequestContextPath().concat("/app/paciente/consultar"));
                 } catch (IOException ex) {
-                    Logger.getLogger(ExamenFisicoGinecBean.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(ExamenFisicoGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -66,25 +63,22 @@ public class ExamenFisicoGinecBean implements Serializable {
             ec.getFlash().setKeepMessages(true);
             FacesContext.getCurrentInstance().addMessage(null, message);
             ec.redirect(ec.getRequestContextPath().concat("/app/paciente/informacion"));
-
         } catch (Exception ex) {
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "El examen no se pudo agregar.");
             FacesContext.getCurrentInstance().addMessage(null, message);
-            Logger.getLogger(ExamenFisicoGinecBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ExamenFisicoGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void volver_a_informacion() {
         try {
-
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
-
             String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
-
             ec.redirect(URL);
 
         } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

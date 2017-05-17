@@ -24,6 +24,7 @@ public class InterfazExamen implements Serializable {
     /**
      * Creates a new instance of InterfazExamenes
      * @param examen
+     * @param id
      */
     /*public InterfazExamen(ExamenColposcopia examen) {
         this.examen = examen;
@@ -38,12 +39,16 @@ public class InterfazExamen implements Serializable {
         this.fechaModificacion = examen.getFecha();
         this.hechoPor = examen.getPersonalcedula().getNombre().concat(" ").concat(examen.getPersonalcedula().getPrimerApellido());
     }*/
-    
+    /**
+     * 
+     * @param examen
+     * @param id 
+     */
     public InterfazExamen(ExamenGinecologia examen, int id) {
         this.examen = examen;
         this.tipoExamen = "Físico";
         this.fechaModificacion = examen.getFecha();
-        this.hechoPor = examen.getPersonalcedula().getNombre().concat(" ").concat(examen.getPersonalcedula().getPrimerApellido());
+        this.hechoPor = examen.getPersonalCedula().getNombre().concat(" ").concat(examen.getPersonalCedula().getPrimerApellido());
         this.id = id;
     }
     
@@ -51,7 +56,7 @@ public class InterfazExamen implements Serializable {
         this.examen = examen;
         this.tipoExamen = "Odontológico";
         this.fechaModificacion = examen.getFecha();
-        this.hechoPor = examen.getPersonalcedula().getNombre().concat(" ").concat(examen.getPersonalcedula().getPrimerApellido());
+        this.hechoPor = examen.getPersonalCedula().getNombre().concat(" ").concat(examen.getPersonalCedula().getPrimerApellido());
         this.id = id;
     }
 
