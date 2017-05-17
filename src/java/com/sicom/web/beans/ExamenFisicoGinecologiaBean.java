@@ -21,7 +21,6 @@ import javax.persistence.Persistence;
 public class ExamenFisicoGinecologiaBean implements Serializable {
 
     private ExamenGinecologia examenFisico;
-    private Date hoy;
     private ExamenGinecologiaJpaController ejc;
     private Paciente paciente;
 
@@ -80,14 +79,6 @@ public class ExamenFisicoGinecologiaBean implements Serializable {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    public void setHoy(Date hoy) {
-        this.hoy = hoy;
-    }
-
-    public Date getHoy() {
-        return hoy;
     }
 
     public ExamenGinecologia getExamenFisico() {

@@ -35,10 +35,8 @@ public class AntecedentesGinecologiaBean implements Serializable {
         ExternalContext ec = fc.getExternalContext();
 
         paciente = (Paciente) ec.getSessionMap().get("paciente");
-        Object obj = ec.getSessionMap().remove("validacionGinecologia");
-        boolean permiso = (obj != null);
-
-        if (paciente != null && permiso) {
+        
+        if (paciente != null) {
             Expediente e = paciente.getExpediente();
             antecedentesGinecologia = e.getAntecedentesGinecologia();
 

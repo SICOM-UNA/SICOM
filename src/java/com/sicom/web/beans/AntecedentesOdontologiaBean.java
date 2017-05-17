@@ -32,10 +32,8 @@ public class AntecedentesOdontologiaBean implements Serializable {
         ExternalContext ec = fc.getExternalContext();
 
         paciente = (Paciente) ec.getSessionMap().get("paciente");
-        Object obj = ec.getSessionMap().remove("validacionOdontologia");
-        boolean permiso= (obj != null);
         
-        if (paciente != null && permiso) {
+        if (paciente != null) {
             Expediente e = paciente.getExpediente();
             antecedentesOdontologia = e.getAntecedentesOdontologia();
             

@@ -61,7 +61,7 @@
 
                         <p:tab title="Responsables">
                             <h:form id="formResponsables">
-                                <p:dataList value="#{pacienteBean.selectedPaciente.responsableList}" var="responsable" itemType="none">
+                                <p:dataList value="#{pacienteBean.selectedPaciente.responsableList}" var="responsable" itemType="none" emptyMessage="No posee responsables.">
                                     <p:panel header="#{responsable.nombre}">
                                         <h:panelGrid columns="2" cellpadding="6">
                                             <p:outputLabel for="cedula" value="Identificación:"/>
@@ -83,7 +83,7 @@
 
                         <!--    EXPEDIENTE  -->
 
-                        <p:tab title="Expediente" >
+                        <p:tab title="Expediente" rendered="#{loginBean.visibleDepartamento('ginecología,odontología')}">
                             <div class="ui-grid ui-grid-responsive">
                                 <div class="ui-grid-row">
                                     <div class="ui-grid-col-6">
@@ -156,7 +156,7 @@
                 </p:panel>
                 
                 <h:form id="formRedireccionar">
-                    <p:commandButton value="Actualizar datos" icon="ui-icon-pencil" title="Modificar la información del personal" action="editar?faces-redirect=true"/>
+                    <p:commandButton value="Actualizar datos" icon="ui-icon-pencil" title="Modificar la información del personal" action="editar?faces-redirect=true" rendered="#{!loginBean.visibleDepartamento('recepción')}"/>
                 </h:form>
                 
                 <!--    LISTA DE DOCUMENTOS    -->

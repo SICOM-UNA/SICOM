@@ -43,7 +43,7 @@ and open the template in the editor.
             <h:form id="formMenu">
                 <div class="menuwrap">
                     <p:menubar styleClass="menu">
-                        <p:menuitem value="Inicio" outcome="/app/index" icon="ui-icon-home"/>
+                        <p:menuitem value="Inicio" outcome="/app/index" icon="ui-icon-home" rendered="#{loginBean.visibleDepartamento('ginecología,odontología')}"/>
 
                         <p:submenu label="Pacientes" icon="ui-icon-person">
                             <p:menuitem value="Agregar" url="/app/paciente/agregar" icon="ui-icon-plus"/>
@@ -53,8 +53,8 @@ and open the template in the editor.
                             </p:submenu>
                         </p:submenu>
          
-                        <p:submenu label="Personal" icon="ui-icon-key">
-                            <p:menuitem value="Agregar" url="/app/personal/agregar" icon="ui-icon-plus" rendered="#{loginBean.visibleUserInRole('administrador') || loginBean.visibleDepartamento('odontología')}"/>
+                        <p:submenu label="Personal" icon="ui-icon-key" rendered="#{!loginBean.visibleDepartamento('recepción')}">
+                            <p:menuitem value="Agregar" url="/app/personal/agregar" icon="ui-icon-plus"/>
                             <p:submenu label="Buscar" icon="ui-icon-search">
                                 <p:menuitem value="Por cédula" url="/app/personal/consultarPorCedula"/>
                                 <p:menuitem value="Por nombre" url="/app/personal/consultarPorNombre"/>
