@@ -50,7 +50,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "AntecedentesGinecologia.findByUltimoPap", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.ultimoPap = :ultimoPap")
     , @NamedQuery(name = "AntecedentesGinecologia.findByLactanciaMaterna", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.lactanciaMaterna = :lactanciaMaterna")
     , @NamedQuery(name = "AntecedentesGinecologia.findByComentarioLactancia", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.comentarioLactancia = :comentarioLactancia")
-    , @NamedQuery(name = "AntecedentesGinecologia.findByTipoParto", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.tipoParto = :tipoParto")
     , @NamedQuery(name = "AntecedentesGinecologia.findByMenopausia", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.menopausia = :menopausia")
     , @NamedQuery(name = "AntecedentesGinecologia.findByGesta", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.gesta = :gesta")
     , @NamedQuery(name = "AntecedentesGinecologia.findByPartos", query = "SELECT a FROM AntecedentesGinecologia a WHERE a.partos = :partos")
@@ -106,8 +105,6 @@ public class AntecedentesGinecologia implements Serializable {
     private Boolean lactanciaMaterna;
     @Column(name = "comentarioLactancia")
     private String comentarioLactancia;
-    @Column(name = "tipoParto")
-    private String tipoParto;
     @Column(name = "menopausia")
     private Integer menopausia;
     @Column(name = "gesta")
@@ -288,14 +285,6 @@ public class AntecedentesGinecologia implements Serializable {
 
     public void setComentarioLactancia(String comentarioLactancia) {
         this.comentarioLactancia = comentarioLactancia;
-    }
-
-    public String getTipoParto() {
-        return tipoParto;
-    }
-
-    public void setTipoParto(String tipoParto) {
-        this.tipoParto = tipoParto;
     }
 
     public Integer getMenopausia() {

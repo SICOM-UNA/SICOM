@@ -81,6 +81,8 @@ public class Personal implements Serializable {
     private String estadoCivil;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalCedula")
     private List<ExamenColposcopia> examenColposcopiaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalcedula")
+    private List<MonitoreoFetal> monitoreoFetalList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "personalCedula")
     private List<ExamenOdontologia> examenOdontologiaList;
     @JoinColumn(name = "Departamento_id", referencedColumnName = "id")
@@ -213,6 +215,15 @@ public class Personal implements Serializable {
         this.examenColposcopiaList = examenColposcopiaList;
     }
 
+    @XmlTransient
+    public List<MonitoreoFetal> getMonitoreoFetalList() {
+        return monitoreoFetalList;
+    }
+
+    public void setMonitoreoFetalList(List<MonitoreoFetal> monitoreoFetalList) {
+        this.monitoreoFetalList = monitoreoFetalList;
+    }
+    
     @XmlTransient
     public List<ExamenOdontologia> getExamenOdontologiaList() {
         return examenOdontologiaList;

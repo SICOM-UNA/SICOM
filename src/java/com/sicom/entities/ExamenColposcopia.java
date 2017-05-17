@@ -6,6 +6,7 @@
 package com.sicom.entities;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +19,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -50,7 +53,8 @@ public class ExamenColposcopia implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @Column(name = "fecha")
-    private String fecha;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fecha;
     @Column(name = "resultado")
     private Boolean resultado;
     @Column(name = "resultadoComentario")
@@ -86,7 +90,7 @@ public class ExamenColposcopia implements Serializable {
         this.id = id;
     }
 
-    public ExamenColposcopia(Integer id, String fecha) {
+    public ExamenColposcopia(Integer id, Date fecha) {
         this.id = id;
         this.fecha = fecha;
     }
@@ -99,11 +103,11 @@ public class ExamenColposcopia implements Serializable {
         this.id = id;
     }
 
-    public String getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 

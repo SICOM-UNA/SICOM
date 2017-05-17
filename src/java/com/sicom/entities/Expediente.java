@@ -45,6 +45,8 @@ public class Expediente implements Serializable {
     private AntecedentesGinecologia antecedentesGinecologia;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "expedientePacientecedula")
     private List<ExamenColposcopia> examenColposcopiaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "expedienteid")
+    private List<MonitoreoFetal> monitoreoFetalList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "expedientePacientecedula")
     private List<ExamenOdontologia> examenOdontologiaList;
     @JoinColumn(name = "Paciente_cedula", referencedColumnName = "cedula")
@@ -89,6 +91,15 @@ public class Expediente implements Serializable {
         this.examenColposcopiaList = examenColposcopiaList;
     }
 
+    @XmlTransient
+    public List<MonitoreoFetal> getMonitoreoFetalList() {
+        return monitoreoFetalList;
+    }
+
+    public void setMonitoreoFetalList(List<MonitoreoFetal> monitoreoFetalList) {
+        this.monitoreoFetalList = monitoreoFetalList;
+    }
+    
     @XmlTransient
     public List<ExamenOdontologia> getExamenOdontologiaList() {
         return examenOdontologiaList;

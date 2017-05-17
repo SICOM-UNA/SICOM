@@ -37,7 +37,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Cita.findByEstado", query = "SELECT c FROM Cita c WHERE c.estado = :estado"),
     @NamedQuery(name = "Cita.findByMotivo", query = "SELECT c FROM Cita c WHERE c.motivo = :motivo"),
     @NamedQuery(name = "Cita.findByNombre", query = "SELECT c FROM Cita c WHERE c.nombre = :nombre"),
-    @NamedQuery(name = "Cita.findByTelefono", query = "SELECT c FROM Cita c WHERE c.telefono = :telefono")})
+    @NamedQuery(name = "Cita.findByTelefono", query = "SELECT c FROM Cita c WHERE c.telefono = :telefono"),
+    @NamedQuery(name = "Cita.findByCelular", query = "SELECT c FROM Cita c WHERE c.celular = :celular")})
 public class Cita implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -60,6 +61,8 @@ public class Cita implements Serializable {
     private String nombre;
     @Column(name = "telefono")
     private String telefono;
+    @Column(name = "celular")
+    private String celular;
     @JoinColumn(name = "Departamento_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Departamento departamentoid;
@@ -127,6 +130,14 @@ public class Cita implements Serializable {
         this.telefono = telefono;
     }
 
+    public String getCelular() {
+        return celular;
+    }
+
+    public void setCelular(String celular) {
+        this.celular = celular;
+    }
+    
     public Departamento getDepartamentoid() {
         return departamentoid;
     }
