@@ -16,9 +16,9 @@
                         <h:panelGrid columns="2" cellpadding="20">
                             <h:panelGroup>
                                 <p:outputLabel value="Tipo: " for="tipo" class="descripcion"/>
-                                <p:selectOneMenu value="#{monitoreoFetalBean.tipo}"  id="tipo">
-                                    <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                    <f:selectItems value="#{monitoreoFetalBean.consultarValoresPorCodigo(10)}"/>
+                                <p:selectOneMenu value="#{monitoreoFetalBean.tipo}"  id="tipo" required="true">
+                                    <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true"/>
+                                    <f:selectItems value="#{valoresBean.getDescripcionByCodeId(13)}"/>
                                 </p:selectOneMenu>
                             </h:panelGroup>
                             <h:panelGroup>
