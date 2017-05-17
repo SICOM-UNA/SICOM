@@ -12,24 +12,40 @@
             <section>
                 <h:form id="formulario">
                     <p:messages id="msg" autoUpdate="true" closable="true"/>
+                    <p:panel header="Información del Paciente">
+                        <h:panelGrid columns="7">
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion" value="#{monitoreoFetalBean.paciente.nombre} #{monitoreoFetalBean.paciente.primerApellido} #{monitoreoFetalBean.paciente.segundoApellido}"/>
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion" value="#{monitoreoFetalBean.paciente.cedula}"/>
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion"  value="Última edición:"/>
+                            <p:outputLabel class="descripcion"  value="#{monitoreoFetalBean.monitoreoFetal.fecha}">
+                                <f:convertDateTime pattern="dd-MM-yyyy H:mm:ss"/>
+                            </p:outputLabel>
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion" value="Creado por: #{monitoreoFetalBean.monitoreoFetal.personalcedula.nombre} #{monitoreoFetalBean.monitoreoFetal.personalcedula.primerApellido} #{monitoreoFetalBean.monitoreoFetal.personalcedula.segundoApellido}"/>
+
+                        </h:panelGrid>
+                    </p:panel>
                     <p:panel header="Monitoreo Fetal">
                         <h:panelGrid columns="2" cellpadding="20">
                             <h:panelGroup>
                                 <p:outputLabel value="Tipo: " for="tipo" class="descripcion"/>
-                                <p:selectOneMenu value="#{monitoreoFetalBean.tipo}"  id="tipo" required="true">
+                                <p:selectOneMenu value="#{monitoreoFetalBean.monitoreoFetal.tipo}"  id="tipo" required="true">
                                     <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true"/>
                                     <f:selectItems value="#{valoresBean.getDescripcionByCodeId(13)}"/>
                                 </p:selectOneMenu>
                             </h:panelGroup>
                             <h:panelGroup>
                                 <p:outputLabel for="detalles" value="Detalles:" class="descripcion" />
-                                <p:inputTextarea id="detalles" value="" maxlength="118" rows="5" cols = "70" autoResize="false"/> 
+                                <p:inputTextarea value="#{monitoreoFetalBean.monitoreoFetal.comentario}" id="detalles" maxlength="118" rows="5" cols = "70" autoResize="false"/> 
                             </h:panelGroup>    
                         </h:panelGrid>
                         <f:facet name="footer" >
                             <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                <p:commandButton value="Guardar" icon="ui-icon-disk" title="Click para guardar información." update="formulario msg"/>
-                                <p:commandButton value="Cancelar" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true">
+                                <p:commandButton value="Guardar" icon="ui-icon-disk" title="Click para guardar información." update="formulario msg" action="#{monitoreoFetalBean.save()}"/>
+                                <p:commandButton value="Cancelar" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true" action="#{monitoreoFetalBean.volver_a_informacion()}">
                                 </p:commandButton> 
                             </div>
                         </f:facet>
