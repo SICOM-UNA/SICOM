@@ -14,62 +14,64 @@
                     <p:messages id="msg" autoUpdate="true" closable="true"/>
                     <p:panel header="Colposcopía">
                         <p:panel header="Información del Paciente">
-                            <h:panelGrid columns="7">
-                                <p:spacer width="50"/>
-                                <p:outputLabel class="descripcion" value="#{colposcopiaBean.paciente.nombre} #{antecedentesGinecologiaBean.paciente.primerApellido} #{antecedentesGinecologiaBean.paciente.segundoApellido}"/>
-                                <p:spacer width="50"/>
-                                <p:outputLabel class="descripcion" value="#{colposcopiaBean.paciente.cedula}"/>
-                                <p:spacer width="50"/>
-                                <p:outputLabel class="descripcion"  value="Última edición:"/>
-                                <p:outputLabel class="descripcion"  value="#{colposcopiaBean.objeto.fecha}">
-                                    <f:convertDateTime pattern="dd-MM-yyyy H:mm:ss"/>
-                                </p:outputLabel>
-                            </h:panelGrid>
-                        </p:panel>
+                        <h:panelGrid columns="7">
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion" value="#{examenFisicoGinecologiaBean.paciente.nombre} #{examenFisicoGinecologiaBean.paciente.primerApellido} #{examenFisicoGinecologiaBean.paciente.segundoApellido}"/>
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion" value="#{examenFisicoGinecologiaBean.paciente.cedula}"/>
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion"  value="Última edición:"/>
+                            <p:outputLabel class="descripcion"  value="#{examenFisicoGinecologiaBean.examenFisico.fecha}">
+                                <f:convertDateTime pattern="dd-MM-yyyy H:mm:ss"/>
+                            </p:outputLabel>
+                            <p:spacer width="50"/>
+                            <p:outputLabel class="descripcion" value="Creado por: #{examenFisicoGinecologiaBean.examenFisico.personalCedula.nombre} #{examenFisicoGinecologiaBean.examenFisico.personalCedula.primerApellido} #{examenFisicoGinecologiaBean.examenFisico.personalCedula.segundoApellido}"/>
+                        </h:panelGrid>
+                    </p:panel>
                         <h:panelGroup>
                             <h:panelGrid columns="3" cellpadding="3">
 
                                 <p:outputLabel for="resultado" value="Resultado:" class="descripcion" />
-                                <p:selectOneMenu value="#{colposcopiaBean.resultado}"  id="resultado">
+                                <p:selectOneMenu value="#{colposcopiaBean.examen.resultado}"  id="resultado">
                                     <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
                                     <f:selectItems value="#{valoresBean.getDescripcionByCodeId(9)}"/>
                                 </p:selectOneMenu>  
-                                <p:inputText value="" size="86"/>
+                                <p:inputText value="#{colposcopiaBean.examen.resultadoComentario}" size="86"/>
                             </h:panelGrid>                              
                         </h:panelGroup>
 
                         <div class="ui-grid ui-grid-responsive">
                             <div class="ui-grid-row">
                                 <div class="ui-grid-col-12">
-                                    <p:panel>
+                                    <p:panel header="">
                                         <h:panelGrid columns="1">
                                             <h:panelGrid columns="2">
                                                 <h:panelGrid columns="2" cellspacing="3">
                                                     <p:outputLabel for="PbAcAcetico" value="Pb. Ac. Acético: " class="descripcion"/>
-                                                    <p:inputText id="PbAcAcetico" size="20"/>  
+                                                    <p:inputText id="PbAcAcetico" size="20" value="#{colposcopiaBean.examen.acidoAcetico}"/>  
 
-                                                    <p:outputLabel for="lxBlanco" value="LX ????? blanco: " class="descripcion"/>
-                                                    <p:inputText id="lxBlanco" size="20"/>  
+                                                    <p:outputLabel for="lxBlanco" value="LX: " class="descripcion"/>
+                                                    <p:inputText id="lxBlanco" size="20" value="#{colposcopiaBean.examen.lx}"/>  
                                                 </h:panelGrid>
                                             </h:panelGrid>
                                             <h:panelGrid columns="3" cellpadding="3">
                                                 <p:outputLabel value="Schiller: " class="descripcion"/>
-                                                <p:selectBooleanCheckbox id="schillerCheck"/>
-                                                <p:inputText id="schillerTxt" size="20"/>  
+                                                <p:selectBooleanCheckbox id="schillerCheck" value="#{colposcopiaBean.examen.schiller}"/>
+                                                <p:inputText id="schillerTxt" size="20" value="#{colposcopiaBean.examen.comentarioSchiller}"/>  
                                             </h:panelGrid>
                                             <h:panelGrid columns="2">
                                                 <p:outputLabel for="moco" value="Moco: " class="descripcion"/>
-                                                <p:selectOneRadio id="moco" value="">
+                                                <p:selectOneRadio id="moco" value="#{colposcopiaBean.examen.moco}">
                                                     <f:selectItem itemLabel="Si" itemValue="1" />
                                                     <f:selectItem itemLabel="No" itemValue="0" />
                                                 </p:selectOneRadio>
-                                                <p:outputLabel for="bx" value="BX:  " class="descripcion"/>
-                                                <p:selectOneRadio id="bx" value="">
+                                                <p:outputLabel for="bx" value="BX:" class="descripcion"/>
+                                                <p:selectOneRadio id="bx" value="#{colposcopiaBean.examen.bx}">
                                                     <f:selectItem itemLabel="Si" itemValue="1" />
                                                     <f:selectItem itemLabel="No" itemValue="0" />
                                                 </p:selectOneRadio>
                                                 <p:outputLabel for="otros" value="Otros:" class="descripcion"/>
-                                                <p:inputTextarea id="otros" value="" maxlength="100" rows="3" cols = "46" autoResize="false"/>
+                                                <p:inputTextarea id="otros" value="#{colposcopiaBean.examen.otros}" maxlength="100" rows="3" cols = "46" autoResize="false"/>
                                             </h:panelGrid>
                                         </h:panelGrid>
                                     </p:panel>
@@ -80,9 +82,8 @@
                                     </p:panel>
                                     <f:facet name="footer" >
                                         <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                            <p:commandButton value="Guardar" icon="ui-icon-disk" title="Click para guardar información." update="formulario msg"/>
-                                            <p:commandButton value="Cancelar" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true">
-                                            </p:commandButton> 
+                                            <p:commandButton value="Guardar" action="#{monitoreoFetalBean.save()}" icon="ui-icon-disk" title="Click para guardar información." update="formulario msg"/>
+                                            <p:commandButton value="Cancelar" action="#{monitoreoFetalBean.volver_a_informacion}" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true"/>                                   
                                         </div>
                                     </f:facet>
                                 </div>

@@ -88,10 +88,8 @@
 
                                         <f:facet name="footer">
                                             <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                                <p:commandButton value="Actualizar" icon="ui-icon-plus" action="#{pacienteBean.modificar}" title="Actualizar datos del paciente" update="formPaciente :formResponsable"/>
-                                                <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true">
-                                                    <f:ajax resetValues="true" render="formPaciente"/>
-                                                </p:commandButton> 
+                                                <p:commandButton value="Actualizar Paciente" icon="ui-icon-plus" action="#{pacienteBean.modificar}" title="Actualizar datos del paciente" update="formPaciente :formResponsable"/>
+                                                <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true" />
                                             </div>
                                         </f:facet>
                                     </p:panel>
@@ -143,11 +141,11 @@
                                             
                                             <f:facet name="footer">
                                                 <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                                    <p:commandButton icon="ui-icon-plus" value="Agregar" action="#{pacienteBean.reinit}" title="Agregar responsable" update="formResponsable @parent">
+                                                    <p:commandButton icon="ui-icon-plus" value="Agregar Responsable" action="#{pacienteBean.reinit}" title="Agregar responsable" update="formResponsable @parent">
                                                         <f:ajax listener="#{pacienteBean.nuevoResponsable.setPacienteCedula(pacienteBean.selectedPaciente)}" render="formResponsable"/>
                                                         <p:collector value="#{pacienteBean.nuevoResponsable}" addTo="#{pacienteBean.selectedPaciente.responsableList}" unique="true"/>
                                                     </p:commandButton>
-                                                    <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true">
+                                                    <p:commandButton value="Limpiar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true">
                                                         <f:ajax resetValues="true" render="formResponsable"/>
                                                     </p:commandButton> 
                                                 </div>
