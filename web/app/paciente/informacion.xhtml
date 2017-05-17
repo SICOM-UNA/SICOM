@@ -56,6 +56,8 @@
                                     <p:outputLabel value="Domicilio:"/>
                                     <p:inputTextarea value="#{pacienteBean.selectedPaciente.domicilio}" readonly="true"/>
                                 </h:panelGrid>
+                                <p:commandButton value="Actualizar datos" icon="ui-icon-pencil" title="Modificar la información del personal" action="editar?faces-redirect=true" rendered="#{!loginBean.visibleDepartamento('recepción')}"/>
+
                             </h:form>
                         </p:tab>
 
@@ -91,11 +93,11 @@
                                             <p:panel header="Historia Clínica">
                                                 <h:panelGrid columns="2">
                                                     <p:commandButton value="Editar" icon="ui-icon-pencil" action="#{expedienteBean.historiaClinica()}" update="formHistoriaClinica"/>
-                                                    
+
                                                     <p:commandButton value="Descargar" icon="ui-icon-circle-arrow-s" action="#{expedienteBean.exportar}" ajax="false">
                                                         <!--<p:confirm header="Descarga" message="¿Desea descargar la historia clínica?" icon="ui-icon-alert"/>-->
                                                     </p:commandButton>
-                                                    
+
                                                     <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                                                         <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                                                         <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
@@ -128,8 +130,8 @@
                                         <h:form id="formImportacion">
                                             <p:panel header="Importación de documentos">
                                                 <p:fileUpload uploadLabel="Elegir un archivo" mode="advanced" fileUploadListener="#{expedienteBean.importar}" 
-                                                    update="formImportacion:tableDocumentos :formDocumentos:tableDialog" invalidSizeMessage="El archivo elegido es muy grande" auto="true" 
-                                                    sizeLimit="10485760" label="Subir documento" skinSimple="true" previewWidth="0" multiple="false"/>
+                                                              update="formImportacion:tableDocumentos :formDocumentos:tableDialog" invalidSizeMessage="El archivo elegido es muy grande" auto="true" 
+                                                              sizeLimit="10485760" label="Subir documento" skinSimple="true" previewWidth="0" multiple="false"/>
 
                                                 <h:panelGrid columns="1" width="100%" >
                                                     <p:dataTable id="tableDocumentos" value="#{expedienteBean.getUltimosDocumentos(5)}" var="documentos">
@@ -154,39 +156,35 @@
                         </p:tab>
                     </p:tabView>
                 </p:panel>
-                
-                <h:form id="formRedireccionar">
-                    <p:commandButton value="Actualizar datos" icon="ui-icon-pencil" title="Modificar la información del personal" action="editar?faces-redirect=true" rendered="#{!loginBean.visibleDepartamento('recepción')}"/>
-                </h:form>
-                
+
                 <!--    LISTA DE DOCUMENTOS    -->
-                
+
                 <p:dialog widgetVar="dialogDocumentos" header="Documentos Importados" closeOnEscape="true" hideEffect="fade" dynamic="true" width="600">
                     <h:form id="formDocumentos">
                         <p:dataTable id="tableDialog" value="#{expedienteBean.listaDocumentos}" var="documentos" rows="5" paginator="true" paginatorPosition="bottom">
                             <p:column headerText="Documento" style="font-size:15px;">
                                 <h:commandLink  value="#{documentos.nombre}" action="#{expedienteBean.descargarDocumento(documentos)}" style="font-size:15px;" title="Click para descargar"/>
                             </p:column>
-                            
+
                             <p:column headerText="Fecha de Subida" style="font-size:15px;" width="22%">
                                 <h:outputText value="#{documentos.fecha}" style="font-size:15px;">
                                     <f:convertDateTime pattern="dd/MM/yyyy" />
                                 </h:outputText>
                             </p:column>
-                            
+
                             <p:column headerText="Eliminar" style="font-size:15px;" width="15%">
                                 <p:commandButton icon="ui-icon-trash" action="#{expedienteBean.eliminarDocumento(documentos)}" title="Click para eliminar" update="formDocumentos :tabView:formImportacion :msg"/>
                             </p:column>
                         </p:dataTable>
-                        
+
                         <center>
                             <p:commandButton value="Cerrar ventana" onclick="PF('dialogDocumentos').hide()" style="margin: 15px;"/>
                         </center>
                     </h:form>
                 </p:dialog>
-                
+
                 <!--    LISTA DE EXÁMENES   -->
-                
+
                 <p:dialog widgetVar="dataTableDialog" header="Lista de Examenes" showEffect="fade" hideEffect="fade" width="1000"  modal="true"
                           closeOnEscape="true">
                     <h:form id="formListaExamenes">
@@ -195,14 +193,14 @@
                                      rowsPerPageTemplate="5,10,15" filteredValue="#{expedienteBean.listaFiltrada}" id="singleDT" selectionMode="single" 
                                      selection="#{expedienteBean.dato}" paginatorPosition="bottom" emptyMessage="No existen exámenes con ese criterio" 
                                      rowKey="#{dato.id}" resizableColumns="true">
-                            
+
                             <f:facet name="header">
                                 <p:outputPanel>
                                     <h:outputText value="Buscar en todas las columnas:" />
                                     <p:inputText id="globalFilter" onkeyup="PF('dataTable').filter()" style="width:150px" placeholder="Digite palabra clave."/>
                                 </p:outputPanel>
                             </f:facet>
-                            
+
                             <p:column filterBy="#{dato.tipoExamen}" sortBy="#{dato.tipoExamen}" headerText="Tipo de examen" footerText="contains" filterMatchMode="contains">
                                 <f:facet name="filter">
                                     <p:selectOneMenu onchange="PF('dataTable').filter()" >
@@ -210,7 +208,7 @@
                                         <f:selectItems value="#{expedienteBean.examenesPorDepartamento}" />
                                     </p:selectOneMenu>
                                 </f:facet>
-                                
+
                                 <h:outputText value="#{dato.tipoExamen}" />
                             </p:column>
 
