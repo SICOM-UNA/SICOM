@@ -6,11 +6,13 @@ import com.sicom.controller.exceptions.NonexistentEntityException;
 import com.sicom.entities.AntecedentesGinecologia;
 import com.sicom.entities.AntecedentesOdontologia;
 import com.sicom.entities.Documentos;
+import com.sicom.entities.ExamenColposcopia;
 import com.sicom.entities.ExamenGinecologia;
 import com.sicom.entities.ExamenOdontologia;
 import com.sicom.entities.Expediente;
 import com.sicom.entities.InterfazExamen;
 import com.sicom.entities.Login;
+import com.sicom.entities.MonitoreoFetal;
 import com.sicom.entities.Paciente;
 import com.sicom.entities.Personal;
 import com.sicom.entities.Valor;
@@ -66,10 +68,11 @@ public class ExpedienteBean implements Serializable {
 
     public ExpedienteBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
+        
         ejc = new ExpedienteJpaController(emf);
         documentosController = new DocumentosJpaController(emf);
-        FacesContext fc = FacesContext.getCurrentInstance();
-        ExternalContext ec = fc.getExternalContext();
+        
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();        
         paciente = (Paciente) ec.getSessionMap().get("paciente");
 
         if (paciente != null) {
@@ -91,69 +94,35 @@ public class ExpedienteBean implements Serializable {
     }
 
     public void historiaClinica() {
-        FacesContext fc = FacesContext.getCurrentInstance();
-        ExternalContext ec = fc.getExternalContext();
-        String URL = ec.getRequestContextPath();
-        Login log = (Login) ec.getSessionMap().get("login");
-        Personal p = log.getPersonal();
-        int consultorio = p.getDepartamentoId().getId();
-        //boolean permiso_editar = (p.getAutorizacionNivel().getNivel() < 5);
-        //String direccion = createUrl(consultorio, permiso_editar);
-        subirVerificacion(consultorio, ec);
 
-//        if (direccion.trim().equals("")) {
-//            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No posee los permisos para acceder.", null));
-//        } else {
-//            try {
-//                subirVerificacion(consultorio, ec);
-//                URL += direccion;
-//                ec.redirect(URL);
-//            } catch (IOException ex) {
-//                Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        Personal p = ((Login) ec.getSessionMap().get("login")).getPersonal();
+        int consultorio = p.getDepartamentoId().getId();
+        
+        try {
+            String URL = ec.getRequestContextPath().concat(createUrl(consultorio));
+            ec.redirect(URL);
+        } catch (IOException ex) {
+            Logger.getLogger(PacienteBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     /**
      *
      * @param consultorio
-     * @param permiso_editar
      * @return String URL
      */
-    private String createUrl(int consultorio, boolean permiso_editar) {
+    private String createUrl(int consultorio) {
         switch (consultorio) {
             case 2: // Ginecologia
-                if (permiso_editar) {
-                    return "/app/consultorios/ginecologia/antecedentes";
-                } else {
-                    return "/app/consultorios/ginecologia/consultarAntecedentes";
-                }
+                return "/app/consultorios/ginecologia/antecedentes";
+
             case 3: // Odontologia
-                if (permiso_editar) {
-                    return "/app/consultorios/odontologia/antecedentes";
-                } else {
-                    return "/app/consultorios/odontologia/consultarAntecedentes";
-                }
+                return "/app/consultorios/odontologia/antecedentes";
+
             default:
-                return "";
-        }
-    }
-
-    /**
-     *
-     * @param consultorio
-     * @return Object
-     */
-    private void subirVerificacion(int consultorio, ExternalContext ec) {
-        Expediente e = paciente.getExpediente();
-
-        switch (consultorio) {
-            case 2:
-                ec.getSessionMap().put("validacionGinecologia", true);
-                break;
-            case 3:
-                ec.getSessionMap().put("validacionOdontologia", true);
-                break;
+                return null;
         }
     }
 
@@ -174,7 +143,7 @@ public class ExpedienteBean implements Serializable {
                     URL += "/app/consultorios/ginecologia/examen/colposcopia";
                     break;
                 case 39:/*Odontograma*/
-
+                    
                     break;
                 default:
                     URL += "/app/paciente/informacion";
@@ -189,10 +158,6 @@ public class ExpedienteBean implements Serializable {
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe seleccionar un exámen primero.", null));
         }
-    }
-
-    public void buscaExamenes() {
-
     }
 
     private void nuevaLinea(PDPageContentStream content, int x, int y, int tamañoFuente, String texto) throws IOException {
@@ -211,28 +176,28 @@ public class ExpedienteBean implements Serializable {
         float fontSize = 10;
         List<String> lines = new ArrayList<String>();
         int lastSpace = -1;
-        
+
         while (texto.length() > 0) {
             int spaceIndex = 0;
-          
+
             if (texto.indexOf(' ', lastSpace + 1) > texto.indexOf("\n", lastSpace + 1)) {
                 spaceIndex = texto.indexOf(' ', lastSpace + 1);
             } else {
                 spaceIndex = texto.indexOf("\n", lastSpace + 1);
             }
-            
+
             if (spaceIndex < 0) {
                 spaceIndex = texto.length();
             }
-            
+
             String subString = texto.substring(0, spaceIndex);
             float size = fontSize * pdfFont.getStringWidth(subString) / 500;
-            
+
             if (size > width) {
                 if (lastSpace < 0) {
                     lastSpace = spaceIndex;
                 }
-                
+
                 subString = texto.substring(0, lastSpace);
                 lines.add(subString);
                 texto = texto.substring(lastSpace).trim();
@@ -253,7 +218,7 @@ public class ExpedienteBean implements Serializable {
             contentStream.endText();
             startY -= 10;
         }
-        
+
         return startY;
     }
 
@@ -377,7 +342,7 @@ public class ExpedienteBean implements Serializable {
             }
             content.drawLine(80, y, 440, y);
             y -= 30;
-            if (antecedentesGinecologia.getMenarca()==null) {
+            if (antecedentesGinecologia.getMenarca() == null) {
                 nuevaLinea(content, 80, y, 10, "Menarca: N/a");
             } else {
                 nuevaLinea(content, 80, y, 10, "Menarca: " + antecedentesGinecologia.getMenarca());
@@ -661,7 +626,7 @@ public class ExpedienteBean implements Serializable {
                 y = textoLargo(antecedentesOdontologia.getAlergias(), content, page, 220, y);
             }
             y -= 20;
-            
+
             if (y < 160) {
                 content.close();
                 PDPage page2 = new PDPage();
@@ -728,12 +693,12 @@ public class ExpedienteBean implements Serializable {
 
     public void eliminarDocumento(Documentos doc) {
         FacesContext fc = FacesContext.getCurrentInstance();
-        
+
         try {
             documentosController.destroy(doc.getId());
             fc.addMessage(null, new FacesMessage("Archivo " + doc.getNombre() + " eliminado exitosamente"));
         } catch (NonexistentEntityException ex) {
-            
+
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al eliminar el archivo", null));
             Logger.getLogger(ExpedienteBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -764,7 +729,7 @@ public class ExpedienteBean implements Serializable {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al subir el archivo", null));
         }
     }
-    
+
     public List<Documentos> getUltimosDocumentos(Integer maxResults) {
         ultimosDocumentoss = documentosController.findUltimos(paciente.getCedula(), maxResults);
 
@@ -774,13 +739,13 @@ public class ExpedienteBean implements Serializable {
     public void setUltimosDocumentoss(List<Documentos> ultimosDocumentoss) {
         this.ultimosDocumentoss = ultimosDocumentoss;
     }
-    
+
     public List<Documentos> getListaDocumentos() {
         this.listaDocumentos = documentosController.findRDocumentosByCedulaPaciente(expediente.getPacientecedula().getCedula());
-      
+
         return listaDocumentos;
     }
-  
+
     public void setListaDocumentos(List<Documentos> listaDocumentos) {
         this.listaDocumentos = listaDocumentos;
     }
@@ -816,12 +781,16 @@ public class ExpedienteBean implements Serializable {
         for (ExamenOdontologia eo : examenOdontologiaList) {
             resultado.add(new InterfazExamen(eo, i++));
         }
-        /*
+        
         List<ExamenColposcopia> examenColposcopiaList = expediente.getExamenColposcopiaList();
         for (ExamenColposcopia ec : examenColposcopiaList) {
-            resultado.add(new InterfazExamen(ec));
+            resultado.add(new InterfazExamen(ec,i++));
          }
-         */
+         
+        List<MonitoreoFetal> monitoreoFetalList = expediente.getMonitoreoFetalList();
+        for (MonitoreoFetal mf : monitoreoFetalList) {
+            resultado.add(new InterfazExamen(mf,i++));
+         }
         return resultado;
     }
 

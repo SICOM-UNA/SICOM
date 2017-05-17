@@ -54,7 +54,7 @@ and open the template in the editor.
                         </p:submenu>
          
                         <p:submenu label="Personal" icon="ui-icon-key" rendered="#{!loginBean.visibleDepartamento('recepción')}">
-                            <p:menuitem value="Agregar" url="/app/personal/agregar" icon="ui-icon-plus" rendered="#{loginBean.visibleUserInRole('administrador') || loginBean.visibleDepartamento('odontología')}"/>
+                            <p:menuitem value="Agregar" url="/app/personal/agregar" icon="ui-icon-plus"/>
                             <p:submenu label="Buscar" icon="ui-icon-search">
                                 <p:menuitem value="Por cédula" url="/app/personal/consultarPorCedula"/>
                                 <p:menuitem value="Por nombre" url="/app/personal/consultarPorNombre"/>
