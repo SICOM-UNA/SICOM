@@ -27,11 +27,22 @@
                             <p:outputLabel for="title" value="Nombre" />
                             <p:inputText id="title" value="#{citasBean.event.title}" required="true" class = "charWithSpaceToUpperCase" onkeyup="validar()" />
 
-                            <p:outputLabel for="telefono" value="Telefono" />
-                            <p:inputMask id="telefono" value="#{citasBean.nuevaCita.telefono}" mask="9999-9999" required="true" requiredMessage="- Falta el teléfono" placeholder="0000-0000"/>
+                            <p:outputLabel for="telefono" value="Telefono 1" />
+                            <p:inputMask id="telefono" value="#{citasBean.nuevaCita.telefono}" mask="9999-9999" placeholder="0000-0000"/>
 
-                            <p:outputLabel value="Hora Inicial" />
-                            <p:calendar id="time1" value="#{citasBean.event.startDate}" timeZone="GMT-6" pattern="dd/MM/yyyy HH:mm" minHour="6" maxHour="20" stepMinute="30"/>
+                            <p:outputLabel for="telefono2" value="Telefono 2" />
+                            <p:inputMask id="telefono2" value="#{citasBean.nuevaCita.celular}" mask="9999-9999" placeholder="0000-0000"/>
+
+                            <p:outputLabel value="Hora Inicial" for="time1" />
+                            <p:calendar id="time1" value="#{citasBean.event.startDate}" required="true" timeZone="GMT-6" pattern="dd/MM/yyyy HH:mm" minHour="6" maxHour="20" stepMinute="30"/>
+
+                            <p:outputLabel value="Estado: " for="estado" rendered="#{citasBean.validaEliminar()}"/>
+                            <p:selectOneButton id="estado" value="#{citasBean.nuevaCita.estado}" rendered="#{citasBean.validaEliminar()}">
+                                <f:selectItem itemLabel="NC" itemValue="Pendiente" itemDescription="No Confirmado"/>
+                                <f:selectItem itemLabel="C" itemValue="Confirmado"  itemDescription="Confirmado"/>
+                                <f:selectItem itemLabel="P" itemValue="Asistió" itemDescription="Se Presentó"/>
+                                <f:selectItem itemLabel="A" itemValue="Ausente" itemDescription="Ausente"/>
+                            </p:selectOneButton>
 
                             <p:outputLabel for="motivo" value="Motivo de Cita" />
                             <h:panelGrid columns="1">
