@@ -105,8 +105,8 @@
 
                                         <f:facet name="footer">
                                             <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                                <p:commandButton value="Agregar" icon="ui-icon-plus" action="#{pacienteBean.agregar}" title="Agregar paciente" update="formPaciente msg :formResponsable"/>
-                                                <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true">
+                                                <p:commandButton value="Guargar Paciente" icon="ui-icon-plus" action="#{pacienteBean.agregar}" title="Agregar paciente" update="formPaciente msg :formResponsable"/>
+                                                <p:commandButton value="Cancelar Todo" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true">
                                                     <f:ajax resetValues="true" render="formPaciente"/>
                                                 </p:commandButton> 
                                             </div>
@@ -160,11 +160,11 @@
                                             
                                             <f:facet name="footer">
                                                 <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                                    <p:commandButton icon="ui-icon-plus" value="Agregar" action="#{pacienteBean.reinit}" title="Agregar responsable" update="formResponsable @parent">
+                                                    <p:commandButton icon="ui-icon-plus" value="Agregar Responsable" action="#{pacienteBean.reinit}" title="Agregar responsable" update="formResponsable @parent">
                                                         <f:ajax listener="#{pacienteBean.nuevoResponsable.setPacienteCedula(pacienteBean.nuevoPaciente)}"/>
                                                         <p:collector value="#{pacienteBean.nuevoResponsable}" addTo="#{pacienteBean.listaResponsable}" unique="true"/>
                                                     </p:commandButton>
-                                                    <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true">
+                                                    <p:commandButton value="Limpiar Responsable" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true">
                                                         <f:ajax resetValues="true" render="formResponsable"/>
                                                     </p:commandButton> 
                                                 </div>
