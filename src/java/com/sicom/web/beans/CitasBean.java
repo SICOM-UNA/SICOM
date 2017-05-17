@@ -173,7 +173,7 @@ public class CitasBean implements Serializable {
                 nuevaCita.setFechaFinal(endDate);
                 nuevaCita.setNombre(event.getTitle());
                 nuevaCita.setDepartamentoid(departamento);
-
+                nuevaCita.setEstado("Pendiente");
                 cjc.create(nuevaCita);
                 listaCitas.add(nuevaCita);
 
@@ -191,6 +191,7 @@ public class CitasBean implements Serializable {
                 selectedCita.setNombre(event.getTitle());
                 selectedCita.setMotivo(nuevaCita.getMotivo());
                 selectedCita.setTelefono(nuevaCita.getTelefono());
+                selectedCita.setEstado(nuevaCita.getEstado());
 
                 cjc.edit(selectedCita);
                 selectedCita = null;
