@@ -61,7 +61,7 @@
 
                         <p:tab title="Responsables">
                             <h:form id="formResponsables">
-                                <p:dataList value="#{pacienteBean.selectedPaciente.responsableList}" var="responsable" itemType="none">
+                                <p:dataList value="#{pacienteBean.selectedPaciente.responsableList}" var="responsable" itemType="none" emptyMessage="No posee responsables.">
                                     <p:panel header="#{responsable.nombre}">
                                         <h:panelGrid columns="2" cellpadding="6">
                                             <p:outputLabel for="cedula" value="Identificación:"/>
