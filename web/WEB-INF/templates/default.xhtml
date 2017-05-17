@@ -18,6 +18,7 @@ and open the template in the editor.
         <link type="text/css" rel="stylesheet" href="#{request.contextPath}/css/default.css"/>
         <link type="text/css" rel="stylesheet" href="#{request.contextPath}/css/menu.css"/>
         <script type="text/javascript" src="#{request.contextPath}/js/default.js"></script>
+        <ui:insert name="head"/>
     </h:head>
     
     <h:body>
@@ -64,12 +65,14 @@ and open the template in the editor.
                         
                         <p:menuitem value="Citas" url="/app/calendario/seleccion" icon="ui-icon-calendar"/>
                        
+                        <p:submenu label="Editor" icon="ui-icon-image">
+                            <p:menuitem value="Ginecología" url="/app/consultorios/ultimaversion/public_html/classic_with_gui/ginecologia" icon="ui-icon-suitcase"/>
+                            <p:menuitem value="Odontología" url="/app/consultorios/ultimaversion/public_html/classic_with_gui/odontologia" icon="ui-icon-suitcase"/>
+                        </p:submenu>
+                            
                         <p:submenu label="Ayuda" icon="ui-icon-help">
                             <p:menuitem value="Acerca de" url="#" icon="ui-icon-info"/>
                         </p:submenu>
-                        
-                        <p:menuitem value="Editor" url="/app/consultorios/ultimaversion/public_html/classic_with_gui/index.html" icon="ui-icon-calendar"/>
-                        
                         
                         <f:facet name="options">
                             <p:commandButton value="Salir" action="#{loginBean.cerrarSesion}" icon="ui-icon-power"/>
