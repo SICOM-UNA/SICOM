@@ -28,75 +28,57 @@
                                 <p:outputLabel class="descripcion" value="Creado por: #{examenFisicoGinecologiaBean.examenFisico.personalCedula.nombre} #{examenFisicoGinecologiaBean.examenFisico.personalCedula.primerApellido} #{examenFisicoGinecologiaBean.examenFisico.personalCedula.segundoApellido}"/>
                             </h:panelGrid>
                         </p:panel>
-                        <h:panelGroup>
-                            <h:panelGrid columns="3" cellpadding="3">
-
+                        <p:panel header="Colposcopía">
+                            <h:panelGrid columns="2">
                                 <p:outputLabel for="resultado" value="Resultado:" class="descripcion" />
-                                <p:selectOneMenu value="#{colposcopiaBean.examen.resultado}"  id="resultado">
-                                    <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                    <f:selectItems value="#{valoresBean.getDescripcionByCodeId(9)}"/>
-                                </p:selectOneMenu>  
-                                <p:inputText value="#{colposcopiaBean.examen.resultadoComentario}" size="86" maxlength="240"/>
-                            </h:panelGrid>                              
-                        </h:panelGroup>
+                                <h:panelGrid columns="2">
+                                    <p:selectOneMenu value="#{colposcopiaBean.examen.resultado}"  id="resultado">
+                                        <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
+                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(9)}"/>
+                                    </p:selectOneMenu>  
+                                    <p:inputText value="#{colposcopiaBean.examen.resultadoComentario}" size="60" maxlength="240"/>
+                                </h:panelGrid>                              
+                                <p:outputLabel for="PbAcAcetico" value="Pb. Ac. Acético: " class="descripcion"/>
+                                <p:inputText id="PbAcAcetico" size="20" value="#{colposcopiaBean.examen.acidoAcetico}" maxlength="40"/>  
 
-                        
+                                <p:outputLabel for="lxBlanco" value="LX: " class="descripcion"/>
+                                <p:inputText id="lxBlanco" size="20" value="#{colposcopiaBean.examen.lx}" maxlength="40"/>  
 
-                                    <p:panel header="">
-                                        <h:panelGrid columns="2">
-                                            <h:panelGroup>
-                                                <p:outputLabel for="PbAcAcetico" value="Pb. Ac. Acético: " class="descripcion"/>
-                                                <p:inputText id="PbAcAcetico" size="20" value="#{colposcopiaBean.examen.acidoAcetico}" maxlength="40"/>  
-                                            </h:panelGroup>
-                                            <h:panelGroup>
-                                                <p:outputLabel for="lxBlanco" value="LX: " class="descripcion"/>
-                                                <p:inputText id="lxBlanco" size="20" value="#{colposcopiaBean.examen.lx}" maxlength="40"/>  
-                                            </h:panelGroup>
+                                <p:outputLabel for="moco" value="Moco: " class="descripcion"/>
+                                <p:selectOneRadio id="moco" value="#{colposcopiaBean.examen.moco}">
+                                    <f:selectItem itemLabel="Si" itemValue="1" />
+                                    <f:selectItem itemLabel="No" itemValue="0" />
+                                </p:selectOneRadio>
 
-                                            
-                                            <h:panelGroup>
-                                                <p:outputLabel for="moco" value="Moco: " class="descripcion"/>
-                                                <p:selectOneRadio id="moco" value="#{colposcopiaBean.examen.moco}">
-                                                    <f:selectItem itemLabel="Si" itemValue="1" />
-                                                    <f:selectItem itemLabel="No" itemValue="0" />
-                                                </p:selectOneRadio>
-                                            </h:panelGroup>
-                                            
-                                            <h:panelGroup>
-                                                <p:outputLabel for="bx" value="BX:" class="descripcion"/>
-                                                <p:selectOneRadio id="bx" value="#{colposcopiaBean.examen.bx}">
-                                                    <f:selectItem itemLabel="Si" itemValue="1" />
-                                                    <f:selectItem itemLabel="No" itemValue="0" />
-                                                </p:selectOneRadio>
-                                            </h:panelGroup>
-                                            
-                                            <h:panelGroup>
-                                                
-                                                <h:panelGrid columns="3" cellpadding="3">
-                                                    <p:outputLabel value="Schiller: " class="descripcion"/>
-                                                    <p:selectBooleanCheckbox id="schillerCheck" value="#{colposcopiaBean.examen.schiller}"/>
-                                                    <p:inputText id="schillerTxt" size="20" value="#{colposcopiaBean.examen.comentarioSchiller}" maxlength="40"/>  
-                                                </h:panelGrid>
-                                            </h:panelGroup>
-                                            
-                                        </h:panelGrid>
-                                        <h:panelGroup>
-                                                <p:outputLabel for="otros" value="Otros:" class="descripcion"/>
-                                                <p:inputTextarea id="otros" value="#{colposcopiaBean.examen.otros}" maxlength="100" rows="3" cols = "46" autoResize="false"/>
-                                            </h:panelGroup>
-                                    </p:panel>
-                                
-                                <div class="ui-grid-col-12">
-                                    <!--<p:panel header="Vasos atípicos (Imágen)">
+                                <p:outputLabel for="bx" value="BX:" class="descripcion"/>
+                                <p:selectOneRadio id="bx" value="#{colposcopiaBean.examen.bx}">
+                                    <f:selectItem itemLabel="Si" itemValue="1" />
+                                    <f:selectItem itemLabel="No" itemValue="0" />
+                                </p:selectOneRadio>
 
-                                    </p:panel>-->
-                                    <f:facet name="footer" >
-                                        <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                            <p:commandButton value="Guardar" action="#{colposcopiaBean.save()}" icon="ui-icon-disk" title="Click para guardar información." update="formulario msg"/>
-                                            <p:commandButton value="Cancelar" action="#{colposcopiaBean.volver_a_informacion}" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true"/>                                   
-                                        </div>
-                                    </f:facet>
+                                <p:outputLabel value="Schiller: " class="descripcion"/>
+                                <h:panelGroup>
+                                    <p:selectBooleanCheckbox id="schillerCheck" value="#{colposcopiaBean.examen.schiller}"/>
+                                    <p:spacer width="20"/>
+                                    <p:inputText id="schillerTxt" size="20" value="#{colposcopiaBean.examen.comentarioSchiller}" maxlength="40"/>  
+                                </h:panelGroup>
+
+                            </h:panelGrid>
+                            <p:outputLabel for="otros" value="Otros:" class="descripcion"/>
+                            <p:inputTextarea id="otros" value="#{colposcopiaBean.examen.otros}" maxlength="100" rows="3" cols = "46" autoResize="false"/>
+                        </p:panel>
+
+                        <div class="ui-grid-col-12">
+                            <!--<p:panel header="Vasos atípicos (Imágen)">
+
+                            </p:panel>-->
+                            <f:facet name="footer" >
+                                <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                    <p:commandButton value="Guardar" action="#{colposcopiaBean.save()}" icon="ui-icon-disk" title="Click para guardar información." update="formulario msg"/>
+                                    <p:commandButton value="Cancelar" action="#{colposcopiaBean.volver_a_informacion}" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true"/>                                   
                                 </div>
+                            </f:facet>
+                        </div>
                     </p:panel>
 
                 </h:form>
