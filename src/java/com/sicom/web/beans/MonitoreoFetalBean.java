@@ -46,7 +46,7 @@ public class MonitoreoFetalBean implements Serializable {
         }
     }
 
-    public void save() {
+    public void agregar() {
         try {
             monitoreoFetal.setFecha(new Date());
             monitoreoFetal.setExpedienteid(paciente.getExpediente());
@@ -65,7 +65,7 @@ public class MonitoreoFetalBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, message);
             ec.redirect(ec.getRequestContextPath().concat("/app/paciente/informacion"));
         } catch (Exception ex) {
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "El Monitoreo Fetal no se pudo agregar.");
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al agregar Monitoreo Fetal", null);
             FacesContext.getCurrentInstance().addMessage(null, message);
             Logger.getLogger(MonitoreoFetalBean.class.getName()).log(Level.SEVERE, null, ex);
         }

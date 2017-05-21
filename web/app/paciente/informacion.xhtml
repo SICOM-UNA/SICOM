@@ -115,8 +115,9 @@
                                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
                                                         <f:selectItems value="#{valoresBean.examenes}" var="selectedExamen" itemLabel="#{selectedExamen.descripcion}" itemValue="#{examenSelected}"/>
                                                     </p:selectOneMenu>
-                                                    <p:commandButton icon="ui-icon-plus" update="formExamenes" action="#{expedienteBean.nuevoExamen}"/>
-                                                    <p:commandButton icon="ui-icon-search" update="formExamenes" oncomplete="PF('dataTableDialog').show()"/>
+                                                    
+                                                    <p:commandButton icon="ui-icon-plus" update="formExamenes" action="#{expedienteBean.nuevoExamen}" title="Agregar examen"/>
+                                                    <p:commandButton icon="ui-icon-search" update="formExamenes" oncomplete="PF('dataTableDialog').show()" title="Buscar examen"/>
                                                 </h:panelGrid>
                                             </p:panel>
                                         </h:form>

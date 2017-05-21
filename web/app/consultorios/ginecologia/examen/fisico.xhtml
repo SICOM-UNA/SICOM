@@ -12,6 +12,7 @@
             <section>
                 <h:form id="formulario">
                     <p:messages id="msg" autoUpdate="true" closable="true"/>
+                    
                     <p:panel header="Información del Paciente">
                         <h:panelGrid columns="7">
                             <p:spacer width="50"/>
@@ -28,13 +29,15 @@
 
                         </h:panelGrid>
                     </p:panel>
+                    
                     <p:panel header="Consulta">
                         <h:panelGroup>
-                            <p:outputLabel for="motivo" value="Motivo de Consulta: " class="descripcion" />
+                            <p:outputLabel for="motivo" value="Motivo de consulta: " class="descripcion" />
                             <p:inputTextarea id="motivo" value="#{examenFisicoGinecologiaBean.examenFisico.motivoConsulta}" maxlength="250" rows="5" cols = "118" autoResize="false"/> 
                         </h:panelGroup>    
                     </p:panel>
-                    <p:panel header="Exámen Físico">
+                    
+                    <p:panel header="Examen Físico">
                         <div class="ui-grid ui-grid-responsive">
                             <div class="ui-grid-row">
                                 <div class="ui-grid-col-12">
@@ -76,7 +79,8 @@
                             </div>
                         </div>
                     </p:panel>
-                    <p:panel header="Exámen Ginecológico">
+                    
+                    <p:panel header="Examen Ginecológico">
                         <div class="ui-grid ui-grid-responsive">
                             <div class="ui-grid-row">
                                 <div class="ui-grid-col-6">
@@ -86,8 +90,8 @@
                                             <p:inputText id="vulva" value="#{examenFisicoGinecologiaBean.examenFisico.vulva}" maxlength="25"/>
                                             <p:outputLabel for="bus" value="Bus:"/>
                                             <p:selectOneRadio id="bus" layout="grid"  columns="2" value="#{examenFisicoGinecologiaBean.examenFisico.bus}">
-                                                <f:selectItem itemLabel="positivo" itemValue="#{true}" />
-                                                <f:selectItem itemLabel="negativo" itemValue="#{false}" />
+                                                <f:selectItem itemLabel="Positivo" itemValue="#{true}" />
+                                                <f:selectItem itemLabel="Negativo" itemValue="#{false}" />
                                             </p:selectOneRadio>
                                             <p:inputTextarea value="#{examenFisicoGinecologiaBean.examenFisico.comentarioBus}" maxlength="140" rows="3" cols = "46" autoResize="false"/>
                                             <p:outputLabel for="vagina" value="Vagina:"/>
