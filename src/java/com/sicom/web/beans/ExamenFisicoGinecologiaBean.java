@@ -15,6 +15,8 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.persistence.Persistence;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 
 @ManagedBean
 @ViewScoped
@@ -44,7 +46,7 @@ public class ExamenFisicoGinecologiaBean implements Serializable {
         }
     }
 
-    public void save() {
+    public void agregar() {
         try {
             examenFisico.setFecha(new Date());
             examenFisico.setExpedientePacientecedula(paciente.getExpediente());
@@ -69,15 +71,28 @@ public class ExamenFisicoGinecologiaBean implements Serializable {
         }
     }
 
-    public void volver_a_informacion() {
+    public void redireccionarAInformacion() {
         try {
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
             String URL = ec.getRequestContextPath() + "/app/paciente/informacion";
             ec.redirect(URL);
-
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+    
+    public void importar(FileUploadEvent event) {
+        try {
+            UploadedFile archivo = event.getFile();
+            byte[] bytes = archivo.getContents();
+            String filename = archivo.getFileName();
+            examenFisico.setImagenMamas(bytes);
+            FacesMessage message = new FacesMessage("El archivo " + filename + " se ha subido exitosamente");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        } catch (Exception e) {
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al subir el archivo", null));
         }
     }
 

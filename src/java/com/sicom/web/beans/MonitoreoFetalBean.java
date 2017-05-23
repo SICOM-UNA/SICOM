@@ -1,4 +1,3 @@
-
 package com.sicom.web.beans;
 
 import com.sicom.controller.MonitoreoFetalJpaController;
@@ -22,7 +21,6 @@ import javax.persistence.Persistence;
 public class MonitoreoFetalBean implements Serializable {
 
     private MonitoreoFetal monitoreoFetal;
-
     private MonitoreoFetalJpaController mfc;
     private Paciente paciente;
 
@@ -71,7 +69,7 @@ public class MonitoreoFetalBean implements Serializable {
         }
     }
 
-    public void volver_a_informacion() {
+    public void redireccionarAInformacion() {
         try {
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
@@ -97,5 +95,4 @@ public class MonitoreoFetalBean implements Serializable {
     public void setPaciente(Paciente paciente) {
         this.paciente = paciente;
     }
-
 }

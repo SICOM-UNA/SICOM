@@ -707,19 +707,17 @@ public class ExpedienteBean implements Serializable {
     public void importar(FileUploadEvent event) {
         try {
             documento = new Documentos();
-            UploadedFile archivo = event.getFile();
-            byte[] bytes = archivo.getContents();
+            UploadedFile uploadFile = event.getFile();
+            byte[] bytes = uploadFile.getContents();
             documento.setArchivo(bytes);
             documento.setFecha(new Date());
-            String filename = archivo.getFileName();
-            //String ext = filename.substring(filename.lastIndexOf('.'), filename.length());
-            //String date = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date());
+            String filename = uploadFile.getFileName();
             documento.setNombre(filename);
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
             Login log = (Login) ec.getSessionMap().get("login");
-            Personal p = log.getPersonal();
-            documento.setDepartamentoid(p.getDepartamentoId());
+            Personal persona = log.getPersonal();
+            documento.setDepartamentoid(persona.getDepartamentoId());
             documento.setExpedientePacientecedula(expediente);
             documentosController.create(documento);
             FacesMessage message = new FacesMessage(filename + " se ha subido.");

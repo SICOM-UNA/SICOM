@@ -10,118 +10,126 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form id="formulario">
+                <h:form id="formExamenFisico">
                     <p:messages id="msg" autoUpdate="true" closable="true"/>
                     
-                    <p:panel header="Información del Paciente">
-                        <h:panelGrid columns="7">
-                            <p:spacer width="50"/>
-                            <p:outputLabel class="descripcion" value="#{examenFisicoGinecologiaBean.paciente.nombre} #{examenFisicoGinecologiaBean.paciente.primerApellido} #{examenFisicoGinecologiaBean.paciente.segundoApellido}"/>
-                            <p:spacer width="50"/>
-                            <p:outputLabel class="descripcion" value="#{examenFisicoGinecologiaBean.paciente.cedula}"/>
-                            <p:spacer width="50"/>
-                            <p:outputLabel class="descripcion"  value="Última edición:"/>
-                            <p:outputLabel class="descripcion"  value="#{examenFisicoGinecologiaBean.examenFisico.fecha}">
-                                <f:convertDateTime pattern="dd-MM-yyyy H:mm:ss"/>
-                            </p:outputLabel>
-                            <p:spacer width="50"/>
-                            <p:outputLabel class="descripcion" value="Creado por: #{examenFisicoGinecologiaBean.examenFisico.personalCedula.nombre} #{examenFisicoGinecologiaBean.examenFisico.personalCedula.primerApellido} #{examenFisicoGinecologiaBean.examenFisico.personalCedula.segundoApellido}"/>
+                    <p:panel header="Examen Ginecología">
+                        <p:panel header="Información del Paciente">
+                            <h:panelGrid columns="7">
+                                <p:spacer width="50"/>
+                                <p:outputLabel class="descripcion" value="#{examenFisicoGinecologiaBean.paciente.nombre} #{examenFisicoGinecologiaBean.paciente.primerApellido} #{examenFisicoGinecologiaBean.paciente.segundoApellido}"/>
+                                <p:spacer width="50"/>
+                                <p:outputLabel class="descripcion" value="#{examenFisicoGinecologiaBean.paciente.cedula}"/>
+                                <p:spacer width="50"/>
+                                <p:outputLabel class="descripcion"  value="Última edición:"/>
+                                <p:outputLabel class="descripcion"  value="#{examenFisicoGinecologiaBean.examenFisico.fecha}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy H:mm:ss"/>
+                                </p:outputLabel>
+                                <p:spacer width="50"/>
+                                <p:outputLabel class="descripcion" value="Creado por: #{examenFisicoGinecologiaBean.examenFisico.personalCedula.nombre} #{examenFisicoGinecologiaBean.examenFisico.personalCedula.primerApellido} #{examenFisicoGinecologiaBean.examenFisico.personalCedula.segundoApellido}"/>
 
-                        </h:panelGrid>
-                    </p:panel>
-                    
-                    <p:panel header="Consulta">
-                        <h:panelGroup>
-                            <p:outputLabel for="motivo" value="Motivo de consulta: " class="descripcion" />
-                            <p:inputTextarea id="motivo" value="#{examenFisicoGinecologiaBean.examenFisico.motivoConsulta}" maxlength="250" rows="5" cols = "118" autoResize="false"/> 
-                        </h:panelGroup>    
-                    </p:panel>
-                    
-                    <p:panel header="Examen Físico">
-                        <div class="ui-grid ui-grid-responsive">
-                            <div class="ui-grid-row">
-                                <div class="ui-grid-col-12">
-                                    <p:panel>
-                                        <h:panelGrid columns="1">
-                                            <h:panelGrid columns="3">
-                                                <h:panelGrid columns="3" cellspacing="3">
-                                                    <p:outputLabel for="talla" value="Talla:"/>
-                                                    <p:inputText id="talla" value="#{examenFisicoGinecologiaBean.examenFisico.talla}" maxlength="4" size="5" class="numeric" onkeyup="validar()"/>
-                                                    <p:outputLabel value="cm"/>
+                            </h:panelGrid>
+                        </p:panel>
+
+                        <p:panel header="Consulta">
+                            <h:panelGroup>
+                                <p:outputLabel for="motivo" value="Motivo de consulta: " class="descripcion" />
+                                <p:inputTextarea id="motivo" value="#{examenFisicoGinecologiaBean.examenFisico.motivoConsulta}" maxlength="250" rows="5" cols = "118" autoResize="false"/> 
+                            </h:panelGroup>    
+                        </p:panel>
+
+                        <p:panel header="Examen Físico">
+                            <div class="ui-grid ui-grid-responsive">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-12">
+                                        <p:panel>
+                                            <h:panelGrid columns="1">
+                                                <h:panelGrid columns="3">
+                                                    <h:panelGrid columns="3" cellspacing="3">
+                                                        <p:outputLabel for="talla" value="Talla:"/>
+                                                        <p:inputText id="talla" value="#{examenFisicoGinecologiaBean.examenFisico.talla}" maxlength="4" size="5" class="numeric" onkeyup="validar()"/>
+                                                        <p:outputLabel value="cm"/>
+                                                    </h:panelGrid>
+                                                    <p:spacer width="30" />
+                                                    <h:panelGrid columns="3" cellspacing="3">
+                                                        <p:outputLabel for="peso" value="Peso:"/>
+                                                        <p:inputText id="peso" value="#{examenFisicoGinecologiaBean.examenFisico.peso}" maxlength="4" size="5" class="numeric" onkeyup="validar()"/>
+                                                        <p:outputLabel value="kg"/>
+                                                    </h:panelGrid>
                                                 </h:panelGrid>
-                                                <p:spacer width="30" />
-                                                <h:panelGrid columns="3" cellspacing="3">
-                                                    <p:outputLabel for="peso" value="Peso:"/>
-                                                    <p:inputText id="peso" value="#{examenFisicoGinecologiaBean.examenFisico.peso}" maxlength="4" size="5" class="numeric" onkeyup="validar()"/>
-                                                    <p:outputLabel value="kg"/>
+                                                <h:panelGrid columns="1" cellpadding="3">
+                                                    <p:outputLabel for="cardio" value="Cardiopulmunar:"/>
+                                                    <p:selectOneMenu id="cardio" value="#{examenFisicoGinecologiaBean.examenFisico.cardioPulmonar}" autoWidth="false" >
+                                                        <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
+                                                        <f:selectItems value="#{valoresBean.getDescripcionByCodeId(9)}"/>
+                                                    </p:selectOneMenu>
+                                                    <p:inputTextarea id="comentarioCardio" value="#{examenFisicoGinecologiaBean.examenFisico.comentarioCardioPulmonar}" maxlength="140" rows="3" cols = "46" autoResize="false"/>
+                                                </h:panelGrid>
+                                                <h:panelGrid columns="1">
+                                                    <p:outputLabel for="mamas" value="Mamas:"/>
+                                                    <p:inputTextarea id="mamas" value="#{examenFisicoGinecologiaBean.examenFisico.mamas}" maxlength="140" rows="3" cols = "46" autoResize="false"/>
+                                                    <p:outputLabel for="abdomen" value="Abdomen:"/>
+                                                    <p:inputTextarea id="abdomen" value="#{examenFisicoGinecologiaBean.examenFisico.abdomen}" maxlength="140" rows="3" cols = "46" autoResize="false"/> 
                                                 </h:panelGrid>
                                             </h:panelGrid>
+                                        </p:panel>
+                                    </div>
+                                    <div class="ui-grid-col-12">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </p:panel>
+
+                        <p:panel header="Examen Ginecológico">
+                            <div class="ui-grid ui-grid-responsive">
+                                <div class="ui-grid-row">
+                                    <div class="ui-grid-col-6">
+                                        <p:panel>
                                             <h:panelGrid columns="1" cellpadding="3">
-                                                <p:outputLabel for="cardio" value="Cardiopulmunar:"/>
-                                                <p:selectOneMenu id="cardio" value="#{examenFisicoGinecologiaBean.examenFisico.cardioPulmonar}" autoWidth="false" >
-                                                    <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
-                                                    <f:selectItems value="#{valoresBean.getDescripcionByCodeId(9)}"/>
-                                                </p:selectOneMenu>
-                                                <p:inputTextarea id="comentarioCardio" value="#{examenFisicoGinecologiaBean.examenFisico.comentarioCardioPulmonar}" maxlength="140" rows="3" cols = "46" autoResize="false"/>
+                                                <p:outputLabel for="vulva" value="Vulva:"/>     
+                                                <p:inputText id="vulva" value="#{examenFisicoGinecologiaBean.examenFisico.vulva}" maxlength="25"/>
+                                                <p:outputLabel for="bus" value="Bus:"/>
+                                                <p:selectOneRadio id="bus" layout="grid"  columns="2" value="#{examenFisicoGinecologiaBean.examenFisico.bus}">
+                                                    <f:selectItem itemLabel="Positivo" itemValue="#{true}" />
+                                                    <f:selectItem itemLabel="Negativo" itemValue="#{false}" />
+                                                </p:selectOneRadio>
+                                                <p:inputTextarea value="#{examenFisicoGinecologiaBean.examenFisico.comentarioBus}" maxlength="140" rows="3" cols = "46" autoResize="false"/>
+                                                <p:outputLabel for="vagina" value="Vagina:"/>
+                                                <p:inputText id="vagina" value="#{examenFisicoGinecologiaBean.examenFisico.vagina}" maxlength="25"/>
+                                                <p:outputLabel for="cuello" value="Cuello:"/>
+                                                <p:inputText id="cuello" value="#{examenFisicoGinecologiaBean.examenFisico.cuello}" maxlength="25"/>
+                                                <p:outputLabel for="utero" value="Útero:"/>
+                                                <p:inputText id="utero" value="#{examenFisicoGinecologiaBean.examenFisico.utero}" maxlength="25"/>
+                                                <p:outputLabel for="anexos" value="Anexos:"/>
+                                                <p:inputText id="anexos" value="#{examenFisicoGinecologiaBean.examenFisico.anexos}" maxlength="25"/>
                                             </h:panelGrid>
                                             <h:panelGrid columns="1">
-                                                <p:outputLabel for="mamas" value="Mamas:"/>
-                                                <p:inputTextarea id="mamas" value="#{examenFisicoGinecologiaBean.examenFisico.mamas}" maxlength="140" rows="3" cols = "46" autoResize="false"/>
-                                                <p:outputLabel for="abdomen" value="Abdomen:"/>
-                                                <p:inputTextarea id="abdomen" value="#{examenFisicoGinecologiaBean.examenFisico.abdomen}" maxlength="140" rows="3" cols = "46" autoResize="false"/> 
+                                                <p:outputLabel for="otros" value="Otros:"/>     
+                                                <p:inputTextarea id="otros" value="#{examenFisicoGinecologiaBean.examenFisico.otros}" maxlength="100" rows="6" cols = "46" autoResize="false"/> 
                                             </h:panelGrid>
-                                        </h:panelGrid>
-                                    </p:panel>
+                                        </p:panel>
+                                    </div>
                                 </div>
-                                <div class="ui-grid-col-12">
+                            </div>
+                        </p:panel>
 
-                                </div>
+                        <p:panel header="Importar archivo">
+                            <p:fileUpload uploadLabel="Elegir un archivo" mode="advanced" fileUploadListener="#{examenFisicoGinecologiaBean.importar}" 
+                                update="preview" invalidSizeMessage="El archivo elegido es muy grande" auto="true" multiple="false" 
+                                sizeLimit="10485760" label="Subir imagen" skinSimple="true" previewWidth="0" fileLimit="1" 
+                                fileLimitMessage="Número máximo de archivos excedido"/>
+
+                            <p:graphicImage id="preview" value="#{examenFisicoGinecologiaBean.examenFisico.imagenMamas}"/>
+                            <p:commandButton icon="ui-icon-image" value="Abrir editor" action="editor" title="Abre el editor de imágenes en una nueva pestaña" style="margin: 10px 0;"/>
+                        </p:panel>
+                        
+                        <f:facet name="footer" >
+                            <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                <p:commandButton value="Guardar" action="#{examenFisicoGinecologiaBean.agregar}" icon="ui-icon-disk" title="Click para guardar información." />
+                                <p:commandButton value="Cancelar" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true" action="#{examenFisicoGinecologiaBean.redireccionarAInformacion()}" />
                             </div>
-                        </div>
-                    </p:panel>
-                    
-                    <p:panel header="Examen Ginecológico">
-                        <div class="ui-grid ui-grid-responsive">
-                            <div class="ui-grid-row">
-                                <div class="ui-grid-col-6">
-                                    <p:panel>
-                                        <h:panelGrid columns="1" cellpadding="3">
-                                            <p:outputLabel for="vulva" value="Vulva:"/>     
-                                            <p:inputText id="vulva" value="#{examenFisicoGinecologiaBean.examenFisico.vulva}" maxlength="25"/>
-                                            <p:outputLabel for="bus" value="Bus:"/>
-                                            <p:selectOneRadio id="bus" layout="grid"  columns="2" value="#{examenFisicoGinecologiaBean.examenFisico.bus}">
-                                                <f:selectItem itemLabel="Positivo" itemValue="#{true}" />
-                                                <f:selectItem itemLabel="Negativo" itemValue="#{false}" />
-                                            </p:selectOneRadio>
-                                            <p:inputTextarea value="#{examenFisicoGinecologiaBean.examenFisico.comentarioBus}" maxlength="140" rows="3" cols = "46" autoResize="false"/>
-                                            <p:outputLabel for="vagina" value="Vagina:"/>
-                                            <p:inputText id="vagina" value="#{examenFisicoGinecologiaBean.examenFisico.vagina}" maxlength="25"/>
-                                            <p:outputLabel for="cuello" value="Cuello:"/>
-                                            <p:inputText id="cuello" value="#{examenFisicoGinecologiaBean.examenFisico.cuello}" maxlength="25"/>
-                                            <p:outputLabel for="utero" value="Útero:"/>
-                                            <p:inputText id="utero" value="#{examenFisicoGinecologiaBean.examenFisico.utero}" maxlength="25"/>
-                                            <p:outputLabel for="anexos" value="Anexos:"/>
-                                            <p:inputText id="anexos" value="#{examenFisicoGinecologiaBean.examenFisico.anexos}" maxlength="25"/>
-                                        </h:panelGrid>
-                                        <h:panelGrid columns="1">
-                                            <p:outputLabel for="otros" value="Otros:"/>     
-                                            <p:inputTextarea id="otros" value="#{examenFisicoGinecologiaBean.examenFisico.otros}" maxlength="100" rows="6" cols = "46" autoResize="false"/> 
-                                        </h:panelGrid>
-                                    </p:panel>
-                                </div>
-                                <div class="ui-grid-col-12">
-                                    <!--<p:panel header="Imágen">
-                                        
-                                    </p:panel>-->
-                                    <f:facet name="footer" >
-                                        <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                            <p:commandButton value="Guardar" action="#{examenFisicoGinecologiaBean.save()}" icon="ui-icon-disk" title="Click para guardar información." />
-                                            <p:commandButton value="Cancelar" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true" action="#{examenFisicoGinecologiaBean.volver_a_informacion()}" />
-                                        </div>
-                                    </f:facet>
-                                </div>
-                            </div>
-                        </div>
+                        </f:facet>
                     </p:panel>
                 </h:form>
             </section>

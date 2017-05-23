@@ -14,36 +14,45 @@
                 </h:form>
                 
                 <h:form id="formPacientes">
-                    <p:dataTable value="#{pacienteBean.listaPacientes}" var="pacientes" paginator="true" paginatorPosition="bottom" rows="10"
-                        rowsPerPageTemplate="10 25 50" filterEvent="enter" style="text-align: center">
+                    <p:panel header="Resultados de la búsqueda">
+                        <p:outputLabel value="Se han hallado un total de #{pacienteBean.listaPacientes.size()} pacientes" style="font-weight: bold;"/>
+                        <p:spacer height="5" width="100%"/>
                         
-                        <p:column headerText="Cédula" sortBy="#{pacientes.cedula}" filterBy="#{pacientes.cedula}" filterMatchMode="contains">
-                            <p:outputLabel value="#{pacientes.cedula}"/>
-                        </p:column>
+                        <p:dataTable value="#{pacienteBean.listaPacientes}" var="pacientes" paginator="true" paginatorPosition="bottom" rows="10"
+                            rowsPerPageTemplate="10 25 50" filterEvent="enter" style="text-align: center">
 
-                        <p:column headerText="Nombre" sortBy="#{pacientes.nombre}" filterMatchMode="contains"
-                            filterBy="#{pacientes.nombre} #{pacientes.primerApellido} #{pacientes.segundoApellido}">
-                            <p:outputLabel value="#{pacientes.nombre} #{pacientes.primerApellido} #{pacientes.segundoApellido}"/>
-                        </p:column>
-                        
-                        <p:column headerText="Teléfono" sortBy="#{pacientes.telefono}" filterBy="#{pacientes.telefono}" filterMatchMode="contains">
-                            <p:outputLabel value="#{pacientes.telefono}"/>
-                        </p:column>
-                        
-                        <p:column headerText="Celular" sortBy="#{pacientes.celular}" filterBy="#{pacientes.celular}" filterMatchMode="contains">
-                            <p:outputLabel value="#{pacientes.celular}"/>
-                        </p:column>
-                        
-                        <p:column headerText="Correo" sortBy="#{pacientes.correo}" filterBy="#{pacientes.correo}" filterMatchMode="contains">
-                            <p:outputLabel value="#{pacientes.correo}"/>
-                        </p:column>
-                        
-                        <p:column style="width:32px; text-align: center;">
-                            <p:commandButton icon="ui-icon-search" action="#{pacienteBean.redireccionarPaciente(pacientes)}" title="Ver los datos del paciente">
-                               <f:setPropertyActionListener value="#{pacientes}" target="#{paciente}"/>
-                           </p:commandButton>
-                       </p:column>
-                    </p:dataTable>
+                            <p:column headerText="Cédula" sortBy="#{pacientes.cedula}" filterBy="#{pacientes.cedula}" filterMatchMode="contains">
+                                <p:outputLabel value="#{pacientes.cedula}"/>
+                            </p:column>
+
+                            <p:column headerText="Nombre" sortBy="#{pacientes.nombre}" filterMatchMode="contains"
+                                filterBy="#{pacientes.nombre} #{pacientes.primerApellido} #{pacientes.segundoApellido}">
+                                <p:outputLabel value="#{pacientes.nombre} #{pacientes.primerApellido} #{pacientes.segundoApellido}"/>
+                            </p:column>
+
+                            <p:column headerText="Teléfono" sortBy="#{pacientes.telefono}" filterBy="#{pacientes.telefono}" filterMatchMode="contains">
+                                <p:outputLabel value="#{pacientes.telefono}"/>
+                            </p:column>
+
+                            <p:column headerText="Celular" sortBy="#{pacientes.celular}" filterBy="#{pacientes.celular}" filterMatchMode="contains">
+                                <p:outputLabel value="#{pacientes.celular}"/>
+                            </p:column>
+
+                            <p:column headerText="Correo" sortBy="#{pacientes.correo}" filterBy="#{pacientes.correo}" filterMatchMode="contains">
+                                <p:outputLabel value="#{pacientes.correo}"/>
+                            </p:column>
+
+                            <p:column style="width:32px; text-align: center;">
+                                <p:commandButton icon="ui-icon-search" action="#{pacienteBean.redireccionarPaciente(pacientes)}" title="Ver los datos del paciente">
+                                   <f:setPropertyActionListener value="#{pacientes}" target="#{paciente}"/>
+                               </p:commandButton>
+                           </p:column>
+                        </p:dataTable>
+                    
+                        <f:facet name="footer">
+                            <p:commandButton icon="ui-icon-search" value="Redefinir búsqueda" action="consultarPorNombre" update="formPacientes"/>
+                        </f:facet>
+                    </p:panel>
                 </h:form>
             </section>
         </div>

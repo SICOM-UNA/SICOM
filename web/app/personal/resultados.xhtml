@@ -14,36 +14,45 @@
                 </h:form>
                 
                 <h:form id="formPersonal">
-                    <p:dataTable value="#{personalBean.listaPersonal}" var="personals" paginator="true" paginatorPosition="bottom" rows="10"
-                        rowsPerPageTemplate="10 25 50" filterEvent="enter" style="text-align: center">
+                    <p:panel header="Resultados de la búsqueda">
+                        <p:outputLabel value="Se han hallado un total de #{personalBean.listaPersonal.size()} resultados" style="font-weight: bold;"/>
+                        <p:spacer height="5" width="100%"/>
                         
-                        <p:column headerText="Cédula" sortBy="#{personals.cedula}" filterBy="#{personals.cedula}" filterMatchMode="contains">
-                            <p:outputLabel value="#{personals.cedula}"/>
-                        </p:column>
+                        <p:dataTable value="#{personalBean.listaPersonal}" var="personals" paginator="true" paginatorPosition="bottom" rows="10"
+                            rowsPerPageTemplate="10 25 50" filterEvent="enter" style="text-align: center">
+
+                            <p:column headerText="Cédula" sortBy="#{personals.cedula}" filterBy="#{personals.cedula}" filterMatchMode="contains">
+                                <p:outputLabel value="#{personals.cedula}"/>
+                            </p:column>
+
+                            <p:column headerText="Nombre" sortBy="#{personals.nombre}" filterMatchMode="contains"
+                                filterBy="#{personals.nombre} #{personals.primerApellido} #{personals.segundoApellido}">
+                                <p:outputLabel value="#{personals.nombre} #{personals.primerApellido} #{personals.segundoApellido}"/>
+                            </p:column>
+
+                            <p:column headerText="Teléfono" sortBy="#{personals.telefono}" filterBy="#{personals.telefono}" filterMatchMode="contains">
+                                <p:outputLabel value="#{personals.telefono}"/>
+                            </p:column>
+
+                            <p:column headerText="Celular" sortBy="#{personals.celular}" filterBy="#{personals.celular}" filterMatchMode="contains">
+                                <p:outputLabel value="#{personals.celular}"/>
+                            </p:column>
+
+                            <p:column headerText="Correo" sortBy="#{personals.correo}" filterBy="#{personals.correo}" filterMatchMode="contains">
+                                <p:outputLabel value="#{personals.correo}"/>
+                            </p:column>
+
+                            <p:column style="width:32px; text-align: center;">
+                                <p:commandButton icon="ui-icon-search" action="#{personalBean.redireccionarPersonal(personals)}" title="Ver los datos del personal">
+                                   <f:setPropertyActionListener value="#{personals}" target="#{personal}"/>
+                               </p:commandButton>
+                           </p:column>
+                        </p:dataTable>
                         
-                        <p:column headerText="Nombre" sortBy="#{personals.nombre}" filterMatchMode="contains"
-                            filterBy="#{personals.nombre} #{personals.primerApellido} #{personals.segundoApellido}">
-                            <p:outputLabel value="#{personals.nombre} #{personals.primerApellido} #{personals.segundoApellido}"/>
-                        </p:column>
-                        
-                        <p:column headerText="Teléfono" sortBy="#{personals.telefono}" filterBy="#{personals.telefono}" filterMatchMode="contains">
-                            <p:outputLabel value="#{personals.telefono}"/>
-                        </p:column>
-                        
-                        <p:column headerText="Celular" sortBy="#{personals.celular}" filterBy="#{personals.celular}" filterMatchMode="contains">
-                            <p:outputLabel value="#{personals.celular}"/>
-                        </p:column>
-                        
-                        <p:column headerText="Correo" sortBy="#{personals.correo}" filterBy="#{personals.correo}" filterMatchMode="contains">
-                            <p:outputLabel value="#{personals.correo}"/>
-                        </p:column>
-                        
-                        <p:column style="width:32px; text-align: center;">
-                            <p:commandButton icon="ui-icon-search" action="#{personalBean.redireccionarPersonal(personals)}" title="Ver los datos del personal">
-                               <f:setPropertyActionListener value="#{personals}" target="#{personal}"/>
-                           </p:commandButton>
-                       </p:column>
-                    </p:dataTable>
+                        <f:facet name="footer">
+                            <p:commandButton icon="ui-icon-search" value="Redefinir búsqueda" action="consultarPorNombre" update="formPersonal"/>
+                        </f:facet>
+                    </p:panel>
                 </h:form>
             </section>
         </div>

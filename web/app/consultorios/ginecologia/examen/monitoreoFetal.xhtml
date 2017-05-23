@@ -10,7 +10,7 @@
     <ui:define name="content">
         <div id="wrapper">
             <section>
-                <h:form id="formulario">
+                <h:form id="formMonitoreoFetal">
                     <p:messages id="msg" autoUpdate="true" closable="true"/>
                     
                     <p:panel header="Monitoreo Fetal">
@@ -45,14 +45,14 @@
                                     <p:inputTextarea value="#{monitoreoFetalBean.monitoreoFetal.comentario}" id="detalles" maxlength="118" rows="5" cols = "70" autoResize="false"/> 
                                 </h:panelGroup>    
                             </h:panelGrid>
-
-                            <f:facet name="footer" >
-                                <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                    <p:commandButton value="Guardar" icon="ui-icon-disk" title="Click para guardar información." update="formulario msg" action="#{monitoreoFetalBean.agregar()}"/>
-                                    <p:commandButton value="Cancelar" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true" action="#{monitoreoFetalBean.volver_a_informacion()}"/>
-                                </div>
-                            </f:facet>
                         </p:panel>
+                        
+                        <f:facet name="footer" >
+                            <div class="ui-panel-titlebar ui-widget-header" align="center">
+                                <p:commandButton value="Guardar" icon="ui-icon-disk" title="Click para guardar información." update="formMonitoreoFetal msg" action="#{monitoreoFetalBean.agregar}"/>
+                                <p:commandButton value="Cancelar" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true" action="#{monitoreoFetalBean.redireccionarAInformacion}"/>
+                            </div>
+                        </f:facet>
                     </p:panel>
                 </h:form>
             </section>
