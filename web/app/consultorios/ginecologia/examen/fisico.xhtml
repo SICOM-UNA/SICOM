@@ -121,7 +121,9 @@
                                 fileLimitMessage="Número máximo de archivos excedido"/>
 
                             <p:graphicImage id="preview" value="#{examenFisicoGinecologiaBean.examenFisico.imagenMamas}"/>
-                            <p:commandButton icon="ui-icon-image" value="Abrir editor" action="editor" title="Abre el editor de imágenes en una nueva pestaña" style="margin: 10px 0;"/>
+                            <p:commandButton icon="ui-icon-image" value="Abrir editor" title="Abre el editor de imágenes en una nueva pestaña" 
+                                action="#{examenFisicoGinecologiaBean.redireccionarAlEditor}" onclick="this.form.target='_blank'" ajax="false" 
+                                style="margin: 10px 0;"/>
                         </p:panel>
                         
                         <f:facet name="footer" >

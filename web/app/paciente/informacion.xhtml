@@ -59,6 +59,8 @@
                             </h:form>
                         </p:tab>
 
+                        <!--    RESPONSABLES    -->
+                        
                         <p:tab title="Responsables">
                             <h:form id="formResponsables">
                                 <p:dataList value="#{pacienteBean.selectedPaciente.responsableList}" var="responsable" itemType="none" emptyMessage="No posee responsables.">
@@ -81,7 +83,7 @@
                             </h:form>
                         </p:tab>
 
-                        <!--    EXPEDIENTE  -->
+                        <!--    EXPEDIENTES  -->
 
                         <p:tab title="Expediente" rendered="#{loginBean.visibleDepartamento('ginecología,odontología')}">
                             <div class="ui-grid ui-grid-responsive">
@@ -91,20 +93,21 @@
                                             <p:panel header="Historia Clínica">
                                                 <h:panelGrid columns="2">
                                                     <p:commandButton value="Editar" icon="ui-icon-pencil" action="#{expedienteBean.historiaClinica()}" update="formHistoriaClinica"/>
-
                                                     <p:commandButton value="Descargar" icon="ui-icon-circle-arrow-s" action="#{expedienteBean.exportar}" ajax="false">
                                                         <!--<p:confirm header="Descarga" message="¿Desea descargar la historia clínica?" icon="ui-icon-alert"/>-->
                                                     </p:commandButton>
 
                                                     <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                                                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                                        <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                                                         <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                                                     </p:confirmDialog>
                                                 </h:panelGrid>
                                             </p:panel>
                                         </h:form>
                                     </div>
-
+                                    
+                                    <!--    EXÁMENES    -->
+                                    
                                     <div class="ui-grid-col-6">
                                         <h:form id="formExamenes">
                                             <p:panel header="Exámenes">
@@ -155,10 +158,6 @@
                         </p:tab>
                     </p:tabView>
                 </p:panel>
-                
-                <h:form id="formEditar">
-                    <p:commandButton value="Actualizar datos" icon="ui-icon-pencil" title="Modificar la información del personal" action="editar?faces-redirect=true" rendered="#{!loginBean.visibleDepartamento('recepción')}"/>
-                </h:form>
 
                 <!--    LISTA DE DOCUMENTOS    -->
 
@@ -192,27 +191,26 @@
                           closeOnEscape="true">
                     <h:form id="formListaExamenes">
                         <p:dataTable value="#{expedienteBean.creaInterfazExamenes()}" var="dato" widgetVar="dataTable" rows="10" paginator="true"
-                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     rowsPerPageTemplate="5,10,15" filteredValue="#{expedienteBean.listaFiltrada}" id="singleDT" selectionMode="single" 
-                                     selection="#{expedienteBean.dato}" paginatorPosition="bottom" emptyMessage="No existen exámenes con ese criterio" 
-                                     rowKey="#{dato.id}" resizableColumns="true">
+                            paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15" filteredValue="#{expedienteBean.listaFiltrada}" id="singleDT" selectionMode="single" paginatorPosition="bottom" 
+                            selection="#{expedienteBean.dato}" emptyMessage="No existen exámenes con ese criterio" rowKey="#{dato.id}" resizableColumns="true">
 
                             <f:facet name="header">
                                 <p:outputPanel>
-                                    <h:outputText value="Buscar en todas las columnas:" />
-                                    <p:inputText id="globalFilter" onkeyup="PF('dataTable').filter()" style="width:150px" placeholder="Digite palabra clave."/>
+                                    <h:outputText value="Búsqueda general: " />
+                                    <p:inputText id="globalFilter" placeholder="Digite palabra clave" onkeyup="PF('dataTable').filter()" style="width:150px"/>
                                 </p:outputPanel>
                             </f:facet>
 
-                            <p:column filterBy="#{dato.tipoExamen}" sortBy="#{dato.tipoExamen}" headerText="Tipo de examen" footerText="contains" filterMatchMode="contains">
+                            <p:column headerText="Tipo de examen" filterBy="#{dato.tipoExamen}" sortBy="#{dato.tipoExamen}" filterMatchMode="contains">
                                 <f:facet name="filter">
                                     <p:selectOneMenu onchange="PF('dataTable').filter()" >
-                                        <f:selectItem itemLabel="Seleccione:" itemValue="#{null}" noSelectionOption="true" />
-                                        <f:selectItems value="#{expedienteBean.examenesPorDepartamento}" />
+                                        <f:selectItem itemLabel="Seleccione:" itemValue="#{null}" noSelectionOption="true"/>
+                                        <f:selectItems value="#{expedienteBean.examenesPorDepartamento}"/>
                                     </p:selectOneMenu>
                                 </f:facet>
 
-                                <h:outputText value="#{dato.tipoExamen}" />
+                                <h:outputText value="#{dato.tipoExamen}"/>
                             </p:column>
 
                             <p:column headerText="Fecha de modificación" sortBy="#{dato.fechaModificacion}" >
@@ -221,13 +219,13 @@
                                 </h:outputText>
                             </p:column>
 
-                            <p:column filterBy="#{dato.hechoPor}" headerText="Realizado por:" footerText="contiene" filterMatchMode="contains">
+                            <p:column filterBy="#{dato.hechoPor}" headerText="Realizado por:" filterMatchMode="contains">
                                 <h:outputText value="#{dato.hechoPor}" />
                             </p:column>
 
                             <f:facet name="footer">
                                 <div style="padding: 10px;">
-                                    <p:commandButton icon="ui-icon-search" value="Editar" action="#{expedienteBean.redireccionExamenes}"/>
+                                    <p:commandButton icon="ui-icon-search" value="Editar" action="#{expedienteBean.redireccionExamenes}" update="formListaExamenes"/>
                                     <p:spacer width="5"/>
                                     <p:commandButton icon="ui-icon-close" value="Cerrar" oncomplete="PF('dataTableDialog').hide()"/>
                                 </div>
@@ -235,6 +233,10 @@
                         </p:dataTable>
                     </h:form>
                 </p:dialog>
+                
+                <h:form id="formEditar">
+                    <p:commandButton value="Actualizar datos" icon="ui-icon-pencil" title="Modificar la información del personal" action="editar?faces-redirect=true" rendered="#{!loginBean.visibleDepartamento('recepción')}"/>
+                </h:form>
             </section>
         </div>
     </ui:define>

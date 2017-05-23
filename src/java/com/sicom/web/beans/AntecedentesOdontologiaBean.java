@@ -22,15 +22,14 @@ import javax.persistence.Persistence;
 public class AntecedentesOdontologiaBean implements Serializable {
 
     private AntecedentesOdontologia antecedentesOdontologia;
-    private final AntecedentesOdontologiaJpaController aoc;
+    private final AntecedentesOdontologiaJpaController aojc;
     private Paciente paciente;
     private boolean antecedenteNuevo;
 
     public AntecedentesOdontologiaBean() {
-        aoc = new AntecedentesOdontologiaJpaController(Persistence.createEntityManagerFactory("SICOM_v1PU"));
+        aojc = new AntecedentesOdontologiaJpaController(Persistence.createEntityManagerFactory("SICOM_v1PU"));
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
-
         paciente = (Paciente) ec.getSessionMap().get("paciente");
         
         if (paciente != null) {
@@ -43,14 +42,15 @@ public class AntecedentesOdontologiaBean implements Serializable {
             } else {
                 antecedenteNuevo = false;
             }
-        } else {
-            try {
-                String URL = ec.getRequestContextPath() + "/app/paciente/consultar#formulario";
-                ec.redirect(URL);
-            } catch (IOException ex) {
-                Logger.getLogger(AntecedentesGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
+//        } else {
+//            try {
+//                String URL = ec.getRequestContextPath() + "/app/paciente/consultarPorCedula";
+//                ec.redirect(URL);
+//            } catch (IOException ex) {
+//                Logger.getLogger(AntecedentesGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
     }
 
     public void save() {
@@ -62,7 +62,7 @@ public class AntecedentesOdontologiaBean implements Serializable {
             try {
                 antecedentesOdontologia.setFecha(new Date());
                 antecedentesOdontologia.setExpedientePacientecedula(paciente.getExpediente());
-                aoc.create(antecedentesOdontologia);
+                aojc.create(antecedentesOdontologia);
 
                 ec.getFlash().setKeepMessages(true);
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información agregada exitósamente.", null));
@@ -77,7 +77,7 @@ public class AntecedentesOdontologiaBean implements Serializable {
                 
                 antecedentesOdontologia.setFecha(new Date());
                 antecedentesOdontologia.setExpedientePacientecedula(paciente.getExpediente());
-                aoc.edit(antecedentesOdontologia);
+                aojc.edit(antecedentesOdontologia);
 
                 ec.getFlash().setKeepMessages(true);
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información modificada exitósamente.", null));

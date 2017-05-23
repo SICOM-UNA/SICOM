@@ -22,7 +22,7 @@ import javax.persistence.Persistence;
 public class AntecedentesGinecologiaBean implements Serializable {
 
     private AntecedentesGinecologia antecedentesGinecologia;
-    private final AntecedentesGinecologiaJpaController agc;
+    private final AntecedentesGinecologiaJpaController agjc;
     private Paciente paciente;
     private Boolean antecedenteNuevo;
 
@@ -30,10 +30,9 @@ public class AntecedentesGinecologiaBean implements Serializable {
      * Constructor
      */
     public AntecedentesGinecologiaBean() {
-        agc = new AntecedentesGinecologiaJpaController(Persistence.createEntityManagerFactory("SICOM_v1PU"));
+        agjc = new AntecedentesGinecologiaJpaController(Persistence.createEntityManagerFactory("SICOM_v1PU"));
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
-
         paciente = (Paciente) ec.getSessionMap().get("paciente");
         
         if (paciente != null) {
@@ -46,14 +45,15 @@ public class AntecedentesGinecologiaBean implements Serializable {
             } else {
                 antecedenteNuevo = false;
             }
-        } else {
-            try {
-                String URL = ec.getRequestContextPath() + "/app/paciente/consultar#formulario";
-                ec.redirect(URL);
-            } catch (IOException ex) {
-                Logger.getLogger(AntecedentesGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
+//        } else {
+//            try {
+//                String URL = ec.getRequestContextPath() + "/app/paciente/consultarPorCedula";
+//                ec.redirect(URL);
+//            } catch (IOException ex) {
+//                Logger.getLogger(AntecedentesGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
     }
 
     public void save() {
@@ -64,7 +64,7 @@ public class AntecedentesGinecologiaBean implements Serializable {
             try {
                 antecedentesGinecologia.setFecha(new Date());
                 antecedentesGinecologia.setExpedientePacientecedula(paciente.getExpediente());
-                agc.create(antecedentesGinecologia);
+                agjc.create(antecedentesGinecologia);
 
                 ec.getFlash().setKeepMessages(true);
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información agregada exitósamente.", null));
@@ -79,7 +79,7 @@ public class AntecedentesGinecologiaBean implements Serializable {
             try {
                 antecedentesGinecologia.setFecha(new Date());
                 antecedentesGinecologia.setExpedientePacientecedula(paciente.getExpediente());
-                agc.edit(antecedentesGinecologia);
+                agjc.edit(antecedentesGinecologia);
 
                 ec.getFlash().setKeepMessages(true);
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Información modificada exitósamente.", null));

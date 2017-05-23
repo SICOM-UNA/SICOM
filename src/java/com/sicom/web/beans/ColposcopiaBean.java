@@ -4,7 +4,6 @@ import com.sicom.controller.ExamenColposcopiaJpaController;
 import com.sicom.entities.ExamenColposcopia;
 import com.sicom.entities.Login;
 import com.sicom.entities.Paciente;
-import com.sicom.entities.Personal;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
@@ -80,7 +79,18 @@ public class ColposcopiaBean implements Serializable{
             ex.printStackTrace();
         }
     }
-
+    
+    public void redireccionarAlEditor() {
+        try {
+            FacesContext fc = FacesContext.getCurrentInstance();
+            ExternalContext ec = fc.getExternalContext();
+            String URL = ec.getRequestContextPath() + "/app/consultorios/ultimaversion/public_html/classic_with_gui/colposcopia";
+            ec.redirect(URL);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    
     public void importar(FileUploadEvent event) {
         try {
             UploadedFile archivo = event.getFile();

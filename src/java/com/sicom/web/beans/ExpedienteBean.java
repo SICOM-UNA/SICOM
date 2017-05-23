@@ -54,24 +54,22 @@ import org.primefaces.model.UploadedFile;
 public class ExpedienteBean implements Serializable {
 
     private Expediente expediente;
-    private ExpedienteJpaController ejc;
+    private final ExpedienteJpaController ejc;
     private Paciente paciente;
     private Valor selectedExamen;
     private UploadedFile archivo = null;
     private Documentos documento;
-    private List<Documentos> ultimosDocumentoss = new ArrayList<Documentos>();
-    private List<Documentos> listaDocumentos = new ArrayList<Documentos>();
-    private DocumentosJpaController documentosController;
+    private List<Documentos> ultimosDocumentoss = new ArrayList<>();
+    private List<Documentos> listaDocumentos = new ArrayList<>();
+    private final DocumentosJpaController documentosController;
 
     List<InterfazExamen> resultado, listaFiltrada;
     InterfazExamen dato;
 
     public ExpedienteBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
-        
         ejc = new ExpedienteJpaController(emf);
         documentosController = new DocumentosJpaController(emf);
-        
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();        
         paciente = (Paciente) ec.getSessionMap().get("paciente");
 
@@ -83,14 +81,15 @@ public class ExpedienteBean implements Serializable {
                 paciente.setExpediente(expediente);
                 ec.getRequestMap().put("paciente", paciente);
             }
-        } else {
-            try {
-                String URL = ec.getRequestContextPath() + "/app/paciente/consultar#formulario";
-                ec.redirect(URL);
-            } catch (IOException ex) {
-                Logger.getLogger(AntecedentesGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
+//        } else {
+//            try {
+//                String URL = ec.getRequestContextPath() + "/app/paciente/consultarPorCedula";
+//                ec.redirect(URL);
+//            } catch (IOException ex) {
+//                Logger.getLogger(AntecedentesGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
     }
 
     public void historiaClinica() {
@@ -831,7 +830,6 @@ public class ExpedienteBean implements Serializable {
 
     public void redireccionExamenes() {
         if (dato != null) {
-
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
             String URL = ec.getRequestContextPath();

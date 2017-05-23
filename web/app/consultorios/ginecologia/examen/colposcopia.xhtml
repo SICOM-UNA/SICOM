@@ -77,7 +77,9 @@
                                 fileLimitMessage="Número máximo de archivos excedido"/>
                             
                             <p:graphicImage id="preview" value="#{colposcopiaBean.examenColposcopia.vasosAtipicos}"/>
-                            <p:commandButton icon="ui-icon-image" value="Abrir editor" action="editor" title="Abre el editor de imágenes en una nueva pestaña" style="margin: 10px 0;"/>
+                            <p:commandButton icon="ui-icon-image" value="Abrir editor" title="Abre el editor de imágenes en una nueva pestaña" 
+                                action="#{colposcopiaBean.redireccionarAlEditor}" onclick="this.form.target='_blank'" ajax="false" 
+                                style="margin: 10px 0;"/>
                         </p:panel>
                         
                         <div class="ui-grid-col-12">
@@ -86,7 +88,7 @@
                             </p:panel>-->
                             <f:facet name="footer" >
                                 <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                    <p:commandButton value="Guardar" action="#{colposcopiaBean.agregar()}" icon="ui-icon-disk" title="Click para guardar información." update="formColposcopia msg"/>
+                                    <p:commandButton value="Guardar" action="#{colposcopiaBean.agregar}" icon="ui-icon-disk" title="Click para guardar información." update="formColposcopia msg"/>
                                     <p:commandButton value="Cancelar" action="#{colposcopiaBean.redireccionarAInformacion}" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true"/>                                   
                                 </div>
                             </f:facet>
