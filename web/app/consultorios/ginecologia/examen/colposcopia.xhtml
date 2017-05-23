@@ -76,7 +76,7 @@
                                 sizeLimit="10485760" label="Subir imagen" skinSimple="true" previewWidth="0" fileLimit="1" 
                                 fileLimitMessage="Número máximo de archivos excedido"/>
                             
-                            <p:graphicImage id="preview" value="#{colposcopiaBean.examenColposcopia.vasosAtipicos}"/>
+                            <p:graphicImage id="preview" value="#{colposcopiaBean.examenColposcopia.vasosAtipicos}" rendered="#{colposcopiaBean.examenColposcopia.vasosAtipicos==null}"/>
                             <p:commandButton icon="ui-icon-image" value="Abrir editor" title="Abre el editor de imágenes en una nueva pestaña" 
                                 action="#{colposcopiaBean.redireccionarAlEditor}" onclick="this.form.target='_blank'" ajax="false" 
                                 style="margin: 10px 0;"/>
