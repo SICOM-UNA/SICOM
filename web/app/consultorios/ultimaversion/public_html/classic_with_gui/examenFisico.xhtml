@@ -17,8 +17,8 @@
             }
 
             .literally {
-                width: 750px;
-                height: 480px;
+                width: 900px;
+                height: 580px;
                 position: relative;
             }
             
@@ -54,14 +54,14 @@
             <script type="text/javascript">
                 $(document).ready(function () {
                     var backgroundImage = new Image();
-                    backgroundImage.src = '../_assets/lc-images/colposcopia.png';
+                    backgroundImage.src = '../_assets/lc-images/fisico.png';
                     // backgroundImage.src = '../_assets/lc-images/odt.png';
                     var lc = LC.init(
                             document.getElementsByClassName('odonto')[0],
                             {
                                 backgroundShapes: [
                                     LC.createShape(
-                                            'Image', {x: 45, y: 60, image: backgroundImage, scale: 0.3})
+                                            'Image', {x: 4, y: 10, image: backgroundImage, scale: 0.3})
                                 ],
                                 imageURLPrefix: '../_assets/lc-images',
                                 toolbarPosition: 'bottom',

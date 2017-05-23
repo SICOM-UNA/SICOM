@@ -66,8 +66,11 @@ and open the template in the editor.
                         <p:menuitem value="Citas" url="/app/calendario/seleccion" icon="ui-icon-calendar"/>
                        
                         <p:submenu label="Editor" icon="ui-icon-image">
-                            <p:menuitem value="Ginecología" url="/app/consultorios/ultimaversion/public_html/classic_with_gui/ginecologia" target="blank" icon="ui-icon-suitcase" rendered="#{loginBean.visibleDepartamento('ginecología')}"/>
+                           
                             <p:menuitem value="Odontología" url="/app/consultorios/ultimaversion/public_html/classic_with_gui/odontologia" target="blank" icon="ui-icon-suitcase" rendered="#{loginBean.visibleDepartamento('odontología')}"/>
+                            <p:menuitem value="Monitoreo Fetal" url="/app/consultorios/ultimaversion/public_html/classic_with_gui/monitoreoFetal" icon="ui-icon-suitcase" rendered="#{loginBean.visibleDepartamento('ginecología,Admistración')}"/>
+                            <p:menuitem value="Colposcopia" url="/app/consultorios/ultimaversion/public_html/classic_with_gui/colposcopia" icon="ui-icon-suitcase" rendered="#{loginBean.visibleDepartamento('ginecología,Admistración')}"/>
+                            <p:menuitem value="ExamenFisico" url="/app/consultorios/ultimaversion/public_html/classic_with_gui/ginecologia" icon="ui-icon-suitcase" rendered="#{loginBean.visibleDepartamento('ginecología,Admistración')}"/>
                         </p:submenu>
                             
                         <p:submenu label="Ayuda" icon="ui-icon-help">
