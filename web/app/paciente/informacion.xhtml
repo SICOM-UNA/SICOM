@@ -55,10 +55,14 @@
 
                                     <p:outputLabel value="Domicilio:"/>
                                     <p:inputTextarea value="#{pacienteBean.selectedPaciente.domicilio}" readonly="true"/>
+                                    
+                                    <f:facet name="footer">
+                                        <p:commandButton value="Actualizar datos" icon="ui-icon-pencil" title="Modificar la información del personal" action="editar?faces-redirect=true" rendered="#{!loginBean.visibleDepartamento('recepción')}"/>
+                                    </f:facet>
                                 </h:panelGrid>
                             </h:form>
                         </p:tab>
-
+                        
                         <!--    RESPONSABLES    -->
                         
                         <p:tab title="Responsables">
@@ -237,10 +241,6 @@
                         </p:dataTable>
                     </h:form>
                 </p:dialog>
-                
-                <h:form id="formEditar">
-                    <p:commandButton value="Actualizar datos" icon="ui-icon-pencil" title="Modificar la información del personal" action="editar?faces-redirect=true" rendered="#{!loginBean.visibleDepartamento('recepción')}"/>
-                </h:form>
             </section>
         </div>
     </ui:define>
