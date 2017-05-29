@@ -1,12 +1,9 @@
 package com.sicom.web.beans;
 
-import com.sicom.controller.ExamenGinecologiaJpaController;
 import com.sicom.controller.ExamenOdontologiaJpaController;
-import com.sicom.entities.ExamenGinecologia;
 import com.sicom.entities.ExamenOdontologia;
 import com.sicom.entities.Login;
 import com.sicom.entities.Paciente;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.logging.Level;
@@ -25,42 +22,33 @@ import org.primefaces.model.UploadedFile;
 @ViewScoped
 public class ExamenOdontologiaBean implements Serializable{
     
-    private ExamenOdontologia examen;
-    private ExamenOdontologiaJpaController ejc;
+    private ExamenOdontologia examenOdontologia;
+    private ExamenOdontologiaJpaController eojc;
     private Paciente paciente;
     
      public ExamenOdontologiaBean() {
-        ejc = new ExamenOdontologiaJpaController(Persistence.createEntityManagerFactory("SICOM_v1PU"));
+        eojc = new ExamenOdontologiaJpaController(Persistence.createEntityManagerFactory("SICOM_v1PU"));
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         paciente = (Paciente) ec.getSessionMap().get("paciente");
-        examen = (ExamenOdontologia) ec.getSessionMap().remove("examen");
+        examenOdontologia = (ExamenOdontologia) ec.getSessionMap().get("examen");
         
-        if (examen == null) {
-            examen = new ExamenOdontologia();
-            examen.setPersonalCedula(((Login) ec.getSessionMap().get("login")).getPersonal());
-            
-            if (paciente == null) {
-                try {
-                    ec.redirect(ec.getRequestContextPath().concat("/app/paciente/consultar"));
-                } catch (IOException ex) {
-                    Logger.getLogger(ExamenFisicoGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+        if (examenOdontologia == null) {
+            examenOdontologia = new ExamenOdontologia();
+            examenOdontologia.setPersonalCedula(((Login) ec.getSessionMap().get("login")).getPersonal());
         }
     }
     
-    
-     public void agregar() {
+    public void agregar() {
         try {
-            examen.setFecha(new Date());
-            examen.setExpedientePacientecedula(paciente.getExpediente());
+            examenOdontologia.setFecha(new Date());
+            examenOdontologia.setExpedientePacientecedula(paciente.getExpediente());
             FacesMessage message;
 
-            if (examen.getId() == null) {
-                ejc.create(examen);
+            if (examenOdontologia.getId() == null) {
+                eojc.create(examenOdontologia);
                 message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Examen Odontológico agregado exitosamente.", null);
             } else {
-                ejc.edit(examen);
+                eojc.edit(examenOdontologia);
                 message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Examen Odontológico modificado exitosamente.", null);
             }
 
@@ -75,8 +63,7 @@ public class ExamenOdontologiaBean implements Serializable{
         }
     }
      
-     
-      public void redireccionarAInformacion() {
+    public void redireccionarAInformacion() {
         try {
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
@@ -86,10 +73,8 @@ public class ExamenOdontologiaBean implements Serializable{
             ex.printStackTrace();
         }
     }
-      
-      
-      
-       public void redireccionarAlEditor() {
+    
+    public void redireccionarAlEditor() {
         try {
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
@@ -99,15 +84,13 @@ public class ExamenOdontologiaBean implements Serializable{
             ex.printStackTrace();
         }
     }
-     
-       
-     
-       public void importar(FileUploadEvent event) {
+
+    public void importar(FileUploadEvent event) {
         try {
             UploadedFile archivo = event.getFile();
             byte[] bytes = archivo.getContents();
             String filename = archivo.getFileName();
-            examen.setImagen(bytes);
+            examenOdontologia.setImagen(bytes);
             FacesMessage message = new FacesMessage("El archivo " + filename + " se ha subido exitosamente");
             FacesContext.getCurrentInstance().addMessage(null, message);
         } catch (Exception e) {
@@ -115,24 +98,19 @@ public class ExamenOdontologiaBean implements Serializable{
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al subir el archivo", null));
         }
     }
-       
-       
-       
-       
-       
-     
-       public ExamenOdontologia getExamen() {
-        return examen;
+    
+    public ExamenOdontologia getExamenOdontologia() {
+        return examenOdontologia;
     }
-
-    public void setExamen(ExamenOdontologia examen) {
-        this.examen = examen;
+    
+    public void setExamenOdontologia(ExamenOdontologia examenOdontologia) {
+        this.examenOdontologia = examenOdontologia;
     }
-
+    
     public Paciente getPaciente() {
         return paciente;
     }
-
+    
     public void setPaciente(Paciente paciente) {
         this.paciente = paciente;
     }
