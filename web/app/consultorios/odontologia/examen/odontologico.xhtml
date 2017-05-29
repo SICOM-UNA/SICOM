@@ -15,19 +15,24 @@
                     
                     <p:panel header="Examen Odontología">
                         <p:panel header="Información del Paciente">
-                            <h:panelGrid columns="7">
-                                <p:spacer width="50"/>
-                                <p:outputLabel class="descripcion" value="#{examenOdontologiaBean.paciente.nombre} #{examenOdontologiaBean.paciente.primerApellido} #{examenOdontologiaBean.paciente.segundoApellido}"/>
-                                <p:spacer width="50"/>
-                                <p:outputLabel class="descripcion" value="#{examenOdontologiaBean.paciente.cedula}"/>
-                                <p:spacer width="50"/>
-                                <p:outputLabel class="descripcion"  value="Última edición:"/>
-                                <p:outputLabel class="descripcion"  value="#{examenOdontologiaBean.examenOdontologia.fecha}">
-                                    <f:convertDateTime pattern="dd-MM-yyyy H:mm:ss"/>
-                                </p:outputLabel>
-                                <p:spacer width="50"/>
-                                <p:outputLabel class="descripcion" value="Creado por: #{examenOdontologiaBean.examenOdontologia.personalCedula.nombre} #{examenOdontologiaBean.examenOdontologia.personalCedula.primerApellido} #{examenOdontologiaBean.examenOdontologia.personalCedula.segundoApellido}"/>
+                            <h:panelGrid columns="2" style="width: 100%;">
+                                <h:panelGrid columns="2" cellpadding="3" cellspacing="3">
+                                    <p:outputLabel class="descripcion" value="Nombre: "/>
+                                    <p:outputLabel value="#{paciente.nombre} #{paciente.primerApellido} #{paciente.segundoApellido}"/>
 
+                                    <p:outputLabel class="descripcion" value="Cédula: "/>
+                                    <p:outputLabel value="#{paciente.cedula}"/>
+                                </h:panelGrid>
+                                
+                                <h:panelGrid columns="2" cellpadding="3" cellspacing="3">
+                                    <p:outputLabel class="descripcion" value="Creado por: "/>
+                                    <p:outputLabel value="#{examenOdontologiaBean.examenOdontologia.personalCedula.nombre} #{examenOdontologiaBean.examenOdontologia.personalCedula.primerApellido} #{examenOdontologiaBean.examenOdontologia.personalCedula.segundoApellido}"/>
+                                    
+                                    <p:outputLabel class="descripcion" value="Última edición:"/>
+                                    <p:outputLabel value="#{examenOdontologiaBean.examenOdontologia.fecha}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy hh:mm:ss aa"/>
+                                    </p:outputLabel>
+                                </h:panelGrid>
                             </h:panelGrid>
                         </p:panel>
 

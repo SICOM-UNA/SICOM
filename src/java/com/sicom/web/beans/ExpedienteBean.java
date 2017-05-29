@@ -126,19 +126,19 @@ public class ExpedienteBean implements Serializable {
 
             switch (selectedExamen.getValorPK().getId()) {
                 case 36:/*Examen Fisico*/
-                    URL += "/app/consultorios/ginecologia/examen/fisico?faces-redirect=true";
+                    URL += "/app/consultorios/ginecologia/examen/fisico";
                     break;
                 case 37:/*Monitoreo Fetal*/
-                    URL += "/app/consultorios/ginecologia/examen/monitoreoFetal?faces-redirect=true";
+                    URL += "/app/consultorios/ginecologia/examen/monitoreoFetal";
                     break;
                 case 38:/*Colposcopia*/
-                    URL += "/app/consultorios/ginecologia/examen/colposcopia?faces-redirect=true";
+                    URL += "/app/consultorios/ginecologia/examen/colposcopia";
                     break;
                 case 39:/*Odontograma*/
-                    URL += "/app/consultorios/odontologia/examen/odontologico?faces-redirect=true";
+                    URL += "/app/consultorios/odontologia/examen/odontologico";
                     break;
                 default:
-                    URL += "/app/paciente/informacion?faces-redirect=true";
+                    URL += "/app/paciente/informacion";
             }
 
             try {
@@ -722,29 +722,33 @@ public class ExpedienteBean implements Serializable {
     
     public List<InterfazExamen> getListaExamenes() {
         resultado = new ArrayList<>();
-
         List<ExamenGinecologia> examenGinecologiaList = expediente.getExamenGinecologiaList();
-
+        String departamento = ((Login) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("login")).getPersonal().getDepartamentoId().getNombre();
         int i = 0;
 
-        for (ExamenGinecologia eg : examenGinecologiaList) {
-            resultado.add(new InterfazExamen(eg, i++));
+        if(departamento.equals("Ginecología")) {
+            for (ExamenGinecologia eg : examenGinecologiaList) {
+                resultado.add(new InterfazExamen(eg, i++));
+            }
+
+            List<ExamenColposcopia> examenColposcopiaList = expediente.getExamenColposcopiaList();
+            for (ExamenColposcopia ec : examenColposcopiaList) {
+                resultado.add(new InterfazExamen(ec,i++));
+            }
+
+            List<ExamenMonitoreoFetal> monitoreoFetalList = expediente.getMonitoreoFetalList();
+            for (ExamenMonitoreoFetal mf : monitoreoFetalList) {
+                resultado.add(new InterfazExamen(mf,i++));
+            }
         }
 
-        List<ExamenOdontologia> examenOdontologiaList = expediente.getExamenOdontologiaList();
-        for (ExamenOdontologia eo : examenOdontologiaList) {
-            resultado.add(new InterfazExamen(eo, i++));
+        if(departamento.equals("Odontología")) {
+            List<ExamenOdontologia> examenOdontologiaList = expediente.getExamenOdontologiaList();
+            for (ExamenOdontologia eo : examenOdontologiaList) {
+                resultado.add(new InterfazExamen(eo, i++));
+            }
         }
         
-        List<ExamenColposcopia> examenColposcopiaList = expediente.getExamenColposcopiaList();
-        for (ExamenColposcopia ec : examenColposcopiaList) {
-            resultado.add(new InterfazExamen(ec,i++));
-         }
-         
-        List<ExamenMonitoreoFetal> monitoreoFetalList = expediente.getMonitoreoFetalList();
-        for (ExamenMonitoreoFetal mf : monitoreoFetalList) {
-            resultado.add(new InterfazExamen(mf,i++));
-         }
         return resultado;
     }
 
@@ -837,7 +841,7 @@ public class ExpedienteBean implements Serializable {
                 case "Colposcopía":/*Colposcopia*/
                     URL += "/app/consultorios/ginecologia/examen/colposcopia?faces-redirect=true";
                     break;
-                case "Odontograma":/*Odontograma*/
+                case "Odontológico":/*Odontograma*/
                     URL += "/app/consultorios/odontologia/examen/odontologico?faces-redirect=true";
                     break;
             }

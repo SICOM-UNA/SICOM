@@ -23,7 +23,7 @@ import org.primefaces.model.UploadedFile;
 public class ExamenOdontologiaBean implements Serializable{
     
     private ExamenOdontologia examenOdontologia;
-    private ExamenOdontologiaJpaController eojc;
+    private final ExamenOdontologiaJpaController eojc;
     private Paciente paciente;
     
      public ExamenOdontologiaBean() {
@@ -42,20 +42,25 @@ public class ExamenOdontologiaBean implements Serializable{
         try {
             examenOdontologia.setFecha(new Date());
             examenOdontologia.setExpedientePacientecedula(paciente.getExpediente());
-            FacesMessage message;
-
-            if (examenOdontologia.getId() == null) {
-                eojc.create(examenOdontologia);
-                message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Examen Odontológico agregado exitosamente.", null);
-            } else {
-                eojc.edit(examenOdontologia);
-                message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Examen Odontológico modificado exitosamente.", null);
-            }
-
+            FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+
+            if(examenOdontologia.getImagen() == null) {
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe importar el archivo", null));
+            } else {
+                if (examenOdontologia.getId() == null) {
+                    eojc.create(examenOdontologia);
+                    fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Examen Odontológico agregado exitosamente.", null));
+                } else {
+                    eojc.edit(examenOdontologia);
+                    fc.addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Examen Odontológico modificado exitosamente.", null));
+                }
+                
+                ec.getFlash().setKeepMessages(true);
+                ec.redirect(ec.getRequestContextPath().concat("/app/paciente/informacion"));
+            }
+            
             ec.getFlash().setKeepMessages(true);
-            FacesContext.getCurrentInstance().addMessage(null, message);
-            ec.redirect(ec.getRequestContextPath().concat("/app/paciente/informacion"));
         } catch (Exception ex) {
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error", "El examen no se pudo agregar.");
             FacesContext.getCurrentInstance().addMessage(null, message);
