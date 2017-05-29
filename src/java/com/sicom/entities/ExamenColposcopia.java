@@ -56,7 +56,7 @@ public class ExamenColposcopia implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
     @Column(name = "resultado")
-    private Boolean resultado;
+    private String resultado;
     @Column(name = "resultadoComentario")
     private String resultadoComentario;
     @Column(name = "moco")
@@ -111,11 +111,11 @@ public class ExamenColposcopia implements Serializable {
         this.fecha = fecha;
     }
 
-    public Boolean getResultado() {
+    public String getResultado() {
         return resultado;
     }
 
-    public void setResultado(Boolean resultado) {
+    public void setResultado(String resultado) {
         this.resultado = resultado;
     }
 

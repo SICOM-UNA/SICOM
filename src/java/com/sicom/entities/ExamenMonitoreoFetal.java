@@ -27,15 +27,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author WVQ
  */
 @Entity
-@Table(name = "monitoreo fetal")
+@Table(name = "examenmonitoreofetal")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "MonitoreoFetal.findAll", query = "SELECT m FROM MonitoreoFetal m"),
-    @NamedQuery(name = "MonitoreoFetal.findById", query = "SELECT m FROM MonitoreoFetal m WHERE m.id = :id"),
-    @NamedQuery(name = "MonitoreoFetal.findByFecha", query = "SELECT m FROM MonitoreoFetal m WHERE m.fecha = :fecha"),
-    @NamedQuery(name = "MonitoreoFetal.findByTipo", query = "SELECT m FROM MonitoreoFetal m WHERE m.tipo = :tipo"),
-    @NamedQuery(name = "MonitoreoFetal.findByComentario", query = "SELECT m FROM MonitoreoFetal m WHERE m.comentario = :comentario")})
-public class MonitoreoFetal implements Serializable {
+    @NamedQuery(name = "ExamenMonitoreoFetal.findAll", query = "SELECT m FROM ExamenMonitoreoFetal m"),
+    @NamedQuery(name = "ExamenMonitoreoFetal.findById", query = "SELECT m FROM ExamenMonitoreoFetal m WHERE m.id = :id"),
+    @NamedQuery(name = "ExamenMonitoreoFetal.findByFecha", query = "SELECT m FROM ExamenMonitoreoFetal m WHERE m.fecha = :fecha"),
+    @NamedQuery(name = "ExamenMonitoreoFetal.findByTipo", query = "SELECT m FROM ExamenMonitoreoFetal m WHERE m.tipo = :tipo"),
+    @NamedQuery(name = "ExamenMonitoreoFetal.findByComentario", query = "SELECT m FROM ExamenMonitoreoFetal m WHERE m.comentario = :comentario")})
+public class ExamenMonitoreoFetal implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -58,14 +58,14 @@ public class MonitoreoFetal implements Serializable {
     @ManyToOne(optional = false)
     private Personal personalcedula;
 
-    public MonitoreoFetal() {
+    public ExamenMonitoreoFetal() {
     }
 
-    public MonitoreoFetal(Integer id) {
+    public ExamenMonitoreoFetal(Integer id) {
         this.id = id;
     }
 
-    public MonitoreoFetal(Integer id, Date fecha) {
+    public ExamenMonitoreoFetal(Integer id, Date fecha) {
         this.id = id;
         this.fecha = fecha;
     }
@@ -128,10 +128,10 @@ public class MonitoreoFetal implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof MonitoreoFetal)) {
+        if (!(object instanceof ExamenMonitoreoFetal)) {
             return false;
         }
-        MonitoreoFetal other = (MonitoreoFetal) object;
+        ExamenMonitoreoFetal other = (ExamenMonitoreoFetal) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -140,7 +140,6 @@ public class MonitoreoFetal implements Serializable {
 
     @Override
     public String toString() {
-        return "com.sicom.entities.MonitoreoFetal[ id=" + id + " ]";
+        return "com.sicom.entities.ExamenMonitoreoFetal[ id=" + id + " ]";
     }
-    
 }

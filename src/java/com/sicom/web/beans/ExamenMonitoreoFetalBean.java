@@ -1,8 +1,8 @@
 package com.sicom.web.beans;
 
-import com.sicom.controller.MonitoreoFetalJpaController;
+import com.sicom.controller.ExamenMonitoreoFetalJpaController;
 import com.sicom.entities.Login;
-import com.sicom.entities.MonitoreoFetal;
+import com.sicom.entities.ExamenMonitoreoFetal;
 import com.sicom.entities.Paciente;
 import java.io.IOException;
 import java.io.Serializable;
@@ -18,29 +18,21 @@ import javax.persistence.Persistence;
 
 @ManagedBean
 @ViewScoped
-public class MonitoreoFetalBean implements Serializable {
+public class ExamenMonitoreoFetalBean implements Serializable {
 
-    private MonitoreoFetal monitoreoFetal;
-    private MonitoreoFetalJpaController mfc;
+    private ExamenMonitoreoFetal monitoreoFetal;
+    private ExamenMonitoreoFetalJpaController mfjc;
     private Paciente paciente;
 
-    public MonitoreoFetalBean() {
-        mfc = new MonitoreoFetalJpaController(Persistence.createEntityManagerFactory("SICOM_v1PU"));
+    public ExamenMonitoreoFetalBean() {
+        mfjc = new ExamenMonitoreoFetalJpaController(Persistence.createEntityManagerFactory("SICOM_v1PU"));
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         paciente = (Paciente) ec.getSessionMap().get("paciente");
-        monitoreoFetal = (MonitoreoFetal) ec.getSessionMap().remove("examen");
+        monitoreoFetal = (ExamenMonitoreoFetal) ec.getSessionMap().get("examen");
 
         if (monitoreoFetal == null) {
-            monitoreoFetal = new MonitoreoFetal();
+            monitoreoFetal = new ExamenMonitoreoFetal();
             monitoreoFetal.setPersonalcedula(((Login) ec.getSessionMap().get("login")).getPersonal());
-
-            if (paciente == null) {
-                try {
-                    ec.redirect(ec.getRequestContextPath().concat("/app/paciente/consultar"));
-                } catch (IOException ex) {
-                    Logger.getLogger(MonitoreoFetalBean.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
         }
     }
 
@@ -51,10 +43,10 @@ public class MonitoreoFetalBean implements Serializable {
             FacesMessage message;
 
             if (monitoreoFetal.getId() == null) {
-                mfc.create(monitoreoFetal);
+                mfjc.create(monitoreoFetal);
                 message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Monitoreo Fetal agregado exitosamente.", null);
             } else {
-                mfc.edit(monitoreoFetal);
+                mfjc.edit(monitoreoFetal);
                 message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Monitoreo Fetal modificado exitosamente.", null);
             }
 
@@ -65,7 +57,7 @@ public class MonitoreoFetalBean implements Serializable {
         } catch (Exception ex) {
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al agregar Monitoreo Fetal", null);
             FacesContext.getCurrentInstance().addMessage(null, message);
-            Logger.getLogger(MonitoreoFetalBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ExamenMonitoreoFetalBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -80,11 +72,11 @@ public class MonitoreoFetalBean implements Serializable {
         }
     }
 
-    public MonitoreoFetal getMonitoreoFetal() {
+    public ExamenMonitoreoFetal getMonitoreoFetal() {
         return monitoreoFetal;
     }
 
-    public void setMonitoreoFetal(MonitoreoFetal monitoreoFetal) {
+    public void setMonitoreoFetal(ExamenMonitoreoFetal monitoreoFetal) {
         this.monitoreoFetal = monitoreoFetal;
     }
 

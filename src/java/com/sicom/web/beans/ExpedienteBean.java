@@ -12,7 +12,7 @@ import com.sicom.entities.ExamenOdontologia;
 import com.sicom.entities.Expediente;
 import com.sicom.entities.InterfazExamen;
 import com.sicom.entities.Login;
-import com.sicom.entities.MonitoreoFetal;
+import com.sicom.entities.ExamenMonitoreoFetal;
 import com.sicom.entities.Paciente;
 import com.sicom.entities.Personal;
 import com.sicom.entities.Valor;
@@ -82,14 +82,6 @@ public class ExpedienteBean implements Serializable {
                 ec.getRequestMap().put("paciente", paciente);
             }
         }
-//        } else {
-//            try {
-//                String URL = ec.getRequestContextPath() + "/app/paciente/consultarPorCedula";
-//                ec.redirect(URL);
-//            } catch (IOException ex) {
-//                Logger.getLogger(AntecedentesGinecologiaBean.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
     }
 
     public void historiaClinica() {
@@ -130,22 +122,23 @@ public class ExpedienteBean implements Serializable {
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
             String URL = ec.getRequestContextPath();
+            ec.getSessionMap().remove("examen");
 
             switch (selectedExamen.getValorPK().getId()) {
                 case 36:/*Examen Fisico*/
-                    URL += "/app/consultorios/ginecologia/examen/fisico";
+                    URL += "/app/consultorios/ginecologia/examen/fisico?faces-redirect=true";
                     break;
                 case 37:/*Monitoreo Fetal*/
-                    URL += "/app/consultorios/ginecologia/examen/monitoreoFetal";
+                    URL += "/app/consultorios/ginecologia/examen/monitoreoFetal?faces-redirect=true";
                     break;
                 case 38:/*Colposcopia*/
-                    URL += "/app/consultorios/ginecologia/examen/colposcopia";
+                    URL += "/app/consultorios/ginecologia/examen/colposcopia?faces-redirect=true";
                     break;
                 case 39:/*Odontograma*/
-                    URL += "/app/consultorios/odontologia/examen/odontologico";
+                    URL += "/app/consultorios/odontologia/examen/odontologico?faces-redirect=true";
                     break;
                 default:
-                    URL += "/app/paciente/informacion";
+                    URL += "/app/paciente/informacion?faces-redirect=true";
             }
 
             try {
@@ -155,7 +148,7 @@ public class ExpedienteBean implements Serializable {
             }
         } else {
             FacesContext fc = FacesContext.getCurrentInstance();
-            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe seleccionar un exámen primero.", null));
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe seleccionar un examen primero", null));
         }
     }
 
@@ -726,6 +719,34 @@ public class ExpedienteBean implements Serializable {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al subir el archivo", null));
         }
     }
+    
+    public List<InterfazExamen> getListaExamenes() {
+        resultado = new ArrayList<>();
+
+        List<ExamenGinecologia> examenGinecologiaList = expediente.getExamenGinecologiaList();
+
+        int i = 0;
+
+        for (ExamenGinecologia eg : examenGinecologiaList) {
+            resultado.add(new InterfazExamen(eg, i++));
+        }
+
+        List<ExamenOdontologia> examenOdontologiaList = expediente.getExamenOdontologiaList();
+        for (ExamenOdontologia eo : examenOdontologiaList) {
+            resultado.add(new InterfazExamen(eo, i++));
+        }
+        
+        List<ExamenColposcopia> examenColposcopiaList = expediente.getExamenColposcopiaList();
+        for (ExamenColposcopia ec : examenColposcopiaList) {
+            resultado.add(new InterfazExamen(ec,i++));
+         }
+         
+        List<ExamenMonitoreoFetal> monitoreoFetalList = expediente.getMonitoreoFetalList();
+        for (ExamenMonitoreoFetal mf : monitoreoFetalList) {
+            resultado.add(new InterfazExamen(mf,i++));
+         }
+        return resultado;
+    }
 
     public List<Documentos> getUltimosDocumentos(Integer maxResults) {
         ultimosDocumentoss = documentosController.findUltimos(paciente.getCedula(), maxResults);
@@ -761,34 +782,6 @@ public class ExpedienteBean implements Serializable {
 
     public Valor getSelectedExamen() {
         return selectedExamen;
-    }
-
-    public List<InterfazExamen> creaInterfazExamenes() {
-        resultado = new ArrayList<>();
-
-        List<ExamenGinecologia> examenGinecologiaList = expediente.getExamenGinecologiaList();
-
-        int i = 0;
-
-        for (ExamenGinecologia eg : examenGinecologiaList) {
-            resultado.add(new InterfazExamen(eg, i++));
-        }
-
-        List<ExamenOdontologia> examenOdontologiaList = expediente.getExamenOdontologiaList();
-        for (ExamenOdontologia eo : examenOdontologiaList) {
-            resultado.add(new InterfazExamen(eo, i++));
-        }
-        
-        List<ExamenColposcopia> examenColposcopiaList = expediente.getExamenColposcopiaList();
-        for (ExamenColposcopia ec : examenColposcopiaList) {
-            resultado.add(new InterfazExamen(ec,i++));
-         }
-         
-        List<MonitoreoFetal> monitoreoFetalList = expediente.getMonitoreoFetalList();
-        for (MonitoreoFetal mf : monitoreoFetalList) {
-            resultado.add(new InterfazExamen(mf,i++));
-         }
-        return resultado;
     }
 
     public List<InterfazExamen> getResultado() {
@@ -836,16 +829,16 @@ public class ExpedienteBean implements Serializable {
 
             switch (dato.getTipoExamen()) {
                 case "Físico":/*Examen Fisico*/
-                    URL += "/app/consultorios/ginecologia/examen/fisico";
+                    URL += "/app/consultorios/ginecologia/examen/fisico?faces-redirect=true";
                     break;
                 case "Monitoreo Fetal":/*Monitoreo Fetal*/
-                    URL += "/app/consultorios/ginecologia/examen/monitoreoFetal";
+                    URL += "/app/consultorios/ginecologia/examen/monitoreoFetal?faces-redirect=true";
                     break;
                 case "Colposcopía":/*Colposcopia*/
-                    URL += "/app/consultorios/ginecologia/examen/colposcopia";
+                    URL += "/app/consultorios/ginecologia/examen/colposcopia?faces-redirect=true";
                     break;
                 case "Odontograma":/*Odontograma*/
-                    URL += "/app/consultorios/odontologia/examen/odontologico";
+                    URL += "/app/consultorios/odontologia/examen/odontologico?faces-redirect=true";
                     break;
             }
 
