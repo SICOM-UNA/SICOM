@@ -142,7 +142,7 @@ public class ExpedienteBean implements Serializable {
                     URL += "/app/consultorios/ginecologia/examen/colposcopia";
                     break;
                 case 39:/*Odontograma*/
-                    
+                    URL += "/app/consultorios/odontologia/examen/odontologico";
                     break;
                 default:
                     URL += "/app/paciente/informacion";
@@ -845,7 +845,7 @@ public class ExpedienteBean implements Serializable {
                     URL += "/app/consultorios/ginecologia/examen/colposcopia";
                     break;
                 case "Odontograma":/*Odontograma*/
-
+                    URL += "/app/consultorios/odontologia/examen/odontologico";
                     break;
             }
 
