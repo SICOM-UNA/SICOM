@@ -74,6 +74,8 @@
                                 });
                         $('.controls.export [data-action=descargar]').click(function (e) {
                             e.preventDefault();
+                             window.open(lc.getImage().toDataURL());
+                            
 //                            $("#img").append(lc.getImage());
 
                         });
