@@ -4,6 +4,8 @@ import com.sicom.controller.ExamenOdontologiaJpaController;
 import com.sicom.entities.ExamenOdontologia;
 import com.sicom.entities.Login;
 import com.sicom.entities.Paciente;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.logging.Level;
@@ -15,6 +17,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.persistence.Persistence;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 
@@ -102,6 +106,13 @@ public class ExamenOdontologiaBean implements Serializable{
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al subir el archivo", null));
         }
+    }
+    
+    public StreamedContent descargar() {
+        InputStream stream = new ByteArrayInputStream(examenOdontologia.getImagen());
+        StreamedContent file = new DefaultStreamedContent(stream, "image/jpg", "imagen_examen.jpg");
+        
+        return file;
     }
     
     public ExamenOdontologia getExamenOdontologia() {
