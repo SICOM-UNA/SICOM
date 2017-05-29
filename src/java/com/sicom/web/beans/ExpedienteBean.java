@@ -293,9 +293,9 @@ public class ExpedienteBean implements Serializable {
             y -= 25;
 
             if (antecedentesGinecologia.getHerediatarios().equals("")) {
-                nuevaLinea(content, 80, y, 11, "Antecedentes Hereditarios: N/A");
+                nuevaLinea(content, 80, y, 11, "Antecedentes hereditarios: N/A");
             } else {
-                nuevaLinea(content, 80, y, 11, "Antecedentes Hereditarios: ");
+                nuevaLinea(content, 80, y, 11, "Antecedentes hereditarios: ");
                 y = textoLargo(antecedentesGinecologia.getHerediatarios(), content, page, 220, y);
             }
             y -= 20;
@@ -525,24 +525,24 @@ public class ExpedienteBean implements Serializable {
             nuevaLinea(content, 550, 40, 12, "1");
             nuevaLinea(content, 80, y, 10, "Fecha:" + dateFormat.format(fecha));
 
-            nuevaLinea(content, 280, y, 10, "Centro Medico Navas");
+            nuevaLinea(content, 280, y, 10, "Centro Médico Navas");
             y -= 10;
-            nuevaLinea(content, 305, y, 10, "La sabana");
+            nuevaLinea(content, 305, y, 10, "La Sabana");
             y -= 10;
-            nuevaLinea(content, 282, y, 10, "Telefono: 2233-1010");
+            nuevaLinea(content, 282, y, 10, "Teléfono: 2233-1010");
             y -= 10;
-            nuevaLinea(content, 250, y, 10, "Dra. Maria del Carmen Navas Aparicio");
+            nuevaLinea(content, 250, y, 10, "Dra. María del Carmen Navas Aparicio");
 
             y -= 60;
-            nuevaLinea(content, 80, y, 12, "Historia Clinica: " + paciente.getNombre() + " " + paciente.getPrimerApellido() + " " + paciente.getSegundoApellido());
+            nuevaLinea(content, 80, y, 12, "Historia Clínica: " + paciente.getNombre() + " " + paciente.getPrimerApellido() + " " + paciente.getSegundoApellido());
             y -= 15;
-            nuevaLinea(content, 80, y, 10, "Ultima modificacion: " + dateFormat.format(antecedentesOdontologia.getFecha()));
+            nuevaLinea(content, 80, y, 10, "Última modificación: " + dateFormat.format(antecedentesOdontologia.getFecha()));
             //</editor-fold>
             //<editor-fold defaultstate="collapsed" desc="Datos personales">
             y -= 10;
             content.drawLine(80, y, 440, y);
             y -= 15;
-            nuevaLinea(content, 80, y, 12, "Datos Personales");
+            nuevaLinea(content, 80, y, 12, "Datos personales");
             y -= 20;
             nuevaLinea(content, 80, y, 10, "Nombre y apellidos: " + paciente.getNombre() + " " + paciente.getPrimerApellido() + " " + paciente.getSegundoApellido());
             y -= 15;
@@ -553,15 +553,15 @@ public class ExpedienteBean implements Serializable {
             DateTime now = new DateTime();
             nuevaLinea(content, 80, y, 10, "Edad: " + (Years.yearsBetween(birthdate, now).getYears()));
             nuevaLinea(content, 150, y, 10, "Sexo: " + paciente.getGenero());
-            nuevaLinea(content, 240, y, 10, "Ocupacion: " + paciente.getOcupacion());
+            nuevaLinea(content, 240, y, 10, "Ocupación: " + paciente.getOcupacion());
             y -= 15;
             nuevaLinea(content, 80, y, 10, "Fecha de nacimiento: " + dateFormat.format(paciente.getNacimiento()));
             nuevaLinea(content, 240, y, 10, "Domicilio: " + paciente.getDomicilio());
             y -= 15;
             nuevaLinea(content, 80, y, 10, "Estado civil: " + paciente.getEstadoCivil());
             y -= 15;
-            nuevaLinea(content, 80, y, 10, "Telefono(s): " + paciente.getTelefono() + "/" + paciente.getCelular());
-            nuevaLinea(content, 250, y, 10, "Correo electronico: " + paciente.getCorreo());
+            nuevaLinea(content, 80, y, 10, "Teléfono(s): " + paciente.getTelefono() + "/" + paciente.getCelular());
+            nuevaLinea(content, 250, y, 10, "Correo electrónico: " + paciente.getCorreo());
             y -= 20;
 
             //</editor-fold>
@@ -570,31 +570,31 @@ public class ExpedienteBean implements Serializable {
             y -= 25;
 
             if (antecedentesOdontologia.getHereditarios().equals("")) {
-                nuevaLinea(content, 80, y, 11, "Antecedentes Hereditarios: N/A");
+                nuevaLinea(content, 80, y, 11, "Antecedentes hereditarios: N/A");
             } else {
-                nuevaLinea(content, 80, y, 11, "Antecedentes Hereditarios: ");
+                nuevaLinea(content, 80, y, 11, "Antecedentes hereditarios: ");
                 y = textoLargo(antecedentesOdontologia.getHereditarios(), content, page, 220, y);
             }
             y -= 20;
 
             if (antecedentesOdontologia.getPatologicos().equals("")) {
-                nuevaLinea(content, 80, y, 11, "Antecedentes Patologicos: N/A");
+                nuevaLinea(content, 80, y, 11, "Antecedentes patológicos: N/A");
             } else {
-                nuevaLinea(content, 80, y, 11, "Antecedentes Patologicos: ");
+                nuevaLinea(content, 80, y, 11, "Antecedentes patológicos: ");
                 y = textoLargo(antecedentesOdontologia.getPatologicos(), content, page, 220, y);
             }
             y -= 20;
             if (antecedentesOdontologia.getNoPatologicos().equals("")) {
-                nuevaLinea(content, 80, y, 11, "Antecedentes No Patologicos: N/A");
+                nuevaLinea(content, 80, y, 11, "Antecedentes no patológicos: N/A");
             } else {
-                nuevaLinea(content, 80, y, 11, "Antecedentes No Patologicos: ");
+                nuevaLinea(content, 80, y, 11, "Antecedentes no patológicos: ");
                 y = textoLargo(antecedentesOdontologia.getNoPatologicos(), content, page, 230, y);
             }
             y -= 20;
             if (antecedentesOdontologia.getQuirurgicos().equals("")) {
-                nuevaLinea(content, 80, y, 11, "Antecedentes Quirurgicos: N/A");
+                nuevaLinea(content, 80, y, 11, "Antecedentes quirúrgicos: N/A");
             } else {
-                nuevaLinea(content, 80, y, 11, "Antecedentes Quirurgicos: ");
+                nuevaLinea(content, 80, y, 11, "Antecedentes quirúrgicos: ");
                 y = textoLargo(antecedentesOdontologia.getQuirurgicos(), content, page, 220, y);
             }
             y -= 20;//200
@@ -629,9 +629,9 @@ public class ExpedienteBean implements Serializable {
             }
 
             if (antecedentesOdontologia.getHabitos().equals("")) {
-                nuevaLinea(content, 80, y, 11, "Habitos: N/A");
+                nuevaLinea(content, 80, y, 11, "Hábitos: N/A");
             } else {
-                nuevaLinea(content, 80, y, 11, "Habitos: ");
+                nuevaLinea(content, 80, y, 11, "Hábitos: ");
                 y = textoLargo(antecedentesOdontologia.getHabitos(), content, page, 220, y);
             }
             y -= 20;
@@ -659,7 +659,7 @@ public class ExpedienteBean implements Serializable {
             }
             //</editor-fold>
             //</editor-fold>
-            System.out.println("El Archivo fue guardado");
+            System.out.println("El archivo fue guardado exitosamente");
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }

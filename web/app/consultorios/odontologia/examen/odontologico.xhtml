@@ -43,7 +43,7 @@
                             <p:fileUpload uploadLabel="Elegir un archivo" mode="advanced" fileUploadListener="#{examenOdontologiaBean.importar}" 
                                 update="preview" invalidSizeMessage="El archivo elegido es muy grande" auto="true" multiple="false" 
                                 sizeLimit="10485760" label="Subir imagen" skinSimple="true" previewWidth="0" fileLimit="1" 
-                                fileLimitMessage="Número máximo de archivos excedido"/>
+                                fileLimitMessage="Número máximo de archivos excedido" required="true"/>
 
                             <p:graphicImage id="preview" value="#{examenOdontologiaBean.examenOdontologia.imagen}" rendered="#{examenOdontologiaBean.examenOdontologia.imagen==null}"/>
                             <p:commandButton icon="ui-icon-image" value="Abrir editor" title="Abre el editor de imágenes en una nueva pestaña" 
