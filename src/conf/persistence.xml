@@ -20,6 +20,7 @@
     <class>com.sicom.entities.Documentos</class>
     <class>com.sicom.entities.ExamenGinecologia</class>
     <class>com.sicom.entities.ExamenOdontologia</class>
+    <class>com.sicom.entities.ExamenMonitoreoFetal</class>
     <class>com.sicom.entities.Expediente</class>
     <class>com.sicom.entities.ExamenColposcopia</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>

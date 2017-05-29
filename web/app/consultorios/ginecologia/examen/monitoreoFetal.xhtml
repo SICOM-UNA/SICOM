@@ -15,18 +15,24 @@
                     
                     <p:panel header="Monitoreo Fetal">
                         <p:panel header="Información del Paciente">
-                            <h:panelGrid columns="7">
-                                <p:spacer width="50"/>
-                                <p:outputLabel class="descripcion" value="#{monitoreoFetalBean.paciente.nombre} #{monitoreoFetalBean.paciente.primerApellido} #{monitoreoFetalBean.paciente.segundoApellido}"/>
-                                <p:spacer width="50"/>
-                                <p:outputLabel class="descripcion" value="#{monitoreoFetalBean.paciente.cedula}"/>
-                                <p:spacer width="50"/>
-                                <p:outputLabel class="descripcion"  value="Última edición:"/>
-                                <p:outputLabel class="descripcion"  value="#{monitoreoFetalBean.monitoreoFetal.fecha}">
-                                    <f:convertDateTime pattern="dd-MM-yyyy H:mm:ss"/>
-                                </p:outputLabel>
-                                <p:spacer width="50"/>
-                                <p:outputLabel class="descripcion" value="Creado por: #{monitoreoFetalBean.monitoreoFetal.personalcedula.nombre} #{monitoreoFetalBean.monitoreoFetal.personalcedula.primerApellido} #{monitoreoFetalBean.monitoreoFetal.personalcedula.segundoApellido}"/>
+                            <h:panelGrid columns="2" style="width: 100%;">
+                                <h:panelGrid columns="2" cellpadding="3" cellspacing="3">
+                                    <p:outputLabel class="descripcion" value="Nombre: "/>
+                                    <p:outputLabel value="#{paciente.nombre} #{paciente.primerApellido} #{paciente.segundoApellido}"/>
+
+                                    <p:outputLabel class="descripcion" value="Cédula: "/>
+                                    <p:outputLabel value="#{paciente.cedula}"/>
+                                </h:panelGrid>
+                                
+                                <h:panelGrid columns="2" cellpadding="3" cellspacing="3">
+                                    <p:outputLabel class="descripcion" value="Creado por: "/>
+                                    <p:outputLabel value="#{examenMonitoreoFetalBean.monitoreoFetal.personalcedula.nombre} #{examenMonitoreoFetalBean.monitoreoFetal.personalcedula.primerApellido} #{examenMonitoreoFetalBean.monitoreoFetal.personalcedula.segundoApellido}"/>
+                                    
+                                    <p:outputLabel class="descripcion" value="Última edición:"/>
+                                    <p:outputLabel value="#{examenMonitoreoFetalBean.monitoreoFetal.fecha}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy hh:mm:ss aa"/>
+                                    </p:outputLabel>
+                                </h:panelGrid>
                             </h:panelGrid>
                         </p:panel>
 
@@ -34,7 +40,7 @@
                             <h:panelGrid columns="2" cellpadding="20">
                                 <h:panelGroup>
                                     <p:outputLabel value="Tipo: " for="tipo" class="descripcion"/>
-                                    <p:selectOneMenu value="#{monitoreoFetalBean.monitoreoFetal.tipo}"  id="tipo" required="true">
+                                    <p:selectOneMenu value="#{examenMonitoreoFetalBean.monitoreoFetal.tipo}"  id="tipo" required="true">
                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true"/>
                                         <f:selectItems value="#{valoresBean.getDescripcionByCodeId(13)}"/>
                                     </p:selectOneMenu>
@@ -42,15 +48,15 @@
                                 
                                 <h:panelGroup>
                                     <p:outputLabel for="detalles" value="Detalles:" class="descripcion" />
-                                    <p:inputTextarea value="#{monitoreoFetalBean.monitoreoFetal.comentario}" id="detalles" maxlength="118" rows="5" cols = "70" autoResize="false"/> 
+                                    <p:inputTextarea value="#{examenMonitoreoFetalBean.monitoreoFetal.comentario}" id="detalles" maxlength="118" rows="5" cols = "70" autoResize="false"/> 
                                 </h:panelGroup>    
                             </h:panelGrid>
                         </p:panel>
                         
                         <f:facet name="footer" >
                             <div class="ui-panel-titlebar ui-widget-header" align="center">
-                                <p:commandButton value="Guardar" icon="ui-icon-disk" title="Click para guardar información." update="formMonitoreoFetal msg" action="#{monitoreoFetalBean.agregar}"/>
-                                <p:commandButton value="Cancelar" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true" action="#{monitoreoFetalBean.redireccionarAInformacion}"/>
+                                <p:commandButton value="Guardar" icon="ui-icon-disk" title="Click para guardar información." update="formMonitoreoFetal msg" action="#{examenMonitoreoFetalBean.agregar}"/>
+                                <p:commandButton value="Cancelar" icon="ui-icon-close" title="Click para cancelar los cambios."  immediate="true" action="#{examenMonitoreoFetalBean.redireccionarAInformacion}"/>
                             </div>
                         </f:facet>
                     </p:panel>

@@ -46,7 +46,7 @@ public class Expediente implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "expedientePacientecedula")
     private List<ExamenColposcopia> examenColposcopiaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "expedienteid")
-    private List<MonitoreoFetal> monitoreoFetalList;
+    private List<ExamenMonitoreoFetal> monitoreoFetalList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "expedientePacientecedula")
     private List<ExamenOdontologia> examenOdontologiaList;
     @JoinColumn(name = "Paciente_cedula", referencedColumnName = "cedula")
@@ -92,11 +92,11 @@ public class Expediente implements Serializable {
     }
 
     @XmlTransient
-    public List<MonitoreoFetal> getMonitoreoFetalList() {
+    public List<ExamenMonitoreoFetal> getMonitoreoFetalList() {
         return monitoreoFetalList;
     }
 
-    public void setMonitoreoFetalList(List<MonitoreoFetal> monitoreoFetalList) {
+    public void setMonitoreoFetalList(List<ExamenMonitoreoFetal> monitoreoFetalList) {
         this.monitoreoFetalList = monitoreoFetalList;
     }
     

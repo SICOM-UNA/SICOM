@@ -20,13 +20,13 @@ import org.primefaces.model.UploadedFile;
 
 @ManagedBean
 @ViewScoped
-public class ColposcopiaBean implements Serializable{
+public class ExamenColposcopiaBean implements Serializable{
     
     private ExamenColposcopia examenColposcopia;
     private ExamenColposcopiaJpaController ecjc;
     private Paciente paciente;
    
-    public ColposcopiaBean(){
+    public ExamenColposcopiaBean(){
         ecjc = new ExamenColposcopiaJpaController(Persistence.createEntityManagerFactory("SICOM_v1PU"));
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         paciente = (Paciente) ec.getSessionMap().get("paciente");
@@ -40,7 +40,7 @@ public class ColposcopiaBean implements Serializable{
                 try {
                     ec.redirect(ec.getRequestContextPath().concat("/app/paciente/consultar"));
                 } catch (IOException ex) {
-                    Logger.getLogger(ColposcopiaBean.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(ExamenColposcopiaBean.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -65,7 +65,7 @@ public class ColposcopiaBean implements Serializable{
             ec.redirect(ec.getRequestContextPath().concat("/app/paciente/informacion"));
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error al agregar examen", null));
-            Logger.getLogger(ColposcopiaBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ExamenColposcopiaBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

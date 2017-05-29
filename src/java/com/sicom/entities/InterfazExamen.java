@@ -40,7 +40,7 @@ public class InterfazExamen implements Serializable {
      * @param examen
      * @param id
      */
-    public InterfazExamen(MonitoreoFetal examen, int id) {
+    public InterfazExamen(ExamenMonitoreoFetal examen, int id) {
         this.examen = examen;
         this.tipoExamen = "Monitoreo Fetal";
         this.fechaModificacion = examen.getFecha();

@@ -24,6 +24,4 @@ public class ExamenGinecologiaBean implements Serializable{
     public Date getHoy() {
         return hoy;
     }
-    
 }
-

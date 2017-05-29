@@ -17,7 +17,7 @@
                     <p:tabView id="tabView" orientation="top" activeIndex="0">
                         <p:tab title="Información Personal">
                             <h:form id="formPaciente">
-                                <h:panelGrid columns="4" cellpadding="5" >
+                                <h:panelGrid columns="4" cellpadding="5">
                                     <p:outputLabel value="Identificación:"/>
                                     <p:inputText  value="#{pacienteBean.selectedPaciente.cedula}" readonly="true"/>
 
@@ -135,7 +135,7 @@
                                                     update="formImportacion:tableDocumentos :formDocumentos:tableDialog" invalidSizeMessage="El archivo elegido es muy grande" 
                                                     sizeLimit="10485760" label="Subir documento" skinSimple="true" previewWidth="0" multiple="false"/>
 
-                                                <h:panelGrid columns="1" width="100%" >
+                                                <h:panelGrid columns="1" width="100%">
                                                     <p:dataTable id="tableDocumentos" value="#{expedienteBean.getUltimosDocumentos(5)}" var="documentos">
                                                         <p:column headerText="Documento" style="font-size:15px;">
                                                             <h:commandLink  value="#{documentos.nombre}" action="#{expedienteBean.descargarDocumento(documentos)}" style="font-size:15px;" title="Click para descargar"/>
@@ -190,11 +190,11 @@
                 <p:dialog widgetVar="dataTableDialog" header="Lista de Examenes" showEffect="fade" hideEffect="fade" width="1000"  modal="true"
                           closeOnEscape="true">
                     <h:form id="formListaExamenes">
-                        <p:dataTable value="#{expedienteBean.creaInterfazExamenes()}" var="dato" widgetVar="dataTable" rows="10" paginator="true"
+                        <p:dataTable id="singleDT" value="#{expedienteBean.getListaExamenes()}" var="dato" widgetVar="dataTable" rows="10" paginator="true"
                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                            rowsPerPageTemplate="5,10,15" filteredValue="#{expedienteBean.listaFiltrada}" id="singleDT" selectionMode="single" paginatorPosition="bottom" 
-                            selection="#{expedienteBean.dato}" emptyMessage="No existen exámenes con ese criterio" rowKey="#{dato.id}" resizableColumns="true">
-
+                            rowsPerPageTemplate="5,10,15" filteredValue="#{expedienteBean.listaFiltrada}" paginatorPosition="bottom" 
+                            emptyMessage="No existen exámenes con ese criterio" resizableColumns="true">
+<!--                            selection="{expedienteBean.dato}" selectionMode="single" rowKey="{dato.id}" -->
                             <f:facet name="header">
                                 <p:outputPanel>
                                     <h:outputText value="Búsqueda general: " />
@@ -204,7 +204,7 @@
 
                             <p:column headerText="Tipo de examen" filterBy="#{dato.tipoExamen}" sortBy="#{dato.tipoExamen}" filterMatchMode="contains">
                                 <f:facet name="filter">
-                                    <p:selectOneMenu onchange="PF('dataTable').filter()" >
+                                    <p:selectOneMenu onchange="PF('dataTable').filter()">
                                         <f:selectItem itemLabel="Seleccione:" itemValue="#{null}" noSelectionOption="true"/>
                                         <f:selectItems value="#{expedienteBean.examenesPorDepartamento}"/>
                                     </p:selectOneMenu>
@@ -213,9 +213,9 @@
                                 <h:outputText value="#{dato.tipoExamen}"/>
                             </p:column>
 
-                            <p:column headerText="Fecha de modificación" sortBy="#{dato.fechaModificacion}" >
+                            <p:column headerText="Fecha de modificación" sortBy="#{dato.fechaModificacion}">
                                 <h:outputText value="#{dato.fechaModificacion}">
-                                    <f:convertDateTime pattern="dd-MM-yyyy" />
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm aa" />
                                 </h:outputText>
                             </p:column>
 
@@ -223,10 +223,14 @@
                                 <h:outputText value="#{dato.hechoPor}" />
                             </p:column>
 
+                            <p:column style="width:32px; text-align: center;">
+                                <p:commandButton icon="ui-icon-pencil" action="#{expedienteBean.redireccionExamenes}" update="formListaExamenes" title="Editar examen">
+                                   <f:setPropertyActionListener value="#{dato}" target="#{expedienteBean.dato}"/>
+                               </p:commandButton>
+                           </p:column>
+
                             <f:facet name="footer">
                                 <div style="padding: 10px;">
-                                    <p:commandButton icon="ui-icon-search" value="Editar" action="#{expedienteBean.redireccionExamenes}" update="formListaExamenes"/>
-                                    <p:spacer width="5"/>
                                     <p:commandButton icon="ui-icon-close" value="Cerrar" oncomplete="PF('dataTableDialog').hide()"/>
                                 </div>
                             </f:facet>

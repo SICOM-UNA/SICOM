@@ -13,7 +13,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.sicom.entities.Expediente;
-import com.sicom.entities.MonitoreoFetal;
+import com.sicom.entities.ExamenMonitoreoFetal;
 import com.sicom.entities.Personal;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -23,9 +23,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author WVQ
  */
-public class MonitoreoFetalJpaController implements Serializable {
+public class ExamenMonitoreoFetalJpaController implements Serializable {
 
-    public MonitoreoFetalJpaController(EntityManagerFactory emf) {
+    public ExamenMonitoreoFetalJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -34,7 +34,7 @@ public class MonitoreoFetalJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(MonitoreoFetal monitoreoFetal) throws PreexistingEntityException, Exception {
+    public void create(ExamenMonitoreoFetal monitoreoFetal) throws PreexistingEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -71,12 +71,12 @@ public class MonitoreoFetalJpaController implements Serializable {
         }
     }
 
-    public void edit(MonitoreoFetal monitoreoFetal) throws NonexistentEntityException, Exception {
+    public void edit(ExamenMonitoreoFetal monitoreoFetal) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            MonitoreoFetal persistentMonitoreoFetal = em.find(MonitoreoFetal.class, monitoreoFetal.getId());
+            ExamenMonitoreoFetal persistentMonitoreoFetal = em.find(ExamenMonitoreoFetal.class, monitoreoFetal.getId());
             Expediente expedienteidOld = persistentMonitoreoFetal.getExpedienteid();
             Expediente expedienteidNew = monitoreoFetal.getExpedienteid();
             Personal personalcedulaOld = persistentMonitoreoFetal.getPersonalcedula();
@@ -128,9 +128,9 @@ public class MonitoreoFetalJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            MonitoreoFetal monitoreoFetal;
+            ExamenMonitoreoFetal monitoreoFetal;
             try {
-                monitoreoFetal = em.getReference(MonitoreoFetal.class, id);
+                monitoreoFetal = em.getReference(ExamenMonitoreoFetal.class, id);
                 monitoreoFetal.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The monitoreoFetal with id " + id + " no longer exists.", enfe);
@@ -154,19 +154,19 @@ public class MonitoreoFetalJpaController implements Serializable {
         }
     }
 
-    public List<MonitoreoFetal> findMonitoreoFetalEntities() {
+    public List<ExamenMonitoreoFetal> findMonitoreoFetalEntities() {
         return findMonitoreoFetalEntities(true, -1, -1);
     }
 
-    public List<MonitoreoFetal> findMonitoreoFetalEntities(int maxResults, int firstResult) {
+    public List<ExamenMonitoreoFetal> findMonitoreoFetalEntities(int maxResults, int firstResult) {
         return findMonitoreoFetalEntities(false, maxResults, firstResult);
     }
 
-    private List<MonitoreoFetal> findMonitoreoFetalEntities(boolean all, int maxResults, int firstResult) {
+    private List<ExamenMonitoreoFetal> findMonitoreoFetalEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(MonitoreoFetal.class));
+            cq.select(cq.from(ExamenMonitoreoFetal.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -178,10 +178,10 @@ public class MonitoreoFetalJpaController implements Serializable {
         }
     }
 
-    public MonitoreoFetal findMonitoreoFetal(Integer id) {
+    public ExamenMonitoreoFetal findMonitoreoFetal(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(MonitoreoFetal.class, id);
+            return em.find(ExamenMonitoreoFetal.class, id);
         } finally {
             em.close();
         }
@@ -191,7 +191,7 @@ public class MonitoreoFetalJpaController implements Serializable {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<MonitoreoFetal> rt = cq.from(MonitoreoFetal.class);
+            Root<ExamenMonitoreoFetal> rt = cq.from(ExamenMonitoreoFetal.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
