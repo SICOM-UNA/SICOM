@@ -70,16 +70,21 @@
                             <p:inputTextarea id="otros" value="#{examenColposcopiaBean.examenColposcopia.otros}" maxlength="100" rows="3" cols = "46" autoResize="false"/>
                         </p:panel>
 
-                        <p:panel header="Importar archivo">
+                        <p:panel id="panelImportar" header="Importar archivo">
                             <p:fileUpload uploadLabel="Elegir un archivo" mode="advanced" fileUploadListener="#{examenColposcopiaBean.importar}" 
-                                update="preview" invalidSizeMessage="El archivo elegido es muy grande" auto="true" multiple="false" 
+                                update="panelImportar" invalidSizeMessage="El archivo elegido es muy grande" auto="true" multiple="false" 
                                 sizeLimit="10485760" label="Subir imagen" skinSimple="true" previewWidth="0" fileLimit="1" 
                                 fileLimitMessage="Número máximo de archivos excedido"/>
                             
-                            <p:graphicImage id="preview" value="#{examenColposcopiaBean.examenColposcopia.vasosAtipicos}" rendered="#{examenColposcopiaBean.examenColposcopia.vasosAtipicos == null}"/>
+                            <p:graphicImage value="#{examenColposcopiaBean.examenColposcopia.vasosAtipicos}" rendered="#{examenColposcopiaBean.examenColposcopia.vasosAtipicos == null}"/>
                             <p:commandButton icon="ui-icon-image" value="Abrir editor" title="Abre el editor de imágenes en una nueva pestaña" 
                                 action="#{examenColposcopiaBean.redireccionarAlEditor}" onclick="this.form.target='_blank'" ajax="false" 
                                 style="margin: 10px 0;"/>
+                            
+                            <p:commandButton value="Descargar" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s"
+                                rendered="#{examenColposcopiaBean.examenColposcopia.vasosAtipicos != null}" style="margin-left: 10px;">
+                                <p:fileDownload value="#{examenColposcopiaBean.descargar()}" />
+                            </p:commandButton>
                         </p:panel>
                         
                         <div class="ui-grid-col-12">
