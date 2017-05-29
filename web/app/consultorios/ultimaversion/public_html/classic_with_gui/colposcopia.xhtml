@@ -38,7 +38,7 @@
             <div class="fs-container">
                 <div id="lc" class="odonto"></div>
             </div>
-            <a id="download" href="#"  >Descargar</a>
+            <a id="download">Descargar</a>
 
 
             <h:form class="controls export">
@@ -46,13 +46,16 @@
                 <input type="submit" value="Cerrar editor" onclick="window.close()" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding: 8px;"/>
             </h:form>
 
-            <div id="img"></div>
+
 
             <!--  llama a los elmentos -->
             <script src="../_js_libs/react-0.14.3.js"></script>
             <script src="../_js_libs/literallycanvas.js"></script>
             <script type="text/javascript" src="../_js_libs/jquery-1.8.2.js"></script>
-            <script type="text/javascript" src="../_js_libs/html2canvas.min.js"></script>
+
+
+
+
 
             <!--imagen de fondo -->
             <script type="text/javascript">
@@ -74,14 +77,32 @@
                                 });
                         $('.controls.export [data-action=descargar]').click(function (e) {
                             e.preventDefault();
+                            window.open(lc.getImage().toDataURL());
+
+//                            function download_image() {
+//                                // Dump the canvas contents to a file.
+//                                var canvas = document.getElementById("myCanvas");
+//                                canvas.toBlob(function (blob) {
+//                                    saveAs(blob, "output.png");
+//                                }, "image/png");
+//                            };
+
+
 //                            $("#img").append(lc.getImage());
 
                         });
-                        
-
                     });
 
-                    
+
+
+                    document.getElementById('download').addEventListener('click', function () {
+                        downloadCanvas(this, 'test.png');
+                    }, false);
+
+                    function downloadCanvas(link, filename) {
+                        link.href = (lc.getImage().toDataURL());
+                        link.download = filename;
+                    }
 
 
             </script>
