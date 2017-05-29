@@ -86,7 +86,7 @@ public class ExamenFisicoGinecologiaBean implements Serializable {
         try {
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
-            String URL = ec.getRequestContextPath() + "/app/consultorios/ultimaversion/public_html/classic_with_gui/examenFisico";
+            String URL = ec.getRequestContextPath() + "/app/consultorios/ultimaversion/public_html/classic_with_gui/ginecologia";
             ec.redirect(URL);
         } catch (Exception ex) {
             ex.printStackTrace();

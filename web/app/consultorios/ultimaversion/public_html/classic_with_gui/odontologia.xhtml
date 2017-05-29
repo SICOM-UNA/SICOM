@@ -17,8 +17,8 @@
             }
 
             .literally {
-                width: 900px;
-                height: 580px;
+                width: 1000px;
+                height: 600px;
                 position: relative;
             }
             
@@ -48,20 +48,20 @@
             <script src="../_js_libs/react-0.14.3.js"></script>
             <script src="../_js_libs/literallycanvas.js"></script>
             <script type="text/javascript" src="../_js_libs/jquery-1.8.2.js"></script>
-            <script type="text/javascript" src="../_js_libs/html2canvas.min.js"></script>
+            
 
             <!--imagen de fondo -->
             <script type="text/javascript">
                 $(document).ready(function () {
                     var backgroundImage = new Image();
-                    backgroundImage.src = '../_assets/lc-images/gine.png';
-                    // backgroundImage.src = '../_assets/lc-images/odt.png';
+                    //backgroundImage.src = '../_assets/lc-images/gine.png';
+                     backgroundImage.src = '../_assets/lc-images/odt.png';
                     var lc = LC.init(
                             document.getElementsByClassName('odonto')[0],
                             {
                                 backgroundShapes: [
                                     LC.createShape(
-                                            'Image', {x: 4, y: 10, image: backgroundImage, scale: 0.3})
+                                            'Image', {x: 140, y: 10, image: backgroundImage, scale: 0.3})
                                 ],
                                 imageURLPrefix: '../_assets/lc-images',
                                 toolbarPosition: 'bottom',
