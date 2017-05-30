@@ -97,8 +97,7 @@ public class AntecedentesGinecologia implements Serializable {
     @Column(name = "actividadSexual")
     private String actividadSexual;
     @Column(name = "ultimoParto")
-    @Temporal(TemporalType.DATE)
-    private Date ultimoParto;
+    private String ultimoParto;
     @Column(name = "ultimoPap")
     private String ultimoPap;
     @Column(name = "lactanciaMaterna")
@@ -255,11 +254,11 @@ public class AntecedentesGinecologia implements Serializable {
         this.actividadSexual = actividadSexual;
     }
 
-    public Date getUltimoParto() {
+    public String getUltimoParto() {
         return ultimoParto;
     }
 
-    public void setUltimoParto(Date ultimoParto) {
+    public void setUltimoParto(String ultimoParto) {
         this.ultimoParto = ultimoParto;
     }
 

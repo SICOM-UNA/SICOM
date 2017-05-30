@@ -72,9 +72,9 @@ public class ExamenGinecologia implements Serializable {
     @Column(name = "motivoConsulta")
     private String motivoConsulta;
     @Column(name = "talla")
-    private Integer talla;
+    private Float talla;
     @Column(name = "peso")
-    private Integer peso;
+    private Float peso;
     @Column(name = "presionArterial")
     private String presionArterial;
     @Column(name = "cardioPulmonar")
@@ -161,19 +161,19 @@ public class ExamenGinecologia implements Serializable {
         this.motivoConsulta = motivoConsulta;
     }
 
-    public Integer getTalla() {
+    public Float getTalla() {
         return talla;
     }
 
-    public void setTalla(Integer talla) {
+    public void setTalla(Float talla) {
         this.talla = talla;
     }
 
-    public Integer getPeso() {
+    public Float getPeso() {
         return peso;
     }
 
-    public void setPeso(Integer peso) {
+    public void setPeso(Float peso) {
         this.peso = peso;
     }
 

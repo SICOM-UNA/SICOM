@@ -63,10 +63,6 @@
                                 <p:commandButton value="Guardar datos"  action="#{antecedentesOdontologiaBean.save()}" title="Click para guardar información"/>
                                 <p:commandButton value="Cancelar" action="#{antecedentesOdontologiaBean.cancelarAction()}" title="Click para cancelar"/>
                                 <p:spacer width="25"/>
-                                <p:commandButton value="Odontograma"  title="Click para guardar y crear un odontograma."/>
-                                <p:commandButton value="Descargar" icon="ui-icon-circle-arrow-s">
-                                    <p:confirm header="Descarga" message="¿Desea descargar la historia clínica?" icon="ui-icon-alert"/>
-                                </p:commandButton>
                                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                                     <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />

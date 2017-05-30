@@ -417,7 +417,7 @@ public class ExpedienteBean implements Serializable {
             }
 
             if (antecedentesGinecologia.getUltimoParto() != null) {
-                nuevaLinea(content, 80, y, 10, "Último parto: " + antecedentesGinecologia.getUltimoParto().getYear());
+                nuevaLinea(content, 80, y, 10, "Último parto: " + antecedentesGinecologia.getUltimoParto());
             } else {
                 nuevaLinea(content, 80, y, 10, "Último parto: N/A");
             }
