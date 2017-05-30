@@ -22,13 +22,16 @@
                                 <div class="ui-grid-col-6" align="center">
                                     <h:panelGrid columns="2" cellpadding="5">
                                         <p:outputLabel value="Nombre: " for="nombre"/>
-                                        <p:inputText id="nombre" value="#{personalBean.nuevoPersonal.nombre}"/>
+                                        <p:inputText id="nombre" value="#{personalBean.nuevoPersonal.nombre}" class="charWithSpaceToUpperCase"
+                                                        onkeyup="validar()"/>
                                         
                                         <p:outputLabel value="Primer apellido: " for="primerApellido"/>
-                                        <p:inputText id="primerApellido" value="#{personalBean.nuevoPersonal.primerApellido}"/>
+                                        <p:inputText id="primerApellido" value="#{personalBean.nuevoPersonal.primerApellido}" class="charWithSpaceToUpperCase"
+                                                        onkeyup="validar()"/>
 
                                         <p:outputLabel value="Segundo apellido: " for="segundoApellido"/>
-                                        <p:inputText id="segundoApellido" value="#{personalBean.nuevoPersonal.segundoApellido}"/>
+                                        <p:inputText id="segundoApellido" value="#{personalBean.nuevoPersonal.segundoApellido}" class="charWithSpaceToUpperCase"
+                                                        onkeyup="validar()"/>
                                     </h:panelGrid>
                                 </div>
                             </div>

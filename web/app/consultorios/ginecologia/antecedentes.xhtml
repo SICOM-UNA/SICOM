@@ -83,11 +83,11 @@
                                 <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.actividadSexual}" size="8" onkeyup="validar()"/>    
 
                                 <p:outputLabel value="FUP:"/>
-                                <p:calendar value="#{antecedentesGinecologiaBean.objAntecedente.ultimoParto}" pattern="dd-MM-yyyy" mask="true" size="10" />
+                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.ultimoParto}"  size="10" />
 
 
                                 <p:outputLabel value="U.PAP:" for="UPAP"/>
-                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.ultimoPap}" maxlength="10" size="40"  id="UPAP"/>
+                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.ultimoPap}"  size="40"  id="UPAP"/>
 
 
                                 <h:panelGrid columns="3" cellpadding="3">
@@ -132,10 +132,7 @@
                                 <p:commandButton value="Guardar datos"  action="#{antecedentesGinecologiaBean.save()}" title="Click para guardar información"/>
                                 <p:commandButton value="Cancelar" action="#{antecedentesGinecologiaBean.cancelarAction()}" title="Click para cancelar"/>
                                 <p:spacer width="25"/>
-                                <p:commandButton value="Exámen Físico"  title="Click para guardar y pasar al formulario de Exámen Físico."/>
-                                <p:commandButton value="Descargar" icon="ui-icon-circle-arrow-s">
-                                    <p:confirm header="Descarga" message="¿Desea descargar la historia clínica?" icon="ui-icon-alert"/>
-                                </p:commandButton>
+                                
                                 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                                     <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
