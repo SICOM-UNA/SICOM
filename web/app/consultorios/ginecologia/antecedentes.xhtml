@@ -63,37 +63,37 @@
                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true"  />
                                         <f:selectItems value="#{valoresBean.getDescripcionByCodeId(5)}"/>
                                     </p:selectOneMenu>
-                                    <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioCicloMestrual}"/>
+                                    <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioCicloMestrual}" maxlength="40"/>
                                 </h:panelGrid>
                                 <p:outputLabel value="PRS:"/>
                                 <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.prs}" maxlength="4" size="8" class="numeric" onkeyup="validar()"/>    
 
                                 <p:outputLabel value="Comp. Sexuales:"/>
-                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.companerosSexuales}" maxlength="2" size="10" class="numeric" onkeyup="validar()" />
+                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.companerosSexuales}" maxlength="3" size="10" class="numeric" onkeyup="validar()" />
                                 <p:outputLabel value="Planificación:" for="planificacion"/>
                                 <h:panelGrid columns="2">
                                     <p:selectOneMenu value="#{antecedentesGinecologiaBean.objAntecedente.planificacion}"  id="planificacion" autoWidth="false" >
                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true" />
                                         <f:selectItems value="#{valoresBean.getDescripcionByCodeId(6)}"/>
                                     </p:selectOneMenu>
-                                    <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioGPA}"/>
+                                    <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioGPA}" maxlength="240"/>
                                 </h:panelGrid>
 
                                 <p:outputLabel value="Actividad Sexual"/>
-                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.actividadSexual}" size="8" onkeyup="validar()"/>    
+                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.actividadSexual}" size="8" maxlength="40" onkeyup="validar()"/>    
 
                                 <p:outputLabel value="FUP:"/>
-                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.ultimoParto}"  size="10" />
+                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.ultimoParto}" maxlength="40" size="10" />
 
 
                                 <p:outputLabel value="U.PAP:" for="UPAP"/>
-                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.ultimoPap}"  size="40"  id="UPAP"/>
+                                <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.ultimoPap}" maxlength="40"  size="40"  id="UPAP"/>
 
 
                                 <h:panelGrid columns="3" cellpadding="3">
                                     <p:outputLabel value="LM:"/>
                                     <p:selectBooleanCheckbox value="#{antecedentesGinecologiaBean.objAntecedente.lactanciaMaterna}" />
-                                    <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioLactancia}" size="10" onkeyup="validar()"/> 
+                                    <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.comentarioLactancia}" size="10" maxlength="40" onkeyup="validar()"/> 
                                 </h:panelGrid>
 
                                 <p:outputLabel value="Menopausia"/>
@@ -112,7 +112,7 @@
                                         <p:inputText value="#{antecedentesGinecologiaBean.objAntecedente.ectopico}" maxlength="2" size="2" class="numeric" onkeyup="validar()" id="EE"/>
 
                                     </h:panelGrid>
-                                    <p:inputTextarea value="#{antecedentesGinecologiaBean.objAntecedente.comentarioGPA}" maxlength="200" cols="47" rows="1" autoResize="false"/> 
+                                    <p:inputTextarea value="#{antecedentesGinecologiaBean.objAntecedente.comentarioGPA}" maxlength="230" cols="47" rows="1" autoResize="false"/> 
                                 </h:panelGrid>
 
 
@@ -121,7 +121,7 @@
                             <h:panelGrid columns="2" cellpadding="10">
                                 <h:panelGroup>
                                     <p:outputLabel class="descripcion" value="Más Información:" for="masInfo"/>
-                                    <p:inputTextarea value="#{antecedentesGinecologiaBean.objAntecedente.informacionAdicional}" maxlength="200" rows="5" cols = "118" autoResize="false" id="masInfo"/>
+                                    <p:inputTextarea value="#{antecedentesGinecologiaBean.objAntecedente.informacionAdicional}" maxlength="230" rows="5" cols = "118" autoResize="false" id="masInfo"/>
                                 </h:panelGroup>
                             </h:panelGrid>
 
