@@ -59,8 +59,8 @@ public class ExpedienteBean implements Serializable {
     private Valor selectedExamen;
     private UploadedFile archivo = null;
     private Documentos documento;
-    private List<Documentos> ultimosDocumentoss = new ArrayList<>();
-    private List<Documentos> listaDocumentos = new ArrayList<>();
+    private List<Documentos> ultimosDocumentos;
+    private List<Documentos> listaDocumentos;
     private final DocumentosJpaController documentosController;
 
     List<InterfazExamen> resultado, listaFiltrada;
@@ -69,6 +69,8 @@ public class ExpedienteBean implements Serializable {
     public ExpedienteBean() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SICOM_v1PU");
         ejc = new ExpedienteJpaController(emf);
+        ultimosDocumentos=new ArrayList<>();
+        listaDocumentos=new ArrayList<>();
         documentosController = new DocumentosJpaController(emf);
         ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();        
         paciente = (Paciente) ec.getSessionMap().get("paciente");
@@ -80,6 +82,14 @@ public class ExpedienteBean implements Serializable {
                 expediente = ejc.findExpedienteID(paciente.getCedula());
                 paciente.setExpediente(expediente);
                 ec.getRequestMap().put("paciente", paciente);
+            }
+        }
+        else{
+            paciente=new Paciente();
+            try {
+                ec.redirect(ec.getRequestContextPath().concat("/app/index"));
+            } catch (IOException ex) {
+                Logger.getLogger(ExpedienteBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -785,13 +795,13 @@ public class ExpedienteBean implements Serializable {
     }
 
     public List<Documentos> getUltimosDocumentos(Integer maxResults) {
-        ultimosDocumentoss = documentosController.findUltimos(paciente.getCedula(), maxResults);
-
-        return ultimosDocumentoss;
+        ultimosDocumentos = documentosController.findUltimos(paciente.getCedula(), maxResults);
+        
+        return ultimosDocumentos;
     }
 
-    public void setUltimosDocumentoss(List<Documentos> ultimosDocumentoss) {
-        this.ultimosDocumentoss = ultimosDocumentoss;
+    public void setUltimosDocumentoss(List<Documentos> ultimosDocumentos) {
+        this.ultimosDocumentos = ultimosDocumentos;
     }
 
     public List<Documentos> getListaDocumentos() {

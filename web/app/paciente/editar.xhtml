@@ -89,7 +89,7 @@
                                         <f:facet name="footer">
                                             <div class="ui-panel-titlebar ui-widget-header" align="center">
                                                 <p:commandButton value="Actualizar Paciente" icon="ui-icon-plus" action="#{pacienteBean.modificar}" title="Actualizar datos del paciente" update="formPaciente :formResponsable"/>
-                                                <p:commandButton value="Cancelar" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true" />
+                                                <p:commandButton value="Cancelar" action="informacion?faces-redirect=true" icon="ui-icon-refresh" title="Regresar" immediate="true" />
                                             </div>
                                         </f:facet>
                                     </p:panel>

@@ -65,7 +65,7 @@
                                                         maxdate="#{now}" required="true" placeholder="#{now.date}-#{now.month+1}-#{now.year+1900}"/>
 
                                                     <p:outputLabel value="Estado Civil:" for="estadoCivil"/>
-                                                    <p:selectOneMenu value="#{pacienteBean.nuevoPaciente.estadoCivil}" id="estadoCivil" required="true">
+                                                    <p:selectOneMenu value="#{pacienteBean.nuevoPaciente.estadoCivil}" id="estadoCivil">
                                                         <f:selectItem itemLabel="Seleccione uno:" noSelectionOption="true"/>
                                                         <f:selectItems value="#{valoresBean.getDescripcionByCodeId(2)}"/>
                                                     </p:selectOneMenu>
@@ -106,7 +106,7 @@
                                         <f:facet name="footer">
                                             <div class="ui-panel-titlebar ui-widget-header" align="center">
                                                 <p:commandButton value="Guargar Paciente" icon="ui-icon-plus" action="#{pacienteBean.agregar}" title="Agregar paciente" update="formPaciente msg :formResponsable"/>
-                                                <p:commandButton value="Cancelar Todo" icon="ui-icon-refresh" title="Borrar datos del formulario" immediate="true">
+                                                <p:commandButton value="Limpiar" icon="ui-icon-refresh" title="Borrar datos del paciente" immediate="true">
                                                     <f:ajax resetValues="true" render="formPaciente"/>
                                                 </p:commandButton> 
                                             </div>

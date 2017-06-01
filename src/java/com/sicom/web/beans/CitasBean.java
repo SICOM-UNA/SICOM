@@ -214,7 +214,11 @@ public class CitasBean implements Serializable {
     }
 
     public void onDateSelect(SelectEvent selectEvent) {
-        event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), null);
+        Date aux=(Date) selectEvent.getObject();
+        aux.setHours(5);
+        event = new DefaultScheduleEvent("", aux, null);
+        
+        
         nuevaCita = new Cita();
     }
 

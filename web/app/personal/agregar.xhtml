@@ -146,7 +146,7 @@
                             <f:facet name="footer">
                                 <div class="ui-panel-titlebar ui-widget-header" align="center">
                                     <p:commandButton value="Agregar" icon="ui-icon-plus" action="#{personalBean.agregar()}" update="formPersonal"/>
-                                    <p:commandButton value="Cancelar" immediate="true" icon="ui-icon-refresh">
+                                    <p:commandButton value="Limpiar" immediate="true" icon="ui-icon-refresh" title="Borrar datos del formulario">
                                         <p:ajax resetValues="true" update="formPersonal" immediate="true"/>
                                     </p:commandButton>
                                 </div>

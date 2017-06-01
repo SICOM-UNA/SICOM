@@ -108,9 +108,7 @@
     
                         <div class="ui-panel-titlebar ui-widget-header" align="center">
                             <p:commandButton value="Actualizar" icon="ui-icon-plus" action="#{personalBean.modificar}" update="formPersonal" title="Actualizar personal"/>
-                            <p:commandButton value="Cancelar" immediate="true" icon="ui-icon-refresh" title="Borrar datos del formulario">
-                                <p:ajax resetValues="true" update="formPersonal" immediate="true"/>
-                            </p:commandButton>
+                            <p:commandButton value="Cancelar" action="informacion?faces-redirect=true" icon="ui-icon-refresh" title="Regresar" immediate="true" />
                         </div>
                     </h:form>
                 </p:panel>

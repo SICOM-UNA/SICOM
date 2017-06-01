@@ -34,7 +34,7 @@
                             <p:inputMask id="telefono2" value="#{citasBean.nuevaCita.celular}" mask="9999-9999" placeholder="0000-0000"/>
 
                             <p:outputLabel value="Hora Inicial" for="time1" />
-                            <p:calendar id="time1" value="#{citasBean.event.startDate}" required="true" timeZone="GMT-6" pattern="dd/MM/yyyy HH:mm" minHour="6" maxHour="20" stepMinute="30"/>
+                            <p:calendar id="time1" value="#{citasBean.event.startDate}" required="true" timeZone="GMT-6" pattern="dd/MM/yyyy HH:mm" minHour="5" maxHour="20" stepMinute="30"/>
 
                             <p:outputLabel value="Estado: " for="estado" rendered="#{citasBean.validaEliminar()}"/>
                             <p:selectOneButton id="estado" value="#{citasBean.nuevaCita.estado}" rendered="#{citasBean.validaEliminar()}">
