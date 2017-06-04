@@ -31,20 +31,9 @@ ul.ui-widget-content.ui-menu-list.ui-corner-all.ui-helper-clearfix.ui-menu-child
 
 .ui-menuitem-icon.ui-icon {
     margin-right: .5em;
+
 }
 
-.ui-state-hover .ui-icon, .ui-state-focus .ui-icon {
-    background-image: url("/SICOM_v1/javax.faces.resource/images/ui-icons_ffffff_256x240.png.xhtml?ln=primefaces-aristo");
-}
-
-.ui-widget-content .ui-icon {
-    background-image: url("/SICOM_v1/javax.faces.resource/images/ui-icons_ffffff_256x240.png.xhtml?ln=primefaces-aristo");
-}
-
-.ui-widget-content .ui-icon {
-    background-image: url("/SICOM_v1/javax.faces.resource/images/ui-icons_ffffff_256x240.png.xhtml?ln=primefaces-aristo");
-}
-
-.ui-state-default .ui-icon {
-    background-image: url("/SICOM_v1/javax.faces.resource/images/ui-icons_38667f_256x240.png.xhtml?ln=primefaces-aristo");
+.menu.ui-menubar .ui-menuitem-icon.ui-icon {
+    background-image: url("../imagenes/aristo/ui-icons_ffffff_256x240.png");
 }
